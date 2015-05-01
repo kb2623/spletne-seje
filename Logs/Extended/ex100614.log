@@ -1,0 +1,121 @@
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-13 22:14:38
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-13 22:14:38 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 193.47.80.50 HTTP/1.1 Mozilla/5.0+(compatible;+Exabot/3.0;++http://www.exabot.com/go/robot) - - www.ibcsa.com 404 0 2 1849 269 218
+2010-06-13 22:14:38 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 193.47.80.50 HTTP/1.1 Mozilla/5.0+(compatible;+Exabot/3.0;++http://www.exabot.com/go/robot) - - www.ibcsa.com 200 0 0 2630 349 250
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 00:06:29
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 00:06:29 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 125.116.70.172 HTTP/1.0 Wget/1.11.4+Red+Hat+modified - - www.ibcsa.com 200 0 0 6268 118 1062
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 02:53:08
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 02:53:08 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 38.108.67.36 HTTP/1.0 SBIder/Nutch-1.0-dev+(http://www.sitesell.com/sbider.html) - - www.ibcsa.com 404 0 2 1849 362 312
+2010-06-14 02:53:08 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site_010.htm - 80 - 38.108.67.36 HTTP/1.0 SBIder/Nutch-1.0-dev+(http://www.sitesell.com/sbider.html) - - www.ibcsa.com 200 0 0 5111 372 562
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 04:45:14
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 04:45:14 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp;+http://help.yahoo.com/help/us/ysearch/slurp) - - www.ibcsa.com 404 0 2 1849 190 406
+2010-06-14 04:45:15 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site_004.htm - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - - www.ibcsa.com 200 0 0 5723 373 687
+2010-06-14 04:45:15 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site_g.css - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - http://www.ibcsa.com/ibc_web_site_004.htm www.ibcsa.com 200 0 0 2278 342 343
+2010-06-14 04:45:17 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site_004_p.css - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - http://www.ibcsa.com/ibc_web_site_004.htm www.ibcsa.com 200 0 0 12073 346 1000
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 05:45:01
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 05:45:01 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - - www.ibcsa.com 200 0 0 6213 362 765
+2010-06-14 05:45:01 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site_g.css - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - http://www.ibcsa.com/index.htm www.ibcsa.com 200 0 0 2278 331 343
+2010-06-14 05:45:03 W3SVC979 LOCQUE 196.35.73.189 GET /index_p.css - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - http://www.ibcsa.com/index.htm www.ibcsa.com 200 0 0 6292 324 671
+2010-06-14 05:49:22 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 66.249.65.178 HTTP/1.1 Googlebot-Image/1.0 - - www.ibcsa.com 404 0 2 1830 201 265
+2010-06-14 05:49:22 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site004009.gif - 80 - 66.249.65.178 HTTP/1.1 Googlebot-Image/1.0 - - www.ibcsa.com 304 0 0 251 246 296
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 06:39:18
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 06:39:17 W3SVC979 LOCQUE 196.35.73.189 GET /mike.htm - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - - www.ibcsa.com 200 0 0 871 366 281
+2010-06-14 06:39:18 W3SVC979 LOCQUE 196.35.73.189 GET /west+indies.jpg - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/mike.htm www.ibcsa.com 200 0 0 73397 385 296
+2010-06-14 06:39:18 W3SVC979 LOCQUE 196.35.73.189 GET /favicon.ico - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - - www.ibcsa.com 404 0 2 1830 339 31
+2010-06-14 06:39:21 W3SVC979 LOCQUE 196.35.73.189 GET /favicon.ico - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - - www.ibcsa.com 404 0 2 1830 369 15
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 08:08:05
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 08:08:04 W3SVC979 LOCQUE 196.35.73.189 GET /Who.htm - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - - www.ibcsa.com 200 0 0 2752 360 453
+2010-06-14 08:08:06 W3SVC979 LOCQUE 196.35.73.189 GET /_themes/blends/blen1011.css - 80 - 67.195.115.48 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - http://www.ibcsa.com/Who.htm www.ibcsa.com 200 0 0 31600 338 1703
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 11:54:01
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 11:54:01 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image008.gif - 80 - 66.249.65.178 HTTP/1.1 Googlebot-Image/1.0 - - www.ibcsa.com 304 0 0 251 276 296
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 12:16:12
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 12:16:12 W3SVC979 LOCQUE 196.35.73.189 GET /mike.htm - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.0.16)+Gecko/2010010414+Firefox/3.0.16+Flock/2.5.6 - - www.ibcsa.com 200 0 0 871 391 218
+2010-06-14 12:16:13 W3SVC979 LOCQUE 196.35.73.189 GET /west+indies.jpg - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.0.16)+Gecko/2010010414+Firefox/3.0.16+Flock/2.5.6 - http://www.ibcsa.com/mike.htm www.ibcsa.com 200 0 0 73397 410 1359
+2010-06-14 12:16:14 W3SVC979 LOCQUE 196.35.73.189 GET /favicon.ico - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.0.16)+Gecko/2010010414+Firefox/3.0.16+Flock/2.5.6 - - www.ibcsa.com 404 0 2 1830 364 125
+2010-06-14 12:16:14 W3SVC979 LOCQUE 196.35.73.189 GET /favicon.ico - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.0.16)+Gecko/2010010414+Firefox/3.0.16+Flock/2.5.6 - - www.ibcsa.com 404 0 2 1830 394 93
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 12:32:11
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 12:32:11 W3SVC979 LOCQUE 196.35.73.189 GET /mike.htm - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.0.16)+Gecko/2010010414+Firefox/3.0.16+Flock/2.5.6 - - www.ibcsa.com 200 0 0 3736 507 2609
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - - www.ibcsa.com 200 0 0 6268 453 125
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site_g.css - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 2283 458 171
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001006.jpg - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 13901 477 328
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /index_p.css - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 6297 451 281
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001005.gif - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 3289 477 265
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001003.gif - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 3009 477 296
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001002.gif - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 2550 477 93
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001004.gif - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/index_p.css www.ibcsa.com 200 0 0 1252 488 31
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001001.jpg - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 6189 477 78
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /world.gif - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 28213 464 437
+2010-06-14 12:39:06 W3SVC979 LOCQUE 196.35.73.189 GET /favicon.ico - 80 - 196.215.13.74 HTTP/1.0 Mozilla/5.0+(Windows;+U;+Windows+NT+6.0;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3+(.NET+CLR+3.5.30729) - - www.ibcsa.com 404 0 2 1854 434 46
+2010-06-14 12:39:48 W3SVC979 LOCQUE 196.35.73.189 GET /mike.htm - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.0.16)+Gecko/2010010414+Firefox/3.0.16+Flock/2.5.6 - - www.ibcsa.com 200 0 0 4413 509 46
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 13:14:19
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame.htm - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.google.nl/imgres?imgurl=http://www.ibcsa.com/article1frame/contentarticle1frame_clip_image006.gif&imgrefurl=http://www.ibcsa.com/article1frame/contentarticle1frame.htm&usg=__B0f1TRitqGC496Pqgo4gnpNDeXY=&h=422&w=573&sz=6&hl=nl&start=7&sig2=z-7JVvikZ1l2B-KmrbOv0Q&um=1&itbs=1&tbnid=tVh7aTmdsZBHPM:&tbnh=99&tbnw=134&prev=/images%3Fq%3Dsadt%2Bengineering%26um%3D1%26hl%3Dnl%26sa%3DN%26tbs%3Disch:1&ei=7ioWTKCyIMeQOK2ljfsL www.ibcsa.com 200 0 0 6824 1088 937
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image004.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 2291 469 328
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image002.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 3502 469 625
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image014.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 2572 469 390
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image012.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 3517 469 296
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image010.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 4050 469 625
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image015.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 4959 469 437
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image006.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 6402 469 765
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image008.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 5965 469 765
+2010-06-14 13:14:19 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image016.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 5477 469 468
+2010-06-14 13:14:20 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image018.gif - 80 - 62.195.236.160 HTTP/1.1 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+5.1;+Trident/4.0;+.NET+CLR+2.0.50727;+.NET+CLR+1.1.4322;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729;+InfoPath.1;+OfficeLiveConnector.1.4;+OfficeLivePatch.1.3) - http://www.ibcsa.com/article1frame/contentarticle1frame.htm www.ibcsa.com 200 0 0 4646 469 765
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 13:47:10
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 13:47:10 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - - www.ibcsa.com 200 0 0 2611 358 250
+2010-06-14 13:47:10 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site_g.css - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 2259 363 203
+2010-06-14 13:47:10 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001006.jpg - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 13877 382 109
+2010-06-14 13:47:10 W3SVC979 LOCQUE 196.35.73.189 GET /index_p.css - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 6273 356 187
+2010-06-14 13:47:10 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001005.gif - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 3265 382 140
+2010-06-14 13:47:10 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001001.jpg - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 6165 382 62
+2010-06-14 13:47:11 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001003.gif - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 2985 382 265
+2010-06-14 13:47:11 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001004.gif - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/index_p.css www.ibcsa.com 200 0 0 1228 393 218
+2010-06-14 13:47:11 W3SVC979 LOCQUE 196.35.73.189 GET /ibc_web_site001002.gif - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 2526 382 234
+2010-06-14 13:47:11 W3SVC979 LOCQUE 196.35.73.189 GET /world.gif - 80 - 196.215.57.89 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+5.1;+en-US;+rv:1.9.2.3)+Gecko/20100401+Firefox/3.6.3 - http://www.ibcsa.com/ www.ibcsa.com 200 0 0 28189 369 328
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 16:49:24
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 16:49:24 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 216.129.119.40 HTTP/1.1 Mozilla/5.0+(Twiceler-0.9+http://www.cuil.com/twiceler/robot.html) - - www.ibcsa.com 404 0 2 1849 195 390
+2010-06-14 16:56:13 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 67.218.116.162 HTTP/1.1 Mozilla/5.0+(Twiceler-0.9+http://www.cuil.com/twiceler/robot.html) - - www.ibcsa.com 404 0 2 1849 195 328
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2010-06-14 18:27:22
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2010-06-14 18:27:22 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 77.88.31.246 HTTP/1.1 Yandex/1.01.001+(compatible;+Win16;+I) - - www.ibcsa.com 404 0 2 1830 151 234
+2010-06-14 18:30:55 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame.htm - 80 - 87.88.19.28 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+6.1;+fr;+rv:1.9.2.2)+Gecko/20100316+Firefox/3.6.2 - http://www.google.fr/imgres?imgurl=http://www.ibcsa.com/article1frame/contentarticle1frame_clip_image006.gif&imgrefurl=http://www.ibcsa.com/article1frame/contentarticle1frame.htm&usg=__B0f1TRitqGC496Pqgo4gnpNDeXY=&h=422&w=573&sz=6&hl=fr&start=121&um=1&itbs=1&tbnid=tVh7aTmdsZBHPM:&tbnh=99&tbnw=134&prev=/images%3Fq%3Ddiagramme%2Bsadt%26start%3D120%26um%3D1%26hl%3Dfr%26sa%3DN%26ndsp%3D20%26tbs%3Disch:1 www.ibcsa.com 200 0 64 0 836 328
+2010-06-14 18:30:56 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame_clip_image006.gif - 80 - 87.88.19.28 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+6.1;+fr;+rv:1.9.2.2)+Gecko/20100316+Firefox/3.6.2 - http://www.google.fr/imgres?imgurl=http://www.ibcsa.com/article1frame/contentarticle1frame_clip_image006.gif&imgrefurl=http://www.ibcsa.com/article1frame/contentarticle1frame.htm&usg=__B0f1TRitqGC496Pqgo4gnpNDeXY=&h=422&w=573&sz=6&hl=fr&start=121&um=1&itbs=1&tbnid=tVh7aTmdsZBHPM:&tbnh=99&tbnw=134&prev=/images%3Fq%3Ddiagramme%2Bsadt%26start%3D120%26um%3D1%26hl%3Dfr%26sa%3DN%26ndsp%3D20%26tbs%3Disch:1 www.ibcsa.com 200 0 0 6402 850 859
+2010-06-14 18:39:11 W3SVC979 LOCQUE 196.35.73.189 GET /article1frame/contentarticle1frame.htm - 80 - 87.88.19.28 HTTP/1.1 Mozilla/5.0+(Windows;+U;+Windows+NT+6.1;+fr;+rv:1.9.2.2)+Gecko/20100316+Firefox/3.6.2 - http://www.google.fr/imgres?imgurl=http://www.ibcsa.com/article1frame/contentarticle1frame_clip_image006.gif&imgrefurl=http://www.ibcsa.com/article1frame/contentarticle1frame.htm&usg=__B0f1TRitqGC496Pqgo4gnpNDeXY=&h=422&w=573&sz=6&hl=fr&start=121&um=1&itbs=1&tbnid=tVh7aTmdsZBHPM:&tbnh=99&tbnw=134&prev=/images%3Fq%3Ddiagramme%2Bsadt%26start%3D120%26um%3D1%26hl%3Dfr%26sa%3DN%26ndsp%3D20%26tbs%3Disch:1 www.ibcsa.com 200 0 64 2048 836 578

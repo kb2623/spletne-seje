@@ -1,0 +1,44 @@
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2007-11-29 22:28:42
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2007-11-29 22:28:42 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 65.214.45.152 HTTP/1.0 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 404 0 2 1849 172 281
+2007-11-29 22:28:42 W3SVC979 LOCQUE 196.35.73.189 GET /maneffframe/contentmaneffframe.htm - 80 - 65.214.45.152 HTTP/1.0 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 1683 228 312
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2007-11-29 23:50:18
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2007-11-29 23:50:17 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Flash1.htm - 80 - 41.242.55.234 HTTP/1.0 jongaimpi/2.30+(jonga;+http://www.jonga.co.za;+info@jonga.co.za) - - www.ibcsa.com 200 0 0 577 304 296
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2007-11-30 02:49:44
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2007-11-30 02:49:44 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 64.34.145.198 HTTP/1.0 SBIder/SBIder-0.8.2-dev+(http://www.sitesell.com/sbider.html) - - www.ibcsa.com 404 0 2 1849 155 703
+2007-11-30 02:49:45 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 64.34.145.198 HTTP/1.0 SBIder/SBIder-0.8.2-dev+(http://www.sitesell.com/sbider.html) - - www.ibcsa.com 200 0 0 3673 145 546
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2007-11-30 03:47:39
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2007-11-30 03:47:39 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 66.249.70.219 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - ibcsa.com 404 0 2 1830 242 343
+2007-11-30 03:47:39 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Framedescription.htm - 80 - 66.249.70.219 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - ibcsa.com 200 0 0 1564 242 484
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2007-11-30 09:21:19
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2007-11-30 09:21:18 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/UntitledFrame-1.htm - 80 - 41.242.55.234 HTTP/1.0 jongaimpi/2.30+(jonga;+http://www.jonga.co.za;+info@jonga.co.za) - - www.ibcsa.com 200 0 0 577 313 109
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2007-11-30 10:41:55
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2007-11-30 10:41:55 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Framedemo.htm - 80 - 41.242.55.234 HTTP/1.0 jongaimpi/2.30+(jonga;+http://www.jonga.co.za;+info@jonga.co.za) - - www.ibcsa.com 200 0 0 1170 307 218
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2007-11-30 19:55:28
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2007-11-30 19:55:27 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 63.123.238.8 HTTP/1.1 Mozilla/2.0+(compatible;+Ask+Jeeves/Teoma) - - www.ibcsa.com 404 0 2 1849 163 281
+2007-11-30 19:55:29 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 63.123.238.8 HTTP/1.1 Mozilla/2.0+(compatible;+Ask+Jeeves/Teoma) - - www.ibcsa.com 200 0 0 3673 153 531
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2007-11-30 21:34:35
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2007-11-30 21:34:35 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Frameprofloss.htm - 80 - 41.242.55.234 HTTP/1.0 jongaimpi/2.30+(jonga;+http://www.jonga.co.za;+info@jonga.co.za) - - www.ibcsa.com 200 0 0 1016 311 93

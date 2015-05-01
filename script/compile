@@ -1,0 +1,55 @@
+#!/bin/bash
+
+if [ -d "$1" ]; then
+	src_dir=$1
+elif [ -d "../src" ]; then
+	src_dir="../src"
+else
+	echo "No source dir!!!"
+	exit 1
+fi
+
+if [ -d "$2" ]; then
+	bin_dir=$2
+elif [ -d "../bin" ]; then
+	bin_dir="../bin"
+else
+	echo "No class dir!!!"
+	exit 2
+fi
+
+if [ -d "$3" ]; then
+	lib_dir=$3
+elif [ -d "../lib" ]; then
+	lib_dir="../lib"
+else
+	echo "No library dir!!!"
+	exit 3
+fi
+
+if [ ! -e "$lib_dir/args4j-2.0.21.jar" ]; then
+	echo "Missing args4j-2.0.21.jar in $lib_dir"
+	exit 4
+elif [ ! -e "$lib_dir/antlr-runtime-3.4.jar" ]; then
+	echo "Missing antlr-runtime-3.4.jar in $lib_dir"
+	exit 5
+elif [ ! -e "$lib_dir/sqljet-1.1.10.jar" ]; then
+	echo "Missing sqljet-1.1.10.jar in $lib_dir"
+	exit 6
+else
+	echo "Source dir: $src_dir"
+	echo "Class dir: $bin_dir"
+	echo "Library dir: $lib_dir"
+fi
+
+javac -cp "$bin_dir" -d $bin_dir $src_dir/datastruct/*.java
+
+javac -cp "$bin_dir" -d $bin_dir $src_dir/fields/*.java
+javac -cp "$bin_dir" -d $bin_dir $src_dir/fields/ncsa/*.java
+javac -cp "$bin_dir" -d $bin_dir $src_dir/fields/w3c/*.java
+
+javac -cp "$lib_dir/args4j-2.0.21.jar;$lib_dir/antlr-runtime-3.4.jar;$bin_dir" -d $bin_dir $src_dir/parser/*.java
+
+javac -cp "$lib_dir/args4j-2.0.21.jar;$lib_dir/antlr-runtime-3.4.jar;$lib_dir/sqljet-1.1.10.jar;$bin_dir" -d $bin_dir $src_dir/spletneseje/*.java
+
+exit 0

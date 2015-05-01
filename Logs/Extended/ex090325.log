@@ -1,0 +1,76 @@
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-24 22:52:59
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-24 22:52:58 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 208.111.154.16 HTTP/1.1 Mozilla/5.0+(compatible;+Charlotte/1.1;+http://www.searchme.com/support/) - - www.ibcsa.com 404 0 2 1830 191 343
+2009-03-24 22:53:00 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 208.111.154.16 HTTP/1.1 Mozilla/5.0+(compatible;+Charlotte/1.1;+http://www.searchme.com/support/) - - www.ibcsa.com 200 0 0 3654 181 640
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-24 23:12:53
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-24 23:12:53 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 193.47.80.50 HTTP/1.1 Mozilla/5.0+(compatible;+Exabot/3.0;++http://www.exabot.com/go/robot) - - www.ibcsa.com 200 0 0 3673 337 375
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-25 01:04:50
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-25 01:04:50 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 196.38.88.28 HTTP/1.1 - - - www.ibcsa.com 200 0 0 3654 52 46
+2009-03-25 01:04:50 W3SVC979 LOCQUE 196.35.73.189 GET /index.php - 80 - 196.38.88.28 HTTP/1.1 - - - www.ibcsa.com 200 0 0 235 61 31
+2009-03-25 01:04:50 W3SVC979 LOCQUE 196.35.73.189 GET /index.html - 80 - 196.38.88.28 HTTP/1.1 - - - www.ibcsa.com 404 0 2 1830 62 0
+2009-03-25 01:04:50 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 196.38.88.28 HTTP/1.1 - - - www.ibcsa.com 200 0 0 3604 61 0
+2009-03-25 01:04:50 W3SVC979 LOCQUE 196.35.73.189 GET /default.asp |-|ASP_0145|New_Application_Failed 80 - 196.38.88.28 HTTP/1.1 - - - www.ibcsa.com 500 0 0 262 63 0
+2009-03-25 01:04:50 W3SVC979 LOCQUE 196.35.73.189 GET /default.aspx - 80 - 196.38.88.28 HTTP/1.1 - - - www.ibcsa.com 200 0 0 0 64 0
+2009-03-25 01:04:50 W3SVC979 LOCQUE 196.35.73.189 GET /default.htm - 80 - 196.38.88.28 HTTP/1.1 - - - www.ibcsa.com 404 0 2 1830 63 0
+2009-03-25 01:18:54 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 404 0 2 1830 217 265
+2009-03-25 01:19:24 W3SVC979 LOCQUE 196.35.73.189 GET /index.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 3673 242 484
+2009-03-25 01:19:24 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/UntitledFrame-1.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 572 268 296
+2009-03-25 01:19:25 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Logo.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 701 257 250
+2009-03-25 01:19:25 W3SVC979 LOCQUE 196.35.73.189 GET /buttonsframe.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 4232 258 500
+2009-03-25 01:19:27 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Flash1.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 572 259 234
+2009-03-25 01:19:27 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/UntitledFrame-2.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 572 268 250
+2009-03-25 01:19:28 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Framedescription.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 1583 269 265
+2009-03-25 01:19:28 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/UntitledFrame-3.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 572 268 234
+2009-03-25 01:19:29 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Framereview.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 1008 264 265
+2009-03-25 01:19:29 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Frameprofloss.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 1011 266 250
+2009-03-25 01:19:29 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Framedemo.htm - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 1165 262 234
+2009-03-25 01:19:30 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/buttonhome.swf - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 2572 263 265
+2009-03-25 01:19:30 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/buttonwho.swf - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 2852 262 234
+2009-03-25 01:19:31 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/buttonprograms.swf - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 3090 267 500
+2009-03-25 01:19:31 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/buttonprice.swf - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 2899 264 265
+2009-03-25 01:19:33 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/buttoncontact.swf - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 3118 266 484
+2009-03-25 01:19:33 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/buttonarticle.swf - 80 - 66.235.124.34 HTTP/1.1 Mozilla/5.0+(compatible;+Ask+Jeeves/Teoma;++http://about.ask.com/en/docs/about/webmasters.shtml) - - www.ibcsa.com 200 0 0 2838 266 250
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-25 02:04:24
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-25 02:04:24 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 72.30.142.244 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp;+http://help.yahoo.com/help/us/ysearch/slurp) - - www.ibcsa.com 404 0 2 1849 190 281
+2009-03-25 02:04:26 W3SVC979 LOCQUE 196.35.73.189 GET /Sim.htm - 80 - 72.30.142.244 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - - www.ibcsa.com 200 0 0 4557 413 531
+2009-03-25 02:04:27 W3SVC979 LOCQUE 196.35.73.189 GET /_themes/blends/blen1011.css - 80 - 72.30.142.244 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - http://www.ibcsa.com/Sim.htm www.ibcsa.com 200 0 0 31600 482 1328
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-25 09:41:30
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-25 09:41:30 W3SVC979 LOCQUE 196.35.73.189 GET /NetP&LV6.exe - 80 - 72.30.142.244 HTTP/1.0 Mozilla/5.0+(compatible;+Yahoo!+Slurp/3.0;+http://help.yahoo.com/help/us/ysearch/slurp) - - www.ibcsa.com 404 0 2 258 418 265
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-25 11:27:22
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-25 11:27:21 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 65.55.209.22 HTTP/1.1 msnbot/1.1+(+http://search.msn.com/msnbot.htm) - - www.ibcsa.com 404 0 2 1849 204 296
+2009-03-25 11:27:21 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Framedemo.htm - 80 - 65.55.209.22 HTTP/1.1 msnbot/1.1+(+http://search.msn.com/msnbot.htm) - - www.ibcsa.com 200 0 0 1165 312 296
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-25 14:26:15
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-25 14:26:15 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 66.249.70.51 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - www.ibcsa.com 404 0 2 1830 254 375
+2009-03-25 14:26:15 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Framedescription.htm - 80 - 66.249.70.51 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - www.ibcsa.com 200 0 0 1564 254 390
+2009-03-25 14:30:39 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Framedemo.htm - 80 - 66.249.70.51 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - www.ibcsa.com 200 0 0 1146 247 375
+2009-03-25 14:31:11 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/Flash1.htm - 80 - 66.249.70.51 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - www.ibcsa.com 200 0 0 553 244 343
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-25 15:20:16
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-25 15:20:16 W3SVC979 LOCQUE 196.35.73.189 GET /Frames/buttonarticle.swf - 80 - 66.249.70.51 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - www.ibcsa.com 200 0 0 2819 251 359
+#Software: Microsoft Internet Information Services 6.0
+#Version: 1.0
+#Date: 2009-03-25 21:05:35
+#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken 
+2009-03-25 21:05:35 W3SVC979 LOCQUE 196.35.73.189 GET /Prices.htm - 80 - 66.249.70.51 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - www.ibcsa.com 304 0 0 251 287 437
