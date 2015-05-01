@@ -34,18 +34,12 @@ public class NCSAParser extends AbsParser {
 	}
 	/**
 	 * Nastavljanje formata za parsanje datuma
-	 * 
+	 *
 	 * @param format
-	 * @param localeString 
+	 * @param localeString
 	 */
-	public void setDateFormat(String format, String localeString) {
-		Locale locale;
-		if (localeString == null) {
-			locale = Locale.getDefault();
-		} else {
-			locale = new Locale(localeString);
-		}
-		this.formatter = DateTimeFormatter.ofPattern(format).withLocale(locale);
+	public void setDateFormat(String format, Locale locale) {
+		this.formatter = DateTimeFormatter.ofPattern(format == null ? "dd/MMM/yyyy:HH:mm:ss Z" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 	/**
 	 *
@@ -112,11 +106,11 @@ public class NCSAParser extends AbsParser {
 		}
 	}
 	/**
-	 * 
+	 *
 	 * @return
 	 * @throws ParseException
 	 * @throws NullPointerException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Override
 	public ParsedLine parseLine() throws ParseException, NullPointerException, IOException {

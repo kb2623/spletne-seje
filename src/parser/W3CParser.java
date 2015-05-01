@@ -38,33 +38,21 @@ public class W3CParser extends AbsParser {
 	}
 	/**
 	 * Nastavljanje formata za parsanje datuma
-	 * 
+	 *
 	 * @param format
-	 * @param localeString 
+	 * @param localeString
 	 */
-	public void setDateFormat(String format, String localeString) {
-		Locale locale;
-		if(localeString == null) {
-			locale = Locale.getDefault();
-		} else {
-			locale = new Locale(localeString);
-		}
-		this.dateFormat = DateTimeFormatter.ofPattern(format).withLocale(locale);
+	public void setDateFormat(String format, Locale locale) {
+		this.dateFormat = DateTimeFormatter.ofPattern(format == null ? "yyyy-MM-dd" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 	/**
 	 * Nastavljanje formata za parsanje časa
-	 * 
+	 *
 	 * @param format
-	 * @param localeString 
+	 * @param localeString
 	 */
-	public void setTimeFormat(String format, String localeString) {
-		Locale locale;
-		if(localeString == null) {
-			locale = Locale.getDefault();
-		} else {
-			locale = new Locale(localeString);
-		}
-		this.timeFormat = DateTimeFormatter.ofPattern(format).withLocale(locale);
+	public void setTimeFormat(String format, Locale locale) {
+		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 	/**
 	 *
@@ -97,9 +85,9 @@ public class W3CParser extends AbsParser {
 		return tokens;
 	}
 	/**
-	 * 
+	 *
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	@Override
 	public ParsedLine parseLine() throws ParseException {
@@ -114,10 +102,7 @@ public class W3CParser extends AbsParser {
 					fieldType = FieldType.createExtendedLogFormat(tokens);
 				}
 				StringBuilder builder = new StringBuilder();
-				tokens.stream().
-					forEach((s) -> {
-						builder.append(s).append(' ');
-				});
+				tokens.stream().forEach((s) -> builder.append(s).append(' '));
 				data.put(FieldType.MetaData, new MetaData(builder.toString()));
 				return new ParsedLine(data);
 			}

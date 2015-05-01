@@ -2,6 +2,7 @@ package parser;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -32,8 +33,7 @@ public class ArgsParser {
 	@Option(name="-out", usage="Output file", metaVar="<path>")
 	private String outputFile = "SpletneSejeDB"+LocalDateTime.now().toString();
 
-	@Option(name="-l", usage="Locale for time parsing", metaVar="<locale>")
-	private String locale;
+	private Locale locale;
 
 	@Option(name="-d", usage="Delete output file before witing")
 	private boolean deleteFile = false;
@@ -49,6 +49,15 @@ public class ArgsParser {
 		if(inputFile == null) {
 			throw new CmdLineException(parser, "Input file is required");
 		}
+	}
+
+	@Option(name="-l", usage="Locale for time parsing", metaVar="<locale>")
+	public void setLocale(String locale) {
+		this.locale = new Locale(locale);
+	}
+
+	public Locale getLocale() {
+		return locale;
 	}
 
 	public boolean ignoreCrawlers() {
@@ -73,10 +82,6 @@ public class ArgsParser {
 
 	public String getTimeFormat() {
 		return timeFormat;
-	}
-
-	public String getLocale() {
-		return locale;
 	}
 
 	public boolean deleteOutputFile() {

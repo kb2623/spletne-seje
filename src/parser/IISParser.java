@@ -25,10 +25,8 @@ public class IISParser extends AbsParser {
 	public IISParser() {
 		super();
 		fieldType = null;
-		this.dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-				.withLocale(Locale.getDefault());
-		this.timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss")
-				.withLocale(Locale.getDefault());
+		this.dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy").withLocale(Locale.US);
+		this.timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.US);
 	}
 	/**
 	 *
@@ -87,15 +85,8 @@ public class IISParser extends AbsParser {
 	 * @param format
 	 * @param region 
 	 */
-	public void setDateFormat(String format, String region) {
-		Locale locale;
-		if(region == null) {
-			locale = Locale.getDefault();
-		} else {
-			locale = new Locale.Builder().setRegion(region).build();
-		}
-		this.dateFormat = DateTimeFormatter.ofPattern(format)
-				.withLocale(locale);
+	public void setDateFormat(String format, Locale locale) {
+		this.dateFormat = DateTimeFormatter.ofPattern(format == null ? "dd/MM/yyyy" : format).withLocale(locale == null ? Locale.US : locale);
 	}
 	/**
 	 * Nastavljanje formata za parsanje časa
@@ -103,15 +94,8 @@ public class IISParser extends AbsParser {
 	 * @param format
 	 * @param region 
 	 */
-	public void setTimeFormat(String format, String region) {
-		Locale locale;
-		if(region == null) {
-			locale = Locale.getDefault();
-		} else {
-			locale = new Locale.Builder().setRegion(region).build();
-		}
-		this.timeFormat = DateTimeFormatter.ofPattern(format)
-				.withLocale(locale);
+	public void setTimeFormat(String format, Locale locale) {
+		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.US : locale);
 	}
 	/**
 	 *

@@ -95,7 +95,7 @@ public class TestParser {
 			//Nastavi tipe podatkov
 			parser.setFieldType(FieldType.createCombinedLogFormat());
 			//Nastavi format datuma
-			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", "US");
+			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
 			list.getMap().values().stream().
@@ -160,8 +160,7 @@ public class TestParser {
 						assert false;
 					} else if(f instanceof RequestLine) {
 						URL r = ((RequestLine) f).getUrl();
-						System.out.print(((RequestLine) f).getMethod().izpis()+
-							" | "+r.getPath()+" | "+r.getQuery()+" | "+r.getProtocol()+" || ");
+						System.out.print(((RequestLine) f).getMethod().izpis() + " | " + r.getPath() + " | " + r.getQuery() + " | " + r.getProtocol() + " | ");
 					} else {
 						System.out.print(f.izpis()+" || ");
 					}
@@ -236,14 +235,10 @@ public class TestParser {
 			assertEquals(list.getMap().get(FieldType.MetaData).getClass(), MetaData.class);
 			ParsedLine list1 = parserW3C.parseLine();
 			assertEquals(22, list1.getMap().values().size());
-			list1.getMap().values().stream().
-				map((f) -> {
-					assertNotNull(f);
+			list1.getMap().values().stream().map((f) -> {
+				assertNotNull(f);
 				return f;
-			}).
-				forEach((f) -> {
-					System.out.print(f.izpis()+" || ");
-			});
+			}).forEach((f) -> System.out.print(f.izpis()+" || "));
 			System.out.println();
 			//Zapri datoteko
 			parserW3C.closeFile();
@@ -271,14 +266,10 @@ public class TestParser {
 			assertEquals(1, parserW3C.parseLine().getMap().size());
 			list = parserW3C.parseLine();
 			assertEquals(22, list.getMap().values().size());
-			list.getMap().values().stream().
-				map((f) -> {
-					assertNotNull(f);
+			list.getMap().values().stream().map((f) -> {
+				assertNotNull(f);
 				return f;
-			}).
-				forEach((f) -> {
-					System.out.print(f.izpis()+" || ");
-			});
+			}).forEach((f) -> System.out.print(f.izpis()+" || "));
 			System.out.println();
 			//Zapri datoteko
 			parserW3C.closeFile();

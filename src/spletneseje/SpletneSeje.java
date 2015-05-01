@@ -10,6 +10,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.tmatesoft.sqljet.core.SqlJetException;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
+
 //import datastruct.RadixTree;
 import fields.ncsa.RequestLine;
 import parser.ParsedLine;
@@ -26,14 +27,14 @@ public class SpletneSeje {
 	private AbsParser logParser;
 	private SqlJetDb outDataBase;
 
-	public SpletneSeje(String[] args)
-			throws CmdLineException, NullPointerException, ParseException,
-			FileNotFoundException, SqlJetException {
+	@SuppressWarnings("deprecation")
+	public SpletneSeje(String[] args) throws CmdLineException, NullPointerException, ParseException, FileNotFoundException, SqlJetException {
 		//Parsanje vhodnih argumentov
 		argsParser = new ArgsParser(args);
 		//Preveri format in nastavi tipe polji v datoteki
 		switch ((argsParser.getLogFormat() != null) ? argsParser.getLogFormat() : "") {
 		case "":
+			logParser = new NCSAParser();
 			//TODO prepoznaj format log datoteke
 			break;
 		case "COMMON":
@@ -49,8 +50,7 @@ public class SpletneSeje {
 			logParser = new W3CParser();
 			break;
 		default:
-			logParser = new NCSAParser();
-			((NCSAParser) logParser).setFieldType(FieldType.createCustomLogFormat(argsParser.getLogFormat()));
+			throw new CmdLineException("Unknown format!!!");
 		}
 		//Odpri datoteko
 		logParser.openFile(argsParser.getInputFilePath());
@@ -93,7 +93,7 @@ public class SpletneSeje {
 				list.add(sTmp);
 			}
 		}
-		list.stream().forEach((s) -> {System.out.println(s);});
+		list.stream().forEach((s) -> System.out.println(s));
 	}
 
 	public static void main(String[] args) {
