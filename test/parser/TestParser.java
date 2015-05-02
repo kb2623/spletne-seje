@@ -150,16 +150,15 @@ public class TestParser {
 			parser.setFieldType(listType);
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
-			list.getMap().values().stream().
-				forEach((f) -> {
-					if(f == null) {
-						assert false;
-					} else if(f instanceof RequestLine) {
-						URL r = ((RequestLine) f).getUrl();
-						System.out.print(((RequestLine) f).getMethod().izpis() + " | " + r.getPath() + " | " + r.getQuery() + " | " + r.getProtocol() + " | ");
-					} else {
-						System.out.print(f.izpis()+" || ");
-					}
+			list.getMap().values().stream().forEach((f) -> {
+				if(f == null) {
+					assert false;
+				} else if(f instanceof RequestLine) {
+					URL r = ((RequestLine) f).getUrl();
+					System.out.print(((RequestLine) f).getMethod().izpis() + " | " + r.getPath() + " | " + r.getQuery() + " | " + r.getProtocol() + " | ");
+				} else {
+					System.out.print(f.izpis()+" || ");
+				}
 			});
 			System.out.println();
 			//Zapri datoteko

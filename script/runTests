@@ -33,9 +33,12 @@ if [ ! -e "$lib_dir/junit-4.12.jar" ]; then
 elif [ ! -e "$lib_dir/hamcrest-core-1.3.jar" ]; then
 	echo "Missing hamcrest-core-1.3"
 	exit 5
+elif [ ! -e "$lib_dir/easymock-3.3.1.jar" ]; then
+	echo "Missing easymock-3.3.1.jar"
+	exit 6
 elif [ ! -e "$lib_dir/antlr-runtime-3.4.jar" ]; then
 	echo "Missing antlr-runtime-3.4.jar"
-	exit 6
+	exit 7
 else
 	echo "Source dir: $src_dir"
 	echo "Class dir: $bin_dir"
