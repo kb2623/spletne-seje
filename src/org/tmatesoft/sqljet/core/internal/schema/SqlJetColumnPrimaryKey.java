@@ -48,21 +48,24 @@ public class SqlJetColumnPrimaryKey extends SqlJetColumnIndexConstraint implemen
         }
     }
 
+	@Override
     public Boolean isAscending() {
         return ascending;
     }
 
+	@Override
     public boolean isAutoincremented() {
         return autoincremented;
     }
 
+	@Override
     public SqlJetConflictAction getConflictAction() {
         return conflictAction;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(super.toString());
         if (buffer.length() > 0) {
             buffer.append(' ');

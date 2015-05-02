@@ -26,7 +26,6 @@ import org.tmatesoft.sqljet.core.SqlJetValueType;
 import org.tmatesoft.sqljet.core.internal.ISqlJetMemoryPointer;
 import org.tmatesoft.sqljet.core.internal.SqlJetUtility;
 import org.tmatesoft.sqljet.core.table.ISqlJetCursor;
-import org.tmatesoft.sqljet.core.table.ISqlJetTransaction;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 /**
@@ -50,139 +49,99 @@ public abstract class SqlJetCursor implements ISqlJetCursor {
         }
     }
 
+	@Override
     public void close() throws SqlJetException {
-        db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                btreeTable.close();
-                return null;
-            }
-        });
+        db.runReadTransaction((SqlJetDb db1) -> {
+			btreeTable.close();
+			return null;
+		});
     }
 
+	@Override
     public boolean eof() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.eof();
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> btreeTable.eof());
     }
 
+	@Override
     public boolean first() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.first();
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> btreeTable.first());
     }
 
+	@Override
     public boolean last() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.last();
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> btreeTable.last());
     }
 
+	@Override
     public boolean next() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.next();
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> btreeTable.next());
     }
 
+	@Override
     public boolean previous() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.previous();
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> btreeTable.previous());
     }
 
+	@Override
     public int getFieldsCount() throws SqlJetException {
-        return (Integer) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.getFieldsCount();
-            }
-        });
+        return (Integer) db.runReadTransaction((SqlJetDb db1) -> btreeTable.getFieldsCount());
     }
 
+	@Override
     public SqlJetValueType getFieldType(final int field) throws SqlJetException {
-        return (SqlJetValueType) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.getFieldType(field);
-            }
-        });
+        return (SqlJetValueType) db.runReadTransaction((SqlJetDb db1) -> btreeTable.getFieldType(field));
     }
 
+	@Override
     public boolean isNull(final int field) throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.isNull(field);
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> btreeTable.isNull(field));
     }
 
+	@Override
     public String getString(final int field) throws SqlJetException {
-        return (String) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.getString(field);
-            }
-        });
+        return (String) db.runReadTransaction((	SqlJetDb db1) -> btreeTable.getString(field));
     }
 
+	@Override
     public long getInteger(final int field) throws SqlJetException {
-        return (Long) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.getInteger(field);
-            }
-        });
+        return (Long) db.runReadTransaction((SqlJetDb db1) -> btreeTable.getInteger(field));
     }
 
+	@Override
     public double getFloat(final int field) throws SqlJetException {
-        return (Double) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.getFloat(field);
-            }
-        });
+        return (Double) db.runReadTransaction((SqlJetDb db1) -> btreeTable.getFloat(field));
     }
 
+	@Override
     public byte[] getBlobAsArray(final int field) throws SqlJetException {
-        return (byte[]) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                ISqlJetMemoryPointer buffer = btreeTable.getBlob(field);
-                return buffer != null ? SqlJetUtility.readByteBuffer(buffer) : null;
-            }
-        });
+        return (byte[]) db.runReadTransaction((SqlJetDb db1) -> {
+			ISqlJetMemoryPointer buffer = btreeTable.getBlob(field);
+			return buffer != null ? SqlJetUtility.readByteBuffer(buffer) : null;
+		});
     }
 
+	@Override
     public InputStream getBlobAsStream(final int field) throws SqlJetException {
-        return (InputStream) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                ISqlJetMemoryPointer buffer = btreeTable.getBlob(field);
-                return buffer != null ? new ByteArrayInputStream(SqlJetUtility.readByteBuffer(buffer)) : null;
-            }
-        });
+        return (InputStream) db.runReadTransaction((SqlJetDb db1) -> {
+			ISqlJetMemoryPointer buffer = btreeTable.getBlob(field);
+			return buffer != null ? new ByteArrayInputStream(SqlJetUtility.readByteBuffer(buffer)) : null;
+		});
     }
 
+	@Override
     public Object getValue(final int field) throws SqlJetException {
-        return db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                Object value = btreeTable.getValue(field);
-                if (value instanceof ISqlJetMemoryPointer) {
-                    return new ByteArrayInputStream(SqlJetUtility.readByteBuffer((ISqlJetMemoryPointer) value));
-                }
-                return value;
-            }
-        });
+        return db.runReadTransaction((SqlJetDb db1) -> {
+			Object value = btreeTable.getValue(field);
+			if (value instanceof ISqlJetMemoryPointer) {
+				return new ByteArrayInputStream(SqlJetUtility.readByteBuffer((ISqlJetMemoryPointer) value));
+			}
+			return value;
+		});
     }
 
+	@Override
     public boolean getBoolean(final int field) throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return btreeTable.getInteger(field) != 0;
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> btreeTable.getInteger(field) != 0);
     }
 
     /*
@@ -190,6 +149,7 @@ public abstract class SqlJetCursor implements ISqlJetCursor {
      * 
      * @see org.tmatesoft.sqljet.core.table.ISqlJetCursor#reverse()
      */
+	@Override
     public ISqlJetCursor reverse() throws SqlJetException {
         return new SqlJetReverseOrderCursor(this);
     }

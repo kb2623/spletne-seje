@@ -22,12 +22,14 @@ public class RestOfArgumentsHandler extends OptionHandler<String> {
         super(cmdLineParser, optionDef, setter);
     }
 
+	@Override
     public int parseArguments(Parameters parameters) throws CmdLineException {
         for (int i=0; i<parameters.size(); i++)
             setter.addValue(parameters.getParameter(i));
         return parameters.size();
     }
 
+	@Override
     public String getDefaultMetaVariable() {
         return Messages.DEFAULT_META_REST_OF_ARGUMENTS_HANDLER.format();
     }

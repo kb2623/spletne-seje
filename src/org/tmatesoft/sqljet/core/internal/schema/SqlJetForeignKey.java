@@ -38,12 +38,12 @@ public class SqlJetForeignKey implements ISqlJetForeignKey {
         foreignTableName = ast.getChild(0).getText();
         CommonTree columnsNode = (CommonTree) ast.getChild(1);
         assert "columns".equalsIgnoreCase(columnsNode.getText());
-        List<String> columnNames = new ArrayList<String>();
+        List<String> columnNames = new ArrayList<>();
         for (int i = 0; i < columnsNode.getChildCount(); i++) {
             columnNames.add(columnsNode.getChild(i).getText());
         }
         this.columnNames = Collections.unmodifiableList(columnNames);
-        List<ISqlJetForeignKeyAction> actions = new ArrayList<ISqlJetForeignKeyAction>();
+        List<ISqlJetForeignKeyAction> actions = new ArrayList<>();
         ISqlJetForeignKeyDeferrable deferrable = null;
         for (int i = 2; i < ast.getChildCount(); i++) {
             CommonTree child = (CommonTree) ast.getChild(i);
@@ -62,25 +62,29 @@ public class SqlJetForeignKey implements ISqlJetForeignKey {
         this.deferrable = deferrable;
     }
 
+	@Override
     public String getForeignTableName() {
         return foreignTableName;
     }
 
+	@Override
     public List<String> getColumnNames() {
         return columnNames;
     }
 
+	@Override
     public List<ISqlJetForeignKeyAction> getActions() {
         return actions;
     }
 
+	@Override
     public ISqlJetForeignKeyDeferrable getDeferrable() {
         return deferrable;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer("REFERENCES ");
+        StringBuilder buffer = new StringBuilder("REFERENCES ");
         buffer.append(getForeignTableName());
         buffer.append(" (");
         for (int i = 0; i < getColumnNames().size(); i++) {

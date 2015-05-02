@@ -43,6 +43,7 @@ public class SqlJetViewDef implements ISqlJetViewDef {
         databaseName = nameNode.getChildCount() > 0 ? nameNode.getChild(0).getText() : null;
     }
 
+	@Override
     public String getName() {
         return name;
     }
@@ -59,6 +60,7 @@ public class SqlJetViewDef implements ISqlJetViewDef {
         return ifNotExists;
     }
     
+	@Override
     public String toSQL() {
         return sqlStatement;
     }

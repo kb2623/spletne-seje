@@ -43,7 +43,7 @@ public class SqlJetInValuesExpression extends SqlJetExpression implements ISqlJe
             not = false;
         }
         assert "in".equalsIgnoreCase(child.getText());
-        List<ISqlJetExpression> values = new ArrayList<ISqlJetExpression>();
+        List<ISqlJetExpression> values = new ArrayList<>();
         for (int exprIdx = 0; exprIdx < child.getChildCount(); exprIdx++) {
             values.add(create((CommonTree) child.getChild(exprIdx)));
         }
@@ -51,21 +51,24 @@ public class SqlJetInValuesExpression extends SqlJetExpression implements ISqlJe
         expression = create((CommonTree) ast.getChild(idx));
     }
 
+	@Override
     public ISqlJetExpression getExpression() {
         return expression;
     }
 
+	@Override
     public boolean isNot() {
         return not;
     }
 
+	@Override
     public List<ISqlJetExpression> getValues() {
         return values;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getExpression());
         if (isNot()) {
             buffer.append(" NOT");

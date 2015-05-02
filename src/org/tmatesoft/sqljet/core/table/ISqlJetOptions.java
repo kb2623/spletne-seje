@@ -67,6 +67,7 @@ public interface ISqlJetOptions {
      * File format of schema layer.
      * 
      * @return the fileFormat
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     int getFileFormat() throws SqlJetException;
 
@@ -85,6 +86,7 @@ public interface ISqlJetOptions {
      * Use freelist if false. Autovacuum if true.
      * 
      * @return the autovacuum
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     boolean isAutovacuum() throws SqlJetException;
 
@@ -101,6 +103,7 @@ public interface ISqlJetOptions {
      * Incremental-vacuum flag.
      * 
      * @return the incrementalVacuum
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     boolean isIncrementalVacuum() throws SqlJetException;
 
@@ -117,6 +120,7 @@ public interface ISqlJetOptions {
      * Size of the page cache.
      * 
      * @return the pageCacheSize
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     int getCacheSize() throws SqlJetException;
 
@@ -136,6 +140,7 @@ public interface ISqlJetOptions {
      * Db text encoding.
      * 
      * @return the encoding
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     SqlJetEncoding getEncoding() throws SqlJetException;
 
@@ -156,11 +161,15 @@ public interface ISqlJetOptions {
 
     /**
      * Checks if legacy file format is used for the new databases.
+	 * @return 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     boolean isLegacyFileFormat() throws SqlJetException;
 
     /**
      * Instructs SQLJet to use legacy file format for all new databases.
+	 * @param flag
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     void setLegacyFileFormat(boolean flag) throws SqlJetException;
 
@@ -191,6 +200,7 @@ public interface ISqlJetOptions {
      * Schema cookie. Changes with each schema change.
      * 
      * @return the schemaCookie
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     int getSchemaVersion() throws SqlJetException;
 
@@ -204,6 +214,7 @@ public interface ISqlJetOptions {
 
     /**
      * Change SchemaCookie. It can be performed only in active transaction
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     void changeSchemaVersion() throws SqlJetException;
 
@@ -224,6 +235,7 @@ public interface ISqlJetOptions {
      * The user cookie. Used by the application.
      * 
      * @return the userCookie
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     int getUserVersion() throws SqlJetException;
 

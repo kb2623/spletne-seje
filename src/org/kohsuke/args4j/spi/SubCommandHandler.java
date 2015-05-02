@@ -140,16 +140,14 @@ public class SubCommandHandler extends OptionHandler<Object> {
     protected Object instantiate(SubCommand c) {
         try {
             return c.impl().newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException("Failed to instantiate "+c,e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException("Failed to instantiate "+c,e);
         }
     }
 
     @Override
     public String getDefaultMetaVariable() {
-        StringBuffer rv = new StringBuffer();
+        StringBuilder rv = new StringBuilder();
         rv.append("[");
         for (SubCommand sc : commands.value()) {
             rv.append(sc.name()).append(" | ");

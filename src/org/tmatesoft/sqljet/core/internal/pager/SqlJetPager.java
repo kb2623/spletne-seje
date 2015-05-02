@@ -363,6 +363,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * org.tmatesoft.sqljet.core.ISqlJetPageDestructor, int, java.util.Set,
      * org.tmatesoft.sqljet.core.SqlJetFileType, java.util.Set)
      */
+	@Override
     public void open(final ISqlJetFileSystem fileSystem, final File fileName, final Set<SqlJetPagerFlags> flags,
             final SqlJetFileType type, final Set<SqlJetFileOpenPermission> permissions) throws SqlJetException {
 
@@ -384,7 +385,6 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
                 this.fileName = fileName;
             }
         }
-        ;
 
         /* Open the pager file */
         if (null != this.fileName && !this.memDb) {
@@ -490,6 +490,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getDirectoryName()
      */
+	@Override
     public File getDirectoryName() {
         return directory;
     }
@@ -499,6 +500,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getFileName()
      */
+	@Override
     public File getFileName() {
         return fileName;
     }
@@ -508,6 +510,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getFileSystem()
      */
+	@Override
     public ISqlJetFileSystem getFileSystem() {
         return fileSystem;
     }
@@ -517,6 +520,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getFile()
      */
+	@Override
     public ISqlJetFile getFile() {
         return fd;
     }
@@ -526,6 +530,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getJournalName()
      */
+	@Override
     public File getJournalName() {
         return journal;
     }
@@ -535,6 +540,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#isNoSync()
      */
+	@Override
     public boolean isNoSync() {
         return noSync;
     }
@@ -544,6 +550,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#isReadOnly()
      */
+	@Override
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -553,6 +560,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getLockingMode()
      */
+	@Override
     public SqlJetPagerLockingMode getLockingMode() {
         return lockingMode;
     }
@@ -564,6 +572,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * org.tmatesoft.sqljet.core.ISqlJetPager#setLockingMode(org.tmatesoft.sqljet
      * .core.SqlJetPagerLockingMode)
      */
+	@Override
     public void setLockingMode(final SqlJetPagerLockingMode lockingMode) {
         this.lockingMode = lockingMode;
     }
@@ -573,6 +582,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getJournalMode()
      */
+	@Override
     public SqlJetPagerJournalMode getJournalMode() {
         return journalMode;
     }
@@ -584,6 +594,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * org.tmatesoft.sqljet.core.ISqlJetPager#setJournalMode(org.tmatesoft.sqljet
      * .core.SqlJetPagerJournalMode)
      */
+	@Override
     public void setJournalMode(final SqlJetPagerJournalMode journalMode) {
         this.journalMode = journalMode;
     }
@@ -593,6 +604,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getJournalSizeLimit()
      */
+	@Override
     public long getJournalSizeLimit() {
         return journalSizeLimit;
     }
@@ -602,6 +614,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#setJournalSizeLimit(long)
      */
+	@Override
     public void setJournalSizeLimit(final long limit) {
         if (limit >= -1)
             journalSizeLimit = limit;
@@ -612,6 +625,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getSafetyLevel()
      */
+	@Override
     public SqlJetSafetyLevel getSafetyLevel() {
         return safetyLevel;
     }
@@ -623,6 +637,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * org.tmatesoft.sqljet.core.ISqlJetPager#setSafetyLevel(org.tmatesoft.sqljet
      * .core.SqlJetPagerSafetyLevel)
      */
+	@Override
     public void setSafetyLevel(final SqlJetSafetyLevel safetyLevel) {
 
         this.safetyLevel = safetyLevel;
@@ -639,6 +654,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getTempSpace()
      */
+	@Override
     public ISqlJetMemoryPointer getTempSpace() {
         return tmpSpace;
     }
@@ -650,6 +666,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * org.tmatesoft.sqljet.core.ISqlJetPager#setBusyhandler(org.tmatesoft.sqljet
      * .core.ISqlJetBusyHandler)
      */
+	@Override
     public void setBusyhandler(final ISqlJetBusyHandler busyHandler) {
         this.busyHandler = busyHandler;
     }
@@ -661,6 +678,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * org.tmatesoft.sqljet.core.ISqlJetPager#setReiniter(org.tmatesoft.sqljet
      * .core.ISqlJetPageDestructor)
      */
+	@Override
     public void setReiniter(final ISqlJetPageCallback reinitier) {
         this.reiniter = reinitier;
     }
@@ -670,6 +688,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#setPagesize(int)
      */
+	@Override
     public int setPageSize(final int pageSize) throws SqlJetException {
         checkErrorCode();
         assert (pageSize >= SQLJET_MIN_PAGE_SIZE && pageSize <= SQLJET_MAX_PAGE_SIZE);
@@ -697,6 +716,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getPagesize()
      */
+	@Override
     public int getPageSize() {
         return pageSize;
     }
@@ -731,6 +751,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#setMaxPageCount(int)
      */
+	@Override
     public void setMaxPageCount(int maxPageCount) throws SqlJetException {
         if (maxPageCount > 0) {
             this.mxPgno = maxPageCount;
@@ -743,6 +764,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#setMaxPageCount()
      */
+	@Override
     public int getMaxPageCount() {
         return mxPgno;
     }
@@ -752,6 +774,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#setCacheSize(int)
      */
+	@Override
     public void setCacheSize(int cacheSize) {
         pageCache.setCacheSize(cacheSize);
     }
@@ -761,6 +784,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.internal.ISqlJetPager#getCacheSize()
      */
+	@Override
     public int getCacheSize() {
         return pageCache.getCachesize();
     }
@@ -770,6 +794,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#readFileHeader(int, byte[])
      */
+	@Override
     public void readFileHeader(final int count, final ISqlJetMemoryPointer buffer) throws SqlJetIOException {
         assert (null != fd || tempFile);
         if (null != fd) {
@@ -787,6 +812,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#getPageCount()
      */
+	@Override
     public int getPageCount() throws SqlJetException {
         checkErrorCode();
 
@@ -960,6 +986,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#close()
      */
+	@Override
     public void close() throws SqlJetException {
         errCode = null;
         lockingMode = SqlJetPagerLockingMode.NORMAL;
@@ -1003,6 +1030,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#acquire(int, boolean)
      */
+	@Override
     public ISqlJetPage acquirePage(final int pageNumber, final boolean read) throws SqlJetException {
 
         assert (state == SqlJetPagerState.UNLOCK || pageCache.getRefCount() > 0 || pageNumber == 1);
@@ -2540,6 +2568,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#get(int)
      */
+	@Override
     public ISqlJetPage getPage(int pageNumber) throws SqlJetException {
         return acquirePage(pageNumber, true);
     }
@@ -2549,6 +2578,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#lookup(int)
      */
+	@Override
     public ISqlJetPage lookupPage(int pageNumber) throws SqlJetException {
         assert (pageNumber != 0);
         if ((state != SqlJetPagerState.UNLOCK) && (errCode == null || errCode == SqlJetErrorCode.FULL)) {
@@ -2562,6 +2592,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#truncate(int)
      */
+	@Override
     public void truncateImage(int pagesNumber) {
         assert (dbSizeValid);
         assert (dbSize >= pagesNumber);
@@ -2766,6 +2797,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#begin(boolean)
      */
+	@Override
     public void begin(boolean exclusive) throws SqlJetException {
         assert (state != SqlJetPagerState.UNLOCK);
         if (state == SqlJetPagerState.SHARED) {
@@ -3070,6 +3102,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * org.tmatesoft.sqljet.core.ISqlJetPager#commitPhaseOne(java.lang.String,
      * int, boolean)
      */
+	@Override
     public void commitPhaseOne(String master, boolean noSync) throws SqlJetException {
 
         if (errCode != null) {
@@ -3402,6 +3435,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#commitPhaseTwo()
      */
+	@Override
     public void commitPhaseTwo() throws SqlJetException {
         if (null != errCode) {
             throw new SqlJetException(errCode);
@@ -3430,6 +3464,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#rollback()
      */
+	@Override
     public void rollback() throws SqlJetException {
         PAGERTRACE("ROLLBACK %s\n", PAGERID());
         if (!dirtyCache || !journalOpen) {
@@ -3469,6 +3504,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#sync()
      */
+	@Override
     public void sync() throws SqlJetIOException {
         if (!memDb) {
             fd.sync(syncFlags);
@@ -3480,6 +3516,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetPager#refCount()
      */
+	@Override
     public int getRefCount() {
         return pageCache.getRefCount();
     }
@@ -3491,6 +3528,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * org.tmatesoft.sqljet.core.ISqlJetPageDestructor#pageDestructor(org.tmatesoft
      * .sqljet.core.ISqlJetPage)
      */
+	@Override
     public void pageCallback(final ISqlJetPage page) {
 
         if (!(page instanceof SqlJetPage))
@@ -3536,6 +3574,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
     /**
      * Ensure that there are at least nSavepoint savepoints open.
      */
+	@Override
     public void openSavepoint(int nSavepoint) throws SqlJetException {
 
         if (nSavepoint > this.nSavepoint && this.useJournal) {
@@ -3591,6 +3630,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
      * If there are less than (iSavepoint+1) active savepoints when this
      * function is called it is a no-op.
      */
+	@Override
     public void savepoint(SqlJetSavepointOperation op, int iSavepoint) throws SqlJetException {
 
         SqlJetException rc = null;

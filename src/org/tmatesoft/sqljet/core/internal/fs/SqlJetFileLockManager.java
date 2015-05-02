@@ -46,23 +46,15 @@ public class SqlJetFileLockManager {
         this.fileChannel = fileChannel;
     }
 
-    private static final Map<String, List<SqlJetFileLock>> locks = new ConcurrentHashMap<String, List<SqlJetFileLock>>();
+    private static final Map<String, List<SqlJetFileLock>> locks = new ConcurrentHashMap<>();
 
     private interface ILockCreator {
         FileLock createLock(long position, long size, boolean shared) throws IOException;
     }
 
-    private ILockCreator tryLockCreator = new ILockCreator() {
-        public FileLock createLock(long position, long size, boolean shared) throws IOException {
-            return fileChannel.tryLock(position, size, shared);
-        }
-    };
+    private ILockCreator tryLockCreator = (long position, long size, boolean shared) -> fileChannel.tryLock(position, size, shared);
 
-    private ILockCreator lockCreator = new ILockCreator() {
-        public FileLock createLock(long position, long size, boolean shared) throws IOException {
-            return fileChannel.lock(position, size, shared);
-        }
-    };
+    private ILockCreator lockCreator = (long position, long size, boolean shared) -> fileChannel.lock(position, size, shared);
 
     private FileLock createLock(long position, long size, boolean shared, ILockCreator lockCreator)
             throws IOException {
@@ -91,7 +83,6 @@ public class SqlJetFileLockManager {
     }
 
     /**
-     * @param fileChannel
      * @param position
      * @param size
      * @param shared
@@ -125,7 +116,7 @@ public class SqlJetFileLockManager {
         if (lock != null) {
             final SqlJetFileLock l = new SqlJetFileLock(this, lock);
             if (!locks.containsKey(filePath)) {
-                locks.put(filePath, new ArrayList<SqlJetFileLock>());
+                locks.put(filePath, new ArrayList<>());
             }
             locks.get(filePath).add(l);
             return l;
@@ -139,7 +130,7 @@ public class SqlJetFileLockManager {
 			if (locks.containsKey(filePath)) {
 				final List<SqlJetFileLock> list = locks.get(filePath);
 				list.remove(lock);
-				if (list.size() == 0) {
+				if (list.isEmpty()) {
 					locks.remove(filePath);
 				}
 			}

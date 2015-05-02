@@ -41,6 +41,7 @@ public class TypeHandler
      * @param obj the type of argument
      * @return The instance of <code>obj</code> initialised with
      * the value of <code>str</code>.
+	 * @throws org.apache.commons.cli.ParseException
      */
     public static Object createValue(String str, Object obj)
     throws ParseException
@@ -56,6 +57,7 @@ public class TypeHandler
      * @param clazz the type of argument
      * @return The instance of <code>clazz</code> initialised with
      * the value of <code>str</code>.
+	 * @throws org.apache.commons.cli.ParseException
      */
     public static Object createValue(String str, Class clazz)
     throws ParseException
@@ -108,6 +110,7 @@ public class TypeHandler
       * @param classname the argument value
       * @return the initialised object, or null if it couldn't create
       * the Object.
+	 * @throws org.apache.commons.cli.ParseException
       */
     public static Object createObject(String classname)
     throws ParseException
@@ -129,7 +132,7 @@ public class TypeHandler
         {
             instance = cl.newInstance();
         }
-        catch (Exception e)
+        catch (InstantiationException | IllegalAccessException e)
         {
             throw new ParseException(e.getClass().getName() + "; Unable to create an instance of: " + classname);
         }
@@ -143,7 +146,7 @@ public class TypeHandler
      *
      * @param str the value
      * @return the number represented by <code>str</code>, if <code>str</code>
-     * is not a number, null is returned.
+	 * @throws org.apache.commons.cli.ParseException  * is not a number, null is returned.
      */
     public static Number createNumber(String str)
     throws ParseException
@@ -170,6 +173,7 @@ public class TypeHandler
      *
      * @param classname the class name
      * @return The class if it is found, otherwise return null
+	 * @throws org.apache.commons.cli.ParseException
      */
     public static Class createClass(String classname)
     throws ParseException
@@ -190,6 +194,7 @@ public class TypeHandler
      * @param str the date string
      * @return The date if <code>str</code> is a valid date string,
      * otherwise return null.
+	 * @throws org.apache.commons.cli.ParseException
      */
     public static Date createDate(String str)
     throws ParseException
@@ -203,6 +208,7 @@ public class TypeHandler
      * @param str the URL string
      * @return The URL is <code>str</code> is well-formed, otherwise
      * return null.
+	 * @throws org.apache.commons.cli.ParseException
      */
     public static URL createURL(String str)
     throws ParseException
@@ -222,6 +228,7 @@ public class TypeHandler
      *
      * @param str the File location
      * @return The file represented by <code>str</code>.
+	 * @throws org.apache.commons.cli.ParseException
      */
     public static File createFile(String str)
     throws ParseException
@@ -234,6 +241,7 @@ public class TypeHandler
      *
      * @param str the paths to the files
      * @return The File[] represented by <code>str</code>.
+	 * @throws org.apache.commons.cli.ParseException
      */
     public static File[] createFiles(String str)
     throws ParseException

@@ -33,10 +33,8 @@ public class SqlJetFileLock extends FileLock {
     private long locksCount;
 
     /**
-     * @param channel
-     * @param position
-     * @param size
-     * @param shared
+	 * @param manager
+	 * @param fileLock
      */
     public SqlJetFileLock(SqlJetFileLockManager manager, FileLock fileLock) {
         super(fileLock.channel(), fileLock.position(), fileLock.size(), fileLock.isShared());

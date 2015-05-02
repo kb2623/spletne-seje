@@ -75,7 +75,7 @@ public class MissingOptionException extends ParseException
      */
     private static String createMessage(List missingOptions)
     {
-        StringBuffer buff = new StringBuffer("Missing required option");
+        StringBuilder buff = new StringBuilder("Missing required option");
         buff.append(missingOptions.size() == 1 ? "" : "s");
         buff.append(": ");
 

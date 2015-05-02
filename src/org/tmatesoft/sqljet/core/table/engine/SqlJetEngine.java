@@ -83,6 +83,8 @@ public class SqlJetEngine {
 
 	/**
      *
+	 * @param file
+	 * @param writable
      */
 	public SqlJetEngine(final File file, final boolean writable) {
 		this.writable = writable;
@@ -148,6 +150,7 @@ public class SqlJetEngine {
 	 * Check write access to data base.
 	 * 
 	 * @return true if modification is allowed
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
 	 */
 	public boolean isWritable() throws SqlJetException {
 		return writable;
@@ -230,17 +233,14 @@ public class SqlJetEngine {
 	 */
 	public void close() throws SqlJetException {
 		if (open) {
-			runSynchronized(new ISqlJetEngineSynchronized() {
-				public Object runSynchronized(SqlJetEngine engine)
-						throws SqlJetException {
-					if (btree != null) {
-						btree.close();
-						btree = null;
-						open = false;
-					}
-					closeResources();
-					return null;
+			runSynchronized((SqlJetEngine engine) -> {
+				if (btree != null) {
+					btree.close();
+					btree = null;
+					open = false;
 				}
+				closeResources();
+				return null;
 			});
 			if (!open) {
 				dbHandle = null;
@@ -256,6 +256,11 @@ public class SqlJetEngine {
 	 * 
 	 * @see java.lang.Object#finalize()
 	 */
+
+	/**
+	 *
+	 * @throws Throwable
+	 */	
 	@Override
 	protected void finalize() throws Throwable {
 		try {
@@ -273,18 +278,15 @@ public class SqlJetEngine {
 	 * @throws SqlJetException
 	 */
 	protected void readSchema() throws SqlJetException {
-		runSynchronized(new ISqlJetEngineSynchronized() {
-			public Object runSynchronized(SqlJetEngine engine)
-					throws SqlJetException {
-				btree.enter();
-				try {
-					dbHandle.setOptions(new SqlJetOptions(btree, dbHandle));
-					btree.setSchema(new SqlJetSchema(dbHandle, btree));
-				} finally {
-					btree.leave();
-				}
-				return null;
+		runSynchronized((SqlJetEngine engine) -> {
+			btree.enter();
+			try {
+				dbHandle.setOptions(new SqlJetOptions(btree, dbHandle));
+				btree.setSchema(new SqlJetSchema(dbHandle, btree));
+			} finally {
+				btree.leave();
 			}
+			return null;
 		});
 	}
 
@@ -292,6 +294,7 @@ public class SqlJetEngine {
 	 * Returns database options.
 	 * 
 	 * @return options of this database.
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
 	 */
 	public ISqlJetOptions getOptions() throws SqlJetException {
 		checkOpen();
@@ -303,6 +306,8 @@ public class SqlJetEngine {
 
 	/**
 	 * Refreshes database schema.
+	 * 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
 	 */
 	public void refreshSchema() throws SqlJetException {
 		if (null == btree.getSchema()
@@ -352,15 +357,13 @@ public class SqlJetEngine {
 	 * 
 	 * @param cacheSize
 	 *            the count of pages which can hold cache.
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
 	 */
 	public void setCacheSize(final int cacheSize) throws SqlJetException {
 		checkOpen();
-		runSynchronized(new ISqlJetEngineSynchronized() {
-			public Object runSynchronized(SqlJetEngine engine)
-					throws SqlJetException {
-				btree.setCacheSize(cacheSize);
-				return null;
-			}
+		runSynchronized((SqlJetEngine engine) -> {
+			btree.setCacheSize(cacheSize);
+			return null;
 		});
 	}
 
@@ -368,82 +371,64 @@ public class SqlJetEngine {
 	 * Get cache size (in count of pages).
 	 * 
 	 * @return the count of pages which can hold cache.
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
 	 */
 	public int getCacheSize() throws SqlJetException {
 		checkOpen();
 		refreshSchema();
-		return (Integer) runSynchronized(new ISqlJetEngineSynchronized() {
-			public Object runSynchronized(SqlJetEngine engine)
-					throws SqlJetException {
-				return btree.getCacheSize();
-			}
-		});
+		return (Integer) runSynchronized((SqlJetEngine engine) -> btree.getCacheSize());
 	}
 
 	/**
      * Set safety level
      * 
      * @param safetyLevel
-     *            
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException  *            
      */
     public void setSafetyLevel(final SqlJetSafetyLevel safetyLevel) throws SqlJetException {
         checkOpen();
-        runSynchronized(new ISqlJetEngineSynchronized() {
-            public Object runSynchronized(SqlJetEngine engine)
-                    throws SqlJetException {
-                btree.setSafetyLevel(safetyLevel);
-                return null;
-            }
-        });
+        runSynchronized((SqlJetEngine engine) -> {
+			btree.setSafetyLevel(safetyLevel);
+			return null;
+		});
     }
 
     /**
      * Set journal mode
      * 
      * @param journalMode
-     *            
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException  *            
      */
     public void setJournalMode(final SqlJetPagerJournalMode journalMode) throws SqlJetException {
         checkOpen();
-        runSynchronized(new ISqlJetEngineSynchronized() {
-            public Object runSynchronized(SqlJetEngine engine)
-                    throws SqlJetException {
-                btree.setJournalMode(journalMode);
-                return null;
-            }
-        });
+        runSynchronized((SqlJetEngine engine) -> {
+			btree.setJournalMode(journalMode);
+			return null;
+		});
     }
 
     /**
      * Get safety level
      * 
      * @return the safety level set.
-     */
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException  
+	 */
     public SqlJetSafetyLevel getSafetyLevel() throws SqlJetException {
         checkOpen();
         refreshSchema();
-        return (SqlJetSafetyLevel) runSynchronized(new ISqlJetEngineSynchronized() {
-            public Object runSynchronized(SqlJetEngine engine)
-                    throws SqlJetException {
-                return btree.getSafetyLevel();
-            }
-        });
+        return (SqlJetSafetyLevel) runSynchronized((SqlJetEngine engine) -> btree.getSafetyLevel());
     }
 
     /**
      * Get jounrnal mode
      * 
      * @return the safety level set.
-     */
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException  
+	 */
     public SqlJetPagerJournalMode getJournalMode() throws SqlJetException {
         checkOpen();
         refreshSchema();
-        return (SqlJetPagerJournalMode) runSynchronized(new ISqlJetEngineSynchronized() {
-            public Object runSynchronized(SqlJetEngine engine)
-                    throws SqlJetException {
-                return btree.getJournalMode();
-            }
-        });
+        return (SqlJetPagerJournalMode) runSynchronized((SqlJetEngine engine) -> btree.getJournalMode());
     }
 
 	/**
@@ -465,49 +450,41 @@ public class SqlJetEngine {
 	 * @param mode
 	 *            transaction's mode.
 	 */
-	public void beginTransaction(final SqlJetTransactionMode mode)
-			throws SqlJetException {
+	public void beginTransaction(final SqlJetTransactionMode mode) throws SqlJetException {
 		checkOpen();
-		runSynchronized(new ISqlJetEngineSynchronized() {
-			public Object runSynchronized(SqlJetEngine engine)
-					throws SqlJetException {
-				if (!isTransactionStarted(mode)) {
-					doBeginTransaction(mode);
-				}
-				return null;
+		runSynchronized((SqlJetEngine engine) -> {
+			if (!isTransactionStarted(mode)) {
+				doBeginTransaction(mode);
 			}
+			return null;
 		});
 	}
 
 	/**
 	 * Commits transaction.
 	 * 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
 	 */
 	public void commit() throws SqlJetException {
 		checkOpen();
-		runSynchronized(new ISqlJetEngineSynchronized() {
-			public Object runSynchronized(SqlJetEngine engine)
-					throws SqlJetException {
-				if (isInTransaction()) {
-					doCommitTransaction();
-				}
-				return null;
+		runSynchronized((SqlJetEngine engine) -> {
+			if (isInTransaction()) {
+				doCommitTransaction();
 			}
+			return null;
 		});
 	}
 
 	/**
 	 * Rolls back transaction.
 	 * 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
 	 */
 	public void rollback() throws SqlJetException {
 		checkOpen();
-		runSynchronized(new ISqlJetEngineSynchronized() {
-			public Object runSynchronized(SqlJetEngine engine)
-					throws SqlJetException {
-				doRollbackTransaction();
-				return null;
-			}
+		runSynchronized((SqlJetEngine engine) -> {
+			doRollbackTransaction();
+			return null;
 		});
 	}
 
@@ -526,26 +503,23 @@ public class SqlJetEngine {
 	protected Object runEngineTransaction(final ISqlJetEngineTransaction op,
 			final SqlJetTransactionMode mode) throws SqlJetException {
 		checkOpen();
-		return runSynchronized(new ISqlJetEngineSynchronized() {
-			public Object runSynchronized(SqlJetEngine engine)
-					throws SqlJetException {
-				if (isTransactionStarted(mode)) {
-					return op.run(SqlJetEngine.this);
-				} else {
-					doBeginTransaction(mode);
-					boolean success = false;
-					try {
-						final Object result = op.run(SqlJetEngine.this);
-						doCommitTransaction();
-						success = true;
-						return result;
-					} finally {
-						if (!success) {
-							doRollbackTransaction();
-						}
-						transaction = false;
-						transactionMode = null;
+		return runSynchronized((SqlJetEngine engine) -> {
+			if (isTransactionStarted(mode)) {
+				return op.run(SqlJetEngine.this);
+			} else {
+				doBeginTransaction(mode);
+				boolean success = false;
+				try {
+					final Object result = op.run(SqlJetEngine.this);
+					doCommitTransaction();
+					success = true;
+					return result;
+				} finally {
+					if (!success) {
+						doRollbackTransaction();
 					}
+					transaction = false;
+					transactionMode = null;
 				}
 			}
 		});

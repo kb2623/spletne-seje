@@ -48,6 +48,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
      * org.tmatesoft.sqljet.core.internal.schema.ISqlJetVirtualTableDef#getTableName
      * ()
      */
+	@Override
     public String getTableName() {
         return tableName;
     }
@@ -58,6 +59,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
      * @seeorg.tmatesoft.sqljet.core.internal.schema.ISqlJetVirtualTableDef#
      * getDatabaseName()
      */
+	@Override
     public String getDatabaseName() {
         return databaseName;
     }
@@ -68,6 +70,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
      * @seeorg.tmatesoft.sqljet.core.internal.schema.ISqlJetVirtualTableDef#
      * getModuleName()
      */
+	@Override
     public String getModuleName() {
         return moduleName;
     }
@@ -78,6 +81,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
      * @seeorg.tmatesoft.sqljet.core.internal.schema.ISqlJetVirtualTableDef#
      * getModuleColumns()
      */
+	@Override
     public List<ISqlJetColumnDef> getModuleColumns() {
         return moduleColumns;
     }
@@ -89,6 +93,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
      * org.tmatesoft.sqljet.core.internal.schema.ISqlJetVirtualTableDef#getPage
      * ()
      */
+	@Override
     public int getPage() {
         return page;
     }
@@ -100,6 +105,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
      * org.tmatesoft.sqljet.core.internal.schema.ISqlJetVirtualTableDef#setPage
      * (int)
      */
+	@Override
     public void setPage(int page) {
         this.page = page;
     }
@@ -111,6 +117,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
      * org.tmatesoft.sqljet.core.internal.schema.ISqlJetVirtualTableDef#getRowId
      * ()
      */
+	@Override
     public long getRowId() {
         return rowId;
     }
@@ -122,11 +129,14 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
      * org.tmatesoft.sqljet.core.internal.schema.ISqlJetVirtualTableDef#setRowId
      * (long)
      */
+	@Override
     public void setRowId(long rowId) {
         this.rowId = rowId;
     }
 
     /**
+	 * @param ast
+	 * @param page
      * @throws SqlJetException
      * 
      */
@@ -139,7 +149,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
         final CommonTree moduleNode = (CommonTree) ast.getChild(2);
         moduleName = moduleNode.getText();
 
-        List<ISqlJetColumnDef> moduleColumns = new ArrayList<ISqlJetColumnDef>();
+        List<ISqlJetColumnDef> moduleColumns = new ArrayList<>();
         if (ast.getChildCount() > 3) {
             CommonTree defNode = (CommonTree) ast.getChild(3);
             if ("columns".equalsIgnoreCase(defNode.getText())) {
@@ -156,7 +166,7 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getPage());
         buffer.append("/");
         buffer.append(getRowId());
@@ -165,12 +175,13 @@ public class SqlJetVirtualTableDef implements ISqlJetVirtualTableDef {
         return buffer.toString();
     }
 
+	@Override
     public String toSQL() {
         return toSQL(true);
     }
 
     public String toSQL(boolean schemaStrict) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append("CREATE VIRTUAL TABLE ");
         if (!schemaStrict) {
             if (getDatabaseName() != null) {

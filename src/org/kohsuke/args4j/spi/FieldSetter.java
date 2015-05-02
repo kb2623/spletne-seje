@@ -20,23 +20,28 @@ public final class FieldSetter implements Getter, Setter {
         this.f = f;
     }
 
+	@Override
     public Class getType() {
         return f.getType();
     }
     
+	@Override
     public boolean isMultiValued() {
         // a field can only store one value. a collection field is handled via MultiValueFieldSetter
     	return false;
     }
 
+	@Override
     public FieldSetter asFieldSetter() {
         return new FieldSetter(bean,f);
     }
 
+	@Override
     public AnnotatedElement asAnnotatedElement() {
         return f;
     }
 
+	@Override
     public void addValue(Object value) {
         try {
             f.set(bean,value);
@@ -65,6 +70,7 @@ public final class FieldSetter implements Getter, Setter {
         }
     }
 
+	@Override
     public List<Object> getValueList() {
         return asList(getValue());
     }

@@ -73,9 +73,9 @@ public interface ISqlJetBtree {
      *            Associated database connection
      * @param flags
      *            Flags
-     * @param fsFlags
-     *            Flags passed through to VFS open
-     * @return
+	 * @param type
+	 * @param permissions
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     void open(File filename, ISqlJetDbHandle db, Set<SqlJetBtreeFlags> flags, final SqlJetFileType type,
             final Set<SqlJetFileOpenPermission> permissions) throws SqlJetException;
@@ -113,7 +113,6 @@ public interface ISqlJetBtree {
      * of damage to near zero but with a write performance reduction.
      *
      * @param level
-     * @throws SqlJetException
      */
     void setSafetyLevel(SqlJetSafetyLevel level);
 
@@ -187,7 +186,6 @@ public interface ISqlJetBtree {
      * 1 is returned. Otherwise 0.
      *
      * @return
-     * @throws SqlJetException
      */
     SqlJetAutoVacuumMode getAutoVacuum();
 
@@ -394,7 +392,6 @@ public interface ISqlJetBtree {
      * handle holds an exclusive lock on the sqlite_master table.
      *
      * @return
-     * @throws SqlJetException
      */
     boolean isSchemaLocked();
 
@@ -402,9 +399,8 @@ public interface ISqlJetBtree {
      * Obtain a lock on the table whose root page is iTab. The lock is a write
      * lock if isWritelock is true or a read lock if it is false.
      *
-     * @param iTab
+	 * @param table
      * @param isWriteLock
-     * @throws SqlJetException
      */
     void lockTable(int table, boolean isWriteLock);
 
@@ -421,7 +417,7 @@ public interface ISqlJetBtree {
      * transaction remains open.
      *
      * @param op
-     * @param iSavepoint
+	 * @param savepoint
      * @throws SqlJetException
      */
     void savepoint(SqlJetSavepointOperation op, int savepoint) throws SqlJetException;
@@ -523,7 +519,7 @@ public interface ISqlJetBtree {
      * entries in the table.
      *
      * @param table
-     * @return
+	 * @param nChange
      * @throws SqlJetException
      */
     void clearTable(int table, int[] nChange) throws SqlJetException;
@@ -582,7 +578,12 @@ public interface ISqlJetBtree {
      * is returned if nErr[0] is non-zero. If nErr[0]==0 then NULL is returned.
      * If a memory allocation error occurs, NULL is returned.
      *
+	 * @param aRoot
+	 * @param nRoot
+	 * @param mxErr
+	 * @param nErr
      * @return
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     String integrityCheck(int[] aRoot, int nRoot, int mxErr, int[] nErr) throws SqlJetException;
 

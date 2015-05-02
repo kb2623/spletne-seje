@@ -7,7 +7,7 @@ public class SqlJetVdbeMemPool {
     
     private static final int MAX_POOL_SIZE = 1024;
     
-    private Queue<SqlJetVdbeMem> queue = new LinkedList<SqlJetVdbeMem>();
+    private Queue<SqlJetVdbeMem> queue = new LinkedList<>();
     public static int obtained = 0;
     public static int released = 0;
     public static int created = 0;
@@ -29,6 +29,7 @@ public class SqlJetVdbeMemPool {
         }
     }
     
+	@Override
     public String toString() {
         return "\ncreated: " + created + 
                 "\n" + "obtained: " + obtained + 

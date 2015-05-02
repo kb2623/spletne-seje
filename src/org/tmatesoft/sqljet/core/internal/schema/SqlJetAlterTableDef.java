@@ -42,7 +42,7 @@ public class SqlJetAlterTableDef {
     private ParserRuleReturnScope parsedSql;
 
     /**
-     * @param ast
+	 * @param parsedSql
      * @throws SqlJetException
      */
     public SqlJetAlterTableDef(ParserRuleReturnScope parsedSql) throws SqlJetException {

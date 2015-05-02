@@ -27,7 +27,6 @@ import org.tmatesoft.sqljet.core.SqlJetValueType;
 import org.tmatesoft.sqljet.core.internal.ISqlJetMemoryPointer;
 import org.tmatesoft.sqljet.core.internal.SqlJetUtility;
 import org.tmatesoft.sqljet.core.schema.SqlJetConflictAction;
-import org.tmatesoft.sqljet.core.table.ISqlJetTransaction;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 /**
@@ -48,26 +47,24 @@ public class SqlJetTableDataCursor extends SqlJetRowNumCursor {
         return (ISqlJetBtreeDataTable) btreeTable;
     }
 
+	@Override
     public long getRowId() throws SqlJetException {
-        return (Long) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                final ISqlJetBtreeDataTable table = getBtreeDataTable();
-                if (table.eof()) {
-                    throw new SqlJetException(SqlJetErrorCode.MISUSE,
-                            "Table is empty or the current record doesn't point to a data row");
-                }
-                return table.getRowId();
-            }
-        });
+        return (Long) db.runReadTransaction((SqlJetDb db1) -> {
+			final ISqlJetBtreeDataTable table = getBtreeDataTable();
+			if (table.eof()) {
+				throw new SqlJetException(SqlJetErrorCode.MISUSE,
+					"Table is empty or the current record doesn't point to a data row");
+			}
+			return table.getRowId();
+		});
     }
 
+	@Override
     public boolean goTo(final long rowId) throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                final ISqlJetBtreeDataTable table = getBtreeDataTable();
-                return table.goToRow(rowId);
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> {
+			final ISqlJetBtreeDataTable table = getBtreeDataTable();
+			return table.goToRow(rowId);
+		});
     }
 
     private int getFieldSafe(String fieldName) throws SqlJetException {
@@ -86,168 +83,146 @@ public class SqlJetTableDataCursor extends SqlJetRowNumCursor {
         return field;
     }
 
+	@Override
     public SqlJetValueType getFieldType(final String fieldName) throws SqlJetException {
-        return (SqlJetValueType) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return getBtreeDataTable().getFieldType(getFieldSafe(fieldName));
-            }
-        });
+        return (SqlJetValueType) db.runReadTransaction((SqlJetDb db1) -> getBtreeDataTable().getFieldType(getFieldSafe(fieldName)));
     }
 
+	@Override
     public boolean isNull(final String fieldName) throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return getBtreeDataTable().isNull(getFieldSafe(fieldName));
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> getBtreeDataTable().isNull(getFieldSafe(fieldName)));
     }
 
+	@Override
     public String getString(final String fieldName) throws SqlJetException {
-        return (String) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return getBtreeDataTable().getString(getFieldSafe(fieldName));
-            }
-        });
+        return (String) db.runReadTransaction((SqlJetDb db1) ->	getBtreeDataTable().getString(getFieldSafe(fieldName)));
     }
 
+	@Override
     public long getInteger(final String fieldName) throws SqlJetException {
-        return (Long) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                if (SqlJetBtreeDataTable.isFieldNameRowId(fieldName)) {
-                    return getBtreeDataTable().getRowId();
-                } else {
-                    return getBtreeDataTable().getInteger(getFieldSafe(fieldName));
-                }
-            }
-        });
+        return (Long) db.runReadTransaction((SqlJetDb db1) -> {
+			if (SqlJetBtreeDataTable.isFieldNameRowId(fieldName)) {
+				return getBtreeDataTable().getRowId();
+			} else {
+				return getBtreeDataTable().getInteger(getFieldSafe(fieldName));
+			}
+		});
     }
 
+	@Override
     public double getFloat(final String fieldName) throws SqlJetException {
-        return (Double) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return getBtreeDataTable().getFloat(getFieldSafe(fieldName));
-            }
-        });
+        return (Double) db.runReadTransaction((	SqlJetDb db1) -> getBtreeDataTable().getFloat(getFieldSafe(fieldName)));
     }
 
+	@Override
     public byte[] getBlobAsArray(final String fieldName) throws SqlJetException {
-        return (byte[]) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                ISqlJetMemoryPointer buffer = getBtreeDataTable().getBlob(getFieldSafe(fieldName));
-                return buffer != null ? SqlJetUtility.readByteBuffer(buffer) : null;
-            }
-        });
+        return (byte[]) db.runReadTransaction((SqlJetDb db1) -> {
+			ISqlJetMemoryPointer buffer = getBtreeDataTable().getBlob(getFieldSafe(fieldName));
+			return buffer != null ? SqlJetUtility.readByteBuffer(buffer) : null;
+		});
     }
 
+	@Override
     public InputStream getBlobAsStream(final String fieldName) throws SqlJetException {
-        return (InputStream) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                ISqlJetMemoryPointer buffer = getBtreeDataTable().getBlob(getFieldSafe(fieldName));
-                return buffer != null ? new ByteArrayInputStream(SqlJetUtility.readByteBuffer(buffer)) : null;
-            }
-        });
+        return (InputStream) db.runReadTransaction((SqlJetDb db1) -> {
+			ISqlJetMemoryPointer buffer = getBtreeDataTable().getBlob(getFieldSafe(fieldName));
+			return buffer != null ? new ByteArrayInputStream(SqlJetUtility.readByteBuffer(buffer)) : null;
+		});
     }
 
+	@Override
     public Object getValue(final String fieldName) throws SqlJetException {
-        return db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                if (SqlJetBtreeDataTable.isFieldNameRowId(fieldName)) {
-                    return getBtreeDataTable().getRowId();
-                } else {
-                    return getBtreeDataTable().getValue(getFieldSafe(fieldName));
-                }
-            }
-        });
+        return db.runReadTransaction((SqlJetDb db1) -> {
+			if (SqlJetBtreeDataTable.isFieldNameRowId(fieldName)) {
+				return getBtreeDataTable().getRowId();
+			} else {
+				return getBtreeDataTable().getValue(getFieldSafe(fieldName));
+			}
+		});
     }
 
+	@Override
     public boolean getBoolean(final String fieldName) throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                return getBoolean(getFieldSafe(fieldName));
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> getBoolean(getFieldSafe(fieldName)));
     }
 
+	@Override
     public void update(final Object... values) throws SqlJetException {
         updateOr(null, values);
     }
 
+	@Override
     public void updateOr(final SqlJetConflictAction onConflict, final Object... values) throws SqlJetException {
-        db.runWriteTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                final ISqlJetBtreeDataTable table = getBtreeDataTable();
-                if (table.eof()) {
-                    throw new SqlJetException(SqlJetErrorCode.MISUSE,
-                            "Table is empty or current record doesn't't point to data row");
-                }
-                table.updateCurrent(onConflict, values);
-                return null;
-            }
-        });
+        db.runWriteTransaction((SqlJetDb db1) -> {
+			final ISqlJetBtreeDataTable table = getBtreeDataTable();
+			if (table.eof()) {
+				throw new SqlJetException(SqlJetErrorCode.MISUSE,
+					"Table is empty or current record doesn't't point to data row");
+			}
+			table.updateCurrent(onConflict, values);
+			return null;
+		});
     }
 
+	@Override
     public long updateWithRowId(final long rowId, final Object... values) throws SqlJetException {
         return updateWithRowIdOr(null, rowId, values);
     }
 
+	@Override
     public long updateWithRowIdOr(final SqlJetConflictAction onConflict, final long rowId, final Object... values)
             throws SqlJetException {
-        return (Long) db.runWriteTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                final ISqlJetBtreeDataTable table = getBtreeDataTable();
-                if (table.eof()) {
-                    throw new SqlJetException(SqlJetErrorCode.MISUSE,
-                            "Table is empty or current record doesn't't point to data row");
-                }
-                return table.updateCurrentWithRowId(onConflict, rowId, values);
-            }
-        });
+        return (Long) db.runWriteTransaction((SqlJetDb db1) -> {
+			final ISqlJetBtreeDataTable table = getBtreeDataTable();
+			if (table.eof()) {
+				throw new SqlJetException(SqlJetErrorCode.MISUSE,
+					"Table is empty or current record doesn't't point to data row");
+			}
+			return table.updateCurrentWithRowId(onConflict, rowId, values);
+		});
     }
 
+	@Override
     public void updateByFieldNames(final Map<String, Object> values) throws SqlJetException {
         updateByFieldNamesOr(null, values);
     }
 
-    public void updateByFieldNamesOr(final SqlJetConflictAction onConflict, final Map<String, Object> values)
-            throws SqlJetException {
-        db.runWriteTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                final ISqlJetBtreeDataTable table = getBtreeDataTable();
-                if (table.eof()) {
-                    throw new SqlJetException(SqlJetErrorCode.MISUSE,
-                            "Table is empty or current record doesn't point to data row");
-                }
-                table.update(onConflict, values);
-                return null;
-            }
-        });
+	@Override
+    public void updateByFieldNamesOr(final SqlJetConflictAction onConflict, final Map<String, Object> values) throws SqlJetException {
+        db.runWriteTransaction((SqlJetDb db1) -> {
+			final ISqlJetBtreeDataTable table = getBtreeDataTable();
+			if (table.eof()) {
+				throw new SqlJetException(SqlJetErrorCode.MISUSE,
+					"Table is empty or current record doesn't point to data row");
+			}
+			table.update(onConflict, values);
+			return null;
+		});
     }
 
+	@Override
     public void delete() throws SqlJetException {
-        db.runWriteTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                final ISqlJetBtreeDataTable table = getBtreeDataTable();
-                if (table.eof()) {
-                    throw new SqlJetException(SqlJetErrorCode.MISUSE,
-                            "Table is empty or current record doesn't point to data row");
-                }
-                table.delete();
-                return null;
-            }
-        });
+        db.runWriteTransaction((SqlJetDb db1) -> {
+			final ISqlJetBtreeDataTable table = getBtreeDataTable();
+			if (table.eof()) {
+				throw new SqlJetException(SqlJetErrorCode.MISUSE,
+					"Table is empty or current record doesn't point to data row");
+			}
+			table.delete();
+			return null;
+		});
         super.delete();
     }
 
     /* (non-Javadoc)
      * @see org.tmatesoft.sqljet.core.table.ISqlJetCursor#getRowValues()
      */
+	@Override
     public Object[] getRowValues() throws SqlJetException {
-        return (Object[]) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                Object[] values = getBtreeDataTable().getValues();
-                return values.clone();
-            }
-        });
+        return (Object[]) db.runReadTransaction((SqlJetDb db1) -> {
+			Object[] values = getBtreeDataTable().getValues();
+			return values.clone();
+		});
     }
 
 }

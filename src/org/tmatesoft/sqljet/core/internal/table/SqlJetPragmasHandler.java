@@ -49,6 +49,9 @@ public class SqlJetPragmasHandler {
     /**
      * Executes pragma statement. If statement queries pragma value then it will
      * be returned.
+	 * @param sql
+	 * @return 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public Object pragma(String sql) throws SqlJetException {
         return pragma(parsePragma(sql));
@@ -65,68 +68,76 @@ public class SqlJetPragmasHandler {
         if (ast.getChildCount() > 1) {
             // set or execute
             Object value = readPragmaValue(ast.getChild(1));
-            if ("auto_vacuum".equals(name)) {
-                int mode = readAutovacuumMode(value);
-                getOptions().setAutovacuum(mode == 1);
-                getOptions().setIncrementalVacuum(mode == 2);
-            } else if ("cache_size".equals(name)) {
-                if (value instanceof Number) {
-                    getOptions().setCacheSize(((Number) value).intValue());
+            if (null != name) switch (name) {
+			case "auto_vacuum":
+				int mode = readAutovacuumMode(value);
+				getOptions().setAutovacuum(mode == 1);
+				getOptions().setIncrementalVacuum(mode == 2);
+				break;
+			case "cache_size":
+				if (value instanceof Number) {
+					getOptions().setCacheSize(((Number) value).intValue());
+				} else {
+					throw new SqlJetException(SqlJetErrorCode.ERROR, "Invalid cache_size value: " + value);
+				}
+				break;
+			case "encoding":
+				if (value instanceof String) {
+					SqlJetEncoding enc = SqlJetEncoding.decode((String) value);
+					if (enc != null) {
+						getOptions().setEncoding(enc);
+					} else {
+						throw new SqlJetException(SqlJetErrorCode.ERROR, "Unknown encoding: " + value);
+					}
+				} else {
+					throw new SqlJetException(SqlJetErrorCode.ERROR, "Invalid encoding value: " + value);
+				}
+				break;
+			case "legacy_file_format":
+				getOptions().setLegacyFileFormat(toBooleanValue(value));
+				break;
+			case "schema_version":
+				if (value instanceof Number) {
+					int version = ((Number) value).intValue();
+					getOptions().setSchemaVersion(version);
                 } else {
-                    throw new SqlJetException(SqlJetErrorCode.ERROR, "Invalid cache_size value: " + value);
-                }
-            } else if ("encoding".equals(name)) {
-                if (value instanceof String) {
-                    SqlJetEncoding enc = SqlJetEncoding.decode((String) value);
-                    if (enc != null) {
-                        getOptions().setEncoding(enc);
-                    } else {
-                        throw new SqlJetException(SqlJetErrorCode.ERROR, "Unknown encoding: " + value);
-                    }
-                } else {
-                    throw new SqlJetException(SqlJetErrorCode.ERROR, "Invalid encoding value: " + value);
-                }
-            } else if ("legacy_file_format".equals(name)) {
-                getOptions().setLegacyFileFormat(toBooleanValue(value));
-            } else if ("schema_version".equals(name)) {
-                if (value instanceof Number) {
-                    int version = ((Number) value).intValue();
-                    getOptions().setSchemaVersion(version);
-                } else {
-                    throw new SqlJetException(SqlJetErrorCode.ERROR, "Invalid schema_version value: " + value);
-                }
-            } else if ("user_version".equals(name)) {
-                if (value instanceof Number) {
-                    int version = ((Number) value).intValue();
-                    getOptions().setUserVersion(version);
-                } else {
-                    throw new SqlJetException(SqlJetErrorCode.ERROR, "Invalid user_version value: " + value);
-                }
-            }
-            return null;
-        } else {
-            // get value
-            if ("auto_vacuum".equals(name)) {
-                int mode = 0;
-                if (getOptions().isAutovacuum()) {
-                    mode = 1;
-                }
-                if (getOptions().isIncrementalVacuum()) {
-                    mode = 2;
-                }
-                return Integer.valueOf(mode);
-            } else if ("cache_size".equals(name)) {
-                return Integer.valueOf(getOptions().getCacheSize());
-            } else if ("encoding".equals(name)) {
-                return getOptions().getEncoding();
-            } else if ("legacy_file_format".equals(name)) {
-                return getOptions().isLegacyFileFormat();
-            } else if ("schema_version".equals(name)) {
-                return Integer.valueOf(getOptions().getSchemaVersion());
-            } else if ("user_version".equals(name)) {
-                return Integer.valueOf(getOptions().getUserVersion());
-            }
-            return null;
+					throw new SqlJetException(SqlJetErrorCode.ERROR, "Invalid schema_version value: " + value);
+				}
+				break;
+			case "user_version":
+				if (value instanceof Number) {
+					int version = ((Number) value).intValue();
+					getOptions().setUserVersion(version);
+				} else {
+					throw new SqlJetException(SqlJetErrorCode.ERROR, "Invalid user_version value: " + value);
+				}
+				break;
+			}
+			return null;
+		} else {
+			// get value
+            if (null != name) switch (name) {
+			case "auto_vacuum":
+				int mode = 0;
+				if (getOptions().isAutovacuum()) {
+					mode = 1;
+				}
+				if (getOptions().isIncrementalVacuum()) {
+					mode = 2;
+				}
+				return Integer.valueOf(mode);
+			case "cache_size":
+				return Integer.valueOf(getOptions().getCacheSize());
+			case "encoding":
+				return getOptions().getEncoding();
+			case "legacy_file_format":
+				return getOptions().isLegacyFileFormat();
+			case "schema_version":
+				return Integer.valueOf(getOptions().getSchemaVersion());
+			case "user_version":
+				return Integer.valueOf(getOptions().getUserVersion());
+			}
+			return null;
         }
     }
 
@@ -134,13 +145,17 @@ public class SqlJetPragmasHandler {
         int mode = -1;
         if (value instanceof String) {
             String s = ((String) value).toLowerCase();
-            if ("none".equals(s)) {
-                mode = 0;
-            } else if ("full".equals(s)) {
-                mode = 1;
-            } else if ("incremental".equals(s)) {
-                mode = 2;
-            }
+            if (null != s) switch (s) {
+			case "none":
+				mode = 0;
+				break;
+			case "full":
+				mode = 1;
+				break;
+			case "incremental":
+				mode = 2;
+				break;
+			}
         } else if (value instanceof Number) {
             int i = ((Number) value).intValue();
             if (i == 0 || i == 1 || i == 2) {
@@ -174,13 +189,14 @@ public class SqlJetPragmasHandler {
         	return null;
         }
         String value = node.getChild(0).getText();
-        if ("float_literal".equals(type)) {
-            return Double.valueOf(value);
-        } else if ("id_literal".equals(type)) {
-            return value;
-        } else if ("string_literal".equals(type)) {
-            return value.substring(1, value.length() - 1);
-        }
+		switch (type) {
+		case "float_literal":
+			return Double.valueOf(value);
+		case "id_literal":
+			return value;
+		case "string_literal":
+			return value.substring(1, value.length() - 1);
+		}
         throw new IllegalStateException();
     }
 
@@ -196,11 +212,16 @@ public class SqlJetPragmasHandler {
             }
         } else if (value instanceof String) {
             String s = ((String) value).toLowerCase();
-            if ("yes".equals(s) || "true".equals(s) || "on".equals(s)) {
-                return true;
-            } else if ("no".equals(s) || "false".equals(s) || "off".equals(s)) {
-                return false;
-            }
+            if (null != s) switch (s) {
+			case "yes":
+			case "true":
+			case "on":
+				return true;
+			case "no":
+			case "false":
+			case "off":
+				return false;
+			}
         }
         throw new SqlJetException(SqlJetErrorCode.ERROR, "Boolean value is expected.");
     }

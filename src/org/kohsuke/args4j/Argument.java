@@ -27,24 +27,29 @@ import static java.lang.annotation.ElementType.PARAMETER;
 public @interface Argument {
     /**
      * See {@link Option#usage()}.
+	 * @return 
      */
     String usage() default "";
     /**
      * See {@link Option#metaVar()}.
+	 * @return 
      */
     String metaVar() default "";
     /**
      * See {@link Option#required()}.
+	 * @return 
      */
     boolean required() default false;
 
     /**
      * See {@link Option#hidden()}.
+	 * @return 
      */
     boolean hidden() default false;
 
     /**
      * See {@link Option#handler()}.
+	 * @return 
      */
     @SuppressWarnings("rawtypes")
 	Class<? extends OptionHandler> handler() default OptionHandler.class;
@@ -58,11 +63,13 @@ public @interface Argument {
      *
      * <p>
      * Multi value properties bound to arguments must be always the last entry.
+	 * @return 
      */
     int index() default 0;
 
     /**
      *
+	 * @return 
      */
     boolean multiValued() default false;
 }

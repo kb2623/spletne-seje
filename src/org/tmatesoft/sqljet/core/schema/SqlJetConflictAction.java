@@ -90,6 +90,7 @@ public enum SqlJetConflictAction {
         return null;
     }
 
+	@Override
     public String toString() {
         switch (this) {
         case ROLLBACK:

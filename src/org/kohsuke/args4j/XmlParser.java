@@ -1,5 +1,6 @@
 package org.kohsuke.args4j;
 
+import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
 import java.net.URL;
 
@@ -8,6 +9,7 @@ import org.kohsuke.args4j.spi.ConfigElement;
 import org.kohsuke.args4j.spi.OptionImpl;
 import org.kohsuke.args4j.spi.Setters;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Parses an XML-file specifying the 'annotations'.
@@ -51,7 +53,7 @@ public class XmlParser {
 				Argument argument = new ArgumentImpl(ce);
 				parser.addArgument(Setters.create(parser, findMethodOrField(bean, ce.field, ce.method),bean), argument);
 			}
-		} catch (Exception e) {
+		} catch (IOException | SAXException | ClassNotFoundException | SecurityException | NoSuchFieldException | NoSuchMethodException e) {
 			throw new RuntimeException(Messages.METADATA_ERROR.format(), e);
 		}
 	}

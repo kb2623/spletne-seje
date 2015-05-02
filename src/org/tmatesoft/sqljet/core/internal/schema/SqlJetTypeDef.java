@@ -44,28 +44,31 @@ public class SqlJetTypeDef implements ISqlJetTypeDef {
         } else {
             size2 = null;
         }
-        List<String> typeNames = new ArrayList<String>();
+        List<String> typeNames = new ArrayList<>();
         for (int i = 1; i < typeNode.getChildCount(); i++) {
             typeNames.add(typeNode.getChild(i).getText());
         }
         this.names = Collections.unmodifiableList(typeNames);
     }
 
+	@Override
     public List<String> getNames() {
         return names;
     }
 
+	@Override
     public Double getSize1() {
         return size1;
     }
 
+	@Override
     public Double getSize2() {
         return size2;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < getNames().size(); i++) {
             if (i > 0) {
                 buffer.append(' ');

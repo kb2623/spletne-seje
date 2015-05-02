@@ -25,6 +25,7 @@ public interface ISqlJetTableDef {
 
     /**
      * Returns table name.
+	 * @return 
      */
     public String getName();
 
@@ -32,27 +33,34 @@ public interface ISqlJetTableDef {
 
     /**
      * True if table was created temporarily.
+	 * @return 
      */
     public boolean isTemporary();
 
     /**
      * Definitions of table columns.
+	 * @return 
      */
     public List<ISqlJetColumnDef> getColumns();
 
     /**
      * Returns column definition with a given name or null if there is no such
      * definition.
+	 * @param name
+	 * @return 
      */
     public ISqlJetColumnDef getColumn(String name);
 
     /**
      * Returns position of the specified column within the table definition.
+	 * @param name
+	 * @return 
      */
     public int getColumnNumber(String name);
 
     /**
      * Returns all table constraints.
+	 * @return 
      */
     public List<ISqlJetTableConstraint> getConstraints();
 
@@ -60,11 +68,13 @@ public interface ISqlJetTableDef {
      * Returns true if primary key definition allows rowid to be used as primary
      * key column. In practice this means that the table has primary key that is
      * based in a single column of type 'integer'.
+	 * @return 
      */
     public boolean isRowIdPrimaryKey();
 
     /**
      * Returns true if primary key has 'autoincrement' keyword.
+	 * @return 
      */
     public boolean isAutoincremented();
 

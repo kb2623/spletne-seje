@@ -40,6 +40,7 @@ public class SqlJetBaseIndexDef implements ISqlJetIndexDef {
         this.name = name;
     }
 
+	@Override
     public String getName() {
         return name;
     }
@@ -48,22 +49,27 @@ public class SqlJetBaseIndexDef implements ISqlJetIndexDef {
         this.tableName = tableName;
     }
 
+	@Override
     public String getTableName() {
         return tableName;
     }
 
+	@Override
     public boolean isUnique() {
         return false;
     }
 
+	@Override
     public List<ISqlJetIndexedColumn> getColumns() {
         return Collections.emptyList();
     }
 
+	@Override
     public ISqlJetIndexedColumn getColumn(String name) {
         return null;
     }
 
+	@Override
     public int getPage() {
         return page;
     }
@@ -82,7 +88,7 @@ public class SqlJetBaseIndexDef implements ISqlJetIndexDef {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getPage());
         buffer.append("/");
         buffer.append(getRowId());
@@ -93,6 +99,7 @@ public class SqlJetBaseIndexDef implements ISqlJetIndexDef {
         return buffer.toString();
     }
 
+	@Override
     public String toSQL() {
         return null;
     }
@@ -102,6 +109,7 @@ public class SqlJetBaseIndexDef implements ISqlJetIndexDef {
      * 
      * @see org.tmatesoft.sqljet.core.schema.ISqlJetIndexDef#isImplicit()
      */
+	@Override
     public boolean isImplicit() {
         return true;
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * Interface that can be instantiated to get default values.
+ * @param <T>
  * @see Setter
  * @author Stephan Fuhrmann
  */

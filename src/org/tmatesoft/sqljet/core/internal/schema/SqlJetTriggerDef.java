@@ -46,6 +46,7 @@ public class SqlJetTriggerDef implements ISqlJetTriggerDef {
         databaseName = nameNode.getChildCount() > 1 ? nameNode.getChild(1).getText() : null;
     }
 
+	@Override
     public String getName() {
         return name;
     }
@@ -62,6 +63,7 @@ public class SqlJetTriggerDef implements ISqlJetTriggerDef {
         return ifNotExists;
     }
     
+	@Override
     public String toSQL() {
         return sqlStatement;
     }
@@ -79,6 +81,7 @@ public class SqlJetTriggerDef implements ISqlJetTriggerDef {
         this.rowId = rowId;
     }
 
+	@Override
     public String getTableName() {
         return tableName;
     }

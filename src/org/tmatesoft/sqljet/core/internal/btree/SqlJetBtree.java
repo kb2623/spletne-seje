@@ -118,7 +118,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * A list of BtShared objects that are eligible for participation in shared
      * cache.
      */
-    static List<SqlJetBtreeShared> sharedCacheList = new LinkedList<SqlJetBtreeShared>();
+    static List<SqlJetBtreeShared> sharedCacheList = new LinkedList<>();
 
     /**
      * A bunch of assert() statements to check the transaction state variables
@@ -132,6 +132,7 @@ public class SqlJetBtree implements ISqlJetBtree {
     /**
      * @return the db
      */
+	@Override
     public ISqlJetDbHandle getDb() {
         return db;
     }
@@ -139,12 +140,15 @@ public class SqlJetBtree implements ISqlJetBtree {
     /**
      * @return the transMode
      */
+	@Override
     public SqlJetTransactionMode getTransMode() {
         return transMode;
     }
 
     /**
      * Invoke the busy handler for a btree.
+	 * @param number
+	 * @return 
      */
     public boolean invokeBusyHandler(int number) {
         assert (db != null);
@@ -160,6 +164,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#enter()
      */
+	@Override
     public void enter() {
         SqlJetBtree p = this;
         SqlJetBtree pLater;
@@ -228,6 +233,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#leave()
      */
+	@Override
     public void leave() {
         SqlJetBtree p = this;
         if (p.sharable) {
@@ -260,6 +266,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * org.tmatesoft.sqljet.core.ISqlJetDb, java.util.Set,
      * org.tmatesoft.sqljet.core.SqlJetFileType, java.util.Set)
      */
+	@Override
     public void open(File filename, ISqlJetDbHandle db, Set<SqlJetBtreeFlags> flags, final SqlJetFileType type,
             final Set<SqlJetFileOpenPermission> permissions) throws SqlJetException {
 
@@ -324,17 +331,9 @@ public class SqlJetBtree implements ISqlJetBtree {
                 pBt.pPager = new SqlJetPager();
                 pBt.pPager.open(pVfs, filename, SqlJetBtreeFlags.toPagerFlags(flags), type, permissions);
                 pBt.pPager.readFileHeader(zDbHeader.remaining(), zDbHeader);
-                pBt.pPager.setBusyhandler(new ISqlJetBusyHandler() {
-                    public boolean call(int number) {
-                        return invokeBusyHandler(number);
-                    }
-                });
+                pBt.pPager.setBusyhandler((int number) -> invokeBusyHandler(number));
                 this.pBt = pBt;
-                pBt.pPager.setReiniter(new ISqlJetPageCallback() {
-                    public void pageCallback(ISqlJetPage page) throws SqlJetException {
-                        pageReinit(page);
-                    }
-                });
+                pBt.pPager.setReiniter((ISqlJetPage page) -> pageReinit(page));
 
                 pBt.pCursor = null;
                 pBt.pPage1 = null;
@@ -436,6 +435,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#close()
      */
+	@Override
     public void close() throws SqlJetException {
         SqlJetBtree p = this;
         SqlJetBtreeCursor pCur;
@@ -525,6 +525,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#setCacheSize(int)
      */
+	@Override
     public void setCacheSize(int mxPage) {
         assert (db.getMutex().held());
         enter();
@@ -535,6 +536,7 @@ public class SqlJetBtree implements ISqlJetBtree {
         }
     }
 
+	@Override
     public int getCacheSize() {
         assert (db.getMutex().held());
         enter();
@@ -552,6 +554,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * org.tmatesoft.sqljet.core.ISqlJetBtree#setSafetyLevel(org.tmatesoft.sqljet
      * .core.SqlJetSafetyLevel)
      */
+	@Override
     public void setSafetyLevel(SqlJetSafetyLevel level) {
         assert (db.getMutex().held());
         enter();
@@ -562,6 +565,7 @@ public class SqlJetBtree implements ISqlJetBtree {
         }
     }
     
+	@Override
     public SqlJetSafetyLevel getSafetyLevel() {
         assert (db.getMutex().held());
         enter();
@@ -572,6 +576,7 @@ public class SqlJetBtree implements ISqlJetBtree {
         }
     }
 
+	@Override
     public void setJournalMode(SqlJetPagerJournalMode mode) {
         assert (db.getMutex().held());
         enter();
@@ -582,6 +587,7 @@ public class SqlJetBtree implements ISqlJetBtree {
         }
     }
     
+	@Override
     public SqlJetPagerJournalMode getJournalMode() {
         assert (db.getMutex().held());
         enter();
@@ -597,6 +603,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#isSyncDisabled()
      */
+	@Override
     public boolean isSyncDisabled() {
         assert (db.getMutex().held());
         enter();
@@ -613,6 +620,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#setPageSize(int, int)
      */
+	@Override
     public void setPageSize(int pageSize, int reserve) throws SqlJetException {
         assert (reserve >= -1 && reserve <= 255);
         enter();
@@ -643,6 +651,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getPageSize()
      */
+	@Override
     public int getPageSize() {
         return pBt.pageSize;
     }
@@ -652,6 +661,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#setMaxPageCount(int)
      */
+	@Override
     public void setMaxPageCount(int mxPage) throws SqlJetException {
         enter();
         try {
@@ -666,6 +676,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getReserve()
      */
+	@Override
     public int getReserve() {
         enter();
         try {
@@ -682,6 +693,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * org.tmatesoft.sqljet.core.ISqlJetBtree#setAutoVacuum(org.tmatesoft.sqljet
      * .core.SqlJetAutoVacuumMode)
      */
+	@Override
     public void setAutoVacuum(SqlJetAutoVacuumMode autoVacuum) throws SqlJetException {
         boolean av = autoVacuum != SqlJetAutoVacuumMode.NONE;
         enter();
@@ -701,6 +713,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getAutoVacuum()
      */
+	@Override
     public SqlJetAutoVacuumMode getAutoVacuum() {
         enter();
         try {
@@ -869,6 +882,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * org.tmatesoft.sqljet.core.ISqlJetBtree#beginTrans(org.tmatesoft.sqljet
      * .core.SqlJetTransactionMode)
      */
+	@Override
     public void beginTrans(SqlJetTransactionMode mode) throws SqlJetException {
 
         SqlJetException rc = null;
@@ -994,6 +1008,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * @see
      * org.tmatesoft.sqljet.core.ISqlJetBtree#commitPhaseOne(java.lang.String)
      */
+	@Override
     public void commitPhaseOne(String master) throws SqlJetException {
         if (this.inTrans == TransMode.WRITE) {
             enter();
@@ -1040,6 +1055,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#commitPhaseTwo()
      */
+	@Override
     public void commitPhaseTwo() throws SqlJetException {
 
         enter();
@@ -1095,6 +1111,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#commit()
      */
+	@Override
     public void commit() throws SqlJetException {
         enter();
         try {
@@ -1111,6 +1128,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#rollback()
      */
+	@Override
     public void rollback() throws SqlJetException {
 
         SqlJetMemPage pPage1;
@@ -1187,6 +1205,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#beginStmt()
      */
+	@Override
     public void beginStmt() throws SqlJetException {
         enter();
         try {
@@ -1222,6 +1241,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#commitStmt()
      */
+	@Override
     public void commitStmt() throws SqlJetException {
         enter();
         try {
@@ -1245,6 +1265,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#rollbackStmt()
      */
+	@Override
     public void rollbackStmt() throws SqlJetException {
         enter();
         try {
@@ -1290,6 +1311,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#createTable(java.util.Set)
      */
+	@Override
     public int createTable(Set<SqlJetBtreeTableCreateFlags> flags) throws SqlJetException {
         enter();
         try {
@@ -1439,6 +1461,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#isInTrans()
      */
+	@Override
     public boolean isInTrans() {
         assert (db.getMutex().held());
         return inTrans == TransMode.WRITE;
@@ -1449,6 +1472,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#isInStmt()
      */
+	@Override
     public boolean isInStmt() {
         assert (holdsMutex());
         return pBt != null && pBt.inStmt;
@@ -1459,6 +1483,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#isInReadTrans()
      */
+	@Override
     public boolean isInReadTrans() {
         assert (db.getMutex().held());
         return inTrans == TransMode.NONE;
@@ -1469,6 +1494,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getSchema()
      */
+	@Override
     public SqlJetSchema getSchema() {
         return (SqlJetSchema) pBt.pSchema;
     }
@@ -1478,6 +1504,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#setSchema(java.lang.Object)
      */
+	@Override
     public void setSchema(SqlJetSchema schema) {
         pBt.pSchema = schema;
     }
@@ -1487,6 +1514,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#isSchemaLocked()
      */
+	@Override
     public boolean isSchemaLocked() {
         assert (db.getMutex().held());
         enter();
@@ -1555,6 +1583,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#lockTable(int, boolean)
      */
+	@Override
     public void lockTable(int table, boolean isWriteLock) {
         if (sharable) {
             enter();
@@ -1643,6 +1672,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * org.tmatesoft.sqljet.core.ISqlJetBtree#savepoint(org.tmatesoft.sqljet
      * .core.SqlJetSavepointOperation, int)
      */
+	@Override
     public void savepoint(SqlJetSavepointOperation op, int savepoint) throws SqlJetException {
         if (this.inTrans == TransMode.WRITE) {
             assert (pBt.inStmt == false);
@@ -1664,6 +1694,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getFilename()
      */
+	@Override
     public File getFilename() {
         assert (pBt.pPager != null);
         return pBt.pPager.getFileName();
@@ -1674,6 +1705,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getDirname()
      */
+	@Override
     public File getDirname() {
         assert (pBt.pPager != null);
         return pBt.pPager.getDirectoryName();
@@ -1684,6 +1716,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getJournalname()
      */
+	@Override
     public File getJournalname() {
         assert (pBt.pPager != null);
         return pBt.pPager.getJournalName();
@@ -1696,6 +1729,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * org.tmatesoft.sqljet.core.ISqlJetBtree#copyFile(org.tmatesoft.sqljet.
      * core.ISqlJetBtree)
      */
+	@Override
     public void copyFile(ISqlJetBtree from) throws SqlJetException {
         enter();
         try {
@@ -1914,6 +1948,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#incrVacuum()
      */
+	@Override
     public void incrVacuum() throws SqlJetException {
         enter();
         try {
@@ -1935,6 +1970,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#dropTable(int)
      */
+	@Override
     public int dropTable(int table) throws SqlJetException {
         enter();
         try {
@@ -2077,6 +2113,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#clearTable(int, int[])
      */
+	@Override
     public void clearTable(int table, int[] change) throws SqlJetException {
         enter();
         try {
@@ -2158,6 +2195,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getMeta(int)
      */
+	@Override
     public int getMeta(int idx) throws SqlJetException {
 
         enter();
@@ -2223,6 +2261,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#updateMeta(int, int[])
      */
+	@Override
     public void updateMeta(int idx, int value) throws SqlJetException {
         assert (idx >= 1 && idx <= 15);
         enter();
@@ -2250,6 +2289,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * org.tmatesoft.sqljet.core.ISqlJetBtree#tripAllCursors(org.tmatesoft.sqljet
      * .core.SqlJetErrorCode)
      */
+	@Override
     public void tripAllCursors(SqlJetErrorCode errCode) throws SqlJetException {
         SqlJetBtreeCursor p;
         enter();
@@ -2275,6 +2315,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getPager()
      */
+	@Override
     public ISqlJetPager getPager() {
         return pBt.pPager;
     }
@@ -2285,6 +2326,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#getCursor(int, boolean,
      * org.tmatesoft.sqljet.core.ISqlJetKeyInfo)
      */
+	@Override
     public ISqlJetBtreeCursor getCursor(int table, boolean wrFlag, ISqlJetKeyInfo keyInfo) throws SqlJetException {
         enter();
         try {
@@ -2323,6 +2365,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      *
      * @see org.tmatesoft.sqljet.core.internal.ISqlJetBtree#closeAllCursors()
      */
+	@Override
     public void closeAllCursors() throws SqlJetException {
         SqlJetBtreeCursor p;
         enter();
@@ -2341,6 +2384,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * @see org.tmatesoft.sqljet.core.ISqlJetBtree#integrityCheck(int[], int,
      * int, int[])
      */
+	@Override
     public String integrityCheck(int[] root, int root2, int mxErr, int[] err) {
         return null;
     }

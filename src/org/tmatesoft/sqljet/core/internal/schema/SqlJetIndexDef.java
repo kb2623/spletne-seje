@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
-import org.tmatesoft.sqljet.core.schema.ISqlJetColumnDef;
 import org.tmatesoft.sqljet.core.schema.ISqlJetIndexedColumn;
 import org.tmatesoft.sqljet.core.schema.ISqlJetTableDef;
 
@@ -56,7 +55,7 @@ public class SqlJetIndexDef extends SqlJetBaseIndexDef {
         CommonTree tableNameNode = (CommonTree) ast.getChild(2);
         setTableName(tableNameNode.getText());
 
-        List<ISqlJetIndexedColumn> columns = new ArrayList<ISqlJetIndexedColumn>();
+        List<ISqlJetIndexedColumn> columns = new ArrayList<>();
         CommonTree defNode = (CommonTree) ast.getChild(3);
         for (int i = 0; i < defNode.getChildCount(); i++) {
             columns.add(new SqlJetIndexedColumn((CommonTree) defNode.getChild(i)));
@@ -78,6 +77,7 @@ public class SqlJetIndexDef extends SqlJetBaseIndexDef {
         return databaseName;
     }
 
+	@Override
     public boolean isUnique() {
         return unique;
     }
@@ -86,10 +86,12 @@ public class SqlJetIndexDef extends SqlJetBaseIndexDef {
         return ifNotExists;
     }
 
+	@Override
     public List<ISqlJetIndexedColumn> getColumns() {
         return columns;
     }
 
+	@Override
     public ISqlJetIndexedColumn getColumn(String name) {
         for (ISqlJetIndexedColumn column : getColumns()) {
             if (column.getName().equalsIgnoreCase(name)) {
@@ -101,7 +103,7 @@ public class SqlJetIndexDef extends SqlJetBaseIndexDef {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getPage());
         buffer.append("/");
         buffer.append(getRowId());
@@ -110,6 +112,7 @@ public class SqlJetIndexDef extends SqlJetBaseIndexDef {
         return buffer.toString();
     }
 
+	@Override
     public String toSQL() {
         return toSQL(true);
     }
@@ -157,13 +160,15 @@ public class SqlJetIndexDef extends SqlJetBaseIndexDef {
     }
 
     public void bindColumns(ISqlJetTableDef tableDef) {
-        for (final ISqlJetColumnDef tableColumn : tableDef.getColumns()) {
-            for (ISqlJetIndexedColumn column : columns) {
-                if (column.getName().equalsIgnoreCase(tableColumn.getName())) {
-                    ((SqlJetIndexedColumn) column).setTableColumn(tableColumn);
-                }
-            }
-        }
+		tableDef.getColumns().stream().
+			forEach((tableColumn) -> {
+				columns.stream().
+				filter((column) ->
+					(column.getName().equalsIgnoreCase(tableColumn.getName()))).
+				forEach((column) -> {
+					((SqlJetIndexedColumn) column).setTableColumn(tableColumn);
+			});
+		});
     }
 
 }

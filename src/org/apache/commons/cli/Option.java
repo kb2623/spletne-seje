@@ -547,6 +547,7 @@ public class Option implements Cloneable, Serializable
      *
      * @return Stringified form of this object
      */
+	@Override
     public String toString()
     {
         StringBuffer buf = new StringBuffer().append("[ option: ");
@@ -591,6 +592,7 @@ public class Option implements Cloneable, Serializable
         return values.isEmpty();
     }
 
+	@Override
     public boolean equals(Object o)
     {
         if (this == o)
@@ -609,14 +611,10 @@ public class Option implements Cloneable, Serializable
         {
             return false;
         }
-        if (longOpt != null ? !longOpt.equals(option.longOpt) : option.longOpt != null)
-        {
-            return false;
-        }
-
-        return true;
+        return !(longOpt != null ? !longOpt.equals(option.longOpt) : option.longOpt != null);
     }
 
+	@Override
     public int hashCode()
     {
         int result;
@@ -633,8 +631,11 @@ public class Option implements Cloneable, Serializable
      * After calling this method, it is very likely you will want to call 
      * clearValues(). 
      *
+	 * @return 
      * @throws RuntimeException
      */
+	@Override
+	@SuppressWarnings("CloneDeclaresCloneNotSupported")
 	public Object clone()
     {
         try
@@ -663,6 +664,8 @@ public class Option implements Cloneable, Serializable
     /**
      * This method is not intended to be used. It was a piece of internal 
      * API that was made public in 1.0. It currently throws an UnsupportedOperationException. 
+	 * @param value
+	 * @return 
      * @deprecated
      * @throws UnsupportedOperationException
      */

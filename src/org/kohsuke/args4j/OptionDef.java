@@ -53,6 +53,7 @@ public class OptionDef {
 
     /**
      * Value from {@link Option#hidden()} or {@link Argument#hidden()}
+	 * @return 
      */
 	public boolean hidden() {
 		return hidden;

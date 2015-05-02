@@ -53,7 +53,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      * SQLITE_NOMEM may be returned if a malloc() fails during conversion
      * between formats.
      * 
-     * @param enc
+	 * @param desiredEnc
      * @throws SqlJetException
      */
     void changeEncoding(SqlJetEncoding desiredEnc) throws SqlJetException;
@@ -138,7 +138,6 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      *            Number of bytes to return.
      * @param key
      *            If true, retrieve from the btree key, not data.
-     * @return
      * @throws SqlJetException
      */
     void fromBtree(ISqlJetBtreeCursor pCur, int offset, int amt, boolean key) throws SqlJetException;
@@ -159,6 +158,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      * NULL, return 0.
      * 
      * If pMem is a string, its encoding might be changed.
+	 * @return 
      */
     long intValue();
 
@@ -175,6 +175,8 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      * copied into a (possibly existing) buffer managed by the Mem structure.
      * Otherwise, any existing buffer is freed and the pointer copied.
      * 
+	 * @param z
+	 * @param enc
      * @throws SqlJetException
      */
     void setStr(ISqlJetMemoryPointer z, SqlJetEncoding enc) throws SqlJetException;
@@ -182,6 +184,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
     /**
      * Delete any previous value and set the value stored in *pMem to val,
      * manifest type INTEGER.
+	 * @param val
      */
     void setInt64(long val);
 
@@ -214,6 +217,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      * pMem is already a double or an integer, return its value. If it is a
      * string or blob, try to convert it to a double. If it is a NULL, return
      * 0.0.
+	 * @return 
      */
     double realValue();
 
@@ -243,12 +247,14 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
     /**
      * Delete any previous value and set the value to be a BLOB of length n
      * containing all zeros.
+	 * @param n
      */
     void setZeroBlob(int n);
 
     /**
      * Delete any previous value and set the value stored in *pMem to val,
      * manifest type REAL.
+	 * @param val
      */
     void setDouble(double val);
 
@@ -261,6 +267,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
     /**
      * Return true if the Mem object contains a TEXT or BLOB that is too large -
      * whose size exceeds SQLITE_MAX_LENGTH.
+	 * @return 
      */
     boolean isTooBig();
 
@@ -270,6 +277,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      * srcType (either MEM_Ephem or MEM_Static).
      * 
      * @param srcType
+	 * @return 
      * 
      * @throws SqlJetException
      */
@@ -279,6 +287,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      * Make a full copy of pFrom into pTo. Prior contents of pTo are freed
      * before the copy is made.
      * 
+	 * @return 
      * @throws SqlJetException
      */
     ISqlJetVdbeMem copy() throws SqlJetException;
@@ -289,6 +298,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      * 
      * pFrom contains an SQL NULL when this routine returns.
      * 
+	 * @return 
      * @throws SqlJetException
      */
     ISqlJetVdbeMem move() throws SqlJetException;
@@ -303,6 +313,8 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
      * Return the number of bytes in the sqlite3_value object assuming that it
      * uses the encoding "enc"
      * 
+	 * @param enc
+	 * @return 
      * @throws SqlJetException
      */
     int valueBytes(SqlJetEncoding enc) throws SqlJetException;
@@ -310,7 +322,7 @@ public interface ISqlJetVdbeMem extends ISqlJetReleasable {
     /**
      * Clear any existing type flags from a Mem and replace them with f
      * 
-     * @param real
+	 * @param f
      */
     void setTypeFlag(SqlJetVdbeMemFlags f);
 

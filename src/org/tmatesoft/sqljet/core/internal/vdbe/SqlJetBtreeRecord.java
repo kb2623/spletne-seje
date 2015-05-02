@@ -49,15 +49,16 @@ public class SqlJetBtreeRecord implements ISqlJetBtreeRecord {
     private boolean isIndex;
 
     private int fieldsCount = 0;
-    private List<Integer> aType = new ArrayList<Integer>();
-    private List<Integer> aOffset = new ArrayList<Integer>();
-    private List<ISqlJetVdbeMem> fields = new ArrayList<ISqlJetVdbeMem>();
+    private List<Integer> aType = new ArrayList<>();
+    private List<Integer> aOffset = new ArrayList<>();
+    private List<ISqlJetVdbeMem> fields = new ArrayList<>();
 
     private int file_format = ISqlJetOptions.SQLJET_DEFAULT_FILE_FORMAT;
 
     /**
      * @return the fields
      */
+	@Override
     public List<ISqlJetVdbeMem> getFields() {
         return Collections.unmodifiableList(fields);
     }
@@ -84,7 +85,7 @@ public class SqlJetBtreeRecord implements ISqlJetBtreeRecord {
     }
 
     public static ISqlJetBtreeRecord getRecord(SqlJetEncoding encoding, Object... values) throws SqlJetException {
-        final List<ISqlJetVdbeMem> fields = new ArrayList<ISqlJetVdbeMem>(values.length);
+        final List<ISqlJetVdbeMem> fields = new ArrayList<>(values.length);
         for (int i = 0; i < values.length; i++) {
             final Object value = values[i];
             final ISqlJetVdbeMem mem = SqlJetVdbeMem.obtainInstance();
@@ -132,6 +133,7 @@ public class SqlJetBtreeRecord implements ISqlJetBtreeRecord {
      * @see
      * org.tmatesoft.sqljet.core.internal.vdbe.ISqlJetRecord#getFieldsCount()
      */
+	@Override
     public int getFieldsCount() {
         return fieldsCount;
     }
@@ -349,6 +351,7 @@ public class SqlJetBtreeRecord implements ISqlJetBtreeRecord {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetRecord#getStringField(int)
      */
+	@Override
     public String getStringField(int field, SqlJetEncoding enc) throws SqlJetException {
         final ISqlJetVdbeMem f = fields.get(field);
         if (null == f)
@@ -364,6 +367,7 @@ public class SqlJetBtreeRecord implements ISqlJetBtreeRecord {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetRecord#getIntField(int)
      */
+	@Override
     public long getIntField(int field) {
         final ISqlJetVdbeMem f = fields.get(field);
         if (null == f)
@@ -378,6 +382,7 @@ public class SqlJetBtreeRecord implements ISqlJetBtreeRecord {
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeRecord#getRealField
      * (int)
      */
+	@Override
     public double getRealField(int field) {
         final ISqlJetVdbeMem f = fields.get(field);
         if (null == f)
@@ -406,6 +411,7 @@ public class SqlJetBtreeRecord implements ISqlJetBtreeRecord {
      * field is also a varint which is the offset from the beginning of the
      * record to data0.
      */
+	@Override
     public ISqlJetMemoryPointer getRawRecord() {
         /* A buffer to hold the data for the new record */
         ISqlJetMemoryPointer zNewRecord;
@@ -477,9 +483,8 @@ public class SqlJetBtreeRecord implements ISqlJetBtreeRecord {
         return zNewRecord;
     }
 
+	@Override
     public void release() {
-        for (ISqlJetVdbeMem field : fields) {
-            field.release();
-        }
+		fields.stream().forEach((field) -> field.release());
     }
 }

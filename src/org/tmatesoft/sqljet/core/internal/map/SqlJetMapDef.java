@@ -34,9 +34,11 @@ public class SqlJetMapDef implements ISqlJetMapDef {
 
     /**
      * 
+	 * @param mapName
+	 * @param virtualTableDef
+	 * @param indexDef
      */
-    public SqlJetMapDef(final String mapName, final ISqlJetVirtualTableDef virtualTableDef,
-            final ISqlJetIndexDef indexDef) {
+    public SqlJetMapDef(final String mapName, final ISqlJetVirtualTableDef virtualTableDef, final ISqlJetIndexDef indexDef) {
         this.mapName = mapName;
         this.virtualTableDef = virtualTableDef;
         this.indexDef = indexDef;
@@ -47,6 +49,7 @@ public class SqlJetMapDef implements ISqlJetMapDef {
      * 
      * @see org.tmatesoft.sqljet.core.map.ISqlJetMapTableDef#getMapTableName()
      */
+	@Override
     public String getMapName() {
         return mapName;
     }
@@ -57,6 +60,7 @@ public class SqlJetMapDef implements ISqlJetMapDef {
      * @see
      * org.tmatesoft.sqljet.core.map.ISqlJetMapTableDef#getVirtualTableDef()
      */
+	@Override
     public ISqlJetVirtualTableDef getVirtualTableDef() {
         return virtualTableDef;
     }
@@ -64,6 +68,7 @@ public class SqlJetMapDef implements ISqlJetMapDef {
     /**
      * @return the indexes
      */
+	@Override
     public ISqlJetIndexDef getIndexDef() {
         return indexDef;
     }

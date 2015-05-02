@@ -39,6 +39,7 @@ public class SqlJetMemoryManager implements ISqlJetMemoryManager {
      * @seeorg.tmatesoft.sqljet.core.sandbox.memory.ISqlJetMemoryManager#
      * getDefaultBufferType()
      */
+	@Override
     public SqlJetMemoryBufferType getDefaultBufferType() {
         return defaultBufferType;
     }
@@ -51,6 +52,7 @@ public class SqlJetMemoryManager implements ISqlJetMemoryManager {
      * (org.tmatesoft.sqljet.core.sandbox.memory.ISqlJetMemoryManager
      * .BufferType)
      */
+	@Override
     public void setDefaultBufferType(final SqlJetMemoryBufferType bufferType) {
         if (bufferType != null) {
             defaultBufferType = bufferType;
@@ -63,6 +65,7 @@ public class SqlJetMemoryManager implements ISqlJetMemoryManager {
      * @see
      * org.tmatesoft.sqljet.core.internal.ISqlJetMemoryManager#allocatePtr(int)
      */
+	@Override
     public ISqlJetMemoryPointer allocatePtr(int size) {
         return allocate(size).getPointer(0);
     }
@@ -74,6 +77,7 @@ public class SqlJetMemoryManager implements ISqlJetMemoryManager {
      * org.tmatesoft.sqljet.core.internal.ISqlJetMemoryManager#allocatePtr(int,
      * org.tmatesoft.sqljet.core.internal.SqlJetMemoryBufferType)
      */
+	@Override
     public ISqlJetMemoryPointer allocatePtr(int size, SqlJetMemoryBufferType bufferType) {
         return allocate(size, bufferType).getPointer(0);
     }
@@ -85,6 +89,7 @@ public class SqlJetMemoryManager implements ISqlJetMemoryManager {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryManager
      * #allocate(int)
      */
+	@Override
     public ISqlJetMemoryBuffer allocate(final int size) {
         return allocate(size, defaultBufferType);
     }
@@ -97,6 +102,7 @@ public class SqlJetMemoryManager implements ISqlJetMemoryManager {
      * (int,
      * org.tmatesoft.sqljet.core.sandbox.memory.ISqlJetMemoryManager.BufferType)
      */
+	@Override
     public ISqlJetMemoryBuffer allocate(int size, SqlJetMemoryBufferType bufferType) {
         if (size >= 0) {
             final ISqlJetMemoryBuffer buffer;
@@ -128,6 +134,7 @@ public class SqlJetMemoryManager implements ISqlJetMemoryManager {
      * #free
      * (org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer)
      */
+	@Override
     public void free(final ISqlJetMemoryBuffer buffer) {
         if (buffer != null) {
             buffer.free();

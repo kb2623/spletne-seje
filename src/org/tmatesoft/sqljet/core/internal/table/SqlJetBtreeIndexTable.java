@@ -49,6 +49,9 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
     /**
      * Open index by name
      * 
+	 * @param btree
+	 * @param indexName
+	 * @param write
      * @throws SqlJetException
      * 
      */
@@ -80,6 +83,7 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeIndexTable#lookup
      * (boolean, java.lang.Object[])
      */
+	@Override
     public long lookup(boolean next, Object... values) throws SqlJetException {
         lock();
         try {
@@ -181,6 +185,7 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
         }
     }
 
+	@Override
     public int compareKeys(Object[] firstKey, Object[] lastKey) throws SqlJetException {
         final SqlJetEncoding encoding = btree.getDb().getOptions().getEncoding();
         final ISqlJetBtreeRecord first = SqlJetBtreeRecord.getRecord(encoding, firstKey);
@@ -205,6 +210,7 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeIndexTable#checkKey
      * (java.lang.Object[])
      */
+	@Override
     public boolean checkKey(Object... key) throws SqlJetException {
         if (eof())
             return false;
@@ -218,10 +224,10 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
     }
 
     /**
-     * @param key
      * 
      * @throws SqlJetException
      */
+	@Override
     protected void adjustKeyInfo() throws SqlJetException {
         if (null == getKeyInfo())
             throw new SqlJetException(SqlJetErrorCode.INTERNAL);
@@ -245,6 +251,7 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeIndexTable#insert
      * (long, boolean, java.lang.Object[])
      */
+	@Override
     public void insert(long rowId, boolean append, Object... key) throws SqlJetException {
         lock();
         try {
@@ -266,6 +273,7 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeIndexTable#delete
      * (long, java.lang.Object[])
      */
+	@Override
     public boolean delete(long rowId, Object... key) throws SqlJetException {
         lock();
         try {
@@ -305,11 +313,13 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
         return fields.get(fields.size() - 1).intValue();
     }
 
+	@Override
     public long getKeyRowId() throws SqlJetException {
         return getKeyRowId(getRecord());
     }
 
     /**
+	 * @param schema
      * @throws SqlJetException
      * 
      */
@@ -338,6 +348,7 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeIndexTable#compareKey
      * (java.lang.Object[])
      */
+	@Override
     public int compareKey(Object[] key) throws SqlJetException {
         if (eof()) {
             return 1;
@@ -355,6 +366,7 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeIndexTable#lookupNear
      * (boolean, java.lang.Object[])
      */
+	@Override
     public long lookupNear(boolean next, Object[] key) throws SqlJetException {
         lock();
         try {
@@ -370,6 +382,7 @@ public class SqlJetBtreeIndexTable extends SqlJetBtreeTable implements ISqlJetBt
      * @seeorg.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeIndexTable#
      * lookupLastNear(java.lang.Object[])
      */
+	@Override
     public long lookupLastNear(Object[] key) throws SqlJetException {
         lock();
         try {

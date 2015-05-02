@@ -57,22 +57,27 @@ final class ArrayFieldSetter implements Getter, Setter {
         this.defaultArray = f.get(bean);        
     }
 
+	@Override
     public FieldSetter asFieldSetter() {
         return new FieldSetter(bean,f);
     }
 
+	@Override
     public AnnotatedElement asAnnotatedElement() {
         return f;
     }
 
+	@Override
     public boolean isMultiValued() {
     	return true;
     }
 
+	@Override
     public Class getType() {
         return f.getType().getComponentType();
     }
 
+	@Override
     public void addValue(Object value) {
         try {
             doAddValue(bean, value);
@@ -103,10 +108,11 @@ final class ArrayFieldSetter implements Getter, Setter {
         f.set(bean, ary);
     }
 
+	@Override
     public List<Object> getValueList() {
         f.setAccessible(true);
         try {
-            List<Object> r = new ArrayList<Object>();
+            List<Object> r = new ArrayList<>();
 
 
             // array element might be primitive, so Arrays.asList() won't always work

@@ -189,8 +189,7 @@ public class W3CParser extends AbsParser {
 					data.put(FieldType.TimeTaken, new TimeTaken(tokens.get(i), false));
 					break;
 				default:
-					/* TODO
-					 * Pršel si do neznanega polja
+					/* TODO Pršel si do neznanega polja
 					 */
 					break;
 				}

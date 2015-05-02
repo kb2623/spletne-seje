@@ -41,6 +41,7 @@ public interface ISqlJetFunctionLiteral extends ISqlJetExpression {
             return null;
         }
 
+		@Override
         public String toString() {
             switch (this) {
             case CURRENT_TIME:
@@ -54,5 +55,6 @@ public interface ISqlJetFunctionLiteral extends ISqlJetExpression {
         }
     }
 
+	@Override
     public Function getValue();
 }

@@ -114,7 +114,6 @@ public interface ISqlJetFile {
      * @param buffer
      * @param amount
      * @param offset
-     * @return
      * @throws SqlJetIOException 
      */
     void write(final ISqlJetMemoryPointer buffer, final int amount, final long offset) throws SqlJetIOException;
@@ -142,8 +141,7 @@ public interface ISqlJetFile {
      * the directory entry for the journal was never created) and the transaction
      * will not roll back - possibly leading to database corruption.
      *
-     * @param dataOnly
-     * @param full
+	 * @param syncFlags
      * @throws SqlJetIOException 
      */
     void sync(Set<SqlJetSyncFlags> syncFlags) throws SqlJetIOException;
@@ -239,6 +237,7 @@ public interface ISqlJetFile {
     /**
     * Return true if the file-handle passed as an argument is 
     * an in-memory journal 
+	 * @return 
     */
     boolean isMemJournal();
     

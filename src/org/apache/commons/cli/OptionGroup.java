@@ -130,9 +130,10 @@ public class OptionGroup implements Serializable
      * 
      * @return the stringified representation of this group
      */
+	@Override
     public String toString()
     {
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
 
         Iterator iter = getOptions().iterator();
 

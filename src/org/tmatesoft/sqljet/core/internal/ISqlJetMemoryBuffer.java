@@ -220,7 +220,7 @@ public interface ISqlJetMemoryBuffer {
     void fill(int from, int count, byte value);
 
     /**
-     * @param absolute
+	 * @param pointer
      * @param bytes
      * @param to
      * @param count
@@ -228,9 +228,9 @@ public interface ISqlJetMemoryBuffer {
     void getBytes(int pointer, byte[] bytes, int to, int count);
 
     /**
-     * @param absolute
+	 * @param pointer
      * @param bytes
-     * @param to
+	 * @param from
      * @param count
      */
     void putBytes(int pointer, byte[] bytes, int from, int count);
@@ -243,7 +243,7 @@ public interface ISqlJetMemoryBuffer {
     /**
      * @param pointer
      * @param buffer
-     * @param pointer2
+	 * @param bufferPointer
      * @return
      */
     int compareTo(int pointer, ISqlJetMemoryBuffer buffer, int bufferPointer);

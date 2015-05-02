@@ -14,6 +14,7 @@ public @interface SubCommand {
     /**
      * Name of the sub-command.
      * This must appear as-is in the command line for this sub-command to be activated.
+	 * @return 
      */
     String name();
 
@@ -22,6 +23,7 @@ public @interface SubCommand {
      *
      * When a sub-command is selected, this class is instantiated and the rest of the arguments
      * will be parsed against this new instance.
+	 * @return 
      */
     Class<?> impl();
 }

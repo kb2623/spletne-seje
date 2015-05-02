@@ -27,6 +27,7 @@ public class ParserProperties {
      * Returns an instance of the default parser properties.
      * This instance can be manipulated with the {@code withXXX()} methods
      * in this class.
+	 * @return 
      */
     public static ParserProperties defaults() {
         return new ParserProperties();
@@ -39,6 +40,7 @@ public class ParserProperties {
      * the file content would have been passed to the command line.
      * @param atSyntax {@code true} if at sign is being parsed, {@code false}
      * if it is to be ignored. Defaults to {@code true}.
+	 * @return 
      * @see #getAtSyntax() 
      */
     public ParserProperties withAtSyntax(boolean atSyntax) {
@@ -49,6 +51,7 @@ public class ParserProperties {
     
     /**
      * Gets whether @-prefix-parsing is enabled.
+	 * @return 
      * @see #withAtSyntax(boolean) 
      */
     public boolean getAtSyntax() {
@@ -59,6 +62,7 @@ public class ParserProperties {
      * Toggles the showing of default values in the command line help.
      * @param showDefaults {@code true} if to show defaults, {@code false}
      * otherweise. Defaults to {@code true}.
+	 * @return 
      * @see #getShowDefaults() 
      */
     public ParserProperties withShowDefaults(boolean showDefaults) {
@@ -68,6 +72,7 @@ public class ParserProperties {
     
     /**
      * Gets whether show defaults is enabled.
+	 * @return 
      * @see #withShowDefaults(boolean) 
      */
     public boolean getShowDefaults() {
@@ -81,6 +86,7 @@ public class ParserProperties {
      * Defaults to {@code 80}.
      *
      * @param usageWidth the width of the usage output in columns.
+	 * @return 
      * @throws IllegalArgumentException if {@code usageWidth} is negative
      */
     public ParserProperties withUsageWidth(int usageWidth) {
@@ -102,6 +108,7 @@ public class ParserProperties {
      *
      * @param sorter
      *      If non-{@code null}, options are sorted in the order induced by this comparator.
+	 * @return 
      */
     public ParserProperties withOptionSorter(Comparator<OptionHandler> sorter) {
         this.optionSorter = sorter;
@@ -124,6 +131,8 @@ public class ParserProperties {
      * Default to whitespace. Note that the tokens separated in the argument array (such as '-foo','bar')
      * is always recognized as a valid name/value separator.
      *
+	 * @param v
+	 * @return 
      */
     public ParserProperties withOptionValueDelimiter(String v) {
         this.optionValueDelimiter = v;
@@ -134,9 +143,5 @@ public class ParserProperties {
         return this.optionValueDelimiter;
     }
 
-    static final Comparator<OptionHandler> DEFAULT_COMPARATOR = new Comparator<OptionHandler>() {
-        public int compare(OptionHandler o1, OptionHandler o2) {
-            return o1.option.toString().compareTo(o2.option.toString());
-        }
-    };
+    static final Comparator<OptionHandler> DEFAULT_COMPARATOR = (OptionHandler o1, OptionHandler o2) -> o1.option.toString().compareTo(o2.option.toString());
 }

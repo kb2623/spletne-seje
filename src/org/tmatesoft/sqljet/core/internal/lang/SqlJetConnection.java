@@ -49,22 +49,19 @@ public class SqlJetConnection {
     }
 
     public void exec(final String sql, final SqlJetExecCallback callback) throws SqlJetException {
-        db.runWithLock(new ISqlJetRunnableWithLock() {
-
-            public Object runWithLock(SqlJetDb db) throws SqlJetException {
-                SqlJetPreparedStatement stmt = prepare(sql);
-                try {
-                    while (stmt.step()) {
-                        if (callback != null) {
-                            callback.processRow(stmt);
-                        }
-                    }
-                } finally {
-                    stmt.close();
-                }
-                return null;
-            }
-        });
+        db.runWithLock((SqlJetDb db1) -> {
+			SqlJetPreparedStatement stmt = prepare(sql);
+			try {
+				while (stmt.step()) {
+					if (callback != null) {
+						callback.processRow(stmt);
+					}
+				}
+			} finally {
+				stmt.close();
+			}
+			return null;
+		});
     }
 
     public void close() throws SqlJetException {

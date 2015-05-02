@@ -10,6 +10,7 @@ import org.kohsuke.args4j.OptionDef;
  * {@link Enum} {@link OptionHandler}.
  *
  * @author Kohsuke Kawaguchi
+ * @param <T>
  */
 public class EnumOptionHandler<T extends Enum<T>> extends OptionHandler<T> {
 
@@ -48,7 +49,7 @@ public class EnumOptionHandler<T extends Enum<T>> extends OptionHandler<T> {
      */
     @Override
     public String getDefaultMetaVariable() {
-    	StringBuffer rv = new StringBuffer();
+    	StringBuilder rv = new StringBuilder();
     	rv.append("[");
     	for (T t : enumType.getEnumConstants()) {
 			rv.append(t).append(" | ");

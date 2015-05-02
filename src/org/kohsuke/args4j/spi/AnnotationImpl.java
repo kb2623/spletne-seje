@@ -64,6 +64,7 @@ public abstract class AnnotationImpl implements Annotation {
 	public String usage() {
 		return usage;
 	}
+	@Override
 	public Class<? extends Annotation> annotationType() {
 		return annotationType;
 	}

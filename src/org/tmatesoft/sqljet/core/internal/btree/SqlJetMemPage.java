@@ -164,6 +164,9 @@ public class SqlJetMemPage extends SqlJetCloneable {
      * <p>
      * PTF_LEAFDATA | PTF_INTKEY | PTF_LEAF
      * </p>
+	 * 
+	 * @param flagByte
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void decodeFlags(int flagByte) throws SqlJetException {
         assert (hdrOffset == (pgno == 1 ? 100 : 0));
@@ -184,7 +187,6 @@ public class SqlJetMemPage extends SqlJetCloneable {
         } else {
             throw new SqlJetException(SqlJetErrorCode.CORRUPT);
         }
-        return;
     }
 
     /**
@@ -194,7 +196,9 @@ public class SqlJetMemPage extends SqlJetCloneable {
      * well-formed database page, then return SQLITE_CORRUPT. Note that a return
      * of SQLITE_OK does not guarantee that the page is well-formed. It only
      * shows that we failed to detect any corruption.
-     */
+     *
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+	 */
     public void initPage() throws SqlJetException {
 
         assert (pBt != null);
@@ -257,6 +261,7 @@ public class SqlJetMemPage extends SqlJetCloneable {
      * Release a MemPage. This should be called once for each prior call to
      * sqlite3BtreeGetPage.
      *
+	 * @param pPage
      * @throws SqlJetException
      */
     public static void releasePage(SqlJetMemPage pPage) throws SqlJetException {
@@ -325,7 +330,10 @@ public class SqlJetMemPage extends SqlJetCloneable {
      * PTRMAP_OVERFLOW2: pPage is an overflow-page. The pointer points at the
      * next overflow page in the list.
      *
-     * @throws SqlJetExceptionRemove
+	 * @param iFrom
+	 * @param iTo
+	 * @param s
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void modifyPagePointer(int iFrom, int iTo, short s) throws SqlJetException {
         assert (pBt.mutex.held());
@@ -379,6 +387,8 @@ public class SqlJetMemPage extends SqlJetCloneable {
      * content.
      *
      * This routine works only for pages that do not contain overflow cells.
+	 * @param i
+	 * @return 
      */
     public ISqlJetMemoryPointer findCell(int i) {
         return pointer(aData, maskPage & get2byte(aData, cellOffset + 2 * i));
@@ -388,6 +398,7 @@ public class SqlJetMemPage extends SqlJetCloneable {
      * If the cell pCell, part of page pPage contains a pointer to an overflow
      * page, insert an entry into the pointer-map for the overflow page.
      *
+	 * @param pCell
      * @throws SqlJetException
      */
     public void ptrmapPutOvflPtr(ISqlJetMemoryPointer pCell) throws SqlJetException {
@@ -530,6 +541,7 @@ public class SqlJetMemPage extends SqlJetCloneable {
     /**
      * Add a page of the database file to the freelist. unref() is NOT called
      * for pPage.
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void freePage() throws SqlJetException {
         SqlJetMemPage pPage1 = pBt.pPage1;
@@ -615,6 +627,8 @@ public class SqlJetMemPage extends SqlJetCloneable {
 
     /**
      ** Free any overflow pages associated with the given Cell.
+	 * @param pCell
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void clearCell(ISqlJetMemoryPointer pCell) throws SqlJetException {
         SqlJetBtreeCellInfo info;
@@ -859,8 +873,7 @@ public class SqlJetMemPage extends SqlJetCloneable {
      *            Bytes of content in pCell
      * @param pTemp
      *            Temp storage space for pCell, if needed
-     * @param nSkip
-     *            Do not write the first nSkip bytes of the cell
+	 * @param iChild
      *
      * @throws SqlJetException
      */
@@ -1128,8 +1141,10 @@ public class SqlJetMemPage extends SqlJetCloneable {
      *            The number of cells to add to this page
      * @param apCell
      *            Pointers to cell bodies
+	 * @param apCellPos
      * @param aSize
      *            Sizes of the cells
+	 * @param aSizePos
      *
      * @throws SqlJetException
      */

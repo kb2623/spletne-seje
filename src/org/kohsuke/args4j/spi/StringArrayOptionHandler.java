@@ -50,6 +50,8 @@ public class StringArrayOptionHandler extends OptionHandler<String> {
 
 	/**
 	 * Tries to parse {@code String[]} argument from {@link Parameters}.
+	 * @return 
+	 * @throws org.kohsuke.args4j.CmdLineException
 	 */
 	@Override
 	public int parseArguments(Parameters params) throws CmdLineException {

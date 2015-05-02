@@ -34,7 +34,7 @@ public abstract class SqlJetTableIndexConstraint extends SqlJetTableConstraint {
         super(name);
         CommonTree columnsNode = (CommonTree) ast.getChild(0);
         assert "columns".equalsIgnoreCase(columnsNode.getText());
-        List<String> columns = new ArrayList<String>();
+        List<String> columns = new ArrayList<>();
         for (int i = 0; i < columnsNode.getChildCount(); i++) {
             CommonTree child = (CommonTree) columnsNode.getChild(i);
             columns.add(child.getText());
@@ -69,7 +69,7 @@ public abstract class SqlJetTableIndexConstraint extends SqlJetTableConstraint {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(super.toString());
         if (buffer.length() > 0) {
             buffer.append(' ');

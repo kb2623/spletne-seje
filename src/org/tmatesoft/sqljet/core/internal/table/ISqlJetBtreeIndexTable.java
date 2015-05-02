@@ -83,7 +83,7 @@ public interface ISqlJetBtreeIndexTable extends ISqlJetBtreeTable {
     int compareKey(Object[] key) throws SqlJetException;
 
     /**
-     * @param b
+	 * @param next
      * @param key
      * @return
      * @throws SqlJetException 

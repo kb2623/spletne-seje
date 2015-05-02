@@ -37,12 +37,12 @@ public class CmdLineParser {
     /**
      * Discovered {@link OptionHandler}s for options.
      */
-	private final List<OptionHandler> options = new ArrayList<OptionHandler>();
+	private final List<OptionHandler> options = new ArrayList<>();
 
     /**
      * Discovered {@link OptionHandler}s for arguments.
      */
-	private final List<OptionHandler> arguments = new ArrayList<OptionHandler>();
+	private final List<OptionHandler> arguments = new ArrayList<>();
 
     private boolean parsingOptions = true;
 	private OptionHandler currentOptionHandler = null;
@@ -163,6 +163,7 @@ public class CmdLineParser {
 
     /**
      * Lists up all the defined arguments in the order.
+	 * @return 
      */
     public List<OptionHandler> getArguments() {
         return arguments;
@@ -170,6 +171,7 @@ public class CmdLineParser {
 
     /**
      * Lists up all the defined options.
+	 * @return 
      */
     public List<OptionHandler> getOptions() {
         return options;
@@ -186,6 +188,9 @@ public class CmdLineParser {
     /**
      * Creates an {@link OptionHandler} that handles the given {@link Option} annotation
      * and the {@link Setter} instance.
+	 * @param o
+	 * @param setter
+	 * @return 
      * @deprecated You should use {@link OptionHandlerRegistry#createOptionHandler(org.kohsuke.args4j.CmdLineParser, org.kohsuke.args4j.OptionDef, org.kohsuke.args4j.spi.Setter) } instead.
      */
     protected OptionHandler createOptionHandler(OptionDef o, Setter setter) {
@@ -209,6 +214,8 @@ public class CmdLineParser {
     }
 
     /**
+	 * @param mode
+	 * @return 
      * @deprecated
      *      Use {@link #printExample(OptionHandlerFilter)}
      */
@@ -261,6 +268,9 @@ public class CmdLineParser {
     }
 
     /**
+	 * @param mode
+	 * @param rb
+	 * @return 
      * @deprecated
      *      Use {@link #printExample(OptionHandlerFilter,ResourceBundle)}
      */
@@ -274,6 +284,7 @@ public class CmdLineParser {
      * <p>
      * This is a convenience method for calling {@code printUsage(new OutputStreamWriter(out),null)}
      * so that you can do {@code printUsage(System.err)}.
+	 * @param out
      */
     public void printUsage(OutputStream out) {
         printUsage(new OutputStreamWriter(out),null);
@@ -284,6 +295,8 @@ public class CmdLineParser {
      *
      * <p>
      * Short for {@code printUsage(out,rb,OptionHandlerFilter.PUBLIC)}
+	 * @param out
+	 * @param rb
      */
     public void printUsage(Writer out, ResourceBundle rb) {
         printUsage(out, rb, OptionHandlerFilter.PUBLIC);
@@ -292,6 +305,7 @@ public class CmdLineParser {
     /**
      * Prints the list of all the non-hidden options and their usages to the screen.
      *
+	 * @param out
      * @param rb
      *      If non-{@code null}, {@link Option#usage()} is treated
      *      as a key to obtain the actual message from this resource bundle.
@@ -333,6 +347,7 @@ public class CmdLineParser {
      * @param handler  handler where to receive the information
      * @param len      Maximum length of metadata column
      * @param rb       {@code ResourceBundle} for I18N
+	 * @param filter
      * @see Setter#asAnnotatedElement()
      */
     protected void printOption(PrintWriter out, OptionHandler handler, int len, ResourceBundle rb, OptionHandlerFilter filter) {
@@ -391,7 +406,7 @@ public class CmdLineParser {
      * @return list of all wrapped parts
      */
     private List<String> wrapLines(String line, final int maxLength) {
-    	List<String> rv = new ArrayList<String>();
+    	List<String> rv = new ArrayList<>();
         for (String restOfLine : line.split("\\n")) {
             while (restOfLine.length() > maxLength) {
                 // try to wrap at space, but don't try too hard as some languages don't even have whitespaces.
@@ -440,12 +455,14 @@ public class CmdLineParser {
             pos += n;
         }
 
+		@Override
         public String getParameter(int idx) throws CmdLineException {
 			if( pos+idx>=args.length || pos+idx<0 )
                 throw new CmdLineException(CmdLineParser.this, Messages.MISSING_OPERAND, getOptionName());
             return args[pos+idx];
         }
 
+		@Override
         public int size() {
             return args.length-pos;
         }
@@ -470,6 +487,8 @@ public class CmdLineParser {
 
     /**
      * Same as {@link #parseArgument(String[])}
+	 * @param args
+	 * @throws org.kohsuke.args4j.CmdLineException
      */
     public void parseArgument(Collection<String> args) throws CmdLineException {
         parseArgument(args.toArray(new String[args.size()]));
@@ -496,7 +515,7 @@ public class CmdLineParser {
         }
         CmdLineImpl cmdLine = new CmdLineImpl(expandedArgs);
 
-        Set<OptionHandler> present = new HashSet<OptionHandler>();
+        Set<OptionHandler> present = new HashSet<>();
         int argIndex = 0;
 
         while( cmdLine.hasMore() ) {
@@ -521,7 +540,7 @@ public class CmdLineParser {
                 }
             } else {
             	if (argIndex >= arguments.size()) {
-            		Messages msg = arguments.size() == 0 ? Messages.NO_ARGUMENT_ALLOWED : Messages.TOO_MANY_ARGUMENTS;
+            		Messages msg = arguments.isEmpty() ? Messages.NO_ARGUMENT_ALLOWED : Messages.TOO_MANY_ARGUMENTS;
                     throw new CmdLineException(this, msg, arg);
             	}
 
@@ -562,7 +581,7 @@ public class CmdLineParser {
      * @throws CmdLineException 
      */
     private String[] expandAtFiles(String args[]) throws CmdLineException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (String arg : args) {
             if (arg.startsWith("@")) {
                 File file = new File(arg.substring(1));
@@ -584,16 +603,13 @@ public class CmdLineParser {
      * Reads all lines of a file with the platform encoding.
      */
     private static List<String> readAllLines(File f) throws IOException {
-        BufferedReader r = new BufferedReader(new FileReader(f));
-        try {
-            List<String> result = new ArrayList<String>();
+        try (BufferedReader r = new BufferedReader(new FileReader(f))) {
+            List<String> result = new ArrayList<>();
             String line;
             while ((line = r.readLine()) != null) {
                 result.add(line);
             }
             return result;
-        }  finally {
-            r.close();
         }
     }
 
@@ -686,6 +702,8 @@ public class CmdLineParser {
     /**
      * Returns {@code true} if the given token is an option
      * (as opposed to an argument).
+	 * @param arg
+	 * @return 
      * @throws NullPointerException if {@code arg} is {@code null}.
      */
     protected boolean isOption(String arg) {
@@ -746,6 +764,7 @@ public class CmdLineParser {
      * <p>
      * This is a convenience method for calling {@code printUsage(new OutputStreamWriter(out),null)}
      * so that you can do {@code printUsage(System.err)}.
+	 * @param out
      * @throws NullPointerException if {@code out} is {@code null}.
      */
 	public void printSingleLineUsage(OutputStream out) {
@@ -757,6 +776,7 @@ public class CmdLineParser {
     /**
      * Prints a single-line usage to the screen.
      *
+	 * @param w
      * @param rb
      *      if this is non-{@code null}, {@link Option#usage()} is treated
      *      as a key to obtain the actual message from this resource bundle.
@@ -767,12 +787,8 @@ public class CmdLineParser {
         Utilities.checkNonNull(w, "Writer");
         
 		PrintWriter pw = new PrintWriter(w);
-		for (OptionHandler h : arguments) {
-			printSingleLineOption(pw, h, rb);
-		}
-		for (OptionHandler h : options) {
-			printSingleLineOption(pw, h, rb);
-		}
+		arguments.stream().forEach((h) -> printSingleLineOption(pw, h, rb));
+		options.stream().forEach((h) -> printSingleLineOption(pw, h, rb));
 		pw.flush();
 	}
 

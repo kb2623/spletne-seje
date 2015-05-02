@@ -46,6 +46,7 @@ public class SqlJetUnpackedRecord implements ISqlJetUnpackedRecord {
 
     /**
      * 
+	 * @param p
      */
     public static void delete(SqlJetUnpackedRecord p) {
 
@@ -75,6 +76,7 @@ public class SqlJetUnpackedRecord implements ISqlJetUnpackedRecord {
      * @see org.tmatesoft.sqljet.core.ISqlJetUnpackedRecord#recordCompare(int,
      * java.nio.ByteBuffer)
      */
+	@Override
     public int recordCompare(int nKey1, ISqlJetMemoryPointer pKey1) throws SqlJetException {
 
         final SqlJetUnpackedRecord pPKey2 = this;
@@ -162,13 +164,14 @@ public class SqlJetUnpackedRecord implements ISqlJetUnpackedRecord {
         this.flags = flags;
     }
     
+	@Override
     public void release() {
         if (aMem != null) {
-            for (int i = 0; i < aMem.length; i++) {
-                if (aMem[i] != null) {
-                    aMem[i].release();
-                }
-            }
+			for (SqlJetVdbeMem aMem1 : aMem) {
+				if (aMem1 != null) {
+					aMem1.release();
+				}
+			}
         }
     }
     

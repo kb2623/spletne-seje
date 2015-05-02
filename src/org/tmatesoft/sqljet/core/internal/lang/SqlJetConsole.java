@@ -53,7 +53,7 @@ public class SqlJetConsole implements SqlJetExecCallback {
 
     private void repl(SqlJetConnection conn) throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         String line;
         print("sqljet> ");
         while ((line = in.readLine()) != null) {
@@ -73,7 +73,6 @@ public class SqlJetConsole implements SqlJetExecCallback {
                     try {
                         conn.exec(buffer.toString(), this);
                     } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 } else {
                     print("   ...> ");
@@ -85,8 +84,9 @@ public class SqlJetConsole implements SqlJetExecCallback {
         }
     }
 
+	@Override
     public void processRow(SqlJetPreparedStatement stmt) throws SqlJetException {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         if (firstRow) {
             for (int i = 0; i < 80; i++) {
                 buffer.append('-');

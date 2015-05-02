@@ -33,13 +33,15 @@ public class SqlJetMutex implements ISqlJetMutex {
     /* (non-Javadoc)
      * @see org.tmatesoft.sqljet.core.ISqlJetMutex#attempt()
      */
-    public boolean attempt() {
+	@Override
+	public boolean attempt() {
         return lock.tryLock();        
     }
 
     /* (non-Javadoc)
      * @see org.tmatesoft.sqljet.core.ISqlJetMutex#enter()
      */
+	@Override
     public void enter() {
         lock.lock();
     }
@@ -47,6 +49,7 @@ public class SqlJetMutex implements ISqlJetMutex {
     /* (non-Javadoc)
      * @see org.tmatesoft.sqljet.core.ISqlJetMutex#held()
      */
+	@Override
     public boolean held() {
         return lock.isLocked();
     }
@@ -54,6 +57,7 @@ public class SqlJetMutex implements ISqlJetMutex {
     /* (non-Javadoc)
      * @see org.tmatesoft.sqljet.core.ISqlJetMutex#leave()
      */
+	@Override
     public void leave() {
         lock.unlock();
     }

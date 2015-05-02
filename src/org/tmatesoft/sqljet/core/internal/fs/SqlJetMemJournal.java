@@ -43,6 +43,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#isMemJournal()
      */
+	@Override
     public boolean isMemJournal() {
         return true;
     }
@@ -91,6 +92,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#read(byte[], int, long)
      */
+	@Override
     public int read(ISqlJetMemoryPointer buffer, int amount, long offset) {
 
         SqlJetMemJournal p = this;
@@ -135,6 +137,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#write(byte[], int, long)
      */
+	@Override
     public void write(ISqlJetMemoryPointer buffer, int amount, long offset) {
 
         SqlJetMemJournal p = this;
@@ -182,6 +185,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#truncate(long)
      */
+	@Override
     public void truncate(long size) {
         SqlJetMemJournal p = this;
 
@@ -201,6 +205,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#close()
      */
+	@Override
     public void close() {
         truncate(0);
     }
@@ -210,6 +215,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#sync(java.util.Set)
      */
+	@Override
     public void sync(Set<SqlJetSyncFlags> syncFlags) {
     }
 
@@ -218,6 +224,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#fileSize()
      */
+	@Override
     public long fileSize() {
         SqlJetMemJournal p = this;
         return p.endpoint.iOffset;
@@ -228,6 +235,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#checkReservedLock()
      */
+	@Override
     public boolean checkReservedLock() {
         return false;
     }
@@ -237,6 +245,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#deviceCharacteristics()
      */
+	@Override
     public Set<SqlJetDeviceCharacteristics> deviceCharacteristics() {
         return empty;
     }
@@ -249,6 +258,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#getFileType()
      */
+	@Override
     public SqlJetFileType getFileType() {
         return null;
     }
@@ -258,6 +268,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#getLockType()
      */
+	@Override
     public SqlJetLockType getLockType() {
         return null;
     }
@@ -267,6 +278,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#getPermissions()
      */
+	@Override
     public Set<SqlJetFileOpenPermission> getPermissions() {
         return null;
     }
@@ -278,6 +290,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * org.tmatesoft.sqljet.core.ISqlJetFile#lock(org.tmatesoft.sqljet.core.
      * SqlJetLockType)
      */
+	@Override
     public boolean lock(SqlJetLockType lockType) {
         return false;
     }
@@ -287,6 +300,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetFile#sectorSize()
      */
+	@Override
     public int sectorSize() {
         return 0;
     }
@@ -298,6 +312,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
      * org.tmatesoft.sqljet.core.ISqlJetFile#unlock(org.tmatesoft.sqljet.core
      * .SqlJetLockType)
      */
+	@Override
     public boolean unlock(SqlJetLockType lockType) {
         return false;
     }

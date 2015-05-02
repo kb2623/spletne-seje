@@ -125,7 +125,7 @@ public class SqlJetBtreeShared {
     SqlJetBtreeShared pNext;
 
     /** List of locks held on this shared-btree struct */
-    List<SqlJetBtreeLock> pLock = new LinkedList<SqlJetBtreeLock>();
+    List<SqlJetBtreeLock> pLock = new LinkedList<>();
 
     /** Btree with an EXCLUSIVE lock on the whole db */
     SqlJetBtree pExclusive;
@@ -140,6 +140,7 @@ public class SqlJetBtreeShared {
      *
      * If disk I/O is omitted (meaning that the database is stored purely in
      * memory) then there is no pending byte.
+	 * @return 
      */
     public int PENDING_BYTE_PAGE() {
         return (int) (ISqlJetFile.PENDING_BYTE / pageSize) + 1;
@@ -148,6 +149,7 @@ public class SqlJetBtreeShared {
     /**
      * The following value is the maximum cell size assuming a maximum page size
      * give above.
+	 * @return 
      */
     public int MX_CELL_SIZE() {
         return (pageSize - 8);
@@ -158,6 +160,7 @@ public class SqlJetBtreeShared {
      * assumes a minimum cell size of 6 bytes (4 bytes for the cell itself plus
      * 2 bytes for the index to the cell in the page header). Such small cells
      * will be rare, but they are possible.
+	 * @return 
      */
     public int MX_CELL() {
         return ((pageSize - 8) / 6);
@@ -177,6 +180,8 @@ public class SqlJetBtreeShared {
      * pgno is returned. So (pgno==PTRMAP_PAGENO(pgsz, pgno)) can be used to
      * test if pgno is a pointer-map page. PTRMAP_ISPAGE implements this test.
      *
+	 * @param pgno
+	 * @return 
      */
     public int PTRMAP_PAGENO(int pgno) {
         return ptrmapPageno(pgno);
@@ -236,6 +241,10 @@ public class SqlJetBtreeShared {
      * This routine updates the pointer map entry for page number 'key' so that
      * it maps to type 'eType' and parent page number 'pgno'. An error code is
      * returned if something goes wrong, otherwise SQLITE_OK.
+	 * @param key
+	 * @param eType
+	 * @param parent
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void ptrmapPut(int key, short eType, int parent) throws SqlJetException {
         ISqlJetPage pDbPage; /* The pointer map page */
@@ -275,6 +284,10 @@ public class SqlJetBtreeShared {
      * This routine retrieves the pointer map entry for page 'key', writing the
      * type and parent page number to *pEType and *pPgno respectively. An error
      * code is returned if something goes wrong, otherwise SQLITE_OK.
+	 * @param key
+	 * @param pEType
+	 * @param pPgno
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void ptrmapGet(int key, short[] pEType, int[] pPgno) throws SqlJetException {
         ISqlJetPage pDbPage; /* The pointer map page */
@@ -361,6 +374,10 @@ public class SqlJetBtreeShared {
      * anywhere on the free-list, then it is guarenteed to be returned. This is
      * only used by auto-vacuum databases when allocating a new table.
      *
+	 * @param pPgno
+	 * @param nearby
+	 * @param exact
+	 * @return 
      * @throws SqlJetException
      */
     public SqlJetMemPage allocatePage(int[] pPgno, int nearby, boolean exact) throws SqlJetException {
@@ -674,6 +691,8 @@ public class SqlJetBtreeShared {
      * an error, and that nFin is the number of pages the database file will
      * contain after this process is complete.
      *
+	 * @param nFin
+	 * @param iLastPg
      * @throws SqlJetException
      */
     public void incrVacuumStep(int nFin, int iLastPg) throws SqlJetException {
@@ -764,6 +783,7 @@ public class SqlJetBtreeShared {
      * database has been reorganized so that only the first *pnTrunc pages are
      * in use.
      *
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void autoVacuumCommit() throws SqlJetException {
 
@@ -853,8 +873,9 @@ public class SqlJetBtreeShared {
      * root-page iRoot. Usually, this is called just before cursor pExcept is
      * used to modify the table (BtreeDelete() or BtreeInsert()).
      *
-     * @param i
-     * @param j
+	 * @param iRoot
+	 * @param pExcept
+	 * @return 
      * @throws SqlJetException
      */
     public boolean saveAllCursors(int iRoot, SqlJetBtreeCursor pExcept) throws SqlJetException {
@@ -1099,6 +1120,8 @@ public class SqlJetBtreeShared {
     * to an overflow page, insert an entry into the pointer-map
     * for the overflow page.
     *
+	 * @param pPage
+	 * @param pCell
     * @throws SqlJetException
     */
 	public void ptrmapPutOvflPtr(SqlJetMemPage pPage, ISqlJetMemoryPointer pCell) throws SqlJetException {

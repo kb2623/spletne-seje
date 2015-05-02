@@ -32,11 +32,7 @@ public interface OptionHandlerFilter {
     /**
      * Print all defined options in the example.
      */
-    OptionHandlerFilter ALL = new OptionHandlerFilter() {
-        public boolean select(OptionHandler o) {
-            return true;
-        }
-    };
+    OptionHandlerFilter ALL = (OptionHandler o) -> true;
 
     /**
      * Print all {@linkplain Option#hidden() non-hidden} options.
@@ -44,18 +40,10 @@ public interface OptionHandlerFilter {
      * <p>
      * This would only be useful with a small number of options.
      */
-    OptionHandlerFilter PUBLIC = new OptionHandlerFilter() {
-        public boolean select(OptionHandler o) {
-            return !o.option.hidden();
-        }
-    };
+    OptionHandlerFilter PUBLIC = (OptionHandler o) -> !o.option.hidden();
 
     /**
      * Print all {@linkplain Option#required() required} options.
      */
-    OptionHandlerFilter REQUIRED = new OptionHandlerFilter() {
-        public boolean select(OptionHandler o) {
-            return o.option.required();
-        }
-    };
+    OptionHandlerFilter REQUIRED = (OptionHandler o) -> o.option.required();
 }

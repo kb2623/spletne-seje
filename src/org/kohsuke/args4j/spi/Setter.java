@@ -13,6 +13,7 @@ import java.lang.reflect.AnnotatedElement;
  * This abstracts away the difference between a field and a setter method, 
  * which object we are setting the value to,
  * and/or how we handle collection fields differently.
+ * @param <T>
  * @see Getter
  * @author Kohsuke Kawaguchi
  */
@@ -23,11 +24,14 @@ public interface Setter<T> {
      * <p>
      * A {@link Setter} object has an implicit knowledge about the property it's setting,
      * and the instance of the option bean.
+	 * @param value
+	 * @throws org.kohsuke.args4j.CmdLineException
      */
     void addValue(T value) throws CmdLineException;
 
     /**
      * Gets the type of the underlying method/field.
+	 * @return 
      */
     Class<T> getType();
     
@@ -44,6 +48,7 @@ public interface Setter<T> {
      * specified multiple times.  In many cases, this is a no-op--but when your shell script expands
      * multiple environment variables (each of which may contain options), tolerating such 
      * redundant options can be useful.
+	 * @return 
      */
     boolean isMultiValued();
 
@@ -70,6 +75,7 @@ public interface Setter<T> {
      *
      * <p>
      * This enables {@link OptionHandler} to further tweak its behavior based on additional annotations.
+	 * @return 
      */
     AnnotatedElement asAnnotatedElement();
 }

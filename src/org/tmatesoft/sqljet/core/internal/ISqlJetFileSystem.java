@@ -103,6 +103,7 @@ public interface ISqlJetFileSystem {
      *              must invite its own temporary name for the file. Whenever the 
      *              filename parameter is NULL it will also be the case that the
      *              flags parameter will include {@link SqlJetFileOpenPermission#DELETEONCLOSE}.
+	 * @param type
      *              
      * @param permissions   Exactly one of the {@link SqlJetFileOpenPermission#READWRITE} and 
      *   {@link SqlJetFileOpenPermission#READONLY} flags must be set, and 
@@ -124,6 +125,7 @@ public interface ISqlJetFileSystem {
 
     /** 
     ** Open a memory journal file.
+	 * @return 
     */
     ISqlJetFile memJournalOpen();
 
@@ -134,6 +136,7 @@ public interface ISqlJetFileSystem {
      * @param path
      * @param sync
      * @return
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     boolean delete(final File path, final boolean sync) throws SqlJetException;
 

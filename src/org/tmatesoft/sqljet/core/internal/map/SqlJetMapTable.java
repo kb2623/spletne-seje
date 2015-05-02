@@ -21,9 +21,7 @@ import org.tmatesoft.sqljet.core.SqlJetException;
 import org.tmatesoft.sqljet.core.internal.ISqlJetBtree;
 import org.tmatesoft.sqljet.core.map.ISqlJetMapTable;
 import org.tmatesoft.sqljet.core.map.ISqlJetMapTableCursor;
-import org.tmatesoft.sqljet.core.map.ISqlJetMapTransaction;
 import org.tmatesoft.sqljet.core.map.SqlJetMapDb;
-import org.tmatesoft.sqljet.core.table.engine.ISqlJetEngineSynchronized;
 import org.tmatesoft.sqljet.core.table.engine.SqlJetEngine;
 
 /**
@@ -56,12 +54,11 @@ public class SqlJetMapTable implements ISqlJetMapTable {
      * 
      * @see org.tmatesoft.sqljet.core.map.ISqlJetMapTable#open()
      */
+	@Override
     public ISqlJetMapTableCursor getCursor() throws SqlJetException {
-        return (ISqlJetMapTableCursor) mapDb.runSynchronized(new ISqlJetEngineSynchronized() {
-            public Object runSynchronized(SqlJetEngine engine) throws SqlJetException {
-                return new SqlJetMapTableCursor(mapDb, btree, mapDef, writable);
-            }
-        });
+        return (ISqlJetMapTableCursor) mapDb.runSynchronized((
+			SqlJetEngine engine) ->
+			new SqlJetMapTableCursor(mapDb, btree, mapDef, writable));
     }
 
     /*
@@ -70,17 +67,17 @@ public class SqlJetMapTable implements ISqlJetMapTable {
      * @see org.tmatesoft.sqljet.core.map.ISqlJetMapTable#put(long,
      * java.lang.Object[])
      */
+	@Override
     public long put(final long key, final Object... values) throws SqlJetException {
-        return (Long) mapDb.runWriteTransaction(new ISqlJetMapTransaction() {
-            public Object run(SqlJetMapDb mapDb) throws SqlJetException {
-                final ISqlJetMapTableCursor cursor = getCursor();
-                try {
-                    return cursor.put(key, values);
-                } finally {
-                    cursor.close();
-                }
-            }
-        });
+        return (Long) mapDb.runWriteTransaction((
+			SqlJetMapDb mapDb1) -> {
+			final ISqlJetMapTableCursor cursor = getCursor();
+			try {
+				return cursor.put(key, values);
+			} finally {
+				cursor.close();
+			}
+		});
     }
 
     /*
@@ -88,21 +85,21 @@ public class SqlJetMapTable implements ISqlJetMapTable {
      * 
      * @see org.tmatesoft.sqljet.core.map.ISqlJetMapTable#get(long)
      */
+	@Override
     public Object[] get(final long key) throws SqlJetException {
-        return (Object[]) mapDb.runReadTransaction(new ISqlJetMapTransaction() {
-            public Object run(SqlJetMapDb mapDb) throws SqlJetException {
-                final ISqlJetMapTableCursor cursor = getCursor();
-                try {
-                    if (cursor.goToKey(key)) {
-                        return cursor.getValue();
-                    } else {
-                        return null;
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-        });
+        return (Object[]) mapDb.runReadTransaction((
+			SqlJetMapDb mapDb1) -> {
+			final ISqlJetMapTableCursor cursor = getCursor();
+			try {
+				if (cursor.goToKey(key)) {
+					return cursor.getValue();
+				} else {
+					return null;
+				}
+			} finally {
+				cursor.close();
+			}
+		});
     }
 
 }

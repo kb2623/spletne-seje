@@ -54,11 +54,8 @@ public class Starter {
 				m = clazz.getMethod("run", (Class[]) null);
 				m.invoke(bean, (Object[]) null);
 				couldInvoke = true;
-			} catch (SecurityException e) {
-			} catch (IllegalArgumentException e) {
-			} catch (NoSuchMethodException e) {
-			} catch (IllegalAccessException e) {
-			} catch (InvocationTargetException e) {
+			} catch (SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException |
+				InvocationTargetException e) {
 			}
 
 			// try starting   run(String[])
@@ -66,12 +63,7 @@ public class Starter {
 				m = clazz.getMethod("run", String[].class);		
 				m.invoke(bean, new Object[]{args});
 				couldInvoke = true;
-			} catch (SecurityException e) {
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-			} catch (IllegalAccessException e) {
-			} catch (InvocationTargetException e) {
+			} catch (SecurityException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
 			}
 		} catch (ClassNotFoundException e) {
 			// wrong classpath setting
@@ -89,10 +81,9 @@ public class Starter {
 			System.err.println();
 			if (parser != null)
 				parser.printUsage(System.err);
-		} catch (Exception e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			// Must be an unhandled business exception, so we can only
 			// print stacktraces.
-			e.printStackTrace();
 		}
 	}
 

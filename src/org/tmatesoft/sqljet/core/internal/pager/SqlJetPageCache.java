@@ -158,6 +158,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#open(int, int, boolean,
      * org.tmatesoft.sqljet.core.ISqlJetPageCallback)
      */
+	@Override
     public void open(int szPage, boolean purgeable, ISqlJetPageCallback stress) {
         this.szPage = szPage;
         this.bPurgeable = purgeable;
@@ -185,6 +186,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#fetch(int, boolean)
      */
+	@Override
     public ISqlJetPage fetch(int pgno, boolean createFlag) throws SqlJetException {
 
         SqlJetPage pPage = null;
@@ -249,6 +251,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * org.tmatesoft.sqljet.core.ISqlJetPageCache#release(org.tmatesoft.sqljet
      * .core.ISqlJetPage)
      */
+	@Override
     public void release(ISqlJetPage page) {
         SqlJetPage p = (SqlJetPage) page;
         assert (p.nRef > 0);
@@ -273,6 +276,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * org.tmatesoft.sqljet.core.ISqlJetPageCache#drop(org.tmatesoft.sqljet.
      * core.ISqlJetPage)
      */
+	@Override
     public void drop(ISqlJetPage page) {
         SqlJetPage p = (SqlJetPage) page;
         assert (p.nRef >= 1);
@@ -293,6 +297,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * org.tmatesoft.sqljet.core.ISqlJetPageCache#makeDirty(org.tmatesoft.sqljet
      * .core.ISqlJetPage)
      */
+	@Override
     public void makeDirty(ISqlJetPage page) {
         SqlJetPage p = (SqlJetPage) page;
         p.flags.remove(SqlJetPageFlags.DONT_WRITE);
@@ -310,6 +315,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * org.tmatesoft.sqljet.core.ISqlJetPageCache#makeClean(org.tmatesoft.sqljet
      * .core.ISqlJetPage)
      */
+	@Override
     public void makeClean(ISqlJetPage page) {
         SqlJetPage p = (SqlJetPage) page;
         if (p.flags.contains(SqlJetPageFlags.DIRTY)) {
@@ -327,6 +333,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#cleanAll()
      */
+	@Override
     public void cleanAll() {
         ISqlJetPage p;
         while ((p = pDirty) != null) {
@@ -339,6 +346,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#clearSyncFlags()
      */
+	@Override
     public void clearSyncFlags() {
         SqlJetPage p;
         for (p = pDirty; p != null; p = p.pDirtyNext) {
@@ -354,6 +362,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * org.tmatesoft.sqljet.core.ISqlJetPageCache#move(org.tmatesoft.sqljet.
      * core.ISqlJetPage, int)
      */
+	@Override
     public void move(ISqlJetPage page, int newPgno) {
         SqlJetPage p = (SqlJetPage) page;
         assert (p.nRef > 0);
@@ -371,6 +380,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#truncate(int)
      */
+	@Override
     public void truncate(int pgno) {
         if (pCache != null) {
             SqlJetPage p;
@@ -395,6 +405,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#close()
      */
+	@Override
     public void close() {
         if (pCache != null) {
             pCache.destroy();
@@ -406,6 +417,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#clear()
      */
+	@Override
     public void clear() {
         truncate(0);
     }
@@ -481,6 +493,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#getDirtyList()
      */
+	@Override
     public ISqlJetPage getDirtyList() {
         SqlJetPage p;
         for (p = pDirty; p != null; p = p.pDirtyNext) {
@@ -494,6 +507,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#getRefCount()
      */
+	@Override
     public int getRefCount() {
         return nRef;
     }
@@ -503,6 +517,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#getPageCount()
      */
+	@Override
     public int getPageCount() {
         int nPage = 0;
         if (pCache != null) {
@@ -516,6 +531,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#getCachesize()
      */
+	@Override
     public int getCachesize() {
         return nMax;
     }
@@ -525,6 +541,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPageCache#setCacheSize(int)
      */
+	@Override
     public void setCacheSize(int mxPage) {
         nMax = mxPage;
     }
@@ -536,6 +553,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
      * org.tmatesoft.sqljet.core.ISqlJetPageCache#iterate(org.tmatesoft.sqljet
      * .core.ISqlJetPageCallback)
      */
+	@Override
     public void iterate(ISqlJetPageCallback iter) throws SqlJetException {
         SqlJetPage pDirty;
         for (pDirty = this.pDirty; pDirty != null; pDirty = pDirty.pDirtyNext) {
@@ -546,9 +564,9 @@ public class SqlJetPageCache implements ISqlJetPageCache {
     class PCache {
 
         /** Hash table for fast lookup by key */
-        private Map<Integer, SqlJetPage> apHash = new LinkedHashMap<Integer, SqlJetPage>();
+        private Map<Integer, SqlJetPage> apHash = new LinkedHashMap<>();
 
-        private Set<Integer> unpinned = new LinkedHashSet<Integer>();
+        private Set<Integer> unpinned = new LinkedHashSet<>();
 
         /** Largest key seen since xTruncate() */
         private int iMaxKey;
@@ -711,8 +729,7 @@ public class SqlJetPageCache implements ISqlJetPageCache {
                         l.add(i);
                     }
                 }
-                for (Integer i : l)
-                    apHash.remove(i);
+				l.stream().forEach((i) -> apHash.remove(i));
                 iMaxKey = iLimit - 1;
             }
         }

@@ -21,10 +21,8 @@ import org.tmatesoft.sqljet.core.SqlJetException;
 import org.tmatesoft.sqljet.core.internal.ISqlJetBtree;
 import org.tmatesoft.sqljet.core.map.ISqlJetMapIndex;
 import org.tmatesoft.sqljet.core.map.ISqlJetMapIndexCursor;
-import org.tmatesoft.sqljet.core.map.ISqlJetMapTransaction;
 import org.tmatesoft.sqljet.core.map.SqlJetMapDb;
 import org.tmatesoft.sqljet.core.schema.ISqlJetIndexDef;
-import org.tmatesoft.sqljet.core.table.engine.ISqlJetEngineSynchronized;
 import org.tmatesoft.sqljet.core.table.engine.SqlJetEngine;
 
 /**
@@ -42,7 +40,7 @@ public class SqlJetMapIndex implements ISqlJetMapIndex {
     /**
      * @param mapDb
      * @param btree
-     * @param mapTableDef
+	 * @param indexDef
      * @param writable
      */
     public SqlJetMapIndex(final SqlJetMapDb mapDb, final ISqlJetBtree btree, ISqlJetIndexDef indexDef, boolean writable) {
@@ -57,12 +55,11 @@ public class SqlJetMapIndex implements ISqlJetMapIndex {
      * 
      * @see org.tmatesoft.sqljet.core.map.ISqlJetMapTable#open()
      */
+	@Override
     public ISqlJetMapIndexCursor getCursor() throws SqlJetException {
-        return (ISqlJetMapIndexCursor) mapDb.runSynchronized(new ISqlJetEngineSynchronized() {
-            public Object runSynchronized(SqlJetEngine engine) throws SqlJetException {
-                return new SqlJetMapIndexCursor(mapDb, btree, indexDef, writable);
-            }
-        });
+        return (ISqlJetMapIndexCursor) mapDb.runSynchronized((
+			SqlJetEngine engine) ->
+			new SqlJetMapIndexCursor(mapDb, btree, indexDef, writable));
     }
 
     /*
@@ -71,19 +68,19 @@ public class SqlJetMapIndex implements ISqlJetMapIndex {
      * @see org.tmatesoft.sqljet.core.map.ISqlJetMapTable#put(long,
      * java.lang.Object[])
      */
+	@Override
     public void put(final Object[] key, final Long value) throws SqlJetException {
         if (writable) {
-            mapDb.runWriteTransaction(new ISqlJetMapTransaction() {
-                public Object run(SqlJetMapDb mapDb) throws SqlJetException {
-                    final ISqlJetMapIndexCursor cursor = getCursor();
-                    try {
-                        cursor.put(key, value);
-                        return null;
-                    } finally {
-                        cursor.close();
-                    }
-                }
-            });
+            mapDb.runWriteTransaction((
+				SqlJetMapDb mapDb1) -> {
+				final ISqlJetMapIndexCursor cursor = getCursor();
+				try {
+					cursor.put(key, value);
+					return null;
+				} finally {
+					cursor.close();
+				}
+			});
         } else {
             throw new SqlJetException("Read-only");
         }
@@ -94,21 +91,21 @@ public class SqlJetMapIndex implements ISqlJetMapIndex {
      * 
      * @see org.tmatesoft.sqljet.core.map.ISqlJetMapTable#get(long)
      */
+	@Override
     public Long get(final Object[] key) throws SqlJetException {
-        return (Long) mapDb.runReadTransaction(new ISqlJetMapTransaction() {
-            public Object run(SqlJetMapDb mapDb) throws SqlJetException {
-                final ISqlJetMapIndexCursor cursor = getCursor();
-                try {
-                    if (cursor.goToKey(key)) {
-                        return cursor.getValue();
-                    } else {
-                        return null;
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-        });
+        return (Long) mapDb.runReadTransaction((
+			SqlJetMapDb mapDb1) -> {
+			final ISqlJetMapIndexCursor cursor = getCursor();
+			try {
+				if (cursor.goToKey(key)) {
+					return cursor.getValue();
+				} else {
+					return null;
+				}
+			} finally {
+				cursor.close();
+			}
+		});
     }
 
 }

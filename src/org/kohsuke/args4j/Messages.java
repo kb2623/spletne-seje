@@ -26,11 +26,13 @@ enum Messages implements Localizable {
     DEFAULT_VALUE
     ;
 
+	@Override
     public String formatWithLocale( Locale locale, Object... args ) {
         ResourceBundle localized = ResourceBundle.getBundle(Messages.class.getName(), locale);
         return MessageFormat.format(localized.getString(name()),args);
     }
     
+	@Override
     public String format( Object... args ) {
         return formatWithLocale(Locale.getDefault(),args);
     }

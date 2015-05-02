@@ -30,9 +30,7 @@ import org.tmatesoft.sqljet.core.schema.ISqlJetIndexDef;
 import org.tmatesoft.sqljet.core.schema.ISqlJetTableDef;
 import org.tmatesoft.sqljet.core.schema.SqlJetConflictAction;
 import org.tmatesoft.sqljet.core.table.ISqlJetCursor;
-import org.tmatesoft.sqljet.core.table.ISqlJetRunnableWithLock;
 import org.tmatesoft.sqljet.core.table.ISqlJetTable;
-import org.tmatesoft.sqljet.core.table.ISqlJetTransaction;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 import org.tmatesoft.sqljet.core.table.SqlJetScope;
 
@@ -68,15 +66,18 @@ public class SqlJetTable implements ISqlJetTable {
      * 
      * @see org.tmatesoft.sqljet.core.table.ISqlJetTable#getDataBase()
      */
+	@Override
     public SqlJetDb getDataBase() {
         return db;
     }
 
+	@Override
     public String getPrimaryKeyIndexName() throws SqlJetException {
         final ISqlJetTableDef definition = getDefinition();
         return definition.isRowIdPrimaryKey() ? null : definition.getPrimaryKeyIndexName();
     }
 
+	@Override
     public ISqlJetTableDef getDefinition() throws SqlJetException {
         return btree.getSchema().getTable(tableName);
     };
@@ -87,6 +88,7 @@ public class SqlJetTable implements ISqlJetTable {
      * @see
      * org.tmatesoft.sqljet.core.table.ISqlJetTable#getIndexes(java.lang.String)
      */
+	@Override
     public Set<ISqlJetIndexDef> getIndexesDefs() throws SqlJetException {
         return btree.getSchema().getIndexes(tableName);
     }
@@ -96,15 +98,16 @@ public class SqlJetTable implements ISqlJetTable {
      * 
      * @see org.tmatesoft.sqljet.core.table.ISqlJetTable#getIndexNames()
      */
+	@Override
     public Set<String> getIndexesNames() throws SqlJetException {
-        final Set<String> result = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        final Set<String> result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         final Set<ISqlJetIndexDef> indexesDefs = getIndexesDefs();
         if (null != indexesDefs) {
-            for (final ISqlJetIndexDef indexDef : indexesDefs) {
-                if (null != indexDef) {
-                    result.add(indexDef.getName());
-                }
-            }
+			indexesDefs.stream().
+				filter((indexDef) -> (null != indexDef)).
+				forEach((indexDef) -> {
+					result.add(indexDef.getName());
+			});
         }
         return Collections.unmodifiableSet(result);
     }
@@ -115,6 +118,7 @@ public class SqlJetTable implements ISqlJetTable {
      * @see
      * org.tmatesoft.sqljet.core.table.ISqlJetTable#getIndex(java.lang.String)
      */
+	@Override
     public ISqlJetIndexDef getIndexDef(String name) throws SqlJetException {
         if (null == name) {
             name = getPrimaryKeyIndexName();
@@ -133,74 +137,63 @@ public class SqlJetTable implements ISqlJetTable {
         return null;
     }
 
+	@Override
     public ISqlJetCursor open() throws SqlJetException {
-        return (ISqlJetCursor) db.runWithLock(new ISqlJetRunnableWithLock() {
-            public Object runWithLock(SqlJetDb db) throws SqlJetException {
-                return new SqlJetTableDataCursor(new SqlJetBtreeDataTable(btree, tableName, write), db);
-            }
-        });
+        return (ISqlJetCursor) db.runWithLock((SqlJetDb db1) ->
+			new SqlJetTableDataCursor(new SqlJetBtreeDataTable(btree, tableName, write),db1)
+		);
     }
 
+	@Override
     public ISqlJetCursor lookup(final String indexName, final Object... key) throws SqlJetException {
         final Object[] k = SqlJetUtility.adjustNumberTypes(key);
-        return (ISqlJetCursor) db.runWithLock(new ISqlJetRunnableWithLock() {
-            public Object runWithLock(SqlJetDb db) throws SqlJetException {
-                final SqlJetBtreeDataTable table = new SqlJetBtreeDataTable(btree, tableName, write);
-                checkIndexName(indexName, table);
-                return new SqlJetIndexScopeCursor(table, db, indexName, k, k);
-            }
-        });
+        return (ISqlJetCursor) db.runWithLock((SqlJetDb db1) -> {
+			final SqlJetBtreeDataTable table = new SqlJetBtreeDataTable(btree, tableName, write);
+			checkIndexName(indexName, table);
+			return new SqlJetIndexScopeCursor(table, db1, indexName, k, k);
+		});
     }
 
     private Object runWriteTransaction(final ISqlJetTableRun op) throws SqlJetException {
-        return db.runWriteTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                final ISqlJetBtreeDataTable table = new SqlJetBtreeDataTable(btree, tableName, write);
-                try {
-                    return op.run(table);
-                } finally {
-                    table.close();
-                }
-            }
-        });
+        return db.runWriteTransaction((SqlJetDb db1) -> {
+			final ISqlJetBtreeDataTable table = new SqlJetBtreeDataTable(btree, tableName, write);
+			try {
+				return op.run(table);
+			} finally {
+				table.close();
+			}
+		});
     }
 
+	@Override
     public long insert(final Object... values) throws SqlJetException {
         return insertOr(null, values);
     }
 
+	@Override
     public long insertByFieldNames(final Map<String, Object> values) throws SqlJetException {
         return insertByFieldNamesOr(null, values);
     }
 
+	@Override
     public long insertWithRowId(final long rowId, final Object... values) throws SqlJetException {
         return insertWithRowIdOr(null, rowId, values);
     }
 
+	@Override
     public long insertOr(final SqlJetConflictAction onConflict, final Object... values) throws SqlJetException {
-        return (Long) runWriteTransaction(new ISqlJetTableRun() {
-            public Object run(ISqlJetBtreeDataTable table) throws SqlJetException {
-                return table.insert(onConflict, values);
-            }
-        });
+        return (Long) runWriteTransaction((ISqlJetBtreeDataTable table) -> table.insert(onConflict, values));
     }
 
-    public long insertByFieldNamesOr(final SqlJetConflictAction onConflict, final Map<String, Object> values)
-            throws SqlJetException {
-        return (Long) runWriteTransaction(new ISqlJetTableRun() {
-            public Object run(ISqlJetBtreeDataTable table) throws SqlJetException {
-                return table.insert(onConflict, values);
-            }
-        });
+	@Override
+    public long insertByFieldNamesOr(final SqlJetConflictAction onConflict, final Map<String, Object> values) throws SqlJetException {
+        return (Long) runWriteTransaction((ISqlJetBtreeDataTable table) -> table.insert(onConflict, values));
     }
 
+	@Override
     public long insertWithRowIdOr(final SqlJetConflictAction onConflict, final long rowId, final Object... values)
             throws SqlJetException {
-        return (Long) runWriteTransaction(new ISqlJetTableRun() {
-            public Object run(ISqlJetBtreeDataTable table) throws SqlJetException {
-                return table.insertWithRowId(onConflict, rowId, values);
-            }
-        });
+        return (Long) runWriteTransaction((ISqlJetBtreeDataTable table) -> table.insertWithRowId(onConflict, rowId, values));
     }
 
     /*
@@ -208,16 +201,16 @@ public class SqlJetTable implements ISqlJetTable {
      * 
      * @see org.tmatesoft.sqljet.core.table.ISqlJetTable#order(java.lang.String)
      */
+	@Override
     public ISqlJetCursor order(final String indexName) throws SqlJetException {
-        return (ISqlJetCursor) db.runWithLock(new ISqlJetRunnableWithLock() {
-            public Object runWithLock(SqlJetDb db) throws SqlJetException {
-                final SqlJetBtreeDataTable table = new SqlJetBtreeDataTable(btree, tableName, write);
-                checkIndexName(indexName, table);
-                return new SqlJetIndexOrderCursor(table, db, indexName);
-            }
-        });
+        return (ISqlJetCursor) db.runWithLock((SqlJetDb db1) -> {
+			final SqlJetBtreeDataTable table = new SqlJetBtreeDataTable(btree, tableName, write);
+			checkIndexName(indexName, table);
+			return new SqlJetIndexOrderCursor(table, db1, indexName);
+		});
     }
 
+	@Override
     public ISqlJetCursor scope(final String indexName, final Object[] firstKey, final Object[] lastKey) throws SqlJetException {
         return scope(indexName, new SqlJetScope(firstKey, lastKey));
     }
@@ -228,28 +221,28 @@ public class SqlJetTable implements ISqlJetTable {
      * @see org.tmatesoft.sqljet.core.table.ISqlJetTable#scope(java.lang.String,
      * java.lang.Object[], java.lang.Object[])
      */
+	@Override
     public ISqlJetCursor scope(final String indexName, SqlJetScope scope)  throws SqlJetException {
         final SqlJetScope adjustedScope = SqlJetUtility.adjustScopeNumberTypes(scope);
-        return (ISqlJetCursor) db.runWithLock(new ISqlJetRunnableWithLock() {
-            public Object runWithLock(SqlJetDb db) throws SqlJetException {
-                final SqlJetBtreeDataTable table = new SqlJetBtreeDataTable(btree, tableName, write);
-                checkIndexName(indexName, table);
-                if (isNeedReverse(getIndexTable(indexName, table), adjustedScope)) {
-                    return new SqlJetReverseOrderCursor(new SqlJetIndexScopeCursor(table, db, indexName, adjustedScope.reverse()));
-                } else {
-                    return new SqlJetIndexScopeCursor(table, db, indexName, adjustedScope);
-                }
-            }
-        });
+        return (ISqlJetCursor) db.runWithLock((SqlJetDb db1) -> {
+			final SqlJetBtreeDataTable table = new SqlJetBtreeDataTable(btree, tableName, write);
+			checkIndexName(indexName, table);
+			if (isNeedReverse(getIndexTable(indexName, table), adjustedScope)) {
+				return new SqlJetReverseOrderCursor(new SqlJetIndexScopeCursor(table,
+					db1, indexName, adjustedScope.reverse()));
+			} else {
+				return new SqlJetIndexScopeCursor(table, db1, indexName,
+					adjustedScope);
+			}
+		});
     }
 
+	@Override
     public void clear() throws SqlJetException {
-        runWriteTransaction(new ISqlJetTableRun() {
-            public Object run(ISqlJetBtreeDataTable table) throws SqlJetException {
-                table.clear();
-                return null;
-            }
-        });
+        runWriteTransaction((ISqlJetBtreeDataTable table) -> {
+			table.clear();
+			return null;
+		});
     }
 
     /**

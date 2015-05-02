@@ -50,11 +50,14 @@ public interface ISqlJetTable {
      * 
      * @return the primaryKeyIndex name of index or null if table haven't
      *         primary key or have INTEGER PRIMARY KEY.
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     String getPrimaryKeyIndexName() throws SqlJetException;
 
     /**
      * Get table's schema definition.
+	 * @return 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     ISqlJetTableDef getDefinition() throws SqlJetException;
 
@@ -236,6 +239,7 @@ public interface ISqlJetTable {
      * @param values
      *            Values for the new record.
      * @return ROWID of inserted record.
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     long insert(Object... values) throws SqlJetException;
 
@@ -312,6 +316,7 @@ public interface ISqlJetTable {
      *            ROWID of record.
      * @param values
      *            Values for the new record.
+	 * @return 
      * @throws SqlJetException
      */
     long insertWithRowId(long rowId, Object... values) throws SqlJetException;

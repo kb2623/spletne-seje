@@ -142,6 +142,10 @@ public class OptionHandlerRegistry {
     /**
      * Creates an {@link OptionHandler} that handles the given {@link Option} annotation
      * and the {@link Setter} instance.
+	 * @param parser
+	 * @param o
+	 * @param setter
+	 * @return 
      */
    @SuppressWarnings("unchecked")
     protected OptionHandler createOptionHandler(CmdLineParser parser, OptionDef o, Setter setter) {
@@ -169,11 +173,8 @@ public class OptionHandlerRegistry {
 
         try {
             return handlerType.newInstance(parser,o,setter);
-        } catch (InstantiationException e) {
-            throw new IllegalAnnotationError(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalAnnotationError(e);
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException |
+			InvocationTargetException e) {
             throw new IllegalAnnotationError(e);
         }
     }

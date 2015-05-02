@@ -104,6 +104,8 @@ public class SqlJetPreparedStatement {
     /**
      * Executes the statement or advances to the next row of the query results.
      * 
+	 * @return 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      * @returns true if query results are available
      */
     public boolean step() throws SqlJetException {

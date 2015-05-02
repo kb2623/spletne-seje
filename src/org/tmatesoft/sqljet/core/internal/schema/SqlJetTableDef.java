@@ -55,17 +55,15 @@ public class SqlJetTableDef implements ISqlJetTableDef {
     private String primaryKeyIndexName;
     private String rowIdPrimaryKeyColumnName;
     private int rowIdPrimaryKeyColumnIndex = -1;
-    private final List<String> primaryKeyColumns = new ArrayList<String>();
+    private final List<String> primaryKeyColumns = new ArrayList<>();
 
     // index name -> column index constraint
-    private final Map<String, SqlJetColumnIndexConstraint> columnConstraintsIndexCache = new TreeMap<String, SqlJetColumnIndexConstraint>(
-            String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, SqlJetColumnIndexConstraint> columnConstraintsIndexCache = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     // index name -> table index constraint
-    private final Map<String, SqlJetTableIndexConstraint> tableConstrainsIndexCache = new TreeMap<String, SqlJetTableIndexConstraint>(
-            String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, SqlJetTableIndexConstraint> tableConstrainsIndexCache = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    private final List<ISqlJetColumnDef> notNullColumnsCache = new ArrayList<ISqlJetColumnDef>();
+    private final List<ISqlJetColumnDef> notNullColumnsCache = new ArrayList<>();
 
     SqlJetTableDef(String name, String databaseName, boolean temporary, boolean ifNotExists,
             List<ISqlJetColumnDef> columns, List<ISqlJetTableConstraint> constraints, int page, long rowid) throws SqlJetException {
@@ -91,8 +89,8 @@ public class SqlJetTableDef implements ISqlJetTableDef {
         quotedName = SqlParser.quotedId(nameNode);
         databaseName = nameNode.getChildCount() > 0 ? nameNode.getChild(0).getText() : null;
 
-        List<ISqlJetColumnDef> columns = new ArrayList<ISqlJetColumnDef>();
-        List<ISqlJetTableConstraint> constraints = new ArrayList<ISqlJetTableConstraint>();
+        List<ISqlJetColumnDef> columns = new ArrayList<>();
+        List<ISqlJetTableConstraint> constraints = new ArrayList<>();
         if (ast.getChildCount() > 2) {
             CommonTree defNode = (CommonTree) ast.getChild(2);
             if ("columns".equalsIgnoreCase(defNode.getText())) {
@@ -213,10 +211,12 @@ public class SqlJetTableDef implements ISqlJetTableDef {
         return false;
     }
 
+	@Override
     public String getName() {
         return name;
     }
 
+	@Override
     public String getQuotedName() {
     	return quotedName;
     }
@@ -225,6 +225,7 @@ public class SqlJetTableDef implements ISqlJetTableDef {
         return databaseName;
     }
 
+	@Override
     public boolean isTemporary() {
         return temporary;
     }
@@ -233,10 +234,12 @@ public class SqlJetTableDef implements ISqlJetTableDef {
         return ifNotExists;
     }
 
+	@Override
     public List<ISqlJetColumnDef> getColumns() {
         return columns;
     }
 
+	@Override
     public ISqlJetColumnDef getColumn(String name) {
         for (ISqlJetColumnDef column : getColumns()) {
             if (column.getName().equalsIgnoreCase(name)) {
@@ -246,6 +249,7 @@ public class SqlJetTableDef implements ISqlJetTableDef {
         return null;
     }
 
+	@Override
     public int getColumnNumber(String name) {
         for (ISqlJetColumnDef column : getColumns()) {
             if (column.getName().equalsIgnoreCase(name)) {
@@ -255,14 +259,17 @@ public class SqlJetTableDef implements ISqlJetTableDef {
         return -1;
     }
 
+	@Override
     public List<ISqlJetTableConstraint> getConstraints() {
         return constraints;
     }
 
+	@Override
     public boolean isRowIdPrimaryKey() {
         return rowIdPrimaryKey;
     }
 
+	@Override
     public boolean isAutoincremented() {
         return autoincremented;
     }
@@ -288,6 +295,7 @@ public class SqlJetTableDef implements ISqlJetTableDef {
     /**
      * Returns name of the primary key index.
      */
+	@Override
     public String getPrimaryKeyIndexName() {
         return primaryKeyIndexName;
     }
@@ -323,7 +331,7 @@ public class SqlJetTableDef implements ISqlJetTableDef {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getPage());
         buffer.append("/");
         buffer.append(getRowId());
@@ -332,12 +340,13 @@ public class SqlJetTableDef implements ISqlJetTableDef {
         return buffer.toString();
     }
 
+	@Override
     public String toSQL() {
         return toSQL(true);
     }
 
     public String toSQL(boolean schemaStrict) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append("CREATE ");
         if (isTemporary()) {
             buffer.append("TEMPORARY ");
@@ -362,10 +371,7 @@ public class SqlJetTableDef implements ISqlJetTableDef {
             buffer.append(columns.get(i).toString());
         }
         List<ISqlJetTableConstraint> constraints = getConstraints();
-        for (int i = 0; i < constraints.size(); i++) {
-            buffer.append(", ");
-            buffer.append(constraints.get(i).toString());
-        }
+		constraints.stream().forEach((constraint) -> buffer.append(", ").append(constraint.toString()));
         buffer.append(')');
         return buffer.toString();
     }

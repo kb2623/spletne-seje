@@ -53,6 +53,7 @@ public interface ISqlJetBtreeRecord extends ISqlJetReleasable {
 
     /**
      * @param field
+	 * @param enc
      * @return
      * @throws SqlJetException
      */

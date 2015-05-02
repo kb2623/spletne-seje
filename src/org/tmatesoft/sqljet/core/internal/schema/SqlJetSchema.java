@@ -96,16 +96,11 @@ public class SqlJetSchema implements ISqlJetSchema {
     private final ISqlJetDbHandle db;
     private final ISqlJetBtree btree;
 
-    private final Map<String, ISqlJetTableDef> tableDefs = new TreeMap<String, ISqlJetTableDef>(
-            String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, ISqlJetIndexDef> indexDefs = new TreeMap<String, ISqlJetIndexDef>(
-            String.CASE_INSENSITIVE_ORDER);
-    private Map<String, ISqlJetVirtualTableDef> virtualTableDefs = new TreeMap<String, ISqlJetVirtualTableDef>(
-            String.CASE_INSENSITIVE_ORDER);
-    private Map<String, ISqlJetViewDef> viewDefs = new TreeMap<String, ISqlJetViewDef>(
-            String.CASE_INSENSITIVE_ORDER);
-    private Map<String, ISqlJetTriggerDef> triggerDefs = new TreeMap<String, ISqlJetTriggerDef>(
-            String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, ISqlJetTableDef> tableDefs = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, ISqlJetIndexDef> indexDefs = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, ISqlJetVirtualTableDef> virtualTableDefs = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, ISqlJetViewDef> viewDefs = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, ISqlJetTriggerDef> triggerDefs = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     private enum SqlJetSchemaObjectType {
 
@@ -182,10 +177,11 @@ public class SqlJetSchema implements ISqlJetSchema {
         return btree;
     }
 
+	@Override
     public Set<String> getTableNames() throws SqlJetException {
         db.getMutex().enter();
         try {
-            final Set<String> s = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            final Set<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             s.addAll(tableDefs.keySet());
             return s;
         } finally {
@@ -193,6 +189,7 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public ISqlJetTableDef getTable(String name) throws SqlJetException {
         db.getMutex().enter();
         try {
@@ -202,10 +199,11 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public Set<String> getIndexNames() throws SqlJetException {
         db.getMutex().enter();
         try {
-            final Set<String> s = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            final Set<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             s.addAll(indexDefs.keySet());
             return s;
         } finally {
@@ -213,6 +211,7 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public ISqlJetIndexDef getIndex(String name) throws SqlJetException {
         db.getMutex().enter();
         try {
@@ -222,25 +221,27 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public Set<ISqlJetIndexDef> getIndexes(String tableName) throws SqlJetException {
         db.getMutex().enter();
         try {
-            Set<ISqlJetIndexDef> result = new HashSet<ISqlJetIndexDef>();
-            for (ISqlJetIndexDef index : indexDefs.values()) {
-                if (index.getTableName().equals(tableName)) {
-                    result.add(index);
-                }
-            }
+            Set<ISqlJetIndexDef> result = new HashSet<>();
+			indexDefs.values().stream().
+				filter((index) -> (index.getTableName().equals(tableName))).
+				forEach((index) -> {
+					result.add(index);
+			});
             return Collections.unmodifiableSet(result);
         } finally {
             db.getMutex().leave();
         }
     }
 
+	@Override
     public Set<String> getVirtualTableNames() throws SqlJetException {
         db.getMutex().enter();
         try {
-            final Set<String> s = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            final Set<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             s.addAll(virtualTableDefs.keySet());
             return s;
         } finally {
@@ -248,6 +249,7 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public ISqlJetVirtualTableDef getVirtualTable(String name) throws SqlJetException {
         db.getMutex().enter();
         try {
@@ -257,6 +259,7 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public ISqlJetViewDef getView(String name) throws SqlJetException {
         db.getMutex().enter();
         try {
@@ -266,10 +269,11 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public Set<String> getViewNames() throws SqlJetException {
         db.getMutex().enter();
         try {
-            final Set<String> s = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            final Set<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             s.addAll(viewDefs.keySet());
             return s;
         } finally {
@@ -277,6 +281,7 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public ISqlJetTriggerDef getTrigger(String name) throws SqlJetException {
         db.getMutex().enter();
         try {
@@ -286,10 +291,11 @@ public class SqlJetSchema implements ISqlJetSchema {
         }
     }
 
+	@Override
     public Set<String> getTriggerNames() throws SqlJetException {
         db.getMutex().enter();
         try {
-            final Set<String> s = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            final Set<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             s.addAll(triggerDefs.keySet());
             return s;
         } finally {
@@ -309,62 +315,72 @@ public class SqlJetSchema implements ISqlJetSchema {
             }
             final int page = table.getPageField();
 
-            if (TABLE_TYPE.equals(type)) {
-                String sql = table.getSqlField();
-                // System.err.println(sql);
-                final CommonTree ast = (CommonTree) parseTable(sql).getTree();
-                if (!isCreateVirtualTable(ast)) {
-                    final SqlJetTableDef tableDef = new SqlJetTableDef(ast, page);
-                    if (!name.equals(tableDef.getName())) {
-                        throw new SqlJetException(SqlJetErrorCode.CORRUPT);
-                    }
-                    tableDef.setRowId(table.getRowId());
-                    tableDefs.put(name, tableDef);
-                } else {
-                    final SqlJetVirtualTableDef virtualTableDef = new SqlJetVirtualTableDef(ast, page);
-                    if (!name.equals(virtualTableDef.getTableName())) {
-                        throw new SqlJetException(SqlJetErrorCode.CORRUPT);
-                    }
-                    virtualTableDef.setRowId(table.getRowId());
-                    virtualTableDefs.put(name, virtualTableDef);
-                }
-            } else if (INDEX_TYPE.equals(type)) {
-                final String tableName = table.getTableField();
-                final String sql = table.getSqlField();
-                if (null != sql) {
+			switch (type) {
+			case TABLE_TYPE:
+				{
+					String sql = table.getSqlField();
+					// System.err.println(sql);
+					final CommonTree ast = (CommonTree) parseTable(sql).getTree();
+					if (!isCreateVirtualTable(ast)) {
+						final SqlJetTableDef tableDef = new SqlJetTableDef(ast, page);
+						if (!name.equals(tableDef.getName())) {
+							throw new SqlJetException(SqlJetErrorCode.CORRUPT);
+						}
+						tableDef.setRowId(table.getRowId());
+						tableDefs.put(name, tableDef);
+					} else {
+						final SqlJetVirtualTableDef virtualTableDef = new SqlJetVirtualTableDef(ast, page);
+						if (!name.equals(virtualTableDef.getTableName())) {
+							throw new SqlJetException(SqlJetErrorCode.CORRUPT);
+						}
+						virtualTableDef.setRowId(table.getRowId());
+						virtualTableDefs.put(name, virtualTableDef);
+					}	break;
+				}
+			case INDEX_TYPE:
+				{
+					final String tableName = table.getTableField();
+					final String sql = table.getSqlField();
+					if (null != sql) {
                     // System.err.println(sql);
-                    final CommonTree ast = (CommonTree) parseIndex(sql).getTree();
-                    final SqlJetIndexDef indexDef = new SqlJetIndexDef(ast, page);
-                    if (!name.equals(indexDef.getName())) {
-                        throw new SqlJetException(SqlJetErrorCode.CORRUPT);
-                    }
-                    if (!tableName.equals(indexDef.getTableName())) {
-                        throw new SqlJetException(SqlJetErrorCode.CORRUPT);
-                    }
-                    indexDef.setRowId(table.getRowId());
-                    indexDefs.put(name, indexDef);
-                } else {
-                    SqlJetBaseIndexDef indexDef = new SqlJetBaseIndexDef(name, tableName, page);
-                    indexDef.setRowId(table.getRowId());
-                    indexDefs.put(name, indexDef);
-                }
-            } else if (VIEW_TYPE.equals(type)) {
-                final String viewName = table.getTableField();
-                final String sql = table.getSqlField();
-                final CommonTree ast = (CommonTree) parseView(sql).getTree();
-                final SqlJetViewDef viewDef = new SqlJetViewDef(sql, ast);
-                viewDef.setRowId(table.getRowId());
-                viewDefs.put(viewName, viewDef);
-            } else if (TRIGGER_TYPE.equals(type)) {
-                final String triggerName = table.getNameField();
-                final String sql = table.getSqlField();
-
-                final CommonTree ast = (CommonTree) parseTrigger(sql).getTree();
-                final SqlJetTriggerDef triggerDef = new SqlJetTriggerDef(sql, ast);
-                triggerDef.setRowId(table.getRowId());
-                triggerDefs.put(triggerName, triggerDef);
-            }
-        }
+						final CommonTree ast = (CommonTree) parseIndex(sql).getTree();
+						final SqlJetIndexDef indexDef = new SqlJetIndexDef(ast, page);
+						if (!name.equals(indexDef.getName())) {
+							throw new SqlJetException(SqlJetErrorCode.CORRUPT);
+						}
+						if (!tableName.equals(indexDef.getTableName())) {
+							throw new SqlJetException(SqlJetErrorCode.CORRUPT);
+						}
+						indexDef.setRowId(table.getRowId());
+						indexDefs.put(name, indexDef);
+					} else {
+						SqlJetBaseIndexDef indexDef = new SqlJetBaseIndexDef(name, tableName, page);
+						indexDef.setRowId(table.getRowId());
+						indexDefs.put(name, indexDef);
+					}	break;
+				}
+			case VIEW_TYPE:
+			{
+				final String viewName = table.getTableField();
+				final String sql = table.getSqlField();
+				final CommonTree ast = (CommonTree) parseView(sql).getTree();
+				final SqlJetViewDef viewDef = new SqlJetViewDef(sql, ast);
+					viewDef.setRowId(table.getRowId());
+					viewDefs.put(viewName, viewDef);
+					break;
+				}
+			case TRIGGER_TYPE:
+				{
+					final String triggerName = table.getNameField();
+					final String sql = table.getSqlField();
+					final CommonTree ast = (CommonTree) parseTrigger(sql).getTree();
+					final SqlJetTriggerDef triggerDef = new SqlJetTriggerDef(sql, ast);
+					triggerDef.setRowId(table.getRowId());
+					triggerDefs.put(triggerName, triggerDef);
+					break;
+				}
+			}
+		}
 
         bindIndexes();
 
@@ -374,16 +390,18 @@ public class SqlJetSchema implements ISqlJetSchema {
      *
      */
     private void bindIndexes() {
-        for (ISqlJetIndexDef indexDef : indexDefs.values()) {
-            if (indexDef instanceof SqlJetIndexDef) {
-                SqlJetIndexDef i = (SqlJetIndexDef) indexDef;
-                final String tableName = i.getTableName();
-                final ISqlJetTableDef tableDef = tableDefs.get(tableName);
-                if (tableDef != null) {
-                    i.bindColumns(tableDef);
-                }
-            }
-        }
+		indexDefs.values().stream().
+			filter((indexDef) ->
+				(indexDef instanceof SqlJetIndexDef)).
+			map((indexDef) ->
+				(SqlJetIndexDef) indexDef).
+			forEach((i) -> {
+				final String tableName = i.getTableName();
+				final ISqlJetTableDef tableDef = tableDefs.get(tableName);
+			if (tableDef != null) {
+				i.bindColumns(tableDef);
+			}
+		});
     }
 
     /**
@@ -453,17 +471,16 @@ public class SqlJetSchema implements ISqlJetSchema {
     public String toString() {
         db.getMutex().enter();
         try {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             buffer.append("Tables:\n");
-            for (ISqlJetTableDef tableDef : tableDefs.values()) {
-                buffer.append(tableDef.toString());
-                buffer.append('\n');
-            }
+			tableDefs.values().stream().forEach((tableDef) -> {
+					buffer.append(tableDef.toString()).append('\n');
+			});
             buffer.append("Indexes:\n");
-            for (ISqlJetIndexDef indexDef : indexDefs.values()) {
-                buffer.append(indexDef.toString());
-                buffer.append('\n');
-            }
+			indexDefs.values().stream().
+				forEach((indexDef) -> {
+					buffer.append(indexDef.toString()).append('\n');
+			});
             return buffer.toString();
         } finally {
             db.getMutex().leave();
@@ -555,7 +572,7 @@ public class SqlJetSchema implements ISqlJetSchema {
      */
     private void checkFieldNamesRepeatsConflict(String tableName, List<ISqlJetColumnDef> columns)
             throws SqlJetException {
-        final Set<String> names = new HashSet<String>();
+        final Set<String> names = new HashSet<>();
         for (ISqlJetColumnDef columnDef : columns) {
             final String name = columnDef.getName();
             if (names.contains(name)) {
@@ -681,7 +698,9 @@ public class SqlJetSchema implements ISqlJetSchema {
     }
 
     /**
-     * @throws SqlJetException
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throw
+	 * @return s SqlJetException
      */
     public ISqlJetBtreeDataTable openSequenceTable() throws SqlJetException {
         if (tableDefs.containsKey(SQLITE_SEQUENCE)) {
@@ -1081,7 +1100,7 @@ public class SqlJetSchema implements ISqlJetSchema {
                 }
             }
 
-            columns = new ArrayList<ISqlJetColumnDef>(columns);
+            columns = new ArrayList<>(columns);
             columns.add(newColumnDef);
         }
 

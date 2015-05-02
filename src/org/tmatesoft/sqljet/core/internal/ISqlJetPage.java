@@ -143,11 +143,13 @@ public interface ISqlJetPage {
      * Return a pointer to the data for the specified page.
      * 
      * 
+	 * @return 
      */
     ISqlJetMemoryPointer getData();
 
     /**
      * 
+	 * @return 
      */
     Object getExtra();
 

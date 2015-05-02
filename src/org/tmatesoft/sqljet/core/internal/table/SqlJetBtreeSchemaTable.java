@@ -32,9 +32,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
 
     /**
      * @param btree
-     * @param rootPage
      * @param write
-     * @param index
      * @throws SqlJetException
      */
     public SqlJetBtreeSchemaTable(ISqlJetBtree btree, boolean write) throws SqlJetException {
@@ -48,6 +46,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeSchemaTable#getTypeField
      * ()
      */
+	@Override
     public String getTypeField() throws SqlJetException {
         return getString(TYPE_FIELD);
     }
@@ -59,6 +58,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeSchemaTable#getNameField
      * ()
      */
+	@Override
     public String getNameField() throws SqlJetException {
         return getString(NAME_FIELD);
     }
@@ -69,6 +69,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * @seeorg.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeSchemaTable#
      * getTableField()
      */
+	@Override
     public String getTableField() throws SqlJetException {
         return getString(TABLE_FIELD);
     }
@@ -80,6 +81,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeSchemaTable#getPageField
      * ()
      */
+	@Override
     public int getPageField() throws SqlJetException {
         return (int) getInteger(PAGE_FIELD);
     }
@@ -91,6 +93,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeSchemaTable#getSqlField
      * ()
      */
+	@Override
     public String getSqlField() throws SqlJetException {
         return getString(SQL_FIELD);
     }
@@ -112,6 +115,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * (java.lang.String, java.lang.String, java.lang.String, long,
      * java.lang.String)
      */
+	@Override
     public long insertRecord(String typeField, String nameField, String tableField, int pageField, String sqlField)
             throws SqlJetException {
         final long rowId = newRowId();
@@ -127,6 +131,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * (long, java.lang.String, java.lang.String, java.lang.String, int,
      * java.lang.String)
      */
+	@Override
     public void updateRecord(long rowId, String typeField, String nameField, String tableField, int pageField,
             String sqlField) throws SqlJetException {
         doInsertRecord(rowId, typeField, nameField, tableField, pageField, sqlField);
@@ -139,6 +144,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeSchemaTable#goToRow
      * (long)
      */
+	@Override
     public boolean goToRow(long rowId) throws SqlJetException {
         if (getRowId() == rowId)
             return true;
@@ -156,6 +162,7 @@ public class SqlJetBtreeSchemaTable extends SqlJetBtreeTable implements ISqlJetB
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeSchemaTable#getRowId
      * ()
      */
+	@Override
     public long getRowId() throws SqlJetException {
         return getCursor().getKeySize();
     }

@@ -34,10 +34,12 @@ public class SqlJetForeignKeyUpdateAction implements ISqlJetForeignKeyUpdateActi
         action = SqlJetForeignKeyUpdate.decode(ast.getChild(1).getText());
     }
 
+	@Override
     public SqlJetForeignKeyEvent getEvent() {
         return event;
     }
 
+	@Override
     public SqlJetForeignKeyUpdate getAction() {
         return action;
     }

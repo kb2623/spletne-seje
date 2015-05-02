@@ -42,7 +42,7 @@ public class SqlJetColumnDef implements ISqlJetColumnDef {
         quotedName = SqlParser.quotedId(ast);
         CommonTree constraintsNode = (CommonTree) ast.getChild(0);
         assert "constraints".equalsIgnoreCase(constraintsNode.getText());
-        List<ISqlJetColumnConstraint> constraints = new ArrayList<ISqlJetColumnConstraint>();
+        List<ISqlJetColumnConstraint> constraints = new ArrayList<>();
         for (int i = 0; i < constraintsNode.getChildCount(); i++) {
             CommonTree constraintRootNode = (CommonTree) constraintsNode.getChild(i);
             assert "column_constraint".equalsIgnoreCase(constraintRootNode.getText());
@@ -80,18 +80,22 @@ public class SqlJetColumnDef implements ISqlJetColumnDef {
         }
     }
 
+	@Override
     public String getName() {
         return name;
     }
 
+	@Override
     public String getQuotedName() {
     	return quotedName;
     }
 
+	@Override
     public ISqlJetTypeDef getType() {
         return type;
     }
 
+	@Override
     public SqlJetTypeAffinity getTypeAffinity() {
         ISqlJetTypeDef type = getType();
         if (type == null) {
@@ -102,30 +106,30 @@ public class SqlJetColumnDef implements ISqlJetColumnDef {
             return SqlJetTypeAffinity.decode(typeNames.get(0)); // common case
         }
         String types = "";
-        for (String typeName : getType().getNames()) {
-            types += typeName + ' ';
-        }
+		types = getType().getNames().stream().map((typeName) -> typeName + ' ').reduce(types, String::concat);
         return SqlJetTypeAffinity.decode(types);
     }
 
+	@Override
     public boolean hasExactlyIntegerType() {
         if (getTypeAffinity() != SqlJetTypeAffinity.INTEGER) {
             return false;
         }
         final ISqlJetTypeDef type = getType();
-        if (type == null || type.getNames() == null || type.getNames().size() == 0) {
+        if (type == null || type.getNames() == null || type.getNames().isEmpty()) {
             return false;
         }
         return "INTEGER".equals(type.getNames().get(0).toUpperCase());
     }
 
+	@Override
     public List<ISqlJetColumnConstraint> getConstraints() {
         return constraints;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getQuotedName());
         if (getType() != null) {
             buffer.append(' ');
@@ -141,6 +145,7 @@ public class SqlJetColumnDef implements ISqlJetColumnDef {
     /**
      * @return the index
      */
+	@Override
     public int getIndex() {
         return index;
     }

@@ -12,6 +12,8 @@ public final class NamedOptionDef extends OptionDef {
     private final String[] forbids;
     
     /**
+	 * @param o
+	 * @param forceMultiValued
      * @deprecated
      *      multi-valuedness as option definition does not make sense. It's driven by the setter.
      */

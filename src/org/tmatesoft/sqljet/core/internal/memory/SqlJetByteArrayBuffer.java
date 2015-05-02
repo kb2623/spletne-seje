@@ -42,6 +42,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #allocate(int)
      */
+	@Override
     public void allocate(final int size) {
         assert (size >= 0);
 
@@ -55,6 +56,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #free()
      */
+	@Override
     public void free() {
         assert (buffer != null);
 
@@ -68,6 +70,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #isAllocated()
      */
+	@Override
     public boolean isAllocated() {
         return buffer != null;
     }
@@ -79,6 +82,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getSize()
      */
+	@Override
     public int getSize() {
         assert (buffer != null);
 
@@ -92,6 +96,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getPointer(int)
      */
+	@Override
     public ISqlJetMemoryPointer getPointer(final int pointer) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -107,6 +112,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getByte(int)
      */
+	@Override
     public byte getByte(final int pointer) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -122,6 +128,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getInt(int)
      */
+	@Override
     public int getInt(final int pointer) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -137,6 +144,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getLong(int)
      */
+	@Override
     public long getLong(final int pointer) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -152,6 +160,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getShort(int)
      */
+	@Override
     public short getShort(final int pointer) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -167,6 +176,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getUnsignedByte(int)
      */
+	@Override
     public int getByteUnsigned(final int pointer) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -182,6 +192,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getUnsignedInt(int)
      */
+	@Override
     public long getIntUnsigned(final int pointer) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -197,6 +208,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #getUnsignedShort(int)
      */
+	@Override
     public int getShortUnsigned(final int pointer) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -212,6 +224,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #setByte(int, byte)
      */
+	@Override
     public void putByte(final int pointer, final byte value) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -227,6 +240,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #setInt(int, int)
      */
+	@Override
     public void putInt(final int pointer, final int value) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -242,6 +256,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #setLong(int, long)
      */
+	@Override
     public void putLong(final int pointer, final long value) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -257,6 +272,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #setShort(int, short)
      */
+	@Override
     public void putShort(final int pointer, final short value) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -272,6 +288,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #setUnsignedByte(int, int)
      */
+	@Override
     public void putByteUnsigned(final int pointer, final int value) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -287,6 +304,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #setUnsignedInt(int, long)
      */
+	@Override
     public void putIntUnsigned(final int pointer, final long value) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -302,6 +320,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #setUnsignedShort(int, int)
      */
+	@Override
     public void putShortUnsigned(final int pointer, final int value) {
         assert (buffer != null);
         assert (pointer >= 0);
@@ -317,6 +336,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #read(int, java.io.RandomAccessFile, long, int)
      */
+	@Override
     public int readFromFile(final int pointer, final RandomAccessFile file, final long position, final int count)
             throws IOException {
         assert (buffer != null);
@@ -337,6 +357,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.sandbox.internal.memory.ISqlJetMemoryBuffer
      * #write(int, java.io.RandomAccessFile, long, int)
      */
+	@Override
     public int writeToFile(final int pointer, final RandomAccessFile file, final long position, final int count)
             throws IOException {
         assert (buffer != null);
@@ -356,6 +377,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * 
      * @see org.tmatesoft.sqljet.core.internal.ISqlJetMemoryBuffer#asArray()
      */
+	@Override
     public byte[] asArray() {
         return buffer;
     }
@@ -366,6 +388,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * @see org.tmatesoft.sqljet.core.internal.ISqlJetMemoryBuffer#copyFrom(int,
      * org.tmatesoft.sqljet.core.internal.ISqlJetMemoryBuffer, int, int)
      */
+	@Override
     public void copyFrom(int dstPos, ISqlJetMemoryBuffer src, int srcPos, int count) {
         if (src instanceof SqlJetByteArrayBuffer) {
             final SqlJetByteArrayBuffer srcBuf = (SqlJetByteArrayBuffer) src;
@@ -383,6 +406,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * @see org.tmatesoft.sqljet.core.internal.ISqlJetMemoryBuffer#fill(int,
      * int, byte)
      */
+	@Override
     public void fill(int from, int count, byte value) {
         Arrays.fill(buffer, from, from + count, value);
     }
@@ -393,6 +417,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * @see org.tmatesoft.sqljet.core.internal.ISqlJetMemoryBuffer#getBytes(int,
      * byte[], int, int)
      */
+	@Override
     public void getBytes(int pointer, byte[] bytes, int to, int count) {
         System.arraycopy(buffer, pointer, bytes, to, count);
     }
@@ -403,6 +428,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * @see org.tmatesoft.sqljet.core.internal.ISqlJetMemoryBuffer#putBytes(int,
      * byte[], int, int)
      */
+	@Override
     public void putBytes(int pointer, byte[] bytes, int from, int count) {
         System.arraycopy(bytes, from, buffer, pointer, count);
     }
@@ -414,6 +440,7 @@ public class SqlJetByteArrayBuffer implements ISqlJetMemoryBuffer {
      * org.tmatesoft.sqljet.core.internal.ISqlJetMemoryBuffer#compareTo(int,
      * org.tmatesoft.sqljet.core.internal.ISqlJetMemoryBuffer, int)
      */
+	@Override
     public int compareTo(int pointer, ISqlJetMemoryBuffer buffer, int bufferPointer) {
         final int thisCount = getSize() - pointer;
         final int bufferCount = buffer.getSize() - bufferPointer;

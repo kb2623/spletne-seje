@@ -20,6 +20,7 @@ public class CmdLineException extends Exception {
     private String localizedMessage = null;
     
     /**
+	 * @param message
      * @deprecated
      *      Use {@link #CmdLineException(CmdLineParser, String)}
      */
@@ -28,6 +29,8 @@ public class CmdLineException extends Exception {
     }
 
     /**
+	 * @param message
+	 * @param cause
      * @deprecated
      *      Use {@link #CmdLineException(CmdLineParser, String, Throwable)}
      */
@@ -36,6 +39,7 @@ public class CmdLineException extends Exception {
     }
 
     /**
+	 * @param cause
      * @deprecated
      *      Use {@link #CmdLineException(CmdLineParser, Throwable)}
      */
@@ -50,6 +54,8 @@ public class CmdLineException extends Exception {
     }
     
     /**
+	 * @param parser
+	 * @param message
      * @deprecated
      *      Use {@link #CmdLineException(org.kohsuke.args4j.CmdLineParser, Localizable, java.lang.String...) }
      */
@@ -83,6 +89,7 @@ public class CmdLineException extends Exception {
      * <p>
      * Unless you have legacy {@link OptionHandler} that doesn't pass in this information
      * when it throws an exception, this method should always return a non-null value.
+	 * @return 
      */
     public CmdLineParser getParser() {
         return parser;

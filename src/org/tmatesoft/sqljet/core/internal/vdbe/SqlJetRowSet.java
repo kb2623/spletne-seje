@@ -30,13 +30,14 @@ public class SqlJetRowSet implements ISqlJetRowSet {
     /* (non-Javadoc)
      * @see org.tmatesoft.sqljet.core.ISqlJetRowSet#clear()
      */
+	@Override
     public void clear() {
         // TODO Auto-generated method stub
-
     }
 
     /**
      * 
+	 * @param db
      */
     public SqlJetRowSet(ISqlJetDbHandle db) {
         // TODO Auto-generated constructor stub

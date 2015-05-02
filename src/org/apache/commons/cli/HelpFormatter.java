@@ -299,6 +299,7 @@ public class HelpFormatter
      * Comparator used to sort the options when they output in help text
      * 
      * Defaults to case-insensitive alphabetical sorting by option key
+	 * @return 
      */
     public Comparator getOptionComparator()
     {
@@ -309,6 +310,7 @@ public class HelpFormatter
      * Set the comparator used to sort the options when they output in help text
      * 
      * Passing in a null parameter will set the ordering to the default mode
+	 * @param comparator
      */
     public void setOptionComparator(Comparator comparator)
     {
@@ -511,7 +513,7 @@ public class HelpFormatter
         StringBuffer buff = new StringBuffer(defaultSyntaxPrefix).append(app).append(" ");
 
         // create a list for processed option groups
-        final Collection<OptionGroup> processedGroups = new ArrayList<OptionGroup>();
+        final Collection<OptionGroup> processedGroups = new ArrayList<>();
 
         // temp variable
         Option option;
@@ -726,7 +728,7 @@ public class HelpFormatter
         // sort options ascending
         int max = 0;
         StringBuffer optBuf;
-        List<StringBuffer> prefixList = new ArrayList<StringBuffer>();
+        List<StringBuffer> prefixList = new ArrayList<>();
 
         List optList = options.helpOptions();
 
@@ -739,7 +741,7 @@ public class HelpFormatter
 
             if (option.getOpt() == null)
             {
-                optBuf.append(lpad).append("   " + defaultLongOptPrefix).append(option.getLongOpt());
+                optBuf.append(lpad).append("   ").append(defaultLongOptPrefix).append(option.getLongOpt());
             }
             else
             {
@@ -922,7 +924,7 @@ public class HelpFormatter
      */
     protected String createPadding(int len)
     {
-        StringBuffer sb = new StringBuffer(len);
+        StringBuilder sb = new StringBuilder(len);
 
         for (int i = 0; i < len; ++i)
         {
@@ -977,6 +979,7 @@ public class HelpFormatter
          *         the first argument is less than, equal to, or greater than the
          *         second.
          */
+		@Override
         public int compare(Object o1, Object o2)
         {
             Option opt1 = (Option) o1;

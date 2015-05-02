@@ -27,18 +27,22 @@ final class MultiValueFieldSetter implements Getter, Setter {
             throw new IllegalAnnotationError(Messages.ILLEGAL_FIELD_SIGNATURE.format(f.getType()));
     }
 
+	@Override
     public boolean isMultiValued() {
     	return true;
     }
 
+	@Override
     public FieldSetter asFieldSetter() {
         return new FieldSetter(bean,f);
     }
 
+	@Override
     public AnnotatedElement asAnnotatedElement() {
         return f;
     }
 
+	@Override
     public Class getType() {
         // TODO: compute this correctly
         Type t = f.getGenericType();
@@ -51,6 +55,7 @@ final class MultiValueFieldSetter implements Getter, Setter {
         return Object.class;
     }
 
+	@Override
     public void addValue(Object value) {
         try {
             doAddValue(bean, value);
@@ -77,6 +82,7 @@ final class MultiValueFieldSetter implements Getter, Setter {
         ((List)o).add(value);
     }
 
+	@Override
     public List<Object> getValueList() {
         try {
             f.setAccessible(true);

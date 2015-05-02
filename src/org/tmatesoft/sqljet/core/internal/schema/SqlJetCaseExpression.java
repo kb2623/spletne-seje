@@ -41,8 +41,8 @@ public class SqlJetCaseExpression extends SqlJetExpression implements ISqlJetCas
             expression = create(child);
             child = (CommonTree) ast.getChild(idx++);
         }
-        List<ISqlJetExpression> conditions = new ArrayList<ISqlJetExpression>();
-        List<ISqlJetExpression> values = new ArrayList<ISqlJetExpression>();
+        List<ISqlJetExpression> conditions = new ArrayList<>();
+        List<ISqlJetExpression> values = new ArrayList<>();
         while (idx < ast.getChildCount()) {
             if ("when".equalsIgnoreCase(child.getText())) {
                 ISqlJetExpression condition = create((CommonTree) child.getChild(0));
@@ -63,25 +63,29 @@ public class SqlJetCaseExpression extends SqlJetExpression implements ISqlJetCas
         }
     }
 
+	@Override
     public ISqlJetExpression getExpression() {
         return expression;
     }
 
+	@Override
     public List<ISqlJetExpression> getConditions() {
         return conditions;
     }
 
+	@Override
     public List<ISqlJetExpression> getValues() {
         return values;
     }
 
+	@Override
     public ISqlJetExpression getDefaultValue() {
         return defaultValue;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append("CASE ");
         if (getExpression() != null) {
             buffer.append(getExpression());

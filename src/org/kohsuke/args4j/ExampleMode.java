@@ -18,6 +18,7 @@ public enum ExampleMode implements OptionHandlerFilter {
      * This would only be useful with small numbers of options.
      */
     ALL() {
+		@Override
 		public boolean select(OptionHandler o) {
             return true;
         }
@@ -27,6 +28,7 @@ public enum ExampleMode implements OptionHandlerFilter {
      * Print all {@linkplain Option#required() required} option.
      */
     REQUIRED() {
+		@Override
         public boolean select(OptionHandler o) {
             return o.option.required();
         }

@@ -22,10 +22,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class Config {
 
 	/** All @Options. */
-	public List<ConfigElement> options = new ArrayList<ConfigElement>();;
+	public List<ConfigElement> options = new ArrayList<>();;
 
 	/** All @Arguments. */
-	public List<ConfigElement> arguments = new ArrayList<ConfigElement>();
+	public List<ConfigElement> arguments = new ArrayList<>();
 
 
 	/**

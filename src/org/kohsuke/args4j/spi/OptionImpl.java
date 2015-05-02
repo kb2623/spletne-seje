@@ -13,16 +13,19 @@ public class OptionImpl extends AnnotationImpl implements Option {
     }
 
     public String name;
+	@Override
     public String name() {
         return name;
     }
 
     public String[] depends;
+	@Override
     public String[] depends() {
         return depends;
     }
     
     public String[] forbids;
+	@Override
     public String[] forbids() {
         return depends;
     }

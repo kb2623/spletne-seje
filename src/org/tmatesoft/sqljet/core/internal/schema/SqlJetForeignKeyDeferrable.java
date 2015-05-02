@@ -49,14 +49,17 @@ public class SqlJetForeignKeyDeferrable implements ISqlJetForeignKeyDeferrable {
         this.immediate = immediate;
     }
 
+	@Override
     public boolean isNot() {
         return not;
     }
 
+	@Override
     public boolean isInitiallyDeferred() {
         return deferred;
     }
 
+	@Override
     public boolean isInitiallyImmediate() {
         return immediate;
     }

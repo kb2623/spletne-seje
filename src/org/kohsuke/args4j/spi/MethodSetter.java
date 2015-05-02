@@ -25,23 +25,28 @@ public final class MethodSetter implements Setter {
             throw new IllegalAnnotationError(Messages.ILLEGAL_METHOD_SIGNATURE.format(m));
     }
 
+	@Override
     public Class getType() {
         return m.getParameterTypes()[0];
     }
 
+	@Override
     public boolean isMultiValued() {
         // multiple values can be handled by calling methods repeatedly
     	return true;
     }
 
+	@Override
     public FieldSetter asFieldSetter() {
         return null;
     }
 
+	@Override
     public AnnotatedElement asAnnotatedElement() {
         return m;
     }
 
+	@Override
     public void addValue(Object value) throws CmdLineException {
         try {
             try {

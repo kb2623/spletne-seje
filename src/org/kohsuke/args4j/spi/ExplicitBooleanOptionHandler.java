@@ -21,7 +21,7 @@ public class ExplicitBooleanOptionHandler extends OptionHandler<Boolean> {
     
     static {
         // I like the trick in BooleanOptionHandler but find this explicit map more readable
-        ACCEPTABLE_VALUES = new HashMap<String, Boolean>();
+        ACCEPTABLE_VALUES = new HashMap<>();
         ACCEPTABLE_VALUES.put("true", TRUE);
         ACCEPTABLE_VALUES.put("on", TRUE);
         ACCEPTABLE_VALUES.put("yes", TRUE);

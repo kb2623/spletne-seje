@@ -74,10 +74,12 @@ public enum SqlJetBtreeFlags {
     public static Set<SqlJetPagerFlags> toPagerFlags(final Set<SqlJetBtreeFlags> btreeFlags){
         if(null==btreeFlags) return null;
         final Set<SqlJetPagerFlags> Set = SqlJetUtility.noneOf(SqlJetPagerFlags.class);
-        for(SqlJetBtreeFlags flag:btreeFlags) {
-            final SqlJetPagerFlags f = flag.getPagerFlag();
-            if(null!=f) Set.add(f);
-        }
+		btreeFlags.stream().
+			map((flag) -> flag.getPagerFlag()).
+			filter((f) -> (null!=f)).
+			forEach((f) -> {
+				Set.add(f);
+		});
         return Set;
     }
     

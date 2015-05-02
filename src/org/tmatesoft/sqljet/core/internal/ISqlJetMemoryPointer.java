@@ -345,7 +345,6 @@ public interface ISqlJetMemoryPointer {
      */
     void fill(int from, int count, byte value);
     /**
-     * @param from
      * @param count
      * @param value
      */
@@ -357,17 +356,23 @@ public interface ISqlJetMemoryPointer {
     void getBytes(byte[] bytes);
 
     /**
+	 * @param pointer
      * @param bytes
      */
     void getBytes(int pointer, byte[] bytes);
 
     /**
+	 * @param pointer
      * @param bytes
+	 * @param count
      */
     void getBytes(int pointer, byte[] bytes, int count);
     
     /**
+	 * @param pointer
      * @param bytes
+	 * @param to
+	 * @param count
      */
     void getBytes(int pointer, byte[] bytes, int to, int count);
 
@@ -377,22 +382,28 @@ public interface ISqlJetMemoryPointer {
     void putBytes(byte[] bytes);
 
     /**
+	 * @param pointer
      * @param bytes
      */
     void putBytes(int pointer, byte[] bytes);
 
     /**
+	 * @param pointer
      * @param bytes
+	 * @param count
      */
     void putBytes(int pointer, byte[] bytes, int count);
     
     /**
+	 * @param pointer
      * @param bytes
+	 * @param to
+	 * @param count
      */
     void putBytes(int pointer, byte[] bytes, int to, int count);
 
     /**
-     * @param raw2
+	 * @param ptr
      * @return
      */
     int compareTo(ISqlJetMemoryPointer ptr);

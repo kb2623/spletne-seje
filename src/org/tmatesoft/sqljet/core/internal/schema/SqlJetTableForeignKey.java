@@ -35,7 +35,7 @@ public class SqlJetTableForeignKey extends SqlJetTableConstraint implements ISql
         assert "foreign".equalsIgnoreCase(ast.getText());
         CommonTree columnsNode = (CommonTree) ast.getChild(1);
         assert "columns".equalsIgnoreCase(columnsNode.getText()) || "references".equalsIgnoreCase(columnsNode.getText());
-        List<String> columnNames = new ArrayList<String>();
+        List<String> columnNames = new ArrayList<>();
         for (int i = 0; i < columnsNode.getChildCount(); i++) {
             columnNames.add(columnsNode.getChild(i).getText());
         }
@@ -43,17 +43,19 @@ public class SqlJetTableForeignKey extends SqlJetTableConstraint implements ISql
         foreignKey = new SqlJetForeignKey((CommonTree) ast.getChild(1));
     }
 
+	@Override
     public List<String> getColumnNames() {
         return columnNames;
     }
 
+	@Override
     public ISqlJetForeignKey getForeignKey() {
         return foreignKey;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(super.toString());
         if (buffer.length() > 0) {
             buffer.append(' ');

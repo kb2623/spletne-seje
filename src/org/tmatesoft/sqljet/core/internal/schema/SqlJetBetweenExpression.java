@@ -42,25 +42,29 @@ public class SqlJetBetweenExpression extends SqlJetExpression implements ISqlJet
         upperBound = create((CommonTree) ast.getChild(idx++));
     }
 
+	@Override
     public ISqlJetExpression getExpression() {
         return expression;
     }
 
+	@Override
     public boolean isNot() {
         return not;
     }
 
+	@Override
     public ISqlJetExpression getLowerBound() {
         return lowerBound;
     }
 
+	@Override
     public ISqlJetExpression getUpperBound() {
         return upperBound;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getExpression());
         if (isNot()) {
             buffer.append(" NOT");

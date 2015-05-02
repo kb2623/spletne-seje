@@ -61,6 +61,7 @@ public class SqlJetMapTableCursor extends SqlJetBtreeTable implements ISqlJetMap
      * @return
      * @throws SqlJetException
      */
+	@Override
     public long getKey() throws SqlJetException {
         return getKeySize();
     }
@@ -69,6 +70,7 @@ public class SqlJetMapTableCursor extends SqlJetBtreeTable implements ISqlJetMap
      * @return
      * @throws SqlJetException
      */
+	@Override
     public Object[] getValue() throws SqlJetException {
         return getValues();
     }
@@ -78,6 +80,7 @@ public class SqlJetMapTableCursor extends SqlJetBtreeTable implements ISqlJetMap
      * @return
      * @throws SqlJetException
      */
+	@Override
     public boolean goToKey(long key) throws SqlJetException {
         if (key > 0) {
             final int moveTo = moveTo(null, key, false);
@@ -97,10 +100,10 @@ public class SqlJetMapTableCursor extends SqlJetBtreeTable implements ISqlJetMap
 
     /**
      * @param key
-     * @param value
      * @return
      * @throws SqlJetException
      */
+	@Override
     public long put(long key, Object... values) throws SqlJetException {
         if (values != null) {
             final SqlJetEncoding encoding = mapDb.getOptions().getEncoding();

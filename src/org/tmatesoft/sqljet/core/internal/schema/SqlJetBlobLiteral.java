@@ -29,6 +29,7 @@ public class SqlJetBlobLiteral extends SqlJetExpression implements ISqlJetBlobLi
         this.value = parseBlob(ast.getChild(0).getText());
     }
 
+	@Override
     public byte[] getValue() {
         return value;
     }
@@ -52,7 +53,7 @@ public class SqlJetBlobLiteral extends SqlJetExpression implements ISqlJetBlobLi
     }
 
     public static String asBlob(byte[] data) {
-        StringBuffer buffer = new StringBuffer("x'");
+        StringBuilder buffer = new StringBuilder("x'");
         for (byte b : data) {
             buffer.append((char) (b / 16 > 9 ? 'a' + b / 16 - 10 : '0' + b / 16));
             buffer.append((char) (b % 16 > 9 ? 'a' + b % 16 - 10 : '0' + b % 16));

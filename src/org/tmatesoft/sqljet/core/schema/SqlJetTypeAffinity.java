@@ -26,6 +26,8 @@ public enum SqlJetTypeAffinity {
     /**
      * Follows algorithm defined in SQLite documentation to infer type affinity
      * from column type.
+	 * @param s
+	 * @return 
      */
     public static SqlJetTypeAffinity decode(String s) {
         s = (s == null) ? "" : s.trim().toUpperCase();

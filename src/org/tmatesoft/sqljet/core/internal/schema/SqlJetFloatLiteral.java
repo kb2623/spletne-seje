@@ -29,6 +29,7 @@ public class SqlJetFloatLiteral extends SqlJetExpression implements ISqlJetFloat
         value = Double.parseDouble(ast.getChild(0).getText());
     }
 
+	@Override
     public Double getValue() {
         return value;
     }

@@ -35,17 +35,19 @@ public class SqlJetRaiseExpression extends SqlJetExpression implements ISqlJetRa
         }
     }
 
+	@Override
     public Action getAction() {
         return action;
     }
 
+	@Override
     public String getErrorMessage() {
         return errorMessage;
     }
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append("RAISE (");
         buffer.append(getAction());
         if (getErrorMessage() != null) {

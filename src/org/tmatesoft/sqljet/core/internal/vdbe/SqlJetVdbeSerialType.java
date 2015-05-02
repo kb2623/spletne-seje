@@ -32,6 +32,8 @@ public class SqlJetVdbeSerialType {
 
     /**
      ** Return the length of the data corresponding to the supplied serial-type.
+	 * @param serial_type
+	 * @return 
      */
     public static int serialTypeLen(int serial_type) {
         if (serial_type >= 12) {
@@ -220,6 +222,12 @@ public class SqlJetVdbeSerialType {
      * Return the number of bytes actually written into buf[]. The number of
      * bytes in the zero-filled tail is included in the return value only if
      * those bytes were zeroed in buf[].
+	 * 
+	 * @param buf
+	 * @param nBuf
+	 * @param pMem
+	 * @param file_format
+	 * @return 
      */
     public static int serialPut(ISqlJetMemoryPointer buf, int nBuf, SqlJetVdbeMem pMem, int file_format) {
         int serial_type = serialType(pMem, file_format);

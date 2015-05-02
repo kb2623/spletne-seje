@@ -17,6 +17,7 @@ import java.util.List;
  * due to the extra argument that it takes.
  *
  * @author kmahoney
+ * @param <T>
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class DelimitedOptionHandler<T> extends OptionHandler<T> {
@@ -54,16 +55,18 @@ public abstract class DelimitedOptionHandler<T> extends OptionHandler<T> {
      *
      * @return null if the current value of the setter isn't available.
      */
+	@Override
 	public String printDefaultValue() {
         if (setter instanceof Getter) {
             Getter getter = (Getter)setter;
             List<T> defaultValues = getter.getValueList();
 
             StringBuilder buf = new StringBuilder();
-            for (T v : defaultValues) {
-                if (buf.length()>0)     buf.append(delimiter);
-                buf.append(print(v));
-            }
+			defaultValues.stream().
+				forEach((v) -> {
+					if (buf.length()>0)  buf.append(delimiter);
+					buf.append(print(v));
+			});
             return buf.toString();
         }
         return null;

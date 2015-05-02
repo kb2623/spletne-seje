@@ -50,6 +50,8 @@ public class MapOptionHandler extends OptionHandler<Map<?,?>> {
 
     /**
      * Creates a new instance of the collection.
+	 * @param type
+	 * @return 
      */
     protected Map createNewCollection(Class<? extends Map> type) {
         return new HashMap();
@@ -57,6 +59,9 @@ public class MapOptionHandler extends OptionHandler<Map<?,?>> {
 
     /**
      * Encapsulates how a single string argument gets converted into key and value.
+	 * @param argument
+	 * @param m
+	 * @throws org.kohsuke.args4j.CmdLineException
      */
     protected void addToMap(String argument, Map m) throws CmdLineException {
     	if (String.valueOf(argument).indexOf('=') == -1) {
@@ -88,6 +93,9 @@ public class MapOptionHandler extends OptionHandler<Map<?,?>> {
 
     /**
      * This is the opportunity to convert values to some typed objects.
+	 * @param m
+	 * @param key
+	 * @param value
      */
     protected void addToMap(Map m, String key, String value) {
         m.put(key,value);

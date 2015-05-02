@@ -86,6 +86,11 @@ public interface ISqlJetBtreeCursor {
      *     >0      The cursor is left pointing at an entry that
      *                  is larger than intKey/pIdxKey.
      *
+	 * @param pUnKey
+	 * @param intKey
+	 * @param bias
+	 * @return 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     int moveToUnpacked(ISqlJetUnpackedRecord pUnKey, long intKey, boolean bias) throws SqlJetException;
 
@@ -148,6 +153,7 @@ public interface ISqlJetBtreeCursor {
      * this routine was called, then return true.
      *
      * @return
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     boolean next() throws SqlJetException;
 
@@ -159,7 +165,6 @@ public interface ISqlJetBtreeCursor {
      * the first entry.  TRUE is also returned if the table is empty.
      *
      * @return
-     * @throws SqlJetException
      */
     boolean eof();
 
@@ -177,6 +182,8 @@ public interface ISqlJetBtreeCursor {
     * successful then return false.  If the cursor
     * was already pointing to the first entry in the database before
     * this routine was called, then return true.
+	 * @return 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
     */
     boolean previous() throws SqlJetException;
 
@@ -187,6 +194,8 @@ public interface ISqlJetBtreeCursor {
     *
     * For a table with the INTKEY flag set, this routine returns the key
     * itself, not the number of bytes in the key.
+	 * @return 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
     */
     long getKeySize() throws SqlJetException;
 
@@ -198,6 +207,10 @@ public interface ISqlJetBtreeCursor {
     * Throws error code if anything goes
     * wrong.  An error is thrown if "offset+amt" is larger than
     * the available payload.
+	 * @param offset
+	 * @param amt
+	 * @param buf
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
     */
     void key( int offset, int amt, ISqlJetMemoryPointer buf) throws SqlJetException;
 
@@ -224,7 +237,9 @@ public interface ISqlJetBtreeCursor {
      * These routines is used to get quick access to key and data
      * in the common case where no overflow pages are used.
      *
+	 * @param pAmt
      * @return
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     ISqlJetMemoryPointer keyFetch( int[] pAmt) throws SqlJetException;
 
@@ -242,7 +257,9 @@ public interface ISqlJetBtreeCursor {
      * These routines is used to get quick access to key and data
      * in the common case where no overflow pages are used.
      *
+	 * @param pAmt
      * @return
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     ISqlJetMemoryPointer dataFetch( int[] pAmt ) throws SqlJetException;
 
@@ -326,6 +343,8 @@ public interface ISqlJetBtreeCursor {
      * Save the current cursor position in the variables BtCursor.nKey and
      * BtCursor.pKey. The cursor's state is set to CURSOR_REQUIRESEEK.
      *
+	 * @return 
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public boolean saveCursorPosition() throws SqlJetException;
 
@@ -335,6 +354,7 @@ public interface ISqlJetBtreeCursor {
      * saved position info stored by saveCursorPosition(), so there can be at
      * most one effective restoreCursorPosition() call after each
      * saveCursorPosition().
+	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void restoreCursorPosition() throws SqlJetException;
 

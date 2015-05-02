@@ -33,10 +33,12 @@ public class SqlJetIsNullExpression extends SqlJetExpression implements ISqlJetI
         expression = create((CommonTree) ast.getChild(0));
     }
 
+	@Override
     public ISqlJetExpression getExpression() {
         return expression;
     }
 
+	@Override
     public boolean isNot() {
         return not;
     }

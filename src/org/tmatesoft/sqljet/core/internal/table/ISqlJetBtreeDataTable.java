@@ -72,7 +72,9 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     /**
      * Write an new entry into the table.
      * 
+	 * @param onConflict
      * @param values
+	 * @return 
      * @throws SqlJetException
      */
     long insert(SqlJetConflictAction onConflict, Object... values) throws SqlJetException;
@@ -80,6 +82,7 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     /**
      * Update an entry in the table by rowId.
      * 
+	 * @param onConflict
      * @param rowId
      * @param values
      * @throws SqlJetException
@@ -89,6 +92,7 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     /**
      * Update the current entry in the table.
      * 
+	 * @param onConflict
      * @param values
      * @throws SqlJetException
      */
@@ -97,8 +101,11 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     /**
      * Update the rowId and values an entry in the table by rowId.
      * 
+	 * @param onConflict
      * @param rowId
+	 * @param newRowId
      * @param values
+	 * @return 
      * @throws SqlJetException
      */
     long updateWithRowId(SqlJetConflictAction onConflict, long rowId, long newRowId, Object... values) throws SqlJetException;
@@ -106,7 +113,10 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     /**
      * Update the rowId and values in current entry in the table.
      * 
+	 * @param onConflict
+	 * @param newRowId
      * @param values
+	 * @return 
      * @throws SqlJetException
      */
     long updateCurrentWithRowId(SqlJetConflictAction onConflict, long newRowId, Object... values) throws SqlJetException;
@@ -124,6 +134,7 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
      * 
      * @throws SqlJetException
      */
+	@Override
     void delete() throws SqlJetException;
 
     /**
@@ -159,6 +170,7 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     /**
      * Insert record by values by names of fields.
      * 
+	 * @param onConflict
      * @param values
      * @return
      * @throws SqlJetException
@@ -166,6 +178,7 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     long insert(SqlJetConflictAction onConflict, Map<String, Object> values) throws SqlJetException;
 
     /**
+	 * @param onConflict
      * @param rowId
      * @param values
      * @throws SqlJetException
@@ -173,6 +186,7 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     void update(SqlJetConflictAction onConflict, long rowId, Map<String, Object> values) throws SqlJetException;
 
     /**
+	 * @param onConflict
      * @param values
      * @throws SqlJetException
      */
@@ -185,6 +199,7 @@ public interface ISqlJetBtreeDataTable extends ISqlJetBtreeTable {
     boolean isIndexExists(String indexName);
 
     /**
+	 * @param onConflict
      * @param rowId
      * @param values
      * @return

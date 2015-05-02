@@ -32,11 +32,11 @@ import org.tmatesoft.sqljet.core.internal.ISqlJetFileSystemsManager;
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
  * 
  */
-public class SqlJetFileSystemsManager implements ISqlJetFileSystemsManager {
+public final class SqlJetFileSystemsManager implements ISqlJetFileSystemsManager {
 
     private Object lock = new Object();
     private ISqlJetFileSystem defaultFileSystem = null;
-    private Map<String, ISqlJetFileSystem> fileSystems = new ConcurrentHashMap<String, ISqlJetFileSystem>();
+    private Map<String, ISqlJetFileSystem> fileSystems = new ConcurrentHashMap<>();
 
     private static SqlJetFileSystemsManager manager = new SqlJetFileSystemsManager(); 
     
@@ -47,7 +47,6 @@ public class SqlJetFileSystemsManager implements ISqlJetFileSystemsManager {
         try {
             register(new SqlJetFileSystem(), true);
         } catch (SqlJetException e) {
-            e.printStackTrace();
         }
     }
     
@@ -67,6 +66,7 @@ public class SqlJetFileSystemsManager implements ISqlJetFileSystemsManager {
      * org.tmatesoft.sqljet.core.ISqlJetFileSystemsManager#find(java.lang.String
      * )
      */
+	@Override
     public ISqlJetFileSystem find(final String name) {
         if (null != name)
             return fileSystems.get(name);
@@ -83,6 +83,7 @@ public class SqlJetFileSystemsManager implements ISqlJetFileSystemsManager {
      * org.tmatesoft.sqljet.core.ISqlJetFileSystemsManager#register(org.tmatesoft
      * .sqljet.core.ISqlJetFileSystem, boolean)
      */
+	@Override
     public void register(final ISqlJetFileSystem fs, final boolean isDefault) throws SqlJetException {
         checkFS(fs);
         fileSystems.put(fs.getName(), fs);
@@ -99,6 +100,7 @@ public class SqlJetFileSystemsManager implements ISqlJetFileSystemsManager {
      * org.tmatesoft.sqljet.core.ISqlJetFileSystemsManager#unregister(org.tmatesoft
      * .sqljet.core.ISqlJetFileSystem)
      */
+	@Override
     public void unregister(final ISqlJetFileSystem fs) throws SqlJetException {
         checkFS(fs);
         fileSystems.remove(fs.getName());

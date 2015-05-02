@@ -50,8 +50,9 @@ public class SqlJetScope {
             return myIsInclusive;
         }
         
+		@Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(isInclusive() ? '[' : '(');
             if (getValue() == null) {
                 sb.append(getValue());
@@ -97,6 +98,7 @@ public class SqlJetScope {
         return new SqlJetScope(rightBound, leftBound);
     }
     
+	@Override
     public String toString() {
         return getLeftBound() + ":" + getRightBound(); 
     }

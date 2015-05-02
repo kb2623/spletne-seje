@@ -29,6 +29,7 @@ public class SqlJetFunctionLiteral extends SqlJetExpression implements ISqlJetFu
         value = Function.decode(ast.getChild(0).getText());
     }
 
+	@Override
     public Function getValue() {
         return value;
     }

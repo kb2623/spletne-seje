@@ -19,7 +19,6 @@ package org.tmatesoft.sqljet.core.internal.table;
 
 import org.tmatesoft.sqljet.core.SqlJetException;
 import org.tmatesoft.sqljet.core.table.ISqlJetCursor;
-import org.tmatesoft.sqljet.core.table.ISqlJetTransaction;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 /**
@@ -35,6 +34,7 @@ public class SqlJetIndexOrderCursor extends SqlJetTableDataCursor implements ISq
     /**
      * @param table
      * @param db
+	 * @param indexName
      * @throws SqlJetException
      */
     public SqlJetIndexOrderCursor(ISqlJetBtreeDataTable table, SqlJetDb db, String indexName) throws SqlJetException {
@@ -53,18 +53,16 @@ public class SqlJetIndexOrderCursor extends SqlJetTableDataCursor implements ISq
      */
     @Override
     public boolean first() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                if (indexTable == null) {
-                    return SqlJetIndexOrderCursor.super.first();
-                } else {
-                    if (indexTable.first()) {
-                        return firstRowNum(goTo(indexTable.getKeyRowId()));
-                    }
-                }
-                return false;
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> {
+			if (indexTable == null) {
+				return SqlJetIndexOrderCursor.super.first();
+			} else {
+				if (indexTable.first()) {
+					return firstRowNum(goTo(indexTable.getKeyRowId()));
+				}
+			}
+			return false;
+		});
     }
 
     /*
@@ -74,18 +72,16 @@ public class SqlJetIndexOrderCursor extends SqlJetTableDataCursor implements ISq
      */
     @Override
     public boolean next() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                if (indexTable == null) {
-                    return SqlJetIndexOrderCursor.super.next();
-                } else {
-                    if (indexTable.next()) {
-                        return nextRowNum(goTo(indexTable.getKeyRowId()));
-                    }
-                }
-                return false;
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> {
+			if (indexTable == null) {
+				return SqlJetIndexOrderCursor.super.next();
+			} else {
+				if (indexTable.next()) {
+					return nextRowNum(goTo(indexTable.getKeyRowId()));
+				}
+			}
+			return false;
+		});
     }
 
     /*
@@ -95,15 +91,13 @@ public class SqlJetIndexOrderCursor extends SqlJetTableDataCursor implements ISq
      */
     @Override
     public boolean eof() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                if (indexTable == null) {
-                    return SqlJetIndexOrderCursor.super.eof();
-                } else {
-                    return indexTable.eof();
-                }
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> {
+			if (indexTable == null) {
+				return SqlJetIndexOrderCursor.super.eof();
+			} else {
+				return indexTable.eof();
+			}
+		});
     }
 
     /*
@@ -113,18 +107,16 @@ public class SqlJetIndexOrderCursor extends SqlJetTableDataCursor implements ISq
      */
     @Override
     public boolean last() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                if (indexTable == null) {
-                    return SqlJetIndexOrderCursor.super.last();
-                } else {
-                    if (indexTable.last()) {
-                        return lastRowNum(goTo(indexTable.getKeyRowId()));
-                    }
-                }
-                return false;
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> {
+			if (indexTable == null) {
+				return SqlJetIndexOrderCursor.super.last();
+			} else {
+				if (indexTable.last()) {
+					return lastRowNum(goTo(indexTable.getKeyRowId()));
+				}
+			}
+			return false;
+		});
     }
 
     /*
@@ -134,18 +126,16 @@ public class SqlJetIndexOrderCursor extends SqlJetTableDataCursor implements ISq
      */
     @Override
     public boolean previous() throws SqlJetException {
-        return (Boolean) db.runReadTransaction(new ISqlJetTransaction() {
-            public Object run(SqlJetDb db) throws SqlJetException {
-                if (indexTable == null) {
-                    return SqlJetIndexOrderCursor.super.previous();
-                } else {
-                    if (indexTable.previous()) {
-                        return previousRowNum(goTo(indexTable.getKeyRowId()));
-                    }
-                }
-                return false;
-            }
-        });
+        return (Boolean) db.runReadTransaction((SqlJetDb db1) -> {
+			if (indexTable == null) {
+				return SqlJetIndexOrderCursor.super.previous();
+			} else {
+				if (indexTable.previous()) {
+					return previousRowNum(goTo(indexTable.getKeyRowId()));
+				}
+			}
+			return false;
+		});
     }
 
     /*
@@ -171,23 +161,19 @@ public class SqlJetIndexOrderCursor extends SqlJetTableDataCursor implements ISq
     @Override
     protected void computeRows(boolean current) throws SqlJetException {
         if (indexTable != null) {
-            db.runReadTransaction(new ISqlJetTransaction() {
-                public Object run(SqlJetDb db) throws SqlJetException {
-                    indexTable.pushState();
-                    return null;
-                }
-            });
+            db.runReadTransaction((SqlJetDb db1) -> {
+				indexTable.pushState();
+				return null;
+			});
         } 
         try {
             super.computeRows(current);
         } finally {
             if (indexTable != null) {
-                db.runReadTransaction(new ISqlJetTransaction() {
-                    public Object run(SqlJetDb db) throws SqlJetException {
-                        indexTable.popState();
-                        return null;
-                    }
-                });
+                db.runReadTransaction((SqlJetDb db1) -> {
+					indexTable.popState();
+					return null;
+				});
             }
         }
     }

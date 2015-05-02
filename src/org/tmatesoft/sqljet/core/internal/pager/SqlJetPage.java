@@ -98,6 +98,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#dontRollback()
      */
+	@Override
     public void dontRollback() {
 
         assert (pPager.state.compareTo(SqlJetPagerState.RESERVED) >= 0);
@@ -151,6 +152,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#dontWrite()
      */
+	@Override
     public void dontWrite() {
 
         if (pgno > pPager.dbOrigSize) {
@@ -189,6 +191,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getData()
      */
+	@Override
     public ISqlJetMemoryPointer getData() {
         // assertion( nRef>0 || pPager.memDb );
         return pData;
@@ -199,6 +202,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getExtra()
      */
+	@Override
     public Object getExtra() {
         return (pPager != null ? pExtra : null);
     }
@@ -208,6 +212,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#setExtra(java.lang.Object)
      */
+	@Override
     public void setExtra(Object extra) {
         this.pExtra = extra;
     }
@@ -217,6 +222,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#move(int, boolean)
      */
+	@Override
     public void move(int pageNumber, boolean isCommit) throws SqlJetException {
 
         SqlJetPage pPgOld; /* The page being overwritten. */
@@ -328,6 +334,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#ref()
      */
+	@Override
     public void ref() {
         assert (nRef > 0);
         nRef++;
@@ -338,6 +345,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#unref()
      */
+	@Override
     public void unref() throws SqlJetException {
         try {
             pPager.pageCache.release(this);
@@ -351,6 +359,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#write()
      */
+	@Override
     public void write() throws SqlJetException {
 
         int nPagePerSector = (pPager.sectorSize / pPager.pageSize);
@@ -606,6 +615,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getFlags()
      */
+	@Override
     public Set<SqlJetPageFlags> getFlags() {
         return flags;
     }
@@ -615,6 +625,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getHash()
      */
+	@Override
     public long getHash() {
         return pageHash;
     }
@@ -624,6 +635,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getPager()
      */
+	@Override
     public ISqlJetPager getPager() {
         return pPager;
     }
@@ -633,6 +645,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#setFlags(java.util.Set)
      */
+	@Override
     public void setFlags(Set<SqlJetPageFlags> flags) {
         this.flags = flags;
     }
@@ -642,6 +655,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#setHash(long)
      */
+	@Override
     public void setHash(long hash) {
         pageHash = hash;
     }
@@ -653,6 +667,7 @@ public class SqlJetPage implements ISqlJetPage {
      * org.tmatesoft.sqljet.core.ISqlJetPage#setPager(org.tmatesoft.sqljet.core
      * .ISqlJetPager)
      */
+	@Override
     public void setPager(ISqlJetPager pager) {
         pPager = (SqlJetPager) pager;
     }
@@ -662,6 +677,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getPageNumber()
      */
+	@Override
     public int getPageNumber() {
         return pgno;
     }
@@ -671,6 +687,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#setPageNumber(long)
      */
+	@Override
     public void setPageNumber(int pageNumber) {
         pgno = pageNumber;
     }
@@ -680,6 +697,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getNext()
      */
+	@Override
     public ISqlJetPage getNext() {
         return pDirtyNext;
     }
@@ -689,6 +707,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getPrev()
      */
+	@Override
     public ISqlJetPage getPrev() {
         return pDirtyPrev;
     }
@@ -698,6 +717,7 @@ public class SqlJetPage implements ISqlJetPage {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getRefCount()
      */
+	@Override
     public int getRefCount() {
         return nRef;
     }
@@ -705,6 +725,7 @@ public class SqlJetPage implements ISqlJetPage {
     /* (non-Javadoc)
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#isWriteable()
      */
+	@Override
     public boolean isWriteable() {
         return flags.contains( SqlJetPageFlags.DIRTY );
     }
@@ -712,6 +733,7 @@ public class SqlJetPage implements ISqlJetPage {
     /* (non-Javadoc)
      * @see org.tmatesoft.sqljet.core.ISqlJetPage#getDirty()
      */
+	@Override
     public ISqlJetPage getDirty() {
         return pDirty;
     }

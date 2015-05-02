@@ -46,7 +46,7 @@ public class SqlJetMapIndexCursor extends SqlJetBtreeTable implements ISqlJetMap
     /**
      * @param mapDb
      * @param btree
-     * @param mapTableDef
+	 * @param indexDef
      * @param writable
      * @throws SqlJetException
      */
@@ -64,6 +64,7 @@ public class SqlJetMapIndexCursor extends SqlJetBtreeTable implements ISqlJetMap
      * @return
      * @throws SqlJetException
      */
+	@Override
     public Object[] getKey() throws SqlJetException {
         final Object[] values = getValues();
         if (values != null && values.length > 1) {
@@ -79,6 +80,7 @@ public class SqlJetMapIndexCursor extends SqlJetBtreeTable implements ISqlJetMap
      * @return
      * @throws SqlJetException
      */
+	@Override
     public Long getValue() throws SqlJetException {
         final Object[] values = getValues();
         if (values != null && values.length > 1) {
@@ -95,6 +97,7 @@ public class SqlJetMapIndexCursor extends SqlJetBtreeTable implements ISqlJetMap
      * @return
      * @throws SqlJetException
      */
+	@Override
     public boolean goToKey(Object[] key) throws SqlJetException {
         if (key != null && key.length > 0) {
             final SqlJetEncoding encoding = mapDb.getOptions().getEncoding();
@@ -136,9 +139,9 @@ public class SqlJetMapIndexCursor extends SqlJetBtreeTable implements ISqlJetMap
     /**
      * @param key
      * @param value
-     * @return
      * @throws SqlJetException
      */
+	@Override
     public void put(Object[] key, Long value) throws SqlJetException {
         if (write) {
             if (value != null) {

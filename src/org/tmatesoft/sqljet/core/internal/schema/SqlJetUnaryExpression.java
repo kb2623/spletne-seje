@@ -32,10 +32,12 @@ public class SqlJetUnaryExpression extends SqlJetExpression implements ISqlJetUn
         expression = create((CommonTree) ast.getChild(0));
     }
 
+	@Override
     public Operation getOperation() {
         return operation;
     }
 
+	@Override
     public ISqlJetExpression getExpression() {
         return expression;
     }

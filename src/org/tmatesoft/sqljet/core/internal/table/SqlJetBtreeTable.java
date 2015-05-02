@@ -77,7 +77,6 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
     }
 
     /**
-     * @param db
      * @param btree
      * @param rootPage
      * @param write
@@ -99,7 +98,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @throws SqlJetException
      */
     private void init(ISqlJetBtree btree, int rootPage, boolean write, boolean index) throws SqlJetException {
-        this.states = new Stack<State>();
+        this.states = new Stack<>();
         this.btree = btree;
         this.rootPage = rootPage;
         this.write = write;
@@ -122,6 +121,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
         return getCurrentState().getKeyInfo();
     }
     
+	@Override
     public void pushState() throws SqlJetException {
         SqlJetKeyInfo keyInfo = null;
         if (index) {
@@ -137,6 +137,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
     protected void adjustKeyInfo() throws SqlJetException {
     }
 
+	@Override
     public boolean popState() throws SqlJetException {
         if (states.size() <= 1) {
             return false;
@@ -152,6 +153,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.internal.btree.ISqlJetBtreeTable#close()
      */
+	@Override
     public void close() throws SqlJetException {
         while(popState()) {}
 
@@ -164,6 +166,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetBtreeTable#unlock()
      */
+	@Override
     public void unlock() {
         getCursor().leaveCursor();
     }
@@ -173,6 +176,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetBtreeTable#lock()
      */
+	@Override
     public void lock() throws SqlJetException {
         getCursor().enterCursor();
     }
@@ -182,6 +186,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.internal.btree.ISqlJetBtreeTable#eof()
      */
+	@Override
     public boolean eof() throws SqlJetException {
         hasMoved();
         return getCursor().eof();
@@ -190,6 +195,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
     /**
      * @throws SqlJetException
      */
+	@Override
     public boolean hasMoved() throws SqlJetException {
         getCursor().enterCursor();
         try {
@@ -204,6 +210,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetBtreeTable#first()
      */
+	@Override
     public boolean first() throws SqlJetException {
         lock();
         try {
@@ -219,6 +226,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetBtreeTable#last()
      */
+	@Override
     public boolean last() throws SqlJetException {
         lock();
         try {
@@ -234,6 +242,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.internal.btree.ISqlJetBtreeTable#next()
      */
+	@Override
     public boolean next() throws SqlJetException {
         lock();
         try {
@@ -250,6 +259,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.ISqlJetBtreeTable#previous()
      */
+	@Override
     public boolean previous() throws SqlJetException {
         lock();
         try {
@@ -266,6 +276,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * 
      * @see org.tmatesoft.sqljet.core.internal.btree.ISqlJetBtreeTable#getRecord
      */
+	@Override
     public ISqlJetBtreeRecord getRecord() throws SqlJetException {
         if (eof())
             return null;
@@ -288,6 +299,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#lockTable(
      * boolean)
      */
+	@Override
     public void lockTable(boolean write) {
         btree.lockTable(rootPage, write);
     }
@@ -298,6 +310,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @see
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#getEncoding()
      */
+	@Override
     public SqlJetEncoding getEncoding() throws SqlJetException {
         return getCursor().getCursorDb().getOptions().getEncoding();
     }
@@ -318,6 +331,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
         return fields.get(field);
     }
 
+	@Override
     public Object getValue(int field) throws SqlJetException {
         if (valueCache != null && field < valueCache.length) {
             final Object valueCached = valueCache[field];
@@ -359,6 +373,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#getFieldsCount
      * ()
      */
+	@Override
     public int getFieldsCount() throws SqlJetException {
         final ISqlJetBtreeRecord r = getRecord();
         if (null == r)
@@ -372,6 +387,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @see
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#isNull(int)
      */
+	@Override
     public boolean isNull(int field) throws SqlJetException {
         final ISqlJetVdbeMem value = getValueMem(field);
         if (null == value)
@@ -385,6 +401,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @see
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#getString(int)
      */
+	@Override
     public String getString(int field) throws SqlJetException {
         final ISqlJetVdbeMem value = getValueMem(field);
         if (value == null || value.isNull())
@@ -399,6 +416,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#getInteger
      * (int)
      */
+	@Override
     public long getInteger(int field) throws SqlJetException {
         final ISqlJetVdbeMem value = getValueMem(field);
         if (value == null || value.isNull())
@@ -412,6 +430,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @see
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#getReal(int)
      */
+	@Override
     public double getFloat(int field) throws SqlJetException {
         final ISqlJetVdbeMem value = getValueMem(field);
         if (value == null || value.isNull())
@@ -426,6 +445,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#getFieldType
      * (int)
      */
+	@Override
     public SqlJetValueType getFieldType(int field) throws SqlJetException {
         final ISqlJetVdbeMem value = getValueMem(field);
         if (value == null)
@@ -439,6 +459,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @see
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#getBlob(int)
      */
+	@Override
     public ISqlJetMemoryPointer getBlob(int field) throws SqlJetException {
         final ISqlJetVdbeMem value = getValueMem(field);
         if (value == null || value.isNull())
@@ -452,6 +473,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @see
      * org.tmatesoft.sqljet.core.internal.table.ISqlJetBtreeTable#getValues()
      */
+	@Override
     public Object[] getValues() throws SqlJetException {
         if (valuesCache != null) {
             return valuesCache;
@@ -466,6 +488,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
         }
     }
 
+	@Override
     public long newRowId() throws SqlJetException {
         return newRowId(0);
     }
@@ -485,6 +508,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @return
      * @throws SqlJetException
      */
+	@Override
     public long newRowId(long prev) throws SqlJetException {
         /*
          * The next rowid or record number (different terms for the same thing)
@@ -585,28 +609,27 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
         valueCache = null;
     }
 
+	@Override
     public void clear() throws SqlJetException {
         btree.clearTable(rootPage, null);
     }
 
+	@Override
     public long getKeySize() throws SqlJetException {
         return getCursor().getKeySize();
     }
 
+	@Override
     public int moveTo(ISqlJetMemoryPointer pKey, long nKey, boolean bias) throws SqlJetException {
         clearRecordCache();
         return getCursor().moveTo(pKey, nKey, bias);
     }
 
     /**
-     * @param object
-     * @param rowId
      * @param pData
-     * @param remaining
-     * @param i
-     * @param b
      * @throws SqlJetException
      */
+	@Override
     public void insert(ISqlJetMemoryPointer pKey, long nKey, ISqlJetMemoryPointer pData, int nData, int nZero,
             boolean bias) throws SqlJetException {
         clearRecordCache();
@@ -617,6 +640,7 @@ public class SqlJetBtreeTable implements ISqlJetBtreeTable {
      * @throws SqlJetException
      * 
      */
+	@Override
     public void delete() throws SqlJetException {
         clearRecordCache();
         getCursor().delete();

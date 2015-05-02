@@ -34,12 +34,8 @@ public interface ISqlJetPageCache {
      * 
      * @param szPage
      *            Size of every page
-     * @param szExtra
-     *            Extra space associated with each page
      * @param bPurgeable
      *            True if pages are on backing store
-     * @param xDestroy
-     *            Called to destroy a page
      * @param xStress
      *            Call to try to make pages clean
      */
@@ -57,8 +53,7 @@ public interface ISqlJetPageCache {
      * Try to obtain a page from the cache.
      * 
      * 
-     * @param pgno
-     *            Page number to obtain
+	 * @param pageNumber
      * @param createFlag
      *            If true, create page if it does not exist already
      * @return
@@ -72,7 +67,6 @@ public interface ISqlJetPageCache {
      * pinned until released. Reference counted.
      * 
      * @param page
-     * @throws SqlJetExceptionRemove
      */
     void release(final ISqlJetPage page);
 
@@ -84,7 +78,6 @@ public interface ISqlJetPageCache {
      * pointed to by p is invalid.
      * 
      * @param page
-     * @throws SqlJetExceptionRemove
      */
     void drop(final ISqlJetPage page);
 
@@ -93,7 +86,6 @@ public interface ISqlJetPageCache {
      * so.
      * 
      * @param page
-     * @throws SqlJetExceptionRemove
      */
     void makeDirty(final ISqlJetPage page);
 
@@ -102,14 +94,12 @@ public interface ISqlJetPageCache {
      * so.
      * 
      * @param page
-     * @throws SqlJetExceptionRemove
      */
     void makeClean(final ISqlJetPage page);
 
     /**
      * Mark all dirty list pages as clean Make every page in the cache clean.
      * 
-     * @throws SqlJetExceptionRemove
      * 
      */
     void cleanAll();
@@ -123,7 +113,6 @@ public interface ISqlJetPageCache {
      * 
      * @param page
      * @param pageNumber
-     * @throws SqlJetExceptionRemove
      */
     void move(final ISqlJetPage page, final int pageNumber);
 
@@ -134,7 +123,6 @@ public interface ISqlJetPageCache {
      * Drop every cache entry whose page number is greater than "pgno".
      * 
      * @param pageNumber
-     * @throws SqlJetExceptionRemove
      */
     void truncate(final int pageNumber);
 
@@ -154,7 +142,6 @@ public interface ISqlJetPageCache {
     /**
      * Clear flags from pages of the page cache
      * 
-     * @throws SqlJetExceptionRemove
      */
     void clearSyncFlags();
 
@@ -169,11 +156,13 @@ public interface ISqlJetPageCache {
 
     /**
      * Return the total number of outstanding page references
+	 * @return 
      */
     int getRefCount();
 
     /**
      * Return the total number of pages stored in the cache
+	 * @return 
      */
     int getPageCount();
 

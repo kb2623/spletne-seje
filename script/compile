@@ -27,15 +27,9 @@ else
 	exit 3
 fi
 
-if [ ! -e "$lib_dir/args4j-2.0.21.jar" ]; then
-	echo "Missing args4j-2.0.21.jar in $lib_dir"
-	exit 4
-elif [ ! -e "$lib_dir/antlr-runtime-3.4.jar" ]; then
+if [ ! -e "$lib_dir/antlr-runtime-3.4.jar" ]; then
 	echo "Missing antlr-runtime-3.4.jar in $lib_dir"
-	exit 5
-elif [ ! -e "$lib_dir/sqljet-1.1.10.jar" ]; then
-	echo "Missing sqljet-1.1.10.jar in $lib_dir"
-	exit 6
+	exit 4
 else
 	echo "Source dir: $src_dir"
 	echo "Class dir: $bin_dir"

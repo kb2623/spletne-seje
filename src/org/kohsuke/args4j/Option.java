@@ -71,11 +71,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Option {
     /**
      * Name of the option, such as <code>-foo</code> or <code>-bar</code>.
+	 * @return 
      */
     String name();
     
     /**
      * Aliases for the options, such as <code>--long-option-name</code>.
+	 * @return 
      */
     String[] aliases() default { };
 
@@ -98,6 +100,7 @@ public @interface Option {
      * <p>
      * If this value is empty, the option will not be displayed
      * in the usage screen.
+	 * @return 
      */
     String usage() default "";
 
@@ -117,6 +120,7 @@ public @interface Option {
      * Just like {@link #usage()}, normally, this value is printed as is.
      * But if a {@link ResourceBundle} is given to the {@link CmdLineParser},
      * it will be used to obtain the locale-specific value.
+	 * @return 
      */
     String metaVar() default "";
 
@@ -132,6 +136,7 @@ public @interface Option {
      * Note that in most of the command line interface design principles,
      * options should be really optional. So use caution when using this
      * flag.
+	 * @return 
      */
     boolean required() default false;
     
@@ -142,6 +147,7 @@ public @interface Option {
      * When flagging an option being the help option, required
      * arguments or options that are missing in an actual command
      * line don't cause an exception to be thrown.
+	 * @return 
      * @see #required() 
      */
     boolean help() default false;
@@ -158,6 +164,7 @@ public @interface Option {
      * If you need more complicated filtering logic, define your own
      * annotations and check them in {@link Setter#asAnnotatedElement()}.
      *
+	 * @return 
      * @see OptionHandlerFilter#PUBLIC
      */
     boolean hidden() default false;
@@ -188,6 +195,7 @@ public @interface Option {
      * &#64;Option(name="-b",handler=MyHandler.class)
      * boolean value;
      * </pre>
+	 * @return 
      */
     @SuppressWarnings("rawtypes")
 	Class<? extends OptionHandler> handler() default OptionHandler.class;
@@ -210,6 +218,7 @@ public @interface Option {
      * a {@link CmdLineException} will be thrown if options required by another one
      * are not present.
      * </p>
+	 * @return 
      */
     String[] depends() default { };
     
@@ -231,6 +240,7 @@ public @interface Option {
      * a {@link CmdLineException} will be thrown if forbidden option
      * combinations are present.
      * </p>
+	 * @return 
      */
     String[] forbids() default { };    
 }

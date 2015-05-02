@@ -93,6 +93,7 @@ public class PosixParser extends Parser
      * when an non option is found.
      * @return The flattened <code>arguments</code> String array.
      */
+	@Override
     protected String[] flatten(Options options, String[] arguments, boolean stopAtNonOption)
     {
         init();

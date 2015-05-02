@@ -108,6 +108,7 @@ public interface ISqlJetCursor {
     /**
      * Returns number of fields in the current record.
      *
+	 * @return 
      * @throws SqlJetException
      */
     int getFieldsCount() throws SqlJetException;
@@ -145,6 +146,7 @@ public interface ISqlJetCursor {
     /**
      * Tests field value for null.
      *
+	 * @param fieldName
      * @return true if field value is null
      * @throws SqlJetException
      */
@@ -185,6 +187,7 @@ public interface ISqlJetCursor {
      *
      * @param fieldName
      *            name of the field
+	 * @return 
      * @throws SqlJetException
      */
     long getInteger(String fieldName) throws SqlJetException;
@@ -204,6 +207,7 @@ public interface ISqlJetCursor {
      *
      * @param fieldName
      *            name of the field
+	 * @return 
      * @throws SqlJetException
      */
     double getFloat(String fieldName) throws SqlJetException;
@@ -271,6 +275,7 @@ public interface ISqlJetCursor {
      * Returns value of the field of the specified index in the current row.
      *
      * @param field index of the field
+	 * @return 
      * @throws SqlJetException
      */
     Object getValue(int field) throws SqlJetException;
@@ -280,6 +285,7 @@ public interface ISqlJetCursor {
      *
      * @param fieldName
      *            name of the field
+	 * @return 
      * @throws SqlJetException
      */
     Object getValue(String fieldName) throws SqlJetException;
@@ -306,8 +312,10 @@ public interface ISqlJetCursor {
     /**
      * Updates rowId and values in the current record.
      *
+	 * @param rowId
      * @param values
      *            New record values.
+	 * @return 
      * @throws SqlJetException
      */
     long updateWithRowId(long rowId, Object... values) throws SqlJetException;
@@ -341,8 +349,10 @@ public interface ISqlJetCursor {
      *
      * @param onConflict
      *            {@link SqlJetConflictAction}.
+	 * @param rowId
      * @param values
      *            New record values.
+	 * @return 
      * @throws SqlJetException
      */
     long updateWithRowIdOr(SqlJetConflictAction onConflict, long rowId, Object... values) throws SqlJetException;

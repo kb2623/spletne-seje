@@ -154,14 +154,10 @@ public class SqlJetOptions implements ISqlJetOptions {
         encoding = readEncoding();
     }
 
+	@Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("ENCODING: " + encoding + "\n");
-        sb.append("SCHEMA VERSION: " + schemaCookie + "\n");
-        sb.append("USER VERSION: " + userCookie + "\n");
-        sb.append("FILE FORMAT: " + fileFormat + "\n");
-        sb.append("AUTOVACUUM: " + autovacuum + "\n");
-        sb.append("CACHE SIZE: " + pageCacheSize);
+        StringBuilder sb = new StringBuilder();
+        sb.append("ENCODING: ").append(encoding).append("\n").append("SCHEMA VERSION: ").append(schemaCookie).append("\n").append("USER VERSION: ").append(userCookie).append("\n").append("FILE FORMAT: ").append(fileFormat).append("\n").append("AUTOVACUUM: ").append(autovacuum).append("\n").append("CACHE SIZE: ").append(pageCacheSize);
         return sb.toString();
     }
 
@@ -213,42 +209,52 @@ public class SqlJetOptions implements ISqlJetOptions {
         return btree.getMeta(SCHEMA_COOKIE);
     }
 
+	@Override
     public int getSchemaVersion() throws SqlJetException {
         return schemaCookie;
     }
 
-    public int getFileFormat() throws SqlJetException {
+	@Override
+	public int getFileFormat() throws SqlJetException {
         return fileFormat;
     }
 
+	@Override
     public int getCacheSize() throws SqlJetException {
         return pageCacheSize;
     }
 
+	@Override
     public boolean isAutovacuum() throws SqlJetException {
         return autovacuum;
     }
 
+	@Override
     public SqlJetEncoding getEncoding() throws SqlJetException {
         return encoding;
     }
 
+	@Override
     public boolean isLegacyFileFormat() throws SqlJetException {
         return fileFormat==ISqlJetLimits.SQLJET_MIN_FILE_FORMAT;
     }
 
+	@Override
     public void setLegacyFileFormat(boolean flag) throws SqlJetException {
         fileFormat=flag?ISqlJetLimits.SQLJET_MIN_FILE_FORMAT:ISqlJetLimits.SQLJET_MAX_FILE_FORMAT;
     }
 
+	@Override
     public int getUserVersion() throws SqlJetException {
         return userCookie;
     }
 
+	@Override
     public boolean isIncrementalVacuum() throws SqlJetException {
         return incrementalVacuum;
     }
 
+	@Override
     public void setSchemaVersion(int version) throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
@@ -261,6 +267,7 @@ public class SqlJetOptions implements ISqlJetOptions {
         }
     }
 
+	@Override
     public boolean verifySchemaVersion(boolean throwIfStale) throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
@@ -274,6 +281,7 @@ public class SqlJetOptions implements ISqlJetOptions {
         }
     }
 
+	@Override
     public void changeSchemaVersion() throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
@@ -364,6 +372,7 @@ public class SqlJetOptions implements ISqlJetOptions {
         btree.updateMeta(FILE_FORMAT, fileFormat);
     }
 
+	@Override
     public void setUserVersion(int userCookie) throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
@@ -385,6 +394,7 @@ public class SqlJetOptions implements ISqlJetOptions {
         }
     }
 
+	@Override
     public void setFileFormat(int fileFormat) throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
@@ -404,6 +414,7 @@ public class SqlJetOptions implements ISqlJetOptions {
         }
     }
 
+	@Override
     public void setCacheSize(int pageCacheSize) throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
@@ -415,6 +426,7 @@ public class SqlJetOptions implements ISqlJetOptions {
         }
     }
 
+	@Override
     public void setAutovacuum(boolean autovacuum) throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
@@ -434,6 +446,7 @@ public class SqlJetOptions implements ISqlJetOptions {
         }
     }
 
+	@Override
     public void setEncoding(SqlJetEncoding encoding) throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
@@ -453,6 +466,7 @@ public class SqlJetOptions implements ISqlJetOptions {
         }
     }
 
+	@Override
     public void setIncrementalVacuum(boolean incrementalVacuum) throws SqlJetException {
         dbHandle.getMutex().enter();
         try {
