@@ -1,0 +1,35 @@
+// Povemo kakšno programsko kodo bomo prevajali
+apply plugin: 'java'
+
+// Nastavitev poti do kode in testov
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'test'
+        }
+    }
+}
+
+// Kje se nahajajo potrebni dodatki
+repositories {
+   flatDir {
+       dirs 'libs'
+   }
+}
+
+// Kdaj uporabimo katere dodatke
+dependencies {
+    compile files('libs/junit-4.12.jar', 'libs/hamcrest-core-1.3.jar', 'libs/antlr-runtime-3.4.jar', 'libs/easymock-3.3.1.jar')
+    runtime fileTree(dir: 'libs', include: '*.jar')
+}

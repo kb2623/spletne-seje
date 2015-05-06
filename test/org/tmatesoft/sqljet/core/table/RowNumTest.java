@@ -1,7 +1,7 @@
 /**
  * RowNumTest.java
  * Copyright (C) 2009-2013 TMate Software Ltd
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
@@ -33,11 +33,11 @@ import org.tmatesoft.sqljet.core.internal.fs.util.SqlJetFileUtil;
 /**
  * @author TMate Software Ltd.
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
- * 
+ *
  */
 public class RowNumTest extends AbstractDataCopyTest {
 
-    public static final File REP_CACHE_DB = new File("src/test/data/db/rep-cache/rep-cache.db");
+    public static final File REP_CACHE_DB = new File("test/data/db/rep-cache/rep-cache.db");
 
     public static final String REP_CACHE_TABLE = "rep_cache";
 

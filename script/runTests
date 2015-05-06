@@ -20,8 +20,8 @@ fi
 
 if [ -d "$4" ]; then
 	lib_dir=$4
-elif [ -d "../lib" ]; then
-	lib_dir="../lib"
+elif [ -d "../libs" ]; then
+	lib_dir="../libs"
 else
 	echo "No library dir!!!"
 	exit 3

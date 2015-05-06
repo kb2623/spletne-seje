@@ -12,7 +12,7 @@ import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 public class Svn17To18UpgradeTest extends AbstractDataCopyTest {
     
-    private static final String DB = "src/test/data/db/svn1.7/wc17.db";
+    private static final String DB = "test/data/db/svn1.7/wc17.db";
 
     
     @Test

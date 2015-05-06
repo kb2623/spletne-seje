@@ -33,7 +33,7 @@ import org.tmatesoft.sqljet.core.table.SqlJetDb;
  */
 public class VirtualTablesTest extends AbstractNewDbTest {
 
-    private static final String FTS3_DB = "src/test/data/db/fts3.sqlite";
+    private static final String FTS3_DB = "test/data/db/fts3.sqlite";
 
     @Test
     public void fts3() throws SqlJetException {

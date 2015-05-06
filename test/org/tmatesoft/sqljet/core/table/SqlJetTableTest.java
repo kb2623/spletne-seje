@@ -1,7 +1,7 @@
 /**
  * SqlJetTableTest.java
  * Copyright (C) 2009-2013 TMate Software Ltd
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
@@ -42,24 +42,23 @@ import org.tmatesoft.sqljet.core.schema.ISqlJetTableDef;
 /**
  * @author TMate Software Ltd.
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
- * 
+ *
  */
 public class SqlJetTableTest extends AbstractDataCopyTest {
 
     public static final String TABLE_TEST = "SqlJetTableTest";
 
-    public static final String DB = SqlJetUtility.getSysProp(TABLE_TEST + ".DB", "src/test/data/db/testdb.sqlite");
+    public static final String DB = SqlJetUtility.getSysProp(TABLE_TEST + ".DB", "test/data/db/testdb.sqlite");
 
-    public static final String DB2 = SqlJetUtility.getSysProp(TABLE_TEST + ".DB", "src/test/data/db/test2.sqlite");
-    public static final String DB3 = SqlJetUtility.getSysProp(TABLE_TEST + ".DB", "src/test/data/db/test3.sqlite");
+    public static final String DB2 = SqlJetUtility.getSysProp(TABLE_TEST + ".DB", "test/data/db/test2.sqlite");
+    public static final String DB3 = SqlJetUtility.getSysProp(TABLE_TEST + ".DB", "test/data/db/test3.sqlite");
 
     public static final String TABLE = SqlJetUtility.getSysProp(TABLE_TEST + ".TABLE", "test1");
     public static final String TABLE2 = SqlJetUtility.getSysProp(TABLE_TEST + ".TABLE", "test2");
 
     private static final boolean DELETE_COPY = SqlJetUtility.getBoolSysProp(TABLE_TEST + ".DELETE_COPY", true);
 
-    public static final String REP_CACHE_DB = SqlJetUtility.getSysProp(TABLE_TEST + ".REP_CACHE_DB",
-            "src/test/data/db/rep-cache/rep-cache.db");
+    public static final String REP_CACHE_DB = SqlJetUtility.getSysProp(TABLE_TEST + ".REP_CACHE_DB", "test/data/db/rep-cache/rep-cache.db");
 
     public static final String REP_CACHE_TABLE = SqlJetUtility.getSysProp(TABLE_TEST + ".REP_CACHE_TABLE", "rep_cache");
 

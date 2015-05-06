@@ -46,15 +46,14 @@ public class SqlJetSchemaTest extends AbstractDataCopyTest {
 
     public static final String SCHEMA_TEST = "SqlJetSchemaTest";
 
-    public static final String DB = SqlJetUtility.getSysProp(SCHEMA_TEST + ".DB", "src/test/data/db/testdb.sqlite");
+    public static final String DB = SqlJetUtility.getSysProp(SCHEMA_TEST + ".DB", "test/data/db/testdb.sqlite");
 
     public static final String TABLE = SqlJetUtility.getSysProp(SCHEMA_TEST + ".TABLE", "test1");
     public static final String TABLE2 = SqlJetUtility.getSysProp(SCHEMA_TEST + ".TABLE", "test2");
 
     private static final boolean DELETE_COPY = SqlJetUtility.getBoolSysProp(SCHEMA_TEST + ".DELETE_COPY", true);
 
-    public static final String REP_CACHE_DB = SqlJetUtility.getSysProp(SCHEMA_TEST + ".REP_CACHE_DB",
-            "src/test/data/db/rep-cache/rep-cache.db");
+    public static final String REP_CACHE_DB = SqlJetUtility.getSysProp(SCHEMA_TEST + ".REP_CACHE_DB", "test/data/db/rep-cache/rep-cache.db");
     public static final String REP_CACHE_TABLE = SqlJetUtility
             .getSysProp(SCHEMA_TEST + ".REP_CACHE_TABLE", "rep_cache");
 
