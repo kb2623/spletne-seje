@@ -62,7 +62,7 @@ public class JetCurruptionStress {
         BufferedReader reader = null;
         try {
             db.beginTransaction(SqlJetTransactionMode.WRITE);
-            final File errTxt = new File("src/test/data/issues/133/err.txt");
+            final File errTxt = new File("test/data/issues/133/err.txt");
             final FileInputStream input = new FileInputStream(errTxt);
             reader = new BufferedReader(new InputStreamReader(input, "utf-8"));
 

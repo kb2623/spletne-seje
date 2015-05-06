@@ -34,9 +34,10 @@ import org.tmatesoft.sqljet.core.table.SqlJetDb;
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
  * 
  */
+@Ignore
 public class RepCacheFailStressT extends AbstractDataCopyTest {
 
-    public static final String DB_ARCHIVE = "test/data/db/rep-cache/fail/rep-cache.zip";
+    public static final String DB_ARCHIVE = "data/db/rep-cache/fail/rep-cache.zip";
     public static final String DB_FILE_NAME = "rep-cache.db";
     public static final String TABLE = "rep_cache";
 

@@ -38,13 +38,13 @@ public class TestParser {
 	public TestParser() {
 		String os = System.getProperty("os.name");
 		if(os.contains("Windows")) {
-			pathNCSACombined = "C:\\Users\\mks19_000\\workspace\\spletne-seje\\Logs\\Combined\\access_log";
-			pathNCSACommon = "C:\\Users\\mks19_000\\workspace\\spletne-seje\\Logs\\Common\\logCommon";
+			pathNCSACombined = System.getProperty("user.dir") + "\\Logs\\Combined\\access_log";
+			pathNCSACommon = System.getProperty("user.dir") + "\\Logs\\Common\\logCommon";
 			pathW3C = "";
 			pathIIS = "";
 		} else {
-			pathNCSACombined = "/home/klemen/workspace/spletne-seje/Logs/Combined/access_log";
-			pathNCSACommon = "/home/klemen/workspace/spletne-seje/Logs/Common/logCommon";
+			pathNCSACombined = System.getProperty("user.dir") + "/Logs/Combined/access_log";
+			pathNCSACommon = System.getProperty("user.dir") + "/Logs/Common/logCommon";
 			pathW3C = "";
 			pathIIS = "";
 		}

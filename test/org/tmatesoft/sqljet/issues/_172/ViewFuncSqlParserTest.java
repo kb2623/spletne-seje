@@ -11,7 +11,7 @@ import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 public class ViewFuncSqlParserTest extends AbstractDataCopyTest {
 
-	private static final String DB = "src/test/data/issues/172/metadata.db";
+	private static final String DB = "test/data/issues/172/metadata.db";
 
 	@Test
 	public void testViewFuncSqlParser() throws Exception {

@@ -41,7 +41,7 @@ public class SqlJetPagerTest extends SqlJetAbstractLoggedTest {
     private ISqlJetFileSystem fileSystem;
     private ISqlJetPager pager;
     private File file;
-    private File testDataBase = new File("src/test/data/db/testdb.sqlite");
+    private File testDataBase = new File("test/data/db/testdb.sqlite");
 
     /**
      * @throws java.lang.Exception

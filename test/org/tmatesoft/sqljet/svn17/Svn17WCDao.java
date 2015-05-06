@@ -48,7 +48,7 @@ public class Svn17WCDao {
      * "where wc_id = ?1 and local_relpath = ?2; " \ ""
      */
 
-    private static final File WC = new File("src/test/data/db/svn1.7/wc.db");
+    private static final File WC = new File("test/data/db/svn1.7/wc.db");
 
     private static final String BASE_NODE = "base_node";
 
