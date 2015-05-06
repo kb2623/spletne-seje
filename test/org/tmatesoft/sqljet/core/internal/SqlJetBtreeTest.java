@@ -54,10 +54,10 @@ import org.tmatesoft.sqljet.core.internal.fs.util.SqlJetFileUtil;
 public class SqlJetBtreeTest extends SqlJetAbstractLoggedTest {
 
     private ISqlJetFileSystem fileSystem = SqlJetFileSystemsManager.getManager().find(null);
-    private File testDataBase = new File("src/test/data/db/testdb.sqlite");
-    private File testWriteNativeFile = new File("src/test/data/db/write.native");
-    private File testDeleteNativeFile = new File("src/test/data/db/delete.native");
-    private File testUpdateNativeFile = new File("src/test/data/db/update.native");
+    private File testDataBase = new File("test/data/db/testdb.sqlite");
+    private File testWriteNativeFile = new File("test/data/db/write.native");
+    private File testDeleteNativeFile = new File("test/data/db/delete.native");
+    private File testUpdateNativeFile = new File("test/data/db/update.native");
     private File testTempFile;
     private ISqlJetBtree btree;
     private ISqlJetDbHandle db = new SqlJetDbHandle();
