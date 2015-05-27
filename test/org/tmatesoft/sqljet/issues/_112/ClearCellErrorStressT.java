@@ -2,6 +2,7 @@ package org.tmatesoft.sqljet.issues._112;
 
 import java.security.SecureRandom;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.tmatesoft.sqljet.core.AbstractNewDbTest;
 import org.tmatesoft.sqljet.core.SqlJetErrorCode;

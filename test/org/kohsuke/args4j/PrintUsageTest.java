@@ -22,6 +22,7 @@ public class PrintUsageTest extends Args4JTestBase {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void testTooSmallLength() {
 		String[] args = { "-wrong" };
 		try {

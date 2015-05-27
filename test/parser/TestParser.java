@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -89,7 +91,7 @@ public class TestParser {
 			//Odpri datoteko
 			parser.openFile(pathNCSACombined);
 			//Nastavi tipe podatkov
-			parser.setFieldType(FieldType.createCombinedLogFormat());
+			parser.setFieldType(FieldType.createCombinedLogFormat(false));
 			//Nastavi format datuma
 			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 			//Pridobi podatke
@@ -117,7 +119,7 @@ public class TestParser {
 			//Odpri datoteko
 			parser.openFile(pathNCSACombined);
 			//Nastavi tipe podatkov
-			parser.setFieldType(FieldType.createCombinedLogFormat());
+			parser.setFieldType(FieldType.createCombinedLogFormat(false));
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
 			list.getMap().values().stream().
@@ -140,24 +142,25 @@ public class TestParser {
 		printNiz("testNCSAParserCombinedWithCookie");
 		NCSAParser parser = new NCSAParser();
 		String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
+
 		try {
 			//Odpri datoteko
 			parser.openFile(new StringReader(testNiz));
 			//Nastavi tipe podatkov
-			List<FieldType> listType = FieldType.createCombinedLogFormat();
+			List<FieldType> listType = FieldType.createCombinedLogFormat(false);
 			//Dodatni atribut
 			listType.add(FieldType.Cookie);
 			parser.setFieldType(listType);
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
 			list.getMap().values().stream().forEach((f) -> {
-				if(f == null) {
+				if (f == null) {
 					assert false;
-				} else if(f instanceof RequestLine) {
+				} else if (f instanceof RequestLine) {
 					URL r = ((RequestLine) f).getUrl();
 					System.out.print(((RequestLine) f).getMethod().izpis() + " | " + r.getPath() + " | " + r.getQuery() + " | " + r.getProtocol() + " | ");
 				} else {
-					System.out.print(f.izpis()+" || ");
+					System.out.print(f.izpis() + " || ");
 				}
 			});
 			System.out.println();
@@ -196,6 +199,7 @@ public class TestParser {
 		Cookie cookie4 = new Cookie(testString3, Cookie.Type.NCSA);
 		String testString4 = "__utma=237691092.2338317182835442000.1214229487.1238435165.1238543004.8;+GAMBIT_ID=89.142.126.214-4231287712.29944903;+referencna=;+__utmz=237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa;+productsForComparison=712150%21701041%21610119%21403083;+ASPSESSIONIDASARQBAB=MDLBNDABLMEFLDGCFIFOJIGM;+__utmb=237691092.48.10.1238543004;+__utmc=237691092";
 		Cookie cookie5 = new Cookie(testString4, Cookie.Type.W3C);
+
 		assertEquals("USERID = CustomerA\nIMPID = 01234\n", cookie.izpis());
 		assertEquals("USERID = CustomerA\nIMPID = 01234\n", cookie2.izpis());
 		assertEquals("-", cookie3.izpis());
@@ -212,6 +216,7 @@ public class TestParser {
 				+"#Date: 2006-10-22 22:17:15\n"
 				+"#Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent) cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken\n"
 				+"2006-10-22 22:17:15 W3SVC979 LOCQUE 196.35.73.189 GET /robots.txt - 80 - 66.249.72.144 HTTP/1.1 Mozilla/5.0+(compatible;+Googlebot/2.1;++http://www.google.com/bot.html) - - www.ibcsa.com 404 0 2 1830 246 265\n";
+
 		try{
 			//Odpri datoteko
 			parserW3C.openFile(new StringReader(testNiz));
@@ -253,6 +258,7 @@ public class TestParser {
 		try{
 			//Odpri datoteko
 			parserW3C.openFile(new StringReader(testNiz));
+
 			//pridobi podatke
 			ParsedLine list;
 			assertEquals(1, parserW3C.parseLine().getMap().size());
@@ -266,6 +272,7 @@ public class TestParser {
 				return f;
 			}).forEach((f) -> System.out.print(f.izpis()+" || "));
 			System.out.println();
+
 			//Zapri datoteko
 			parserW3C.closeFile();
 		} catch(ParseException | IOException e) {
@@ -278,9 +285,11 @@ public class TestParser {
 		String testString = "__utma=237691092.2338317182835442000.1214229487.1238435165.1238543004.8;+GAMBIT_ID=89.142.126.214-4231287712.29944903;+referencna=;__utmz=237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa;+productsForComparison=712150%21701041%21610119%21403083;+ASPSESSIONIDASARQBAB=MDLBNDABLMEFLDGCFIFOJIGM;+__utmb=237691092.48.10.1238543004;+__utmc=237691092";
 		String testString2 = "__utma=237691092.2338317182835442000.1214229487.1238435165.1238543004.8;GAMBIT_ID=89.142.126.214-4231287712.29944903;referencna=;__utmz=237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa;productsForComparison=712150%21701041%21610119%21403083;ASPSESSIONIDASARQBAB=MDLBNDABLMEFLDGCFIFOJIGM;__utmb=237691092.48.10.1238543004;__utmc=237691092";
 		String testString3 = "__utma=237691092.2338317182835442000.1214229487.1238435165.1238543004.8;GAMBIT_ID=89.142.126.214-4231287712.29944903;referencna=;productsForComparison=712150%21701041%21610119%21403083;ASPSESSIONIDASARQBAB=MDLBNDABLMEFLDGCFIFOJIGM;__utmb=237691092.48.10.1238543004;__utmc=237691092";
+
 		Cookie cookie = new Cookie(testString, Cookie.Type.W3C);
 		Cookie cookie2 = new Cookie(testString2, Cookie.Type.NCSA);
 		Cookie cookie3 = new Cookie(testString3, Cookie.Type.NCSA);
+
 		assertTrue(cookie.equals(cookie2));
 		assertFalse(cookie.equals(cookie3));
 		assertFalse(cookie.equals(new UserAgent("-", UserAgent.Type.NCSA)));
@@ -290,12 +299,16 @@ public class TestParser {
 	@Test
 	public void testSQLight() throws SqlJetException {
 		printNiz("testSQLight");
+
 		//Odpri datoteko
 		File dbFile = new File("/home/klemen/workspace/spletne-seje/dbFile");
+
 		//Izbriši datoteko, če že obstaja
 		dbFile.delete();
+
 		//Ustvari novo SQLight bazo
 		SqlJetDb jetDb = SqlJetDb.open(dbFile, true);
+
 		//začni s transakcijami
 		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
 		try {
@@ -307,6 +320,7 @@ public class TestParser {
 			//Če transakcija ne uspe
 			jetDb.rollback();
 		}
+
 		//začni z novimi transakcijami
 		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
 		try {
@@ -323,6 +337,7 @@ public class TestParser {
 		} catch(Exception e) {
 			jetDb.rollback();
 		}
+
 		//začni z novimi transakcijami
 		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
 		try {
@@ -337,6 +352,7 @@ public class TestParser {
 		} catch(Exception e) {
 			jetDb.rollback();
 		}
+
 		//Ko končaš z delom
 		jetDb.close();
 		dbFile.delete();
@@ -354,6 +370,25 @@ public class TestParser {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
 		LocalDateTime dateTime = LocalDateTime.parse("26/Jul/2002:12:11:52 +0000", formatter);
 		assertEquals(26, dateTime.getDayOfMonth());
+	}
+
+	@Test
+	public void testCookieString() {
+		printNiz("testCookieString");
+		String testString = "__utma=237691092.2338317182835442000.1214229487.1238435165.1238543004.8;+GAMBIT_ID=89.142.126.214-4231287712.29944903;+referencna=;__utmz=237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa;+productsForComparison=712150%21701041%21610119%21403083;+ASPSESSIONIDASARQBAB=MDLBNDABLMEFLDGCFIFOJIGM;+__utmb=237691092.48.10.1238543004;+__utmc=237691092";
+		String testString2 = "__utma=237691092.2338317182835442000.1214229487.1238435165.1238543004.8;GAMBIT_ID=89.142.126.214-4231287712.29944903;referencna=;__utmz=237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa;productsForComparison=712150%21701041%21610119%21403083;ASPSESSIONIDASARQBAB=MDLBNDABLMEFLDGCFIFOJIGM;__utmb=237691092.48.10.1238543004;__utmc=237691092";
+		String testString3 = "__utma=237691092.2338317182835442000.1214229487.1238435165.1238543004.8;GAMBIT_ID=89.142.126.214-4231287712.29944903;referencna=;productsForComparison=712150%21701041%21610119%21403083;ASPSESSIONIDASARQBAB=MDLBNDABLMEFLDGCFIFOJIGM;__utmb=237691092.48.10.1238543004;__utmc=237691092";
+		String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
+
+		Pattern pattern = Pattern.compile("([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*;)*([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*){1}");
+
+		assertTrue(pattern.matcher(testString).matches());
+		assertTrue(pattern.matcher(testString2).matches());
+		assertTrue(pattern.matcher(testString3).matches());
+
+		Matcher matcher = pattern.matcher(testNiz);
+		assertTrue(matcher.find());
+		assertEquals("USERID=CustomerA;IMPID=01234", matcher.group());
 	}
 
 }

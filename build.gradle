@@ -1,6 +1,11 @@
 // Povemo kakšno programsko kodo bomo prevajali
 apply plugin: 'java'
 
+// Natavimo Javo 8
+sourceCompatibility = 1.8
+// Verzija nasega paketa
+version = '1.0'
+
 // Nastavitev poti do kode in testov
 sourceSets {
     main {

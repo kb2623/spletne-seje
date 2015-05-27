@@ -32,7 +32,7 @@ import org.tmatesoft.sqljet.core.internal.SqlJetFileType;
  * 
  */
 @SuppressWarnings("unused")
-@Ignore
+@Ignore("Testi se dolgo izvajajo")
 public class SqlJetFileSystemMockTest extends SqlJetAbstractFileSystemMockTest {
 
     @Test

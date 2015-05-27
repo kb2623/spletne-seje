@@ -28,7 +28,7 @@ import org.tmatesoft.sqljet.core.internal.ISqlJetFileSystem;
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
  *
  */
-@Ignore
+@Ignore("Testi se dolgo izvajajo")
 public class SqlJetFileSystemsManagerMockTest extends SqlJetAbstractFileSystemMockTest {
 
     @Test

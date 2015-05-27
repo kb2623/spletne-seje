@@ -28,12 +28,14 @@ import java.util.Random;
 import org.junit.BeforeClass;
 
 import junit.framework.Assert;
+import org.junit.Ignore;
 
 /**
  * @author TMate Software Ltd.
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
  * 
  */
+@Ignore
 public class SQLiteBenchmark extends AbstractBenchmark {
 
     private Connection conn;

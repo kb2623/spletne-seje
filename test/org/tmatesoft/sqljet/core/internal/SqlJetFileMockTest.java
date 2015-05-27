@@ -30,7 +30,7 @@ import org.junit.Test;
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
  * 
  */
-@Ignore
+@Ignore("Test se dolgo izvaja")
 public class SqlJetFileMockTest extends SqlJetAbstractFileSystemMockTest {
 
     protected ISqlJetFile file;

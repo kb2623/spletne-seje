@@ -12,7 +12,7 @@ public class Port implements Field {
 
 	@Override
 	public String izpis() {
-		return (isSrever ? "Server" : "Client")+" port "+portNumber;
+		return (isSrever ? "Server" : "Client") + " port " + portNumber;
 	}
 
 	@Override

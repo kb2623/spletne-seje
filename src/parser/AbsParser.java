@@ -1,10 +1,6 @@
 package parser;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.text.ParseException;
 /**
  * Razred za parsanje log datoteke
@@ -38,7 +34,16 @@ public abstract class AbsParser {
 	 * @throws FileNotFoundException Napaka datoteka ne obstaja
 	 */
 	public void openFile(String path) throws FileNotFoundException {
-		file = new BufferedReader(new FileReader(path));
+		file = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+	}
+	/**
+	 * Metoda za nstavljanje ze odprte datoteke
+	 *
+	 * @param reader
+	 * @throws FileNotFoundException
+	 */
+	public void openFile(BufferedReader reader) throws FileNotFoundException {
+		file = reader;
 	}
 	/**
 	 * Metoda namenjena testiranju, ki spremeni niz

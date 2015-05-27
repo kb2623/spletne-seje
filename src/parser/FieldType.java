@@ -76,10 +76,13 @@ public enum FieldType {
 		return lists;
 	}
 	
-	public static List<FieldType> createCombinedLogFormat() {
+	public static List<FieldType> createCombinedLogFormat(boolean cookie) {
 		List<FieldType> lists = FieldType.createCommonLogFormat();
 		lists.add(Referer);
 		lists.add(UserAgent);
+		if (cookie) {
+			lists.add(Cookie);
+		}
 		return lists;
 	}
 	
