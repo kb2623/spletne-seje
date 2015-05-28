@@ -2,12 +2,14 @@ package parser;
 
 import java.io.*;
 import java.text.ParseException;
+import java.util.Iterator;
+
 /**
  * Razred za parsanje log datoteke
  *
  * @author klemen
  */
-public abstract class AbsParser {
+public abstract class AbsParser implements Iterable<ParsedLine> {
 	/**
 	 * Vrstica v datoteki
 	 */
@@ -85,8 +87,20 @@ public abstract class AbsParser {
 	public void closeFile() throws IOException {
 		file.close();
 	}
-
+    /**
+     * Metoda, ki vrne stevilko vrstice v kateri se nahaja parser
+     *
+     * @return Vrstica v kateri se nahaja parser
+     */
 	public int getPos() {
 		return pos;
 	}
+    /**
+     * Metoda, ki ustvari iterator za sprehod po datoteki
+     *
+     * @return Iterator za sprehod po datoteki
+     */
+    @Override
+    public abstract Iterator<ParsedLine> iterator();
+
 }

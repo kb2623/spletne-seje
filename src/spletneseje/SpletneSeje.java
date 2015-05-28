@@ -29,7 +29,7 @@ public class SpletneSeje {
 	private SqlJetDb outDataBase;
 
 	@SuppressWarnings("deprecation")
-	public SpletneSeje(String[] args) throws CmdLineException, NullPointerException, ParseException, FileNotFoundException, SqlJetException, IOException {
+	public SpletneSeje(String[] args) throws CmdLineException, NullPointerException, ParseException, SqlJetException, IOException {
 		//Parsanje vhodnih argumentov
 		argsParser = new ArgsParser(args);
 

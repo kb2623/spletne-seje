@@ -3,13 +3,11 @@ package parser;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 
 import fields.*;
 import fields.ncsa.*;
-import java.util.Locale;
+
 /**
  * Parser za formate: Common Log Format, Combined Log Format in Custom Log Formats
  * @author klemen
@@ -167,5 +165,44 @@ public class NCSAParser extends AbsParser {
 		}
 		return new ParsedLine(data);
 	}
+    /**
+     * Metoda, ki ustvari iterator
+     *
+     * @return Iterator za sprehod po datoteki
+     */
+    @Override
+    public Iterator<ParsedLine> iterator() {
+        try {
+            return new IteratorParsedLine();
+        } catch (ParseException | IOException e) {
+            return null;
+        }
+    }
+    /**
+     * Razred, ki implementira iterator
+     */
+    public class IteratorParsedLine implements Iterator<ParsedLine> {
 
+        private ParsedLine next;
+
+        private IteratorParsedLine() throws ParseException, IOException {
+            next = parseLine();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public ParsedLine next() {
+            try {
+                ParsedLine tmp = next;
+                next = parseLine();
+                return tmp;
+            } catch (ParseException | IOException e) {
+                return null;
+            }
+        }
+    }
 }

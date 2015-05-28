@@ -3,13 +3,12 @@ package parser;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import fields.*;
 import fields.w3c.*;
+import fields.w3c.Date;
+
 /**
  * Parser za formate: Extended Log Format
  * @author klemen
@@ -46,11 +45,11 @@ public class W3CParser extends AbsParser {
 		this.dateFormat = DateTimeFormatter.ofPattern(format == null ? "yyyy-MM-dd" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 	/**
-	 * Nastavljanje formata za parsanje časa
-	 *
-	 * @param format
-	 * @param localeString
-	 */
+     * Nastavljanje formata za parsanje &#x10d;asa
+     *
+     * @param format
+     * @param localeString
+     */
 	public void setTimeFormat(String format, Locale locale) {
 		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
@@ -202,5 +201,44 @@ public class W3CParser extends AbsParser {
 		}
 		return null;
 	}
+    /**
+     * Metoda, ki ustvari iterator
+     *
+     * @return Iterator za sprehod po datoteki
+     */
+    @Override
+    public Iterator<ParsedLine> iterator() {
+        try {
+            return new IteratorParsedLine();
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+    /**
+     * Razred, ki implementira iterator
+     */
+    public class IteratorParsedLine implements Iterator<ParsedLine> {
 
+        private ParsedLine next;
+
+        private IteratorParsedLine() throws ParseException {
+            next = parseLine();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public ParsedLine next() {
+            try {
+                ParsedLine tmp = next;
+                next = parseLine();
+                return tmp;
+            } catch (ParseException e) {
+                return null;
+            }
+        }
+    }
 }

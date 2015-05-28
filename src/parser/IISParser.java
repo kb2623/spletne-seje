@@ -3,6 +3,7 @@ package parser;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,7 +67,11 @@ public class IISParser extends AbsParser {
 		}
 		return tokens;
 	}
-
+    /**
+     *
+     * @return
+     * @throws ParseException
+     */
 	@Override
 	public ParsedLine parseLine() throws ParseException {
 		// TODO Začasna implementacija
@@ -78,8 +83,7 @@ public class IISParser extends AbsParser {
 		}
 		return null;
 	}
-
-	/**
+    /**
 	 * Nastavljanje formata za parsanje datuma
 	 * 
 	 * @param format
@@ -109,5 +113,44 @@ public class IISParser extends AbsParser {
 			this.fieldType = fields;
 		}
 	}
+    /**
+     * Metoda, ki ustvari iterator
+     *
+     * @return Iterator za sprehod po datoteki
+     */
+    @Override
+    public Iterator<ParsedLine> iterator() {
+        try {
+            return new IteratorParsedLine();
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+    /**
+     * Razred, ki implementira iterator
+     */
+    public class IteratorParsedLine implements Iterator<ParsedLine> {
 
+        private ParsedLine next;
+
+        private IteratorParsedLine() throws ParseException {
+            next = parseLine();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public ParsedLine next() {
+            try {
+                ParsedLine tmp = next;
+                next = parseLine();
+                return tmp;
+            } catch (ParseException e) {
+                return null;
+            }
+        }
+    }
 }

@@ -11,11 +11,12 @@ public class RequestLine implements Field {
 	private Method method;
 	private URL url;
 	/**
-	 * 
-	 * @param method
-	 * @param url
-	 * @param protocol
-	 * @throws MalformedURLException
+	 * Konstruktor
+	 *
+	 * @param method Uporabljena metoda
+	 * @param url Uporabljen URL naslov
+	 * @param protocol Uporabljen protokol
+	 * @throws MalformedURLException Podan nepravilen URL naslov
 	 */
 	public RequestLine(String method, String url, String protocol) throws MalformedURLException {
 		String[] tab = protocol.split("/");
@@ -23,16 +24,18 @@ public class RequestLine implements Field {
 		this.method = Method.setMethod(this.url.getProtocol(), method);
 	}
 	/**
-	 * 
-	 * @return
+	 * Getter metoda za URL
+	 *
+	 * @return Url naslov
 	 * @see URL
 	 */
 	public URL getUrl() {
 		return this.url;
 	}
 	/**
-	 * 
-	 * @return
+	 * Getter metoda za method
+	 *
+	 * @return Uporabljena metoda pri zahtevi
 	 * @see fields.Method
 	 */
 	public Method getMethod() {
