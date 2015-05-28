@@ -3,6 +3,7 @@ package parser;
 import java.io.File;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +54,7 @@ public class TestParser {
 	}
 
 	private void printNiz(String niz) {
-		System.out.println("\n"+niz);
+		System.out.println("\n" + niz);
 	}
 
 	@Test
@@ -79,7 +80,7 @@ public class TestParser {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
-			System.out.println(e.getMessage());
+            assert false;
 		}
 	}
 
@@ -108,6 +109,7 @@ public class TestParser {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
+            assert false;
 		}
 	}
 
@@ -134,7 +136,8 @@ public class TestParser {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
-		}
+            assert false;
+        }
 	}
 
 	@Test
@@ -167,7 +170,7 @@ public class TestParser {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
-			System.out.println(e.getMessage());
+            assert false;
 		}
 	}
 
@@ -243,6 +246,7 @@ public class TestParser {
 			//Zapri datoteko
 			parserW3C.closeFile();
 		} catch(ParseException | IOException e) {
+            assert false;
 		}
 	}
 
@@ -276,6 +280,7 @@ public class TestParser {
 			//Zapri datoteko
 			parserW3C.closeFile();
 		} catch(ParseException | IOException e) {
+            assert false;
 		}
 	}
 
@@ -345,7 +350,7 @@ public class TestParser {
 			ISqlJetTable table = jetDb.getTable("employees");
 			ISqlJetCursor cursor = table.open();
 			while(!cursor.eof()) {
-				System.out.println(cursor.getRowId()+" : "+cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getInteger(2));
+				System.out.println(cursor.getRowId() + " : " + cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getInteger(2));
 				cursor.next();
 			}
 			jetDb.commit();
@@ -390,5 +395,39 @@ public class TestParser {
 		assertTrue(matcher.find());
 		assertEquals("USERID=CustomerA;IMPID=01234", matcher.group());
 	}
+
+    @Test
+    public void testParsingNCSAIterator() {
+        printNiz("testParsingNCSAIterator()");
+        NCSAParser logParser = new NCSAParser();
+        try {
+            logParser.openFile(pathNCSACommon);
+            logParser.setFieldType(FieldType.createCommonLogFormat());
+            ArrayList<String> list = new ArrayList<>();
+            for(ParsedLine tmp : logParser) {
+                String sTmp = ((RequestLine) tmp.getMap().get(FieldType.RequestLine)).getExtension();
+                int index = list.indexOf(sTmp);
+                if(index == -1) {
+                    System.out.println(logParser.getPos() + " " + sTmp);
+                    list.add(sTmp);
+                }
+            }
+            StringBuilder builder = new StringBuilder();
+            list.stream().forEach((s) -> builder.append(s).append(' '));
+            assertEquals("null png css js php jpg txt gif ico csv xml ", builder.toString());
+        } catch (NullPointerException | IOException e) {
+            assert false;
+        }
+    }
+
+    @Test
+    public void testParsingW3CIterator() {
+        // TODO
+    }
+
+    @Test
+    public void testPArsingIISIterator() {
+        // TODO
+    }
 
 }

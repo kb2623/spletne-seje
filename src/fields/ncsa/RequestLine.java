@@ -41,17 +41,20 @@ public class RequestLine implements Field {
 	public Method getMethod() {
 		return this.method;
 	}
-	
+    /**
+     * Metoda, ki vrne konènico zahtevanega resursa
+     *
+     * @return OK -> Konènica zahtevanega resursa, ERROR -> <code>null</code>
+     */
 	public String getExtension() {
 		int indexOfExtension = url.getPath().lastIndexOf('.');
 		int indexOfLastSeparator = url.getPath().lastIndexOf('/');
-		return (indexOfExtension < indexOfLastSeparator) ? 
-				null : url.getPath().substring(indexOfExtension+1);
+		return (indexOfExtension < indexOfLastSeparator) ? null : url.getPath().substring(indexOfExtension+1);
 	}
 	
 	@Override
 	public String izpis() {
-		return method.izpis()+" "+url.getPath()+" "+url.getQuery();
+		return method.izpis() + " " + url.getPath() + " " + url.getQuery();
 	}
 	
 	@Override
