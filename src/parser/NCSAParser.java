@@ -56,8 +56,8 @@ public class NCSAParser extends AbsParser {
 		List<String> tokens = new ArrayList<>();
 	    StringBuilder buff = new StringBuilder();
 	    boolean inQuotes = false, inBrackets = false;
-		for (char aLc : logline.toCharArray()) {
-			switch (aLc) {
+		for (char c : logline.toCharArray()) {
+			switch (c) {
 			case '"':
 				if (inQuotes) {
 					tokens.add(buff.toString());
@@ -82,11 +82,11 @@ public class NCSAParser extends AbsParser {
 					tokens.add(buff.toString());
 					buff = new StringBuilder();
 				} else if (inBrackets || inQuotes) {
-					buff.append(aLc);
+					buff.append(c);
 				}
 				break;
 			default:
-				buff.append(aLc);
+				buff.append(c);
 			}
 		}
 	    if (buff.length() > 0) {

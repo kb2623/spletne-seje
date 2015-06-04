@@ -65,8 +65,8 @@ public class W3CParser extends AbsParser {
 		}
 		List<String> tokens = new ArrayList<>();
 		StringBuffer buff = new StringBuffer();
-		for (char aLc : logline.toCharArray()) {
-			switch (aLc) {
+		for (char c : logline.toCharArray()) {
+			switch (c) {
 			case ' ':
 				if (buff.length() > 0) {
 					tokens.add(buff.toString());
@@ -74,7 +74,7 @@ public class W3CParser extends AbsParser {
 				}
 				break;
 			default:
-				buff.append(aLc);
+				buff.append(c);
 			}
 		}
 		if(buff.length() > 0) {

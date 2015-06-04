@@ -41,13 +41,12 @@ public class IISParser extends AbsParser {
 		}
 		boolean inWord = false;
 		List<String> tokens = new ArrayList<>();
-		char[] lc = logline.toCharArray();
 		StringBuffer buff = new StringBuffer();
-		for (int i = 0; i < lc.length; i++) {
-			switch(lc[i]) {
+		for (char c : logline.toCharArray()) {
+			switch(c) {
 			case ' ':
 				if(inWord) {
-					buff.append(lc[i]);
+					buff.append(c);
 				} else {
 					break;
 				}
@@ -59,7 +58,7 @@ public class IISParser extends AbsParser {
 				}
 				break;
 			default:
-				buff.append(lc[i]);
+				buff.append(c);
 				inWord = true;
 			}
 		}
