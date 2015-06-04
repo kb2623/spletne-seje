@@ -51,41 +51,40 @@ public class NCSAParser extends AbsParser {
 		}
 		List<String> tokens = new ArrayList<>();
 	    StringBuilder buff = new StringBuilder();
-	    char[] lc = logline.toCharArray();
 	    boolean inQuotes = false, inBrackets = false;
-	    for (int i = 0; i < lc.length; i++) {
-	    	switch(lc[i]) {
-	    	case '"':
-	    		if(inQuotes) {
-	    			tokens.add(buff.toString());
-	    			buff = new StringBuilder();
-	    		}
-	    		inQuotes = !inQuotes;
-	    		break;
-	    	case '[':
-	    		if(!inBrackets && !inQuotes)  {
-	    			inBrackets = true;
-	    		}
-	    		break;
-	    	case ']':
-	    		if(inBrackets) {
-	    			tokens.add(buff.toString());
-	    			buff = new StringBuilder();
-	    			inBrackets = false;
-	    		}
-	    		break;
-	    	case ' ':
-	    		if(!inBrackets && !inQuotes && buff.length() > 0) {
-	    			tokens.add(buff.toString());
-	    			buff = new StringBuilder();
-	    		} else if(inBrackets || inQuotes) {
-	    			buff.append(lc[i]);
-	    		}
-	    		break;
-    		default:
-    			buff.append(lc[i]);
-	    	}
-    	}
+		for (char aLc : logline.toCharArray()) {
+			switch (aLc) {
+			case '"':
+				if (inQuotes) {
+					tokens.add(buff.toString());
+					buff = new StringBuilder();
+				}
+				inQuotes = !inQuotes;
+				break;
+			case '[':
+				if (!inBrackets && !inQuotes) {
+					inBrackets = true;
+				}
+				break;
+			case ']':
+				if (inBrackets) {
+					tokens.add(buff.toString());
+					buff = new StringBuilder();
+					inBrackets = false;
+				}
+				break;
+			case ' ':
+				if (!inBrackets && !inQuotes && buff.length() > 0) {
+					tokens.add(buff.toString());
+					buff = new StringBuilder();
+				} else if (inBrackets || inQuotes) {
+					buff.append(aLc);
+				}
+				break;
+			default:
+				buff.append(aLc);
+			}
+		}
 	    if (buff.length() > 0) {
 	    	tokens.add(buff.toString());
 	    }

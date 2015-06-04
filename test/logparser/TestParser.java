@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
+
 import org.tmatesoft.sqljet.core.SqlJetException;
 import org.tmatesoft.sqljet.core.SqlJetTransactionMode;
 import org.tmatesoft.sqljet.core.table.ISqlJetCursor;
@@ -93,7 +93,7 @@ public class TestParser {
 			//Odpri datoteko
 			parser.openFile(pathNCSACombined);
 			//Nastavi tipe podatkov
-			parser.setFieldType(FieldType.createCombinedLogFormat());
+			parser.setFieldType(FieldType.createCombinedLogFormat(false));
 			//Nastavi format datuma
 			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 			//Pridobi podatke
@@ -121,7 +121,7 @@ public class TestParser {
 			//Odpri datoteko
 			parser.openFile(pathNCSACombined);
 			//Nastavi tipe podatkov
-			parser.setFieldType(FieldType.createCombinedLogFormat());
+			parser.setFieldType(FieldType.createCombinedLogFormat(false));
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
 			list.getMap().values().stream().
@@ -148,9 +148,8 @@ public class TestParser {
 			//Odpri datoteko
 			parser.openFile(new StringReader(testNiz));
 			//Nastavi tipe podatkov
-			List<FieldType> listType = FieldType.createCombinedLogFormat();
+			List<FieldType> listType = FieldType.createCombinedLogFormat(true);
 			//Dodatni atribut
-			listType.add(FieldType.Cookie);
 			parser.setFieldType(listType);
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();

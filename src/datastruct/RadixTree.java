@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RadixTree<T> {
+public class RadixTree<T> implements Iterable<T> {
 
 	class RadixNode {
 
@@ -207,6 +207,76 @@ public class RadixTree<T> {
 		}
 		for (RadixNode child : node.children) {
 			this.printTree(len + node.key.length(), child);
+		}
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new RadixTree<T>.MyIterator();
+	}
+
+	private class MyIterator implements Iterator<T> {
+
+		private final Stack<Iterator<RadixNode>> stackIt;
+		private RadixNode next;
+
+		public MyIterator() {
+			this.stackIt = new Stack<>();
+			this.stackIt.push(rootNode.children.iterator());
+			if(!this.stackIt.peek().hasNext()) {
+				this.next = null;
+			} else {
+				RadixNode tmpNode = this.stackIt.peek().next();
+				while(tmpNode.data == null) {
+					this.stackIt.push(tmpNode.children.iterator());
+					tmpNode = this.stackIt.peek().next();
+				}
+				this.next = tmpNode;
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.next != null;
+		}
+
+		@Override
+		public T next() {
+			if(!this.hasNext()) {
+				return null;
+			}
+			T tmp = this.next.data;
+			if(!this.next.children.isEmpty()) {
+				this.stackIt.push(this.next.children.iterator());
+				RadixNode tmpNode = this.stackIt.peek().next();
+				while(tmpNode.data == null) {
+					this.stackIt.push(tmpNode.children.iterator());
+					tmpNode = this.stackIt.peek().next();
+				}
+				this.next = tmpNode;
+			} else if(this.stackIt.peek().hasNext()) {
+				RadixNode tmpNode = this.stackIt.peek().next();
+				while(tmpNode.data == null) {
+					this.stackIt.push(tmpNode.children.iterator());
+					tmpNode = this.stackIt.peek().next();
+				}
+				this.next = tmpNode;
+			} else {
+				do{
+					this.stackIt.pop();
+					if(this.stackIt.isEmpty()) {
+						this.next = null;
+						return tmp;
+					}
+				} while(!this.stackIt.peek().hasNext());
+				RadixNode tmpNode = this.stackIt.peek().next();
+				while(tmpNode.data == null) {
+					this.stackIt.push(tmpNode.children.iterator());
+					tmpNode = this.stackIt.peek().next();
+				}
+				this.next = tmpNode;
+			}
+			return tmp;
 		}
 	}
 }

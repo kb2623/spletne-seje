@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Iterator;
+
 public class RadixTreeTest {
 	
 	private RadixTree<Integer> insRadixTree;
@@ -88,7 +90,7 @@ public class RadixTreeTest {
 		testRemoveOK(); setUp();
 		testRemoveMore();
 	}
-	
+
 	private void testRemoveOK() {
 		testAddOK();
 		assertTrue(this.insRadixTree.remove("test"));
@@ -345,5 +347,38 @@ public class RadixTreeTest {
 		tree.add("apple", "apple");
 		assertNotNull(tree.get("apple"));
 		assertNotNull(tree.get("applepie"));
+	}
+
+	@Test
+	public void testIterator() {
+		testIteratorOne(); setUp();
+		testIteratorTwo(); setUp();
+		testIteratorThree();
+	}
+
+	private void testIteratorOne() {
+		testAddOK();
+		Iterator<Integer> it = this.insRadixTree.iterator();
+		assertEquals(new Integer(23), it.next());
+		assertEquals(new Integer(32), it.next());
+	}
+
+	private void testIteratorTwo() {
+		String niz = "";
+		testAddMoreOK();
+		for(Iterator<Integer> it = this.insRadixTree.iterator(); it.hasNext(); ) {
+			niz += " "+it.next().toString();
+		}
+		assertEquals(" 1 2 3 4 5 6 7", niz);
+	}
+
+	private void testIteratorThree() {
+		String niz = "";
+		testAddOK();
+		testAddMoreOK();
+		for(Iterator<Integer> it = this.insRadixTree.iterator(); it.hasNext(); ) {
+			niz += " "+it.next().toString();
+		}
+		assertEquals(" 23 32 1 2 3 4 5 6 7", niz);
 	}
 }
