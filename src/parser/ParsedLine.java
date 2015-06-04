@@ -10,42 +10,45 @@ public class ParsedLine {
 
 	private EnumMap<FieldType, Field> map;
 	/**
-	 * 
-	 * @param map 
+	 * Konstruktor.
+	 *
+	 * @param map Seznam, ki vsebuje podatke o obdelani vrstici.
 	 */
 	public ParsedLine(EnumMap<FieldType, Field> map) {
 		this.map = map;
 	}
 	/**
-	 * 
-	 * @return 
+	 * Metoda, ki ustvari kljuc za vrstico v log datoteki.
+	 *
+	 * @return Niz, ki predstavlja kljuc.
 	 */
 	public String getKey() {
 		StringBuilder builder = new StringBuilder();
-//		for(Field f : map.values()) {
-//			if(f.getKey() != null) {
-//				builder.append(f.getKey());
-//			}
-//		}
 		map.values().stream().filter((f) -> (f.getKey() != null)).forEach((f) -> builder.append(f.getKey()));
 		return builder.toString();
 	}
 	/**
+	 * Getter za seznam, ki vsebuje obdelano vrstico.
 	 *
-	 * @return
+	 * @return Seznam, ki predstavlja obdelano vrstico.
 	 */
 	public EnumMap<FieldType, Field> getMap() {
 		return map;
 	}
 	/**
+	 * Metoda, ki prevrja ali je zahtevo opravil uporabnik ali spletni robot.
 	 *
-	 * @return
+	 * @return Zahtevo opravil robot ali ne.
 	 */
 	public boolean isCrawler() {
 		//TODO Tukaj moraš preveriti zahtevan resurs in/ali User Agent String
 		return false;
 	}
-
+	/**
+	 * Metoda, ki preverja ali je zahteva po spletni strani ali po resursu za spletno stran.
+	 *
+	 * @return Zahteva resurs ali spletna stran.
+	 */
 	public boolean isResurse() {
 		String extension = getExtension();
 		switch ((extension != null) ? extension : "") {
@@ -55,7 +58,11 @@ public class ParsedLine {
 			return false;
 		}
 	}
-
+	/**
+	 * Metoda, ki vrne koncnico zahtevanega resursa.
+	 *
+	 * @return Koncnica zahtevanega resursa.
+	 */
 	private String getExtension() {
 		Field f = map.get(FieldType.RequestLine);
 		if(f != null) {

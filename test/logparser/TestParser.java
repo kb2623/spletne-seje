@@ -42,13 +42,13 @@ public class TestParser {
 	public TestParser() {
 		String os = System.getProperty("os.name");
 		if(os.contains("Windows")) {
-			pathNCSACombined = "C:\\Users\\mks19_000\\workspace\\spletne-seje\\Logs\\Combined\\access_log";
-			pathNCSACommon = "C:\\Users\\mks19_000\\workspace\\spletne-seje\\Logs\\Common\\logCommon";
+			pathNCSACombined = System.getProperty("user.dir") + "\\Logs\\Combined\\access_log";
+			pathNCSACommon = System.getProperty("user.dir") + "\\Logs\\Common\\logCommon";
 			pathW3C = "";
 			pathIIS = "";
 		} else {
-			pathNCSACombined = "/home/klemen/workspace/spletne-seje/Logs/Combined/access_log";
-			pathNCSACommon = "/home/klemen/workspace/spletne-seje/Logs/Common/logCommon";
+			pathNCSACombined = System.getProperty("user.dir") + "/Logs/Combined/access_log";
+			pathNCSACommon = System.getProperty("user.dir") + "/Logs/Common/logCommon";
 			pathW3C = "";
 			pathIIS = "";
 		}
@@ -81,7 +81,7 @@ public class TestParser {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
-			System.out.println(e.getMessage());
+			assert false;
 		}
 	}
 
@@ -110,12 +110,14 @@ public class TestParser {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
+			assert false;
 		}
 	}
 
 	@Test
 	public void testNCSAParserCombined() {
 		printNiz("testNCSAParserCombined");
+		System.out.printf(pathNCSACombined);
 		NCSAParser parser = new NCSAParser();
 		try {
 			//Odpri datoteko
@@ -126,16 +128,17 @@ public class TestParser {
 			ParsedLine list = parser.parseLine();
 			list.getMap().values().stream().
 				forEach((f) -> {
-					if(f == null) {
+					if(f != null) {
 						assert false;
 					} else {
-						System.out.print(f.izpis()+" || ");
+						System.out.print(f.izpis() + " || ");
 					}
 			});
 			System.out.println();
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
+			assert false;
 		}
 	}
 
@@ -168,7 +171,7 @@ public class TestParser {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
-			System.out.println(e.getMessage());
+			assert false;
 		}
 	}
 
@@ -358,5 +361,10 @@ public class TestParser {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
 		LocalDateTime dateTime = LocalDateTime.parse("26/Jul/2002:12:11:52 +0000", formatter);
 		assertEquals(26, dateTime.getDayOfMonth());
+	}
+
+	@Test
+	public void testParsing() {
+
 	}
 }
