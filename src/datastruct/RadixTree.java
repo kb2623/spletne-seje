@@ -111,11 +111,7 @@ public class RadixTree<T> implements Iterable<T> {
 	}
 
 	public boolean remove(String key) {
-		if(this.isEmpty()) {
-			return false;
-		} else {
-			return this.deleteNode(key, null, this.rootNode);
-		}
+		return !this.isEmpty() && this.deleteNode(key, null, this.rootNode);
 	}
 
 	private boolean deleteNode(String key, RadixNode parent, RadixNode node) {

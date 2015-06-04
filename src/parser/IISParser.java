@@ -1,11 +1,12 @@
 package parser;
 
+import fields.*;
+import fields.w3c.*;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @SuppressWarnings("all")
 public class IISParser extends AbsParser {
@@ -42,7 +43,7 @@ public class IISParser extends AbsParser {
 		List<String> tokens = new ArrayList<>();
 		char[] lc = logline.toCharArray();
 		StringBuffer buff = new StringBuffer();
-		for(int i = 0; i < lc.length; i++) {
+		for (int i = 0; i < lc.length; i++) {
 			switch(lc[i]) {
 			case ' ':
 				if(inWord) {
@@ -73,15 +74,100 @@ public class IISParser extends AbsParser {
      * @throws ParseException
      */
 	@Override
-	public ParsedLine parseLine() throws ParseException {
-		// TODO Začasna implementacija
-		String niz;
-		try {
-			niz = super.getLine();
-		} catch(Exception e) {
-			niz = null;
+	public ParsedLine parseLine() throws ParseException, IOException {
+		if (fieldType == null || timeFormat == null || dateFormat == null) {
+			throw new NullPointerException("Fields types not specified");
 		}
-		return null;
+		EnumMap<FieldType, Field> data = new EnumMap<>(FieldType.class);
+		List<String> tokens = parse(super.getLine());
+		if (tokens == null) {
+			return null;
+		}
+		if(tokens.size() != fieldType.size()) {
+			throw new ParseException("Bad field types", super.getPos());
+		}
+		for (int i = 0; i < fieldType.size(); i++) {
+			switch (fieldType.get(i)) {
+			case Referer:
+				data.put(FieldType.Referer, new Referer(tokens.get(i)));
+				break;
+			case Cookie:
+				data.put(FieldType.Cookie, new Cookie(tokens.get(i), Cookie.Type.W3C));
+				break;
+			case UserAgent:
+				data.put(FieldType.UserAgent, new UserAgent(tokens.get(i), UserAgent.Type.W3C));
+				break;
+			case Method:
+				int indexOfProtocolVersion = fieldType.indexOf(FieldType.ProtocolVersion);
+				if(indexOfProtocolVersion != -1) {
+					data.put(FieldType.Method, Method.setMethod(tokens.get(indexOfProtocolVersion).split("/")[0], tokens.get(i)));
+				} else {
+					data.put(FieldType.Method, Method.setMethod("http", tokens.get(i)));
+				}
+				break;
+			case Date:
+				data.put(FieldType.Date, new fields.w3c.Date(tokens.get(i), dateFormat));
+				break;
+			case Time:
+				data.put(FieldType.Time, new Time(tokens.get(i), timeFormat));
+				break;
+			case SiteName:
+				data.put(FieldType.SiteName, new SiteName(tokens.get(i)));
+				break;
+			case ComputerName:
+				data.put(FieldType.ComputerName, new ComputerName(tokens.get(i)));
+				break;
+			case ServerIP:
+				data.put(FieldType.ServerIP, new Address(tokens.get(i), true));
+				break;
+			case ClientIP:
+				data.put(FieldType.ClientIP, new Address(tokens.get(i), false));
+				break;
+			case UriStem:
+				data.put(FieldType.UriStem, new UriStem(tokens.get(i)));
+				break;
+			case UriQuery:
+				data.put(FieldType.UriQuery, new UriQuery(tokens.get(i)));
+				break;
+			case ServerPort:
+				data.put(FieldType.ServerPort, new Port(tokens.get(i), true));
+				break;
+			case ClientPort:
+				data.put(FieldType.ClientPort, new Port(tokens.get(i), false));
+				break;
+			case RemoteUser:
+				data.put(FieldType.RemoteUser, new RemoteUser(tokens.get(i)));
+				break;
+			case ProtocolVersion:
+				data.put(FieldType.ProtocolVersion, new Protocol(tokens.get(i)));
+				break;
+			case Host:
+				data.put(FieldType.Host, new Host(tokens.get(i)));
+				break;
+			case StatusCode:
+				data.put(FieldType.StatusCode, new StatusCode(tokens.get(i)));
+				break;
+			case SubStatus:
+				data.put(FieldType.SubStatus, new SubStatus(tokens.get(i)));
+				break;
+			case Win32Status:
+				data.put(FieldType.Win32Status, new Win32Status(tokens.get(i)));
+				break;
+			case SizeOfRequest:
+				data.put(FieldType.SizeOfRequest, new SizeOfRequest(tokens.get(i)));
+				break;
+			case SizeOfResponse:
+				data.put(FieldType.SizeOfResponse, new SizeOfResponse(tokens.get(i)));
+				break;
+			case TimeTaken:
+				data.put(FieldType.TimeTaken, new TimeTaken(tokens.get(i), false));
+				break;
+			default:
+				// TODO Pršel si do neznanega polja
+				break;
+			}
+		}
+		return new ParsedLine(data);
 	}
     /**
 	 * Nastavljanje formata za parsanje datuma
@@ -122,7 +208,7 @@ public class IISParser extends AbsParser {
     public Iterator<ParsedLine> iterator() {
         try {
             return new IteratorParsedLine();
-        } catch (ParseException e) {
+        } catch (ParseException | IOException e) {
             return null;
         }
     }
@@ -133,7 +219,7 @@ public class IISParser extends AbsParser {
 
         private ParsedLine next;
 
-        private IteratorParsedLine() throws ParseException {
+        private IteratorParsedLine() throws ParseException, IOException {
             next = parseLine();
         }
 
@@ -148,7 +234,7 @@ public class IISParser extends AbsParser {
                 ParsedLine tmp = next;
                 next = parseLine();
                 return tmp;
-            } catch (ParseException e) {
+            } catch (ParseException | IOException e) {
                 return null;
             }
         }
