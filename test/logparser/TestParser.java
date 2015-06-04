@@ -68,19 +68,16 @@ public class TestParser {
 			//Nastavi tipe podatkov
 			parser.setFieldType(FieldType.createCommonLogFormat());
 			//Pridobi podatke
-			ParsedLine list = parser.parseLine();
-			list.getMap().values().stream().
-				forEach((f) -> {
-					if(f == null) {
-						assert false;
-					} else {
-						System.out.print(f.izpis()+" || ");
+			for (ParsedLine list : parser) {
+				list.getMap().values().stream().forEach(
+					(f) -> {
+						if (f == null) assert false;
 					}
-			});
-			System.out.println();
+				);
+			}
 			//Zapri datoteko
 			parser.closeFile();
-		} catch(NullPointerException | ParseException | IOException e) {
+		} catch(NullPointerException | IOException e) {
 			assert false;
 		}
 	}
@@ -97,19 +94,16 @@ public class TestParser {
 			//Nastavi format datuma
 			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 			//Pridobi podatke
-			ParsedLine list = parser.parseLine();
-			list.getMap().values().stream().
-				forEach((f) -> {
-					if(f == null) {
-						assert false;
-					} else {
-						System.out.print(f.izpis()+" || ");
+			for (ParsedLine list : parser) {
+				list.getMap().values().stream().forEach(
+					(f) -> {
+						if (f == null) assert false;
 					}
-			});
-			System.out.println();
+				);
+			}
 			//Zapri datoteko
 			parser.closeFile();
-		} catch(NullPointerException | ParseException | IOException e) {
+		} catch(NullPointerException | IOException e) {
 			assert false;
 		}
 	}
@@ -125,19 +119,17 @@ public class TestParser {
 			//Nastavi tipe podatkov
 			parser.setFieldType(FieldType.createCombinedLogFormat(false));
 			//Pridobi podatke
-			ParsedLine list = parser.parseLine();
-			list.getMap().values().stream().
-				forEach((f) -> {
-					if(f != null) {
-						assert false;
-					} else {
-						System.out.print(f.izpis() + " || ");
+			for (ParsedLine list : parser) {
+				list.getMap().values().stream().forEach(
+					(f) -> {
+						if (f == null) assert false;
 					}
-			});
+				);
+			}
 			System.out.println();
 			//Zapri datoteko
 			parser.closeFile();
-		} catch(NullPointerException | ParseException | IOException e) {
+		} catch(NullPointerException | IOException e) {
 			assert false;
 		}
 	}
