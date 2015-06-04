@@ -1,4 +1,6 @@
 package fields;
+
+import java.lang.Exception;
 /**
  * Razred sharanjuje podatke o uporabljeni metodi
  * 
@@ -178,13 +180,13 @@ public enum Method implements Field {
 		return method;
 	}
 
-	public String getProtocol() {
+	public String getProtocol() throws Exception{
 		switch (this) {
 		case GET: case HEAD: case POST: case PUT: case DELETE: case TRACE: case OPTIONS: case CONNECT: 	case PATCH:
 			return "HTTP";
 		case ABOR: case ACCT: case ADAT: case ALLO: case APPE: case AUTH: case CCC : case CDUP: case CONF: case CWD : case DELE: case ENC : case EPRT: case EPSV: case FEAT: case HELP: case LANG: case LIST: case LPRT: case LPSV: case MDMT: case MIC : case MKD : case MLSD: case MLST: case MODE: case NLST: case NOOP: case OPTS: case PASS: case PASV: case PORT: case PROT: case PWD : case QUIT: case REIN: case REST: case RETR: case RMD : case RNFR: case RNTO: case SITF: case SIZE: case SMNT: case STAT: case STOR: case STOU: case STRU: case SYST: case TYPE: case USER: case XCUP: 	case XMKD: case XPWD: case YRCP: case XRMD: case XRSQ: case XSEM: case XSEN:
 			return "FTP";
-
+		default: throw new Exception("Serious error!!!");
 		}
 	}
 	
@@ -192,6 +194,7 @@ public enum Method implements Field {
 	public String izpis() {
 		return method;
 	}
+
 	@Override
 	public String getKey() {
 		return null;
