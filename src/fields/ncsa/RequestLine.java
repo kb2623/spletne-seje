@@ -10,6 +10,7 @@ public class RequestLine implements Field {
 	
 	private Method method;
 	private URL url;
+	private float version;
 	/**
 	 * Konstruktor
 	 *
@@ -21,7 +22,10 @@ public class RequestLine implements Field {
 	public RequestLine(String method, String url, String protocol) throws MalformedURLException {
 		String[] tab = protocol.split("/");
 		this.url = new URL(tab[0], "", url);
-		this.method = Method.setMethod(this.url.getProtocol(), method);
+		if (tab.length > 1) {
+			version = Float.valueOf(tab[1]);
+		}
+		this.method = Method.setMethod(method);
 	}
 	/**
 	 * Getter metoda za URL
@@ -41,10 +45,18 @@ public class RequestLine implements Field {
 	public Method getMethod() {
 		return this.method;
 	}
+	/**
+	 * Getter za verzijo protokola
+	 *
+	 * @return Verzija protokola
+	 */
+	public float getProtocolVersion() {
+		return version;
+	}
     /**
-     * Metoda, ki vrne konènico zahtevanega resursa
+     * Metoda, ki vrne koncnico zahtevanega resursa
      *
-     * @return OK -> Konènica zahtevanega resursa, ERROR -> <code>null</code>
+     * @return OK -> Koncnica zahtevanega resursa, ERROR -> <code>null</code>
      */
 	public String getExtension() {
 		int indexOfExtension = url.getPath().lastIndexOf('.');

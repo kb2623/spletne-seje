@@ -57,10 +57,7 @@ public class Cookie implements Field {
 		if(map == null) {
 			builder.append('-');
 		} else {
-			map.entrySet().stream().
-				forEach((entry) -> {
-					builder.append(entry.getKey()).append(entry.getValue());
-			});
+			map.entrySet().stream().forEach((entry) -> builder.append(entry.getKey()).append(entry.getValue()));
 		}
 		return builder.toString();
 	}
@@ -77,9 +74,7 @@ public class Cookie implements Field {
 					return false;
 				}
 			}
-			if(itObj.hasNext()) {
-				return false;
-			} else return !itThis.hasNext();
+			return !itObj.hasNext() && !itThis.hasNext();
 		}
 	}
 

@@ -3,8 +3,6 @@ package fields;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import fields.Field;
-
 public class Address implements Field {
 	
 	private boolean serverAddress;
@@ -18,16 +16,12 @@ public class Address implements Field {
 
 	@Override
 	public String izpis() {
-		return (serverAddress ? "Server" : "Client")+" "+address.getHostAddress();
+		return (serverAddress ? "Server" : "Client") + " " + address.getHostAddress();
 	}
 
 	@Override
 	public String getKey() {
-		if(!serverAddress) {
-			return address.getHostAddress();
-		} else {
-			return "";
-		}
+		return !serverAddress ? address.getHostAddress() : null;
 	}
 
 }

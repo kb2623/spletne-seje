@@ -91,9 +91,7 @@ public class W3CParser extends AbsParser {
 	public ParsedLine parseLine() throws ParseException, IOException {
 		List<String> tokens = parse(getLine());
 		EnumMap<FieldType, Field> data = new EnumMap<>(FieldType.class);
-		if(tokens == null) {
-			return null;
-		}
+		if(tokens == null) return null;
 		if(tokens.get(0).charAt(0) == '#') {
 			if(tokens.get(0).equals("#Fields:")) {
 				fieldType = FieldType.createExtendedLogFormat(tokens);
@@ -103,12 +101,8 @@ public class W3CParser extends AbsParser {
 			data.put(FieldType.MetaData, new MetaData(builder.toString()));
 			return new ParsedLine(data);
 		}
-		if(fieldType == null) {
-			throw new ParseException("Bad log format", super.getPos());
-		}
-		if(fieldType.size() != tokens.size()) {
-			throw new ParseException("Can't parse a line", super.getPos());
-		}
+		if(fieldType == null) throw new ParseException("Bad log format", super.getPos());
+		if(fieldType.size() != tokens.size()) throw new ParseException("Can't parse a line", super.getPos());
 		for (int i = 0; i < fieldType.size(); i++) {
 			switch (fieldType.get(i)) {
 			case Referer:
@@ -121,12 +115,7 @@ public class W3CParser extends AbsParser {
 				data.put(FieldType.UserAgent, new UserAgent(tokens.get(i), UserAgent.Type.W3C));
 				break;
 			case Method:
-				int indexOfProtocolVersion = fieldType.indexOf(FieldType.ProtocolVersion);
-				if(indexOfProtocolVersion != -1) {
-					data.put(FieldType.Method, Method.setMethod(tokens.get(indexOfProtocolVersion).split("/")[0], tokens.get(i)));
-				} else {
-					data.put(FieldType.Method, Method.setMethod("http", tokens.get(i)));
-				}
+				data.put(FieldType.Method, Method.setMethod(tokens.get(i)));
 				break;
 			case Date:
 				data.put(FieldType.Date, new Date(tokens.get(i), dateFormat));
@@ -186,8 +175,7 @@ public class W3CParser extends AbsParser {
 				data.put(FieldType.TimeTaken, new TimeTaken(tokens.get(i), false));
 				break;
 			default:
-				// TODO Prišel si do neznanega polja
-				break;
+				throw new ParseException("Neznano polje!!!", super.getPos());
 			}
 		}
 		return new ParsedLine(data);

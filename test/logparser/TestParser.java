@@ -359,5 +359,4 @@ public class TestParser {
 		LocalDateTime dateTime = LocalDateTime.parse("26/Jul/2002:12:11:52 +0000", formatter);
 		assertEquals(26, dateTime.getDayOfMonth());
 	}
-
 }

@@ -31,9 +31,10 @@ public class IISParser extends AbsParser {
 		this.timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.US);
 	}
 	/**
+	 * Metoda, ki zarcleni polja v vrstici log datoteke.
 	 *
-	 * @param logline
-	 * @return
+	 * @param logline Vrstica iz lod datoteke
+	 * @return Seznam razcljenjenih polji
 	 */
 	private List<String> parse(String logline) {
 		if(logline == null) {
@@ -68,23 +69,20 @@ public class IISParser extends AbsParser {
 		return tokens;
 	}
     /**
-     *
-     * @return
-     * @throws ParseException
+     * Metoda, ki ustvari objek <code>ParsedLine</code>. Metoda razclenjeni vrstici doda meta podatke.
+	 *
+     * @return Seznam vrednosti vrstice log datoteke
+     * @throws ParseException Ko pridemo do polja, ki ga ne poznamo
+	 * @throws NullPointerException Ko nimamo nstavljenih tipov polji v log datoteki in ko nimamo specificiranega formata ure in datuma
+	 * @throws IOException Ko pride do napake pri branju datoteke
      */
 	@Override
-	public ParsedLine parseLine() throws ParseException, IOException {
-		if (fieldType == null || timeFormat == null || dateFormat == null) {
-			throw new NullPointerException("Fields types not specified");
-		}
+	public ParsedLine parseLine() throws ParseException, IOException, NullPointerException {
+		if (fieldType == null) throw new NullPointerException("Tipi polji niso specificirani!!!");
 		EnumMap<FieldType, Field> data = new EnumMap<>(FieldType.class);
 		List<String> tokens = parse(super.getLine());
-		if (tokens == null) {
-			return null;
-		}
-		if(tokens.size() != fieldType.size()) {
-			throw new ParseException("Bad field types", super.getPos());
-		}
+		if (tokens == null) return null;
+		if(tokens.size() != fieldType.size()) throw new ParseException("Bad field types", super.getPos());
 		for (int i = 0; i < fieldType.size(); i++) {
 			switch (fieldType.get(i)) {
 			case Referer:
@@ -97,12 +95,7 @@ public class IISParser extends AbsParser {
 				data.put(FieldType.UserAgent, new UserAgent(tokens.get(i), UserAgent.Type.W3C));
 				break;
 			case Method:
-				int indexOfProtocolVersion = fieldType.indexOf(FieldType.ProtocolVersion);
-				if(indexOfProtocolVersion != -1) {
-					data.put(FieldType.Method, Method.setMethod(tokens.get(indexOfProtocolVersion).split("/")[0], tokens.get(i)));
-				} else {
-					data.put(FieldType.Method, Method.setMethod("http", tokens.get(i)));
-				}
+				data.put(FieldType.Method, Method.setMethod(tokens.get(i)));
 				break;
 			case Date:
 				data.put(FieldType.Date, new fields.w3c.Date(tokens.get(i), dateFormat));
@@ -162,34 +155,37 @@ public class IISParser extends AbsParser {
 				data.put(FieldType.TimeTaken, new TimeTaken(tokens.get(i), false));
 				break;
 			default:
-				// TODO Prišel si do neznanega polja
-				break;
+				throw new ParseException("Unknown field", super.getPos());
 			}
 		}
 		return new ParsedLine(data);
 	}
     /**
-	 * Nastavljanje formata za parsanje datuma
-	 * 
-	 * @param format
-	 * @param region 
+	 * Nastavljanje formata za parsanje datuma.
+	 *
+	 * @see DateTimeFormatter
+	 * @param format Format datuma
+	 * @param region Jezik uporabljen za zapis datuma
 	 */
 	public void setDateFormat(String format, Locale locale) {
 		this.dateFormat = DateTimeFormatter.ofPattern(format == null ? "dd/MM/yyyy" : format).withLocale(locale == null ? Locale.US : locale);
 	}
 	/**
 	 * Nastavljanje formata za parsanje časa
-	 * 
-	 * @param format
-	 * @param region 
+	 *
+	 * @see DateTimeFormatter
+	 * @param format Format ure
+	 * @param region Jezik uporabljen v zapisu ure
 	 */
 	public void setTimeFormat(String format, Locale locale) {
 		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.US : locale);
 	}
 	/**
+	 * Metoda za nastavljanje tipov polji v log datoteki.
 	 *
-	 * @param fields
-	 * @throws NullPointerException
+	 * @see FieldType
+	 * @param fields Tipi polji v log datoteki
+	 * @throws NullPointerException Ko je parameter <code>fields</code> enak null
 	 */
 	public void setFieldType(List<FieldType> fields) throws NullPointerException {
 		if(fields == null) {

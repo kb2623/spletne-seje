@@ -27,11 +27,7 @@ public class ParsedLine {
 //				builder.append(f.getKey());
 //			}
 //		}
-		map.values().stream().
-			filter((f) -> (f.getKey() != null)).
-			forEach((f) -> {
-				builder.append(f.getKey());
-		});
+		map.values().stream().filter((f) -> (f.getKey() != null)).forEach((f) -> builder.append(f.getKey()));
 		return builder.toString();
 	}
 	/**
@@ -55,7 +51,8 @@ public class ParsedLine {
 		switch ((extension != null) ? extension : "") {
 		case "php": case "png": case "css": case "js": case "jpg": case "txt": case "gif": case "ico": case "xml": case "csv":
 			return true;
-		default:	return false;
+		default:
+			return false;
 		}
 	}
 

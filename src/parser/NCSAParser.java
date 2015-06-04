@@ -118,17 +118,11 @@ public class NCSAParser extends AbsParser {
 	 */
 	@Override
 	public ParsedLine parseLine() throws ParseException, NullPointerException, IOException {
-		if(this.fieldType == null || formatter == null) {
-			throw new NullPointerException("Fields types not specified");
-		}
+		if (fieldType == null) throw new NullPointerException("Tipi polji niso specificirani!!!");
 		EnumMap<FieldType, Field> data = new EnumMap<>(FieldType.class);
 		List<String> tokens = parse(super.getLine());
-		if(tokens == null) {
-			return null;
-		}
-		if(tokens.size() != fieldType.size()) {
-			throw new ParseException("Bad field types", super.getPos());
-		}
+		if(tokens == null) return null;
+		if(tokens.size() != fieldType.size()) throw new ParseException("Bad field types", super.getPos());
 		for(int i = 0; i < fieldType.size(); i++) {
 			switch(fieldType.get(i)) {
 			case RemoteHost:

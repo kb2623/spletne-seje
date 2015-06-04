@@ -106,9 +106,7 @@ public class SpletneSeje {
 
 		//Ustvari novo izhodno datoteko
 		File outFile = new File(argsParser.getOutputFilePath());
-		if(argsParser.deleteOutputFile()) {
-			outFile.delete();
-		}
+		if(argsParser.deleteOutputFile()) outFile.delete();
 		outDataBase = SqlJetDb.open(outFile, true);
 
 		// TODO izdelaj podatkovno bazo oziroma, ce datoteka ze obstaja preveri ali uporablja pravilne tabele, če temu ni tako javi napako

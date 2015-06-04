@@ -366,8 +366,8 @@ public class RadixTreeTest {
 	private void testIteratorTwo() {
 		String niz = "";
 		testAddMoreOK();
-		for(Iterator<Integer> it = this.insRadixTree.iterator(); it.hasNext(); ) {
-			niz += " "+it.next().toString();
+		for (Iterator<Integer> it = this.insRadixTree.iterator(); it.hasNext(); ) {
+			niz += " " + it.next().toString();
 		}
 		assertEquals(" 1 2 3 4 5 6 7", niz);
 	}
@@ -376,8 +376,8 @@ public class RadixTreeTest {
 		String niz = "";
 		testAddOK();
 		testAddMoreOK();
-		for(Iterator<Integer> it = this.insRadixTree.iterator(); it.hasNext(); ) {
-			niz += " "+it.next().toString();
+		for (Iterator<Integer> it = this.insRadixTree.iterator(); it.hasNext(); ) {
+			niz += " " + it.next().toString();
 		}
 		assertEquals(" 23 32 1 2 3 4 5 6 7", niz);
 	}
