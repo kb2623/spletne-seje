@@ -162,7 +162,7 @@ public class IISParser extends AbsParser {
 				data.put(FieldType.TimeTaken, new TimeTaken(tokens.get(i), false));
 				break;
 			default:
-				// TODO Pršel si do neznanega polja
+				// TODO Prišel si do neznanega polja
 				break;
 			}
 		}
