@@ -31,18 +31,22 @@ public class NCSAParser extends AbsParser {
 		this.formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
 	}
 	/**
-	 * Nastavljanje formata za parsanje datuma
+	 * Nastavljanje formata za parsanje datuma.
+	 * Ce je vhodni parameter <code>format</code> null, se nastavi format na prevzeti format.
+	 * Ce je vhodni parameter <code>locale</code> null, se nastavi lokalnost na prevzeti format.
 	 *
-	 * @param format
-	 * @param localeString
+	 * @see DateTimeFormatter#ofPattern(String, Locale)
+	 * @param format Format datuma
+	 * @param localeString Niz, ki pove v katerem jeziku je zapisan datum
 	 */
 	public void setDateFormat(String format, Locale locale) {
 		this.formatter = DateTimeFormatter.ofPattern(format == null ? "dd/MMM/yyyy:HH:mm:ss Z" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 	/**
+	 * Metoda razcleni vhodni niz na vec delov in jih shrani v seznam.
 	 *
-	 * @param logline
-	 * @return
+	 * @param logline Vrstica v log datoteki
+	 * @return Seznam razclenjenih nizov.
 	 * @see String
 	 */
 	private List<String> parse(String logline) {
@@ -91,9 +95,11 @@ public class NCSAParser extends AbsParser {
 	    return tokens;
     }
 	/**
+	 * Metoda nastavi vrste polji v log datoteki
 	 *
-	 * @param fields
-	 * @throws NullPointerException
+	 * @see FieldType
+	 * @param fields Tipi polji v log datoteki
+	 * @throws NullPointerException Vhodni parameter <code>fields</code> je enak null
 	 */
 	public void setFieldType(List<FieldType> fields) throws NullPointerException {
 		if(fields == null) {
@@ -103,11 +109,12 @@ public class NCSAParser extends AbsParser {
 		}
 	}
 	/**
+	 * Metoda, ki obdela vrstico v log datoteki.
 	 *
-	 * @return
-	 * @throws ParseException
-	 * @throws NullPointerException
-	 * @throws IOException
+	 * @return Obdelano vrstico v log datoteki
+	 * @throws ParseException  Napaka pri obdelavi vrstice v log datoteki
+	 * @throws NullPointerException Ko nimamo nstavljenih tipov polji v log datoteki
+	 * @throws IOException Napka pri branju datoteke
 	 */
 	@Override
 	public ParsedLine parseLine() throws ParseException, NullPointerException, IOException {
