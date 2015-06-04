@@ -3,9 +3,7 @@ package logparser;
 import java.io.File;
 import java.io.StringReader;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -55,7 +53,7 @@ public class TestParser {
 	}
 
 	private void printNiz(String niz) {
-		System.out.println("\n"+niz);
+		System.out.println("\n" + niz);
 	}
 
 	@Test
@@ -77,6 +75,47 @@ public class TestParser {
 			}
 			//Zapri datoteko
 			parser.closeFile();
+		} catch(NullPointerException | IOException e) {
+			assert false;
+		}
+	}
+
+	@Test
+	public void testNCSAParserCommonRes() {
+		printNiz("testNCSAParserCommon");
+		Map<String, List<ParsedLine>> testMap = new HashMap<>();
+		NCSAParser parser = new NCSAParser();
+		try {
+			//Odpri datoteko
+			parser.openFile(pathNCSACommon);
+			//Nastavi tipe podatkov
+			parser.setFieldType(FieldType.createCommonLogFormat());
+			//Pridobi podatke
+			for (ParsedLine line : parser) {
+				List<ParsedLine> list = testMap.get(line.getKey());
+				if (list == null) {
+					list = new ArrayList<>();
+					list.add(line);
+					testMap.put(line.getKey(), list);
+				} else {
+					list.add(line);
+				}
+			}
+			//Zapri datoteko
+			parser.closeFile();
+			for (Map.Entry<String, List<ParsedLine>> entry : testMap.entrySet()) {
+				System.out.println(entry.getKey() + " <> " + entry.getValue().size());
+				entry.getValue().stream().forEach((f1) -> {
+					if (!f1.isResurse()) {
+						System.out.print("\t");
+						f1.getMap().values().stream().forEach((f2) -> {
+							System.out.print(f2.izpis() + " || ");
+						});
+						System.out.println();
+					}
+				});
+				System.out.println();
+			}
 		} catch(NullPointerException | IOException e) {
 			assert false;
 		}
@@ -148,17 +187,18 @@ public class TestParser {
 			parser.setFieldType(listType);
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
-			list.getMap().values().stream().
-				forEach((f) -> {
-					if(f == null) {
-						assert false;
-					} else if(f instanceof RequestLine) {
-						URL r = ((RequestLine) f).getUrl();
-						System.out.print(((RequestLine) f).getMethod().izpis() + " | " + r.getPath() + " | " + r.getQuery() + " | " + r.getProtocol() + " | ");
-					} else {
-						System.out.print(f.izpis()+" || ");
+			list.getMap().values().stream().forEach(
+					(f) -> {
+						if (f == null) {
+							assert false;
+						} else if (f instanceof RequestLine) {
+							URL r = ((RequestLine) f).getUrl();
+							System.out.print(((RequestLine) f).getMethod().izpis() + " | " + r.getPath() + " | " + r.getQuery() + " | " + r.getProtocol() + " | ");
+						} else {
+							System.out.print(f.izpis() + " || ");
+						}
 					}
-			});
+			);
 			System.out.println();
 			//Zapri datoteko
 			parser.closeFile();
@@ -353,10 +393,5 @@ public class TestParser {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
 		LocalDateTime dateTime = LocalDateTime.parse("26/Jul/2002:12:11:52 +0000", formatter);
 		assertEquals(26, dateTime.getDayOfMonth());
-	}
-
-	@Test
-	public void testParsing() {
-
 	}
 }
