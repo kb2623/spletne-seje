@@ -7,16 +7,16 @@ import org.junit.Test;
 import java.util.Iterator;
 
 public class RadixTreeTest {
-	
+
 	private RadixTree<Integer> insRadixTree;
 	private RadixTree<String> tree;
-	
+
 	@Before
 	public void setUp() {
 		this.insRadixTree = new RadixTree<>();
 		this.tree = new RadixTree<>();
 	}
-	
+
 	@Test
 	public void testAdd() {
 		testAddOK(); setUp();
@@ -24,14 +24,14 @@ public class RadixTreeTest {
 		testAddNullArgumentExceptions(); setUp();
 		testAddDuplicateKeyException();
 	}
-	
+
 	private void testAddOK() {
 		this.insRadixTree.add(23, "test");
 		this.insRadixTree.add(32, "team");
 		assertEquals(new Integer(23), insRadixTree.get("test"));
 		assertEquals(new Integer(32), insRadixTree.get("team"));
 	}
-	
+
 	private void testAddMoreOK() {
 		this.insRadixTree.add(1, "romane");
 		this.insRadixTree.add(2, "romanus");
@@ -48,7 +48,7 @@ public class RadixTreeTest {
 		assertEquals(new Integer(6), this.insRadixTree.get("rubicon"));
 		assertEquals(new Integer(3), this.insRadixTree.get("romulus"));
 	}
-	
+
 	private void testAddNullArgumentExceptions() {
 		try{
 			this.insRadixTree.add(null, null);
@@ -63,7 +63,7 @@ public class RadixTreeTest {
 			assert false;
 		} catch(NullPointerException e) {}
 	}
-	
+
 	private void testAddDuplicateKeyException() {
 		testAddMoreOK();
 		testAddOK();
@@ -76,7 +76,7 @@ public class RadixTreeTest {
 			assert false;
 		} catch(DuplicateKeyException e) {}
 	}
-	
+
 	@Test
 	public void testIsEmpty() {
 		assertTrue(insRadixTree.isEmpty());
@@ -84,7 +84,7 @@ public class RadixTreeTest {
 		this.insRadixTree.add(32, "team");
 		assertFalse(insRadixTree.isEmpty());
 	}
-	
+
 	@Test
 	public void testRemove() {
 		testRemoveOK(); setUp();
@@ -96,7 +96,7 @@ public class RadixTreeTest {
 		assertTrue(this.insRadixTree.remove("test"));
 		assertFalse(this.insRadixTree.remove("Hello"));
 	}
-	
+
 	private void testRemoveMore() {
 		testAddMoreOK();
 		testAddOK();
@@ -113,80 +113,80 @@ public class RadixTreeTest {
 		assertTrue(this.insRadixTree.remove("ruber"));
 		assertTrue(this.insRadixTree.remove("rubens"));
 	}
-	
+
 	@Test
 	public void testCount() {
 		testCountOne(); setUp();
 		testCountTwo(); setUp();
 		testCountThree();
 	}
-	
+
 	private void testCountOne() {
 		testAddOK();
 		assertEquals(2, this.insRadixTree.count());
 	}
-	
+
 	private void testCountTwo() {
 		testAddMoreOK();
 		assertEquals(7, this.insRadixTree.count());
 	}
-	
+
 	private void testCountThree() {
 		testAddOK();
 		testAddMoreOK();
 		assertEquals(9, this.insRadixTree.count());
 	}
-	
+
 	@Test
 	public void testAsList() {
 		testAsListOne(); setUp();
 		testAsListTwo(); setUp();
 		testAsListThree();
 	}
-	
+
 	private void testAsListOne() {
 		testAddOK();
 		assertEquals("[23, 32]", this.insRadixTree.asList().toString());
 	}
-	
+
 	private void testAsListTwo() {
 		testAddMoreOK();
 		assertEquals("[1, 2, 3, 4, 5, 6, 7]", this.insRadixTree.asList().toString());
 	}
-	
+
 	private void testAsListThree() {
 		testAddMoreOK();
 		testAddOK();
 		assertEquals("[1, 2, 3, 4, 5, 6, 7, 23, 32]", this.insRadixTree.asList().toString());
-	}	
-	
+	}
+
 	private void addSequenceOne() {
 		tree.add("abcd", "abcd");
 		tree.add("abce", "abce");
 	}
-	
+
 	@Test
 	public void testSearchForPartialParentAndLeafKeyWhenOverlapExists() {
 		addSequenceOne();
 		assertNull(tree.get("abe"));
 		assertNull(tree.get("abd"));
 	}
-	
+
 	@Test
-    public void testSearchForLeafNodesWhenOverlapExists() {
+	public void testSearchForLeafNodesWhenOverlapExists() {
 		addSequenceOne();
 		assertEquals("abcd", tree.get("abcd"));
 		assertEquals("abce", tree.get("abce"));
 	}
-	
+
 	@Test
-    public void testSearchForStringSmallerThanSharedParentWhenOverlapExists() {
+	public void testSearchForStringSmallerThanSharedParentWhenOverlapExists() {
 		addSequenceOne();
 		assertNull(tree.get("abc"));
 		assertNull(tree.get("ab"));
 		assertNull(tree.get("a"));
 	}
-	
+
 	@Test
 	public void testAddWithString() {
 		tree.add("apple", "apple");
@@ -200,22 +200,22 @@ public class RadixTreeTest {
 		assertEquals("bath", tree.get("bath"));
 		assertEquals("banana", tree.get("banana"));
 	}
-	
+
 	@Test
 	public void testAddExistingUnrealNodeConvertsItToReal() {
 		tree.add("applepie", "applepie");
-        tree.add("applecrisp", "applecrisp");
+		tree.add("applecrisp", "applecrisp");
 		assertNull(tree.get("apple"));
 		tree.add("apple", "apple");
 		assertEquals("apple", tree.get("apple"));
 	}
-	
+
 	@Test(expected = datastruct.DuplicateKeyException.class)
 	public void testDuplicatesNotAllowed() {
 		tree.add("apple", "apple");
 		tree.add("appleOne", "apple");
 	}
-	
+
 	@Test
 	public void testAddWithRepeatingPatternsInKey() {
 		tree.add("xbox 360", "xbox 360");
@@ -232,13 +232,13 @@ public class RadixTreeTest {
 		tree.add("xbox xbox 361", "xbox xbox 361");
 		assertEquals(12, tree.count());
 	}
-	
+
 	@Test
-    public void testRemoveNodeWithNoChildren() {
+	public void testRemoveNodeWithNoChildren() {
 		tree.add("apple", "apple");
 		assertTrue(tree.remove("apple"));
 	}
-	
+
 	@Test
 	public void testRemoveNodeWithOneChild() {
 		tree.add("apple", "apple");
@@ -247,98 +247,98 @@ public class RadixTreeTest {
 		assertNull(tree.get("apple"));
 		assertEquals("applepie", tree.get("applepie"));
 	}
-	
+
 	@Test
-    public void testRemoveNodeWithMultipleChildren() {
+	public void testRemoveNodeWithMultipleChildren() {
 		tree.add("apple", "apple");
-        tree.add("applepie", "applepie");
-        tree.add("applecrisp", "applecrisp");
+		tree.add("applepie", "applepie");
+		tree.add("applecrisp", "applecrisp");
 		assertTrue(tree.remove("apple"));
 		assertNull(tree.get("apple"));
 		assertEquals("applepie", tree.get("applepie"));
 		assertEquals("applecrisp", tree.get("applecrisp"));
 	}
-	
+
 	@Test
-    public void testCantDeleteSomethingThatDoesntExist() {
+	public void testCantDeleteSomethingThatDoesntExist() {
 		assertFalse(tree.remove("apple"));
 	}
-	
+
 	@Test
 	public void testCantDeleteSomethingThatWasAlreadyDeleted() {
 		tree.add("apple", "apple");
 		assertTrue(tree.remove("apple"));
 		assertFalse(tree.remove("apple"));
 	}
-	
+
 	@Test
 	public void testChildrenNotAffectedWhenOneIsDeleted() {
 		tree.add("apple", "apple");
-        tree.add("appleshack", "appleshack");
-        tree.add("applepie", "applepie");
-        tree.add("ape", "ape");
+		tree.add("appleshack", "appleshack");
+		tree.add("applepie", "applepie");
+		tree.add("ape", "ape");
 		assertTrue(tree.remove("apple"));
 		assertEquals("appleshack", tree.get("appleshack"));
 		assertEquals("applepie", tree.get("applepie"));
 		assertEquals("ape", tree.get("ape"));
 		assertNull(tree.get("apple"));
 	}
-	
+
 	@Test
 	public void testSiblingsNotAffectedWhenOneIsDeleted() {
 		tree.add("apple", "apple");
-        tree.add("ball", "ball");       
-        assertTrue(tree.remove("apple"));
+		tree.add("ball", "ball");
+		assertTrue(tree.remove("apple"));
 		assertEquals("ball", tree.get("ball"));
 	}
-	
+
 	@Test
-    public void testCantRemoveUnrealNode() {
-        tree.add("apple", "apple");
-        tree.add("ape", "ape");       
-        assertFalse(tree.remove("ap"));
-    }
-	
+	public void testCantRemoveUnrealNode() {
+		tree.add("apple", "apple");
+		tree.add("ape", "ape");
+		assertFalse(tree.remove("ap"));
+	}
+
 	@Test
-    public void testCantFindRootNode() {
+	public void testCantFindRootNode() {
 		assertNull(tree.get(""));
 	}
-	
+
 	@Test
-    public void testFindSimpleInsert()  {
+	public void testFindSimpleInsert()  {
 		tree.add("apple", "apple");
 		assertEquals("apple", tree.get("apple"));
 	}
-	
-	@Test
-    public void testCantFindNonexistantNode() {
-        assertNull(tree.get("apple"));
-    }
 
 	@Test
-    public void testCantFindUnrealNode() {
-        tree.add("apple", "apple");
-        tree.add("ape", "ape");
-        assertNull(tree.get("ap"));
-    }
-	
+	public void testCantFindNonexistantNode() {
+		assertNull(tree.get("apple"));
+	}
+
 	@Test
-    public void testGetSize() {
-        tree.add("apple", "apple");
-        tree.add("appleshack", "appleshack");
-        tree.add("appleshackcream", "appleshackcream");
-        tree.add("applepie", "applepie");
-        tree.add("ape", "ape");       
-        assertEquals(5, tree.count());
-    }
-	
+	public void testCantFindUnrealNode() {
+		tree.add("apple", "apple");
+		tree.add("ape", "ape");
+		assertNull(tree.get("ap"));
+	}
+
 	@Test
-    public void testDeleteReducesSize() {
-        tree.add("apple", "apple");
-        tree.add("appleshack", "appleshack");       
-        tree.remove("appleshack");       
-        assertEquals(1, tree.count());
-    }    
+	public void testGetSize() {
+		tree.add("apple", "apple");
+		tree.add("appleshack", "appleshack");
+		tree.add("appleshackcream", "appleshackcream");
+		tree.add("applepie", "applepie");
+		tree.add("ape", "ape");
+		assertEquals(5, tree.count());
+	}
+
+	@Test
+	public void testDeleteReducesSize() {
+		tree.add("apple", "apple");
+		tree.add("appleshack", "appleshack");
+		tree.remove("appleshack");
+		assertEquals(1, tree.count());
+	}
 
 	@Test
 	public void testAddOne() {
