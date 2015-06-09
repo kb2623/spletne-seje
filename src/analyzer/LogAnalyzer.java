@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import java.util.regex.Pattern;
 
-import parser.FieldType;
+import fields.Cookie;
 
 public class LogAnalyzer {
 
@@ -25,7 +25,7 @@ public class LogAnalyzer {
         if (reader.readLine().charAt(0) == '#') {
             logFileType = LogFileType.W3C;
         } else {
-            // TODO preveri kaksna locila uporablja datoteka, èe so ".., .., ....." je to IIS, èe so "... ... ...." je to NCSA, v nasprotnem primeru formata log datoteke ne poznamo
+            // TODO preveri kaksna locila uporablja datoteka, ce so ".., .., ....." je to IIS, ce so "... ... ...." je to NCSA, v nasprotnem primeru formata log datoteke ne poznamo
         }
     }
     /**
@@ -34,9 +34,45 @@ public class LogAnalyzer {
      *
      * @return Ali je prisotno polje s piskotkom
      */
-    public boolean hasCookie() throws IOException {
-        // FIXME Razdeli vrstico in poslji zadnji del vrstice v spodnjo metodo
-        return Regex.isCookie(null);
+    public static boolean hasCombinedCookie() {
+        // FIXME metoda mora uporabiti metodo isCookie(), kjer preverimo ali ima Combine format na koncu podatke o piskotku
+        // Zacasna implementacija
+        return false;
+    }
+    /**
+     *
+     * @param field
+     * @return
+     * @throws IOException
+     */
+    public boolean isCookie(String field) throws IOException {
+        return Pattern.compile(Cookie.patteren()).matcher(field).find();
+    }
+    /**
+     *
+     * @param input
+     * @return
+     */
+    public static boolean isIP(String input) {
+        // FIXME Implementiraj preverjanje niza za IP stevilko. Tukaj bodi pozoren saj imamo lahko IPv4 ali pa IPv6
+        return false;
+    }
+    /**
+     *
+     * @param input
+     * @return
+     */
+    public static boolean isNumber(String input) {
+        // FIXME Implementiraj preverjanje niza za numericno vrednost
+        return false;
+    }
+    /**
+     *
+     * @param input
+     * @return
+     */
+    public static boolean isAlfa(String input) {
+        return !isNumber(input);
     }
     /**
      * Metoda, ki vrne razred za branje datoteke, pred tem
@@ -61,44 +97,6 @@ public class LogAnalyzer {
         NCSA,
         W3C,
         IIS
-    }
-
-    private static class Regex {
-        /**
-         *
-         * @param input
-         * @return
-         */
-        public static boolean isCookie(String input) {
-            Pattern pattern = Pattern.compile("([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*;)*([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*){1}");
-            return pattern.matcher(input).find();
-        }
-        /**
-         *
-         * @param input
-         * @return
-         */
-        public static boolean isIP(String input) {
-            // FIXME Implementiraj preverjanje niza za IP stevilko. Tukaj bodi pozoren saj imamo lahko IPv4 ali pa IPv6
-            return false;
-        }
-        /**
-         *
-         * @param input
-         * @return
-         */
-        public static boolean isNumber(String input) {
-            // FIXME Implementiraj preverjanje niza za numericno vrednost
-            return false;
-        }
-        /**
-         *
-         * @param input
-         * @return
-         */
-        public static boolean isAlfa(String input) {
-            return !isNumber(input);
-        }
     }
 
 }

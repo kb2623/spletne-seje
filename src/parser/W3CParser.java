@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Consumer;
 
 import fields.*;
 import fields.w3c.*;
@@ -180,7 +181,7 @@ public class W3CParser extends AbsParser {
 		}
 		return new ParsedLine(data);
 	}
-    /**
+	/**
      * Metoda, ki ustvari iterator
      *
      * @return Iterator za sprehod po datoteki

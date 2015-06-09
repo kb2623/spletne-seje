@@ -3,6 +3,7 @@ package parser;
 import java.io.*;
 import java.text.ParseException;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * Razred za parsanje log datoteke
@@ -72,10 +73,10 @@ public abstract class AbsParser implements Iterable<ParsedLine> {
 	/**
 	 * Metoda za parsanje datoteke
 	 *
-	 * @return
-	 * @throws ParseException Napaka pri branju datoteke
-	 * @throws IOException
-	 * @throws NullPointerException
+	 * @return Obdelano vrstico
+	 * @throws ParseException Napaka pri obdelavi datoteke
+	 * @throws IOException Napaka pri branju datoeke
+	 * @throws NullPointerException Lastnosti niso pravilno nstavljene
 	 * @see fields.Field
 	 */
 	public abstract ParsedLine parseLine() throws ParseException, NullPointerException, IOException;
@@ -95,7 +96,20 @@ public abstract class AbsParser implements Iterable<ParsedLine> {
 	public int getPos() {
 		return pos;
 	}
-    /**
+	/**
+	 * Foreach zanka z lambda izrazom
+	 *
+	 * @param consumer Akcija zapisana z lambda izrazom, ki se bo izvrsila nad vrstico
+	 */
+	@Override
+	public void forEach(Consumer<? super ParsedLine> consumer) {
+		try {
+			for (ParsedLine line = parseLine(); line != null; line = parseLine()) {
+
+			}
+		} catch (IOException | NullPointerException | ParseException e) {}
+	}
+	/**
      * Metoda, ki ustvari iterator za sprehod po datoteki
      *
      * @return Iterator za sprehod po datoteki

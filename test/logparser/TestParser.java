@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.*;
 
 import static org.junit.Assert.*;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.tmatesoft.sqljet.core.SqlJetException;
@@ -27,14 +29,12 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public class TestParser {
 
 	private String pathNCSACombined;
 	private String pathNCSACommon;
-	@SuppressWarnings("unused")
 	private String pathW3C;
-	@SuppressWarnings("unused")
 	private String pathIIS;
 
 	public TestParser() {
@@ -67,12 +67,26 @@ public class TestParser {
 			parser.setFieldType(FieldType.createCommonLogFormat());
 			//Pridobi podatke
 			for (ParsedLine list : parser) {
-				list.getMap().values().stream().forEach(
-					(f) -> {
-						if (f == null) assert false;
-					}
-				);
+				list.getMap().values().stream().forEach(Assert::assertNotNull);
 			}
+			//Zapri datoteko
+			parser.closeFile();
+		} catch(NullPointerException | IOException e) {
+			assert false;
+		}
+	}
+
+	@Test
+	public void testNCSAParserCommonForEach() {
+		printNiz("testNCSAParserCommon");
+		NCSAParser parser = new NCSAParser();
+		try {
+			//Odpri datoteko
+			parser.openFile(pathNCSACommon);
+			//Nastavi tipe podatkov
+			parser.setFieldType(FieldType.createCommonLogFormat());
+			//Pridobi podatke
+			parser.forEach(line -> line.getMap().values().stream().forEach(Assert::assertNotNull));
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
@@ -107,15 +121,30 @@ public class TestParser {
 				System.out.println(entry.getKey() + " <> " + entry.getValue().size());
 				entry.getValue().stream().forEach((f1) -> {
 					if (!f1.isResurse()) {
-						System.out.print("\t");
-						f1.getMap().values().stream().forEach((f2) -> {
-							System.out.print(f2.izpis() + " || ");
-						});
+						System.out.print("\t" + f1.izpis());
 						System.out.println();
 					}
 				});
 				System.out.println();
 			}
+		} catch(NullPointerException | IOException e) {
+			assert false;
+		}
+	}
+
+	@Test
+	public void testNCSAParserCombinedForEachWithSetFormat() {
+		printNiz("testNCSAParserCombinedWithSetFormatForEach");
+		NCSAParser parser = new NCSAParser();
+		try {
+			//Odpri datoteko
+			parser.openFile(pathNCSACombined);
+			//Nastavi tipe podatkov
+			parser.setFieldType(FieldType.createCommonLogFormat());
+			//Pridobi podatke
+			parser.forEach(line -> line.getMap().values().stream().forEach(Assert::assertNotNull));
+			//Zapri datoteko
+			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
 			assert false;
 		}
@@ -134,12 +163,26 @@ public class TestParser {
 			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 			//Pridobi podatke
 			for (ParsedLine list : parser) {
-				list.getMap().values().stream().forEach(
-					(f) -> {
-						if (f == null) assert false;
-					}
-				);
+				list.getMap().values().stream().forEach(Assert::assertNotNull);
 			}
+			//Zapri datoteko
+			parser.closeFile();
+		} catch(NullPointerException | IOException e) {
+			assert false;
+		}
+	}
+
+	@Test
+	public void testNCSAParserCombinedForEach() {
+		printNiz("testNCSAParserCombineForEach");
+		NCSAParser parser = new NCSAParser();
+		try {
+			//Odpri datoteko
+			parser.openFile(pathNCSACombined);
+			//Nastavi tipe podatkov
+			parser.setFieldType(FieldType.createCommonLogFormat());
+			//Pridobi podatke
+			parser.forEach(line -> line.getMap().values().stream().forEach(Assert::assertNotNull));
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
@@ -159,11 +202,7 @@ public class TestParser {
 			parser.setFieldType(FieldType.createCombinedLogFormat(false));
 			//Pridobi podatke
 			for (ParsedLine list : parser) {
-				list.getMap().values().stream().forEach(
-					(f) -> {
-						if (f == null) assert false;
-					}
-				);
+				list.getMap().values().stream().forEach(Assert::assertNotNull);
 			}
 			System.out.println();
 			//Zapri datoteko

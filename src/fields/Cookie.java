@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-
 public class Cookie implements Field {
 
 	private HashMap<String, String> map;
@@ -76,6 +75,10 @@ public class Cookie implements Field {
 			}
 			return !itObj.hasNext() && !itThis.hasNext();
 		}
+	}
+
+	public static String patteren() {
+		return "([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*;)*([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*){1}";
 	}
 
 	public enum Type {

@@ -64,7 +64,7 @@ public class SpletneSeje {
 		case "COMBINED":
 			logParser = new NCSAParser();
 			LogAnalyzer analyz = new LogAnalyzer(argsParser.getInputFilePath());
-			((NCSAParser) logParser).setFieldType(FieldType.createCombinedLogFormat(analyz.hasCookie()));
+			((NCSAParser) logParser).setFieldType(FieldType.createCombinedLogFormat(analyz.hasCombinedCookie()));
 			logParser.openFile(analyz.getOpendFile());
 			break;
 		case "EXTENDED":

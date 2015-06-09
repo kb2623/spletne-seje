@@ -72,5 +72,16 @@ public class ParsedLine {
 			return ((UriStem) f).getExtension();
 		}
 	}
+	/**
+	 * Testna metoda za testiranje pravilnosti shranjevanja podatkov
+	 *
+	 * @return Niz, ki vsebuje vse podatke o vrstici iz log datoteke
+	 */
+	@Deprecated
+	public String izpis() {
+		StringBuilder builder = new StringBuilder();
+		map.values().stream().forEach(f -> builder.append(f.izpis()).append(' ').append("||").append(' '));
+		return builder.toString();
+	}
 
 }

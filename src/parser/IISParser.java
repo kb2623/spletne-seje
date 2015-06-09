@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Consumer;
 
 @SuppressWarnings("all")
 public class IISParser extends AbsParser {
@@ -194,7 +195,7 @@ public class IISParser extends AbsParser {
 			this.fieldType = fields;
 		}
 	}
-    /**
+	/**
      * Metoda, ki ustvari iterator
      *
      * @return Iterator za sprehod po datoteki
