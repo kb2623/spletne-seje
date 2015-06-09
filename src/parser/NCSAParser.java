@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Consumer;
 
 import fields.*;
 import fields.ncsa.*;

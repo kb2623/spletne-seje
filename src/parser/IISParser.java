@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Consumer;
 
 @SuppressWarnings("all")
 public class IISParser extends AbsParser {
