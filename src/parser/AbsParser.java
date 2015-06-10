@@ -104,9 +104,7 @@ public abstract class AbsParser implements Iterable<ParsedLine> {
 	@Override
 	public void forEach(Consumer<? super ParsedLine> consumer) {
 		try {
-			for (ParsedLine line = parseLine(); line != null; line = parseLine()) {
-
-			}
+			for (ParsedLine line = parseLine(); line != null; line = parseLine()) consumer.accept(line);
 		} catch (IOException | NullPointerException | ParseException e) {}
 	}
 	/**

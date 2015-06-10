@@ -4,7 +4,11 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class RadixTreeTest {
 
@@ -138,10 +142,33 @@ public class RadixTreeTest {
 	}
 
 	@Test
+	public void testKeySet() {
+		testKeySetOne();
+		setUp(); testKeySetTwo();
+		setUp(); testKeySetThree();
+	}
+
+	private void testKeySetOne() {
+		testAddOK();
+		assertEquals("[team, test]", insRadixTree.keySet().toString());
+	}
+
+	private void testKeySetTwo() {
+		testAddMoreOK();
+		assertEquals("[romane, romanus, romulus, rubens, ruber, rubicon, rubicudus]", insRadixTree.keySet().toString());
+	}
+
+	private void testKeySetThree() {
+		testAddMoreOK();
+		testAddOK();
+		assertEquals("[romane, romanus, romulus, rubens, ruber, rubicon, rubicudus, team, test]", insRadixTree.keySet().toString());
+	}
+
+	@Test
 	public void testAsList() {
-		testAsListOne(); setUp();
-		testAsListTwo(); setUp();
-		testAsListThree();
+		testAsListOne();
+		setUp(); testAsListTwo();
+		setUp(); testAsListThree();
 	}
 
 	private void testAsListOne() {
@@ -366,8 +393,8 @@ public class RadixTreeTest {
 	private void testIteratorTwo() {
 		String niz = "";
 		testAddMoreOK();
-		for (Iterator<Integer> it = this.insRadixTree.iterator(); it.hasNext(); ) {
-			niz += " " + it.next().toString();
+		for (Integer anInsRadixTree : this.insRadixTree) {
+			niz += " " + anInsRadixTree.toString();
 		}
 		assertEquals(" 1 2 3 4 5 6 7", niz);
 	}
@@ -376,9 +403,31 @@ public class RadixTreeTest {
 		String niz = "";
 		testAddOK();
 		testAddMoreOK();
-		for (Iterator<Integer> it = this.insRadixTree.iterator(); it.hasNext(); ) {
-			niz += " " + it.next().toString();
+		for (Integer anInsRadixTree : this.insRadixTree) {
+			niz += " " + anInsRadixTree.toString();
 		}
 		assertEquals(" 23 32 1 2 3 4 5 6 7", niz);
+	}
+
+	@Test
+	public void testEntrySet() {
+		testEntrySetOne();
+		setUp(); testEntrySetTwo();
+		setUp(); testEntrySetThree();
+	}
+
+	private void testEntrySetOne() {
+		testAddOK();
+		Set<Map.Entry<String, Integer>> entrySet = insRadixTree.entrySet();
+	}
+
+	private void testEntrySetTwo() {
+		testAddMoreOK();
+		insRadixTree.entrySet().forEach(e -> System.out.println(e.getValue().toString() + " ||| " + e.getKey()));
+	}
+
+	private void testEntrySetThree() {
+		testAddMoreOK(); testAddOK();
+		insRadixTree.entrySet().forEach(e -> System.out.println(e.getValue().toString() + " ||| " + e.getKey()));
 	}
 }

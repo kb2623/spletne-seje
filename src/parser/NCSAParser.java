@@ -173,36 +173,32 @@ public class NCSAParser extends AbsParser {
     @Override
     public Iterator<ParsedLine> iterator() {
         try {
-            return new IteratorParsedLine();
+            return new Iterator<ParsedLine>() {
+
+				private ParsedLine next;
+
+				{
+					next = parseLine();
+				}
+
+				@Override
+				public boolean hasNext() {
+					return next != null;
+				}
+
+				@Override
+				public ParsedLine next() {
+					try {
+						ParsedLine tmp = next;
+						next = parseLine();
+						return tmp;
+					} catch (ParseException | IOException e) {
+						return null;
+					}
+				}
+			};
         } catch (ParseException | IOException e) {
             return null;
-        }
-    }
-    /**
-     * Razred, ki implementira iterator
-     */
-    public class IteratorParsedLine implements Iterator<ParsedLine> {
-
-        private ParsedLine next;
-
-        private IteratorParsedLine() throws ParseException, IOException {
-            next = parseLine();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return next != null;
-        }
-
-        @Override
-        public ParsedLine next() {
-            try {
-                ParsedLine tmp = next;
-                next = parseLine();
-                return tmp;
-            } catch (ParseException | IOException e) {
-                return null;
-            }
         }
     }
 }

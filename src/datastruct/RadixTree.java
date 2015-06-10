@@ -2,15 +2,15 @@ package datastruct;
 
 import java.util.*;
 
-public class RadixTree<T> implements Map<String, T> {
+public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	class RadixNode {
 
-		private T data;
+		private V data;
 		private String key;
 		private List<RadixNode> children;
 
-		public RadixNode(T data, String key) {
+		public RadixNode(V data, String key) {
 			this.data = data;
 			this.key = key;
 			this.children = new LinkedList<>();
@@ -39,7 +39,7 @@ public class RadixTree<T> implements Map<String, T> {
 		this.rootNode = new RadixNode();
 	}
 
-	public void add(T data, String key) throws NullPointerException, DuplicateKeyException {
+	public void add(V data, String key) throws NullPointerException, DuplicateKeyException {
 		if(data != null && key != null) {
 			this.insert(data, key, this.rootNode);
 		} else {
@@ -47,7 +47,7 @@ public class RadixTree<T> implements Map<String, T> {
 		}
 	}
 
-	private void insert(T data, String key, RadixNode node) throws DuplicateKeyException {
+	private void insert(V data, String key, RadixNode node) throws DuplicateKeyException {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if(numMatchChar == 0 || (numMatchChar == node.key.length() && numMatchChar < key.length())) {
 			boolean add = true;
@@ -84,7 +84,7 @@ public class RadixTree<T> implements Map<String, T> {
 		}
 	}
 
-	private T get(String key) {
+	private V get(String key) {
 		if(this.isEmpty()) {
 			return null;
 		} else {
@@ -92,7 +92,7 @@ public class RadixTree<T> implements Map<String, T> {
 		}
 	}
 
-	private T findNode(String key, RadixNode node) {
+	private V findNode(String key, RadixNode node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if(numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			return node.data;
@@ -164,17 +164,13 @@ public class RadixTree<T> implements Map<String, T> {
 		return size;
 	}
 
-	public List<T> asList() {
-		return this.asList(this.rootNode, new ArrayList<>());
+	public List<V> asList() {
+		return this.asList(this.rootNode, new LinkedList<>());
 	}
 
-	private List<T> asList(RadixNode node, List<T> list) {
-		for(RadixNode child : node.children) {
-			this.asList(child, list);
-		}
-		if(node.data != null) {
-			list.add(node.data);
-		}
+	private List<V> asList(RadixNode node, List<V> list) {
+		node.children.forEach(children -> list.addAll(asList(children, new LinkedList<>())));
+		if(node.data != null) list.add(node.data);
 		return list;
 	}
 
@@ -199,73 +195,72 @@ public class RadixTree<T> implements Map<String, T> {
 		}
 	}
 
-	public Iterator<T> iterator() {
-		return new RadixTree<T>.MyIterator();
-	}
+	@Override
+	public Iterator<V> iterator() {
+		return new Iterator<V>() {
 
-	private class MyIterator implements Iterator<T> {
+			private final Stack<Iterator<RadixNode>> stackIt;
+			private RadixNode next;
 
-		private final Stack<Iterator<RadixNode>> stackIt;
-		private RadixNode next;
-
-		public MyIterator() {
-			this.stackIt = new Stack<>();
-			this.stackIt.push(rootNode.children.iterator());
-			if(!this.stackIt.peek().hasNext()) {
-				this.next = null;
-			} else {
-				RadixNode tmpNode = this.stackIt.peek().next();
-				while(tmpNode.data == null) {
-					this.stackIt.push(tmpNode.children.iterator());
-					tmpNode = this.stackIt.peek().next();
-				}
-				this.next = tmpNode;
-			}
-		}
-
-		@Override
-		public boolean hasNext() {
-			return this.next != null;
-		}
-
-		@Override
-		public T next() {
-			if(!this.hasNext()) {
-				return null;
-			}
-			T tmp = this.next.data;
-			if(!this.next.children.isEmpty()) {
-				this.stackIt.push(this.next.children.iterator());
-				RadixNode tmpNode = this.stackIt.peek().next();
-				while(tmpNode.data == null) {
-					this.stackIt.push(tmpNode.children.iterator());
-					tmpNode = this.stackIt.peek().next();
-				}
-				this.next = tmpNode;
-			} else if(this.stackIt.peek().hasNext()) {
-				RadixNode tmpNode = this.stackIt.peek().next();
-				while(tmpNode.data == null) {
-					this.stackIt.push(tmpNode.children.iterator());
-					tmpNode = this.stackIt.peek().next();
-				}
-				this.next = tmpNode;
-			} else {
-				do{
-					this.stackIt.pop();
-					if(this.stackIt.isEmpty()) {
-						this.next = null;
-						return tmp;
+			{
+				this.stackIt = new Stack<>();
+				this.stackIt.push(rootNode.children.iterator());
+				if(!this.stackIt.peek().hasNext()) {
+					this.next = null;
+				} else {
+					RadixNode tmpNode = this.stackIt.peek().next();
+					while(tmpNode.data == null) {
+						this.stackIt.push(tmpNode.children.iterator());
+						tmpNode = this.stackIt.peek().next();
 					}
-				} while(!this.stackIt.peek().hasNext());
-				RadixNode tmpNode = this.stackIt.peek().next();
-				while(tmpNode.data == null) {
-					this.stackIt.push(tmpNode.children.iterator());
-					tmpNode = this.stackIt.peek().next();
+					this.next = tmpNode;
 				}
-				this.next = tmpNode;
 			}
-			return tmp;
-		}
+
+			@Override
+			public boolean hasNext() {
+				return this.next != null;
+			}
+
+			@Override
+			public V next() {
+				if(!this.hasNext()) {
+					return null;
+				}
+				V tmp = this.next.data;
+				if(!this.next.children.isEmpty()) {
+					this.stackIt.push(this.next.children.iterator());
+					RadixNode tmpNode = this.stackIt.peek().next();
+					while(tmpNode.data == null) {
+						this.stackIt.push(tmpNode.children.iterator());
+						tmpNode = this.stackIt.peek().next();
+					}
+					this.next = tmpNode;
+				} else if(this.stackIt.peek().hasNext()) {
+					RadixNode tmpNode = this.stackIt.peek().next();
+					while(tmpNode.data == null) {
+						this.stackIt.push(tmpNode.children.iterator());
+						tmpNode = this.stackIt.peek().next();
+					}
+					this.next = tmpNode;
+				} else {
+					do{
+						this.stackIt.pop();
+						if(this.stackIt.isEmpty()) {
+							this.next = null;
+							return tmp;
+						}
+					} while(!this.stackIt.peek().hasNext());
+					RadixNode tmpNode = this.stackIt.peek().next();
+					while(tmpNode.data == null) {
+						this.stackIt.push(tmpNode.children.iterator());
+						tmpNode = this.stackIt.peek().next();
+					}
+					this.next = tmpNode;
+				}
+				return tmp;
+			}
+		};
 	}
 
 	@Override
@@ -301,12 +296,12 @@ public class RadixTree<T> implements Map<String, T> {
 	}
 
 	@Override
-	public T get(Object key) {
+	public V get(Object key) {
 		return key instanceof String ? get((String) key) : null;
 	}
 
 	@Override
-	public T put(String key, T value) {
+	public V put(String key, V value) {
 		try {
 			add(value, key);
 			return value;
@@ -316,32 +311,59 @@ public class RadixTree<T> implements Map<String, T> {
 	}
 
 	@Override
-	public T remove(Object key) {
+	public V remove(Object key) {
 		return null;
 	}
 
 	@Override
-	public void putAll(Map<? extends String, ? extends T> map) {
-
+	public void putAll(Map<? extends String, ? extends V> map) {
+		// TODO implement
 	}
 
 	@Override
-	public void clear() {
-
-	}
+	public void clear() {}
 
 	@Override
 	public Set<String> keySet() {
-		return null;
+		return keysAsSet(rootNode, rootNode.key, new ArraySet<>());
+	}
+
+	private Set<String> keysAsSet(RadixNode node, String key, Set<String> set) {
+		node.children.forEach(children -> set.addAll(keysAsSet(children, key + children.key, new ArraySet<>())));
+		if (node.data != null) set.add(key);
+		return set;
 	}
 
 	@Override
-	public Collection<T> values() {
+	public Collection<V> values() {
 		return asList();
 	}
 
 	@Override
-	public Set<Entry<String, T>> entrySet() {
-		return null;
+	public Set<Map.Entry<String, V>> entrySet() {
+		return entryAsSet(rootNode, rootNode.key, new ArraySet<Map.Entry<String, V>>());
 	}
+
+	private Set<Map.Entry<String, V>> entryAsSet(RadixNode node, String key, Set<Map.Entry<String, V>> set) {
+		if (node.data != null) set.add(new RadixTreeEntry<>(key + node.key, node.data));
+//		node.children.forEach(children -> set.addAll(entryAsSet(children, key + children.key, new ArraySet<Map.Entry<String, V>>())));
+		for (RadixNode c : node.children) {
+			Set<Map.Entry<String, V>> tmpSet = entryAsSet(c, key + node.key, new ArraySet<Map.Entry<String, V>>());
+			set.addAll(tmpSet);
+		}
+		return set;
+	}
+
+	class RadixTreeEntry<K extends Comparable, V> extends AbstractMap.SimpleEntry<K, V> implements Comparable<RadixTreeEntry> {
+
+		public RadixTreeEntry(K k, V v) {
+			super(k, v);
+		}
+
+		@Override
+		public int compareTo(RadixTreeEntry radixTreeEntry) {
+			return super.getKey().compareTo(radixTreeEntry.getKey());
+		}
+	}
+
 }
