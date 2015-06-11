@@ -75,7 +75,7 @@ public class ArraySet<E> implements Set<E> {
             fix = true;
             array[i] = null;
         }
-        if (fix) array = copyOf(array, -1);
+        if (fix) array = copyOf(array, 0);
         return true;
     }
 
@@ -166,14 +166,15 @@ public class ArraySet<E> implements Set<E> {
     }
     /**
      * Metoda, ki ustvari novo tabelo z novo velikostjo <code>newLength</code>. Metoda preskoci vese <code>null</code> objekte. Ce ima stara tabela vec elementov, kot pa je verednost <code>newLength</code>, potem se prekopirajo samo elementi od indeksa <code>0</code> pa do <code>newLength - 1 + numberOfSkippedNullElements</code>. V primeru ko je <code>newLength > array.length</code> se uposteva <code>array.length</code>.
-     * Če <code>newLength == -1</code> potem <code>array</code> vebuje null vrednost, ki jih bi radi izbrisali iz tabele in ohranili ne <code>null</code> versnosti.
+     * Če <code>newLength == 0</code> potem <code>array</code> vebuje null vrednost, ki jih bi radi izbrisali iz tabele in ohranili ne <code>null</code> versnosti.
      *
      * @param array Tabela s katere prepisujemo elemente
      * @param newLength Velikost nove tabele
      * @return Nova tabela +, ki ne vesebuje <code>null</code> elementov
+     * @throws IllegalArgumentException V primeru ko je <code>newLength < 0</code>
      */
     private Object[] copyOf(Object[] array, int newLength) {
-        if (newLength == -1) {
+        if (newLength == 0) {
             LinkedList<Object> list = new LinkedList<>();
             for (Object o : array) {
                 if (o != null) list.add(o);

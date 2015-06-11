@@ -416,16 +416,28 @@ public class RadixTreeTest {
 
 	private void testEntrySetOne() {
 		testAddOK();
-		Set<Map.Entry<String, Integer>> entrySet = insRadixTree.entrySet();
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
+		insRadixTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
+		builder.append(']');
+		assertEquals("[[team,32][test,23]]", builder.toString());
 	}
 
 	private void testEntrySetTwo() {
 		testAddMoreOK();
-		insRadixTree.entrySet().forEach(e -> System.out.println(e.getValue().toString() + " ||| " + e.getKey()));
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
+		insRadixTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
+		builder.append(']');
+		assertEquals("[[romane,1][romanus,2][romulus,3][rubens,4][ruber,5][rubicon,6][rubicudus,7]]", builder.toString());
 	}
 
 	private void testEntrySetThree() {
 		testAddMoreOK(); testAddOK();
-		insRadixTree.entrySet().forEach(e -> System.out.println(e.getValue().toString() + " ||| " + e.getKey()));
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
+		insRadixTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
+		builder.append(']');
+		assertEquals("[[romane,1][romanus,2][romulus,3][rubens,4][ruber,5][rubicon,6][rubicudus,7][team,32][test,23]]", builder.toString());
 	}
 }
