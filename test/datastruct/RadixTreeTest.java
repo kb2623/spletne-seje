@@ -5,8 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 public class RadixTreeTest {
 
@@ -114,6 +112,35 @@ public class RadixTreeTest {
 		assertTrue(this.insRadixTree.remove("rubicon"));
 		assertTrue(this.insRadixTree.remove("ruber"));
 		assertTrue(this.insRadixTree.remove("rubens"));
+	}
+
+	@Test
+	public void testRemoveObject() {
+		testRemoveOKObject(); setUp();
+		testRemoveMoreObject();
+	}
+
+	private void testRemoveOKObject() {
+		testAddOK();
+		assertEquals(new Integer(23), insRadixTree.remove((Object) "test"));
+		assertNull(insRadixTree.remove((Object) "Hello"));
+	}
+
+	private void testRemoveMoreObject() {
+		testAddMoreOK();
+		testAddOK();
+		assertEquals(new Integer(23), insRadixTree.remove((Object) "test"));
+		assertEquals(new Integer(7), insRadixTree.remove((Object) "rubicudus"));
+		assertNull(insRadixTree.remove((Object) "rubers"));
+		assertEquals(new Integer(2), insRadixTree.remove((Object) "romanus"));
+		assertNull(insRadixTree.remove((Object) "test"));
+		assertEquals(new Integer(32), insRadixTree.remove((Object) "team"));
+		assertNull(insRadixTree.remove((Object) "team"));
+		assertEquals(new Integer(1), insRadixTree.remove((Object) "romane"));
+		assertEquals(new Integer(3), insRadixTree.remove((Object) "romulus"));
+		assertEquals(new Integer(6), insRadixTree.remove((Object) "rubicon"));
+		assertEquals(new Integer(5), insRadixTree.remove((Object) "ruber"));
+		assertEquals(new Integer(4), insRadixTree.remove((Object) "rubens"));
 	}
 
 	@Test
@@ -274,6 +301,15 @@ public class RadixTreeTest {
 	}
 
 	@Test
+	public void testRemoveNodeWithOneChildObject() {
+		tree.add("apple", "apple");
+		tree.add("applepie", "applepie");
+		assertEquals("apple", tree.remove((Object) "apple"));
+		assertNull(tree.get("apple"));
+		assertEquals("applepie", tree.get("applepie"));
+	}
+
+	@Test
 	public void testRemoveNodeWithMultipleChildren() {
 		tree.add("apple", "apple");
 		tree.add("applepie", "applepie");
@@ -285,8 +321,24 @@ public class RadixTreeTest {
 	}
 
 	@Test
+	public void testRemoveNodeWithMultipleChildrenObject() {
+		tree.add("apple", "apple");
+		tree.add("applepie", "applepie");
+		tree.add("applecrisp", "applecrisp");
+		assertEquals("apple", tree.remove((Object) "apple"));
+		assertNull(tree.get("apple"));
+		assertEquals("applepie", tree.get("applepie"));
+		assertEquals("applecrisp", tree.get("applecrisp"));
+	}
+
+	@Test
 	public void testCantDeleteSomethingThatDoesntExist() {
 		assertFalse(tree.remove("apple"));
+	}
+
+	@Test
+	public void testCantDeleteSomethingThatDoesntExistObject() {
+		assertNull(tree.remove((Object) "apple"));
 	}
 
 	@Test
@@ -294,6 +346,13 @@ public class RadixTreeTest {
 		tree.add("apple", "apple");
 		assertTrue(tree.remove("apple"));
 		assertFalse(tree.remove("apple"));
+	}
+
+	@Test
+	public void testCantDeleteSomethingThatWasAlreadyDeletedObject() {
+		tree.add("apple", "apple");
+		assertEquals("apple", tree.remove((Object) "apple"));
+		assertNull(tree.remove("apple"));
 	}
 
 	@Test
@@ -310,6 +369,19 @@ public class RadixTreeTest {
 	}
 
 	@Test
+	public void testChildrenNotAffectedWhenOneIsDeletedObject() {
+		tree.add("apple", "apple");
+		tree.add("appleshack", "appleshack");
+		tree.add("applepie", "applepie");
+		tree.add("ape", "ape");
+		assertEquals("apple", tree.remove((Object) "apple"));
+		assertEquals("appleshack", tree.get("appleshack"));
+		assertEquals("applepie", tree.get("applepie"));
+		assertEquals("ape", tree.get("ape"));
+		assertNull(tree.get("apple"));
+	}
+
+	@Test
 	public void testSiblingsNotAffectedWhenOneIsDeleted() {
 		tree.add("apple", "apple");
 		tree.add("ball", "ball");
@@ -318,10 +390,25 @@ public class RadixTreeTest {
 	}
 
 	@Test
+	public void testSiblingsNotAffectedWhenOneIsDeletedObject() {
+		tree.add("apple", "apple");
+		tree.add("ball", "ball");
+		assertEquals("apple", tree.remove((Object) "apple"));
+		assertEquals("ball", tree.get("ball"));
+	}
+
+	@Test
 	public void testCantRemoveUnrealNode() {
 		tree.add("apple", "apple");
 		tree.add("ape", "ape");
 		assertFalse(tree.remove("ap"));
+	}
+
+	@Test
+	public void testCantRemoveUnrealNodeObject() {
+		tree.add("apple", "apple");
+		tree.add("ape", "ape");
+		assertNull(tree.remove((Object) "ap"));
 	}
 
 	@Test
@@ -362,6 +449,14 @@ public class RadixTreeTest {
 		tree.add("apple", "apple");
 		tree.add("appleshack", "appleshack");
 		tree.remove("appleshack");
+		assertEquals(1, tree.count());
+	}
+
+	@Test
+	public void testDeleteReducesSizeObject() {
+		tree.add("apple", "apple");
+		tree.add("appleshack", "appleshack");
+		tree.remove((Object) "appleshack");
 		assertEquals(1, tree.count());
 	}
 

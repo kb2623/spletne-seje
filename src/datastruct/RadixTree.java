@@ -123,11 +123,8 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		} else if(numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			if(node.data != null) {
 				if(node.children.isEmpty()) {
-					Iterator<RadixNode> it = parent.children.iterator();
-					while(it.hasNext()) {
-						if(it.next().key.equals(node.key)) {
-							it.remove();
-						}
+					for (Iterator<RadixNode> it = parent.children.iterator(); it.hasNext(); ) {
+						if(it.next().key.equals(node.key)) it.remove();
 					}
 					if(parent.children.size() == 1 && parent.data == null && !parent.key.equals("")) {
 						this.mergeNodes(parent, parent.children.get(0));
@@ -312,16 +309,54 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public V remove(Object key) {
+		return !isEmpty() ? returnDeletedNode((String) key, null, rootNode) : null;
+	}
+
+	private V returnDeletedNode(String key, RadixNode parent, RadixNode node) {
+		int numMatchChar = node.getNumberOfMatchingCharacters(key);
+		if(node.key.equals("") || (numMatchChar < key.length() && numMatchChar == node.key.length())) {
+			String ostanekKljuca = key.substring(numMatchChar, key.length());
+			for(RadixNode child : node.children) {
+				if(child.key.charAt(0) == ostanekKljuca.charAt(0)) {
+					return returnDeletedNode(ostanekKljuca, node, child);
+				}
+			}
+		} else if(numMatchChar == key.length() && numMatchChar == node.key.length()) {
+			if(node.data != null) {
+				V data = null;
+				if(node.children.isEmpty()) {
+					for(Iterator<RadixNode> it = parent.children.iterator(); it.hasNext(); ) {
+						RadixNode tmp = it.next();
+						if (tmp.key.equals(node.key)) {
+							it.remove();
+							data = tmp.data;
+						}
+					}
+					if(parent.children.size() == 1 && parent.data == null && !parent.key.equals("")) {
+						this.mergeNodes(parent, parent.children.get(0));
+					}
+				} else if(node.children.size() == 1) {
+					data = node.data;
+					this.mergeNodes(node, node.children.get(0));
+				} else {
+					data = node.data;
+					node.data = null;
+				}
+				return data;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public void putAll(Map<? extends String, ? extends V> map) {
-		// TODO implement
+		map.entrySet().forEach(e -> put(e.getKey(), e.getValue()));
 	}
 
 	@Override
-	public void clear() {}
+	public void clear() {
+		rootNode = new RadixNode();
+	}
 
 	@Override
 	public Set<String> keySet() {
@@ -341,25 +376,22 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public Set<Map.Entry<String, V>> entrySet() {
-		return entryAsSet(rootNode, rootNode.key, new ArraySet<Map.Entry<String, V>>());
+		return entryAsSet(rootNode, rootNode.key, new ArraySet<>());
 	}
 
 	private Set<Map.Entry<String, V>> entryAsSet(RadixNode node, String key, Set<Map.Entry<String, V>> set) {
 		if (node.data != null) set.add(new RadixTreeEntry<>(key + node.key, node.data));
-//		node.children.forEach(children -> set.addAll(entryAsSet(children, key + children.key, new ArraySet<Map.Entry<String, V>>())));
-		for (RadixNode c : node.children) {
-			Set<Map.Entry<String, V>> tmpSet = entryAsSet(c, key + node.key, new ArraySet<Map.Entry<String, V>>());
-			set.addAll(tmpSet);
-		}
+		node.children.forEach(children -> set.addAll(entryAsSet(children, key + node.key, new ArraySet<>())));
 		return set;
 	}
 
-	class RadixTreeEntry<K extends Comparable, V> extends AbstractMap.SimpleEntry<K, V> implements Comparable<RadixTreeEntry> {
+	class RadixTreeEntry<K extends Comparable, V1> extends AbstractMap.SimpleEntry<K, V1> implements Comparable<RadixTreeEntry> {
 
-		public RadixTreeEntry(K k, V v) {
+		public RadixTreeEntry(K k, V1 v) {
 			super(k, v);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public int compareTo(RadixTreeEntry radixTreeEntry) {
 			return super.getKey().compareTo(radixTreeEntry.getKey());

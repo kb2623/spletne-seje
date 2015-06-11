@@ -170,8 +170,7 @@ public class ArraySet<E> implements Set<E> {
      *
      * @param array Tabela s katere prepisujemo elemente
      * @param newLength Velikost nove tabele
-     * @return Nova tabela +, ki ne vesebuje <code>null</code> elementov
-     * @throws IllegalArgumentException V primeru ko je <code>newLength < 0</code>
+     * @return Nova tabela, ki ne vesebuje <code>null</code> elementov
      */
     private Object[] copyOf(Object[] array, int newLength) {
         if (newLength == 0) {
