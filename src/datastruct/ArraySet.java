@@ -1,9 +1,6 @@
 package datastruct;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class ArraySet<E> implements Set<E> {
 
@@ -15,8 +12,8 @@ public class ArraySet<E> implements Set<E> {
         size = 0;
     }
 
-    public ArraySet(int capacity) {
-        array = new Object[capacity];
+    public ArraySet(Collection<? extends E> collection) {
+        addAll(collection);
     }
 
     @Override
@@ -30,10 +27,9 @@ public class ArraySet<E> implements Set<E> {
         int insertPoint = Arrays.binarySearch(array, 0, size, ele);
         if (insertPoint < 0) {
             insertPoint = - insertPoint - 1;
-            // FIXME !!! Nekaj je narobe pri razsirjanju tabele
-            System.arraycopy(array, insertPoint, array, insertPoint + 1, size - insertPoint);
+            array = Arrays.copyOf(array, ++size);
+            System.arraycopy(array, insertPoint, array, insertPoint + 1, size - 1 - insertPoint);
             array[insertPoint] = ele;
-            size++;
             return true;
         } else {
             return false;
@@ -44,9 +40,12 @@ public class ArraySet<E> implements Set<E> {
     public boolean remove(Object o) throws ClassCastException, NullPointerException {
         if (o == null) throw new NullPointerException();
         int eleIndex = Arrays.binarySearch(array, o);
-        if (eleIndex >= 0) {
+        if (eleIndex == 0) {
+            array = Arrays.copyOfRange(array, 1, size--);
+            return true;
+        } else if (eleIndex > 0) {
             array[eleIndex] = null;
-            array = Arrays.copyOf(array, --size);
+            array = copyOf(array, --size);
             return true;
         } else {
             return false;
@@ -56,21 +55,14 @@ public class ArraySet<E> implements Set<E> {
     @Override
     public boolean containsAll(Collection<?> collection) throws NullPointerException {
         if (collection == null) throw new NullPointerException();
-        for (Object o : collection) if (!contains(o)) return false;
-        return true;
+        return collection.stream().filter(e -> !contains(e)).count() == 0;
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> collection) throws NullPointerException, IllegalStateException, IllegalArgumentException {
+    public boolean addAll(Collection<? extends E> collection) throws NullPointerException, IllegalStateException {
         if (collection == null) throw new NullPointerException();
         collection.forEach(ele -> {
-            try {
-                if (!add(ele)) {
-                    throw new IllegalStateException();
-                }
-            } catch (NullPointerException e) {
-                throw new IllegalArgumentException(e.getMessage());
-            }
+            if (!add(ele)) throw new IllegalStateException();
         });
         return true;
     }
@@ -78,7 +70,12 @@ public class ArraySet<E> implements Set<E> {
     @Override
     public boolean retainAll(Collection<?> collection) throws NullPointerException, ClassCastException {
         if (collection == null) throw new NullPointerException();
-        collection.stream().filter(this::contains).forEach(this::remove);
+        boolean fix = false;
+        for (int i = 0; i < size; i++) if (!collection.contains(array[i])) {
+            fix = true;
+            array[i] = null;
+        }
+        if (fix) array = copyOf(array, -1);
         return true;
     }
 
@@ -95,6 +92,7 @@ public class ArraySet<E> implements Set<E> {
         size = 0;
     }
 
+    @SuppressWarnings("unchecked")
     public E get(int position) {
         return (E) array[position];
     }
@@ -110,7 +108,8 @@ public class ArraySet<E> implements Set<E> {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(Object o) throws NullPointerException, ClassCastException {
+        if (o == null) throw new NullPointerException();
         return Arrays.binarySearch(array, o) >= 0;
     }
 
@@ -133,6 +132,7 @@ public class ArraySet<E> implements Set<E> {
                 }
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public E next() {
                 try {
@@ -146,9 +146,10 @@ public class ArraySet<E> implements Set<E> {
 
     @Override
     public Object[] toArray() {
-        return isEmpty() ? null : Arrays.copyOf(array, size);
+        return !isEmpty() ? Arrays.copyOf(array, size) : new Object[0];
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(T[] t) throws NullPointerException, ArrayStoreException {
         if (t == null) throw new NullPointerException();
@@ -161,6 +162,30 @@ public class ArraySet<E> implements Set<E> {
             } catch (ClassCastException e) {
                 throw new ArrayStoreException(e.getMessage());
             }
+        }
+    }
+    /**
+     * Metoda, ki ustvari novo tabelo z novo velikostjo <code>newLength</code>. Metoda preskoci vese <code>null</code> objekte. Ce ima stara tabela vec elementov, kot pa je verednost <code>newLength</code>, potem se prekopirajo samo elementi od indeksa <code>0</code> pa do <code>newLength - 1 + numberOfSkippedNullElements</code>. V primeru ko je <code>newLength > array.length</code> se uposteva <code>array.length</code>.
+     * Če <code>newLength == -1</code> potem <code>array</code> vebuje null vrednost, ki jih bi radi izbrisali iz tabele in ohranili ne <code>null</code> versnosti.
+     *
+     * @param array Tabela s katere prepisujemo elemente
+     * @param newLength Velikost nove tabele
+     * @return Nova tabela +, ki ne vesebuje <code>null</code> elementov
+     */
+    private Object[] copyOf(Object[] array, int newLength) {
+        if (newLength == -1) {
+            LinkedList<Object> list = new LinkedList<>();
+            for (Object o : array) {
+                if (o != null) list.add(o);
+            }
+            return list.toArray();
+        } else {
+            Object[] nArray = new Object[newLength];
+            for (int i = 0, j = 0; j < newLength && i < array.length && j < array.length; j++, i++) {
+                while (array[i] == null) i++;
+                nArray[j] = array[i];
+            }
+            return nArray;
         }
     }
 }
