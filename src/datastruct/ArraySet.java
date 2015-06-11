@@ -188,4 +188,15 @@ public class ArraySet<E> implements Set<E> {
             return nArray;
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder().append('[');
+        Iterator<E> it = iterator();
+        while (it.hasNext()) {
+            builder.append(it.next());
+            if (it.hasNext()) builder.append(',').append(' ');
+        }
+        return builder.append(']').toString();
+    }
 }

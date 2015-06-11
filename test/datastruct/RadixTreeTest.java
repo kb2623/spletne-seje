@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
+@SuppressWarnings("SuspiciousMethodCalls")
 public class RadixTreeTest {
 
 	private RadixTree<Integer> insRadixTree;
@@ -75,6 +76,17 @@ public class RadixTreeTest {
 			this.insRadixTree.add(42, "rubicon");
 			assert false;
 		} catch(DuplicateKeyException e) {}
+	}
+
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testPrintTree() {
+		testAdd();
+		insRadixTree.printTree();
+		setUp(); testAddMoreOK();
+		insRadixTree.printTree();
+		setUp(); testAddMoreOK(); testAdd();
+		insRadixTree.printTree();
 	}
 
 	@Test
@@ -352,7 +364,7 @@ public class RadixTreeTest {
 	public void testCantDeleteSomethingThatWasAlreadyDeletedObject() {
 		tree.add("apple", "apple");
 		assertEquals("apple", tree.remove((Object) "apple"));
-		assertNull(tree.remove("apple"));
+		assertNull(tree.remove((Object) "apple"));
 	}
 
 	@Test

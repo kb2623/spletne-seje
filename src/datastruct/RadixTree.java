@@ -2,6 +2,7 @@ package datastruct;
 
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	class RadixNode {
@@ -265,6 +266,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		return count();
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return this.rootNode.children.isEmpty();
 	}
