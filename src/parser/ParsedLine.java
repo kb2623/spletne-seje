@@ -1,21 +1,22 @@
 package parser;
 
-import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.function.Consumer;
 
 import fields.Field;
 import fields.ncsa.RequestLine;
 import fields.w3c.UriStem;
 
-public class ParsedLine {
+public class ParsedLine implements Iterable<Field> {
 
-	private EnumMap<FieldType, Field> map;
+	private Field[] array;
 	/**
 	 * Konstruktor.
 	 *
-	 * @param map Seznam, ki vsebuje podatke o obdelani vrstici.
+	 * @param array Seznam, ki vsebuje podatke o obdelani vrstici.
 	 */
-	public ParsedLine(EnumMap<FieldType, Field> map) {
-		this.map = map;
+	public ParsedLine(Field[] array) {
+		this.array = array;
 	}
 	/**
 	 * Metoda, ki ustvari kljuc za vrstico v log datoteki.
@@ -24,16 +25,8 @@ public class ParsedLine {
 	 */
 	public String getKey() {
 		StringBuilder builder = new StringBuilder();
-		map.values().stream().filter((f) -> (f.getKey() != null)).forEach((f) -> builder.append(f.getKey()));
+		for (Field f : array) if (f.getKey() != null) builder.append(f.getKey());
 		return builder.toString();
-	}
-	/**
-	 * Getter za seznam, ki vsebuje obdelano vrstico.
-	 *
-	 * @return Seznam, ki predstavlja obdelano vrstico.
-	 */
-	public EnumMap<FieldType, Field> getMap() {
-		return map;
 	}
 	/**
 	 * Metoda, ki prevrja ali je zahtevo opravil uporabnik ali spletni robot.
@@ -64,13 +57,11 @@ public class ParsedLine {
 	 * @return Koncnica zahtevanega resursa.
 	 */
 	private String getExtension() {
-		Field f = map.get(FieldType.RequestLine);
-		if(f != null) {
-			return ((RequestLine) f).getExtension();
-		} else {
-			f = map.get(FieldType.UriStem);
-			return ((UriStem) f).getExtension();
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] instanceof RequestLine) return ((RequestLine) array[i]).getExtension();
+			if (array[i] instanceof UriStem) return ((UriStem) array[i]).getExtension();
 		}
+		return null;
 	}
 	/**
 	 * Testna metoda za testiranje pravilnosti shranjevanja podatkov
@@ -80,8 +71,38 @@ public class ParsedLine {
 	@Deprecated
 	public String izpis() {
 		StringBuilder builder = new StringBuilder();
-		map.values().stream().forEach(f -> builder.append(f.izpis()).append(' ').append("||").append(' '));
+		this.forEach(f -> builder.append(f.izpis()).append(' ').append("||").append(' '));
 		return builder.toString();
 	}
 
+	@Override
+	public Iterator<Field> iterator() {
+		return new Iterator<Field>() {
+
+			private int i;
+
+			{
+				i = 0;
+			}
+
+			@Override
+			public boolean hasNext() {
+				return i < array.length;
+			}
+
+			@Override
+			public Field next() {
+				try {
+					return array[i++];
+				} catch (ArrayIndexOutOfBoundsException e) {
+					return null;
+				}
+			}
+		};
+	}
+
+	@Override
+	public void forEach(Consumer<? super Field> consumer) {
+		for (int i = 0; i < array.length; i++) consumer.accept(array[i]);
+	}
 }

@@ -108,68 +108,57 @@ public class NCSAParser extends AbsParser {
 			this.fieldType = fields;
 		}
 	}
-	/**
-	 * Metoda, ki obdela vrstico v log datoteki.
-	 *
-	 * @return Obdelano vrstico v log datoteki
-	 * @throws ParseException  Napaka pri obdelavi vrstice v log datoteki
-	 * @throws NullPointerException Ko nimamo nstavljenih tipov polji v log datoteki
-	 * @throws IOException Napka pri branju datoteke
-	 */
+
 	@Override
 	public ParsedLine parseLine() throws ParseException, NullPointerException, IOException {
 		if (fieldType == null) throw new NullPointerException("Tipi polji niso specificirani!!!");
-		EnumMap<FieldType, Field> data = new EnumMap<>(FieldType.class);
+		Field[] lineData = new Field[fieldType.size()];
 		List<String> tokens = parse(super.getLine());
 		if(tokens == null) return null;
 		if(tokens.size() != fieldType.size()) throw new ParseException("Bad field types", super.getPos());
 		for(int i = 0; i < fieldType.size(); i++) {
 			switch(fieldType.get(i)) {
 			case RemoteHost:
-				data.put(FieldType.RemoteHost ,new RemoteHost(tokens.get(i)));
+				lineData[i] = new RemoteHost(tokens.get(i));
 				break;
 			case Referer:
-				data.put(FieldType.Referer ,new Referer(tokens.get(i)));
+				lineData[i] = new Referer(tokens.get(i));
 				break;
 			case RemoteLogname:
-				data.put(FieldType.RemoteLogname ,new RemoteLogname(tokens.get(i)));
+				lineData[i] = new RemoteLogname(tokens.get(i));
 				break;
 			case RemoteUser:
-				data.put(FieldType.RemoteUser ,new RemoteUser(tokens.get(i)));
+				lineData[i] = new RemoteUser(tokens.get(i));
 				break;
 			case RequestLine:
 				String[] tab = tokens.get(i).split(" ");
-				data.put(FieldType.RequestLine ,new RequestLine(tab[0], tab[1], tab[2]));
+				lineData[i] = new RequestLine(tab[0], tab[1], tab[2]);
 				break;
 			case SizeOfResponse:
-				data.put(FieldType.SizeOfResponse ,new SizeOfResponse(tokens.get(i)));
+				lineData[i] = new SizeOfResponse(tokens.get(i));
 				break;
 			case StatusCode:
-				data.put(FieldType.StatusCode ,new StatusCode(tokens.get(i)));
+				lineData[i] = new StatusCode(tokens.get(i));
 				break;
 			case DateTime:
-				data.put(FieldType.DateTime ,new DateTime(tokens.get(i), formatter));
+				lineData[i] = new DateTime(tokens.get(i), formatter);
 				break;
 			case UserAgent:
-				data.put(FieldType.UserAgent ,new UserAgent(tokens.get(i), UserAgent.Type.NCSA));
+				lineData[i] = new UserAgent(tokens.get(i), UserAgent.Type.NCSA);
 				break;
 			case Cookie:
-				data.put(FieldType.Cookie ,new Cookie(tokens.get(i), Cookie.Type.NCSA));
+				lineData[i] = new Cookie(tokens.get(i), Cookie.Type.NCSA);
 				break;
 			case TimeTaken:
-				data.put(FieldType.TimeTaken ,new TimeTaken(tokens.get(i), true));
+				lineData[i] = new TimeTaken(tokens.get(i), true);
 				break;
 			default:
 				throw new ParseException("Unknown field type", super.getPos());
 			}
 		}
-		return new ParsedLine(data);
+		return new ParsedLine(lineData);
 	}
-	/**
-     * Metoda, ki ustvari iterator
-     *
-     * @return Iterator za sprehod po datoteki
-     */
+	
     @Override
     public Iterator<ParsedLine> iterator() {
         try {

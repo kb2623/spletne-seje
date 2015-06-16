@@ -67,7 +67,7 @@ public class TestParser {
 			parser.setFieldType(FieldType.createCommonLogFormat());
 			//Pridobi podatke
 			for (ParsedLine list : parser) {
-				list.getMap().values().stream().forEach(Assert::assertNotNull);
+				list.forEach(Assert::assertNotNull);
 			}
 			//Zapri datoteko
 			parser.closeFile();
@@ -86,7 +86,7 @@ public class TestParser {
 			//Nastavi tipe podatkov
 			parser.setFieldType(FieldType.createCommonLogFormat());
 			//Pridobi podatke
-			parser.forEach(line -> line.getMap().values().stream().forEach(Assert::assertNotNull));
+			parser.forEach(line -> line.forEach(Assert::assertNotNull));
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
@@ -142,7 +142,7 @@ public class TestParser {
 			//Nastavi tipe podatkov
 			parser.setFieldType(FieldType.createCommonLogFormat());
 			//Pridobi podatke
-			parser.forEach(line -> line.getMap().values().stream().forEach(Assert::assertNotNull));
+			parser.forEach(line -> line.forEach(Assert::assertNotNull));
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
@@ -163,7 +163,7 @@ public class TestParser {
 			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 			//Pridobi podatke
 			for (ParsedLine list : parser) {
-				list.getMap().values().stream().forEach(Assert::assertNotNull);
+				list.forEach(Assert::assertNotNull);
 			}
 			//Zapri datoteko
 			parser.closeFile();
@@ -182,7 +182,7 @@ public class TestParser {
 			//Nastavi tipe podatkov
 			parser.setFieldType(FieldType.createCommonLogFormat());
 			//Pridobi podatke
-			parser.forEach(line -> line.getMap().values().stream().forEach(Assert::assertNotNull));
+			parser.forEach(line -> line.forEach(Assert::assertNotNull));
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
@@ -202,7 +202,7 @@ public class TestParser {
 			parser.setFieldType(FieldType.createCombinedLogFormat(false));
 			//Pridobi podatke
 			for (ParsedLine list : parser) {
-				list.getMap().values().stream().forEach(Assert::assertNotNull);
+				list.forEach(Assert::assertNotNull);
 			}
 			System.out.println();
 			//Zapri datoteko
@@ -226,7 +226,7 @@ public class TestParser {
 			parser.setFieldType(listType);
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
-			list.getMap().values().stream().forEach(
+			list.forEach(
 					(f) -> {
 						if (f == null) {
 							assert false;
@@ -295,24 +295,16 @@ public class TestParser {
 			parserW3C.openFile(new StringReader(testNiz));
 			//pridobi podatke
 			ParsedLine list = parserW3C.parseLine();
-			assertEquals(1, list.getMap().size());
-			assertEquals(list.getMap().get(FieldType.MetaData).getClass(), MetaData.class);
+			assertEquals(list.get(0).getClass(), MetaData.class);
 			list = parserW3C.parseLine();
-			assertEquals(1, list.getMap().size());
-			assertEquals(list.getMap().get(FieldType.MetaData).getClass(), MetaData.class);
+			assertEquals(list.get(0).getClass(), MetaData.class);
 			list = parserW3C.parseLine();
-			assertEquals(1, list.getMap().size());
-			assertEquals(list.getMap().get(FieldType.MetaData).getClass(), MetaData.class);
+			assertEquals(list.get(0).getClass(), MetaData.class);
 			list = parserW3C.parseLine();
-			assertEquals(1, list.getMap().size());
-			assertEquals(list.getMap().get(FieldType.MetaData).getClass(), MetaData.class);
+			assertEquals(list.get(0).getClass(), MetaData.class);
 			ParsedLine list1 = parserW3C.parseLine();
-			assertEquals(22, list1.getMap().values().size());
-			list1.getMap().values().stream().map((f) -> {
-				assertNotNull(f);
-				return f;
-			}).forEach((f) -> System.out.print(f.izpis()+" || "));
-			System.out.println();
+			list1.forEach(Assert::assertNotNull);
+			System.out.println(list.izpis());
 			//Zapri datoteko
 			parserW3C.closeFile();
 		} catch(ParseException | IOException e) {
@@ -332,18 +324,11 @@ public class TestParser {
 			//Odpri datoteko
 			parserW3C.openFile(new StringReader(testNiz));
 			//pridobi podatke
-			ParsedLine list;
-			assertEquals(1, parserW3C.parseLine().getMap().size());
-			assertEquals(1, parserW3C.parseLine().getMap().size());
-			assertEquals(1, parserW3C.parseLine().getMap().size());
-			assertEquals(1, parserW3C.parseLine().getMap().size());
-			list = parserW3C.parseLine();
-			assertEquals(22, list.getMap().values().size());
-			list.getMap().values().stream().map((f) -> {
-				assertNotNull(f);
-				return f;
-			}).forEach((f) -> System.out.print(f.izpis()+" || "));
-			System.out.println();
+			assertEquals(MetaData.class, parserW3C.parseLine().get(0).getClass());
+			assertEquals(MetaData.class, parserW3C.parseLine().get(0).getClass());
+			assertEquals(MetaData.class, parserW3C.parseLine().get(0).getClass());
+			assertEquals(MetaData.class, parserW3C.parseLine().get(0).getClass());
+			parserW3C.parseLine().forEach(Assert::assertNotNull);
 			//Zapri datoteko
 			parserW3C.closeFile();
 		} catch(ParseException | IOException e) {

@@ -68,97 +68,90 @@ public class IISParser extends AbsParser {
 		}
 		return tokens;
 	}
-    /**
-     * Metoda, ki ustvari objek <code>ParsedLine</code>. Metoda razclenjeni vrstici doda meta podatke.
-	 *
-     * @return Seznam vrednosti vrstice log datoteke
-     * @throws ParseException Ko pridemo do polja, ki ga ne poznamo
-	 * @throws NullPointerException Ko nimamo nstavljenih tipov polji v log datoteki in ko nimamo specificiranega formata ure in datuma
-	 * @throws IOException Ko pride do napake pri branju datoteke
-     */
+
 	@Override
 	public ParsedLine parseLine() throws ParseException, IOException, NullPointerException {
 		if (fieldType == null) throw new NullPointerException("Tipi polji niso specificirani!!!");
-		EnumMap<FieldType, Field> data = new EnumMap<>(FieldType.class);
+		Field[] lineData = new Field[fieldType.size()];
 		List<String> tokens = parse(super.getLine());
 		if (tokens == null) return null;
 		if(tokens.size() != fieldType.size()) throw new ParseException("Bad field types", super.getPos());
 		for (int i = 0; i < fieldType.size(); i++) {
 			switch (fieldType.get(i)) {
 			case Referer:
-				data.put(FieldType.Referer, new Referer(tokens.get(i)));
+				lineData[i] = new Referer(tokens.get(i));
 				break;
 			case Cookie:
-				data.put(FieldType.Cookie, new Cookie(tokens.get(i), Cookie.Type.W3C));
+				lineData[i] = new Cookie(tokens.get(i), Cookie.Type.W3C);
 				break;
 			case UserAgent:
-				data.put(FieldType.UserAgent, new UserAgent(tokens.get(i), UserAgent.Type.W3C));
+				lineData[i] = new UserAgent(tokens.get(i), UserAgent.Type.W3C);
 				break;
 			case Method:
-				data.put(FieldType.Method, Method.setMethod(tokens.get(i)));
+				lineData[i] = Method.setMethod(tokens.get(i));
 				break;
 			case Date:
-				data.put(FieldType.Date, new fields.w3c.Date(tokens.get(i), dateFormat));
+				lineData[i] = new fields.w3c.Date(tokens.get(i), dateFormat);
 				break;
 			case Time:
-				data.put(FieldType.Time, new Time(tokens.get(i), timeFormat));
+				lineData[i] = new Time(tokens.get(i), timeFormat);
 				break;
 			case SiteName:
-				data.put(FieldType.SiteName, new SiteName(tokens.get(i)));
+				lineData[i] = new SiteName(tokens.get(i));
 				break;
 			case ComputerName:
-				data.put(FieldType.ComputerName, new ComputerName(tokens.get(i)));
+				lineData[i] = new ComputerName(tokens.get(i));
 				break;
 			case ServerIP:
-				data.put(FieldType.ServerIP, new Address(tokens.get(i), true));
+				lineData[i] = new Address(tokens.get(i), true);
 				break;
 			case ClientIP:
-				data.put(FieldType.ClientIP, new Address(tokens.get(i), false));
+				lineData[i] = new Address(tokens.get(i), false);
 				break;
 			case UriStem:
-				data.put(FieldType.UriStem, new UriStem(tokens.get(i)));
+				lineData[i] = new UriStem(tokens.get(i));
 				break;
 			case UriQuery:
-				data.put(FieldType.UriQuery, new UriQuery(tokens.get(i)));
+				lineData[i] = new UriQuery(tokens.get(i));
 				break;
 			case ServerPort:
-				data.put(FieldType.ServerPort, new Port(tokens.get(i), true));
+				lineData[i] = new Port(tokens.get(i), true);
 				break;
 			case ClientPort:
-				data.put(FieldType.ClientPort, new Port(tokens.get(i), false));
+				lineData[i] = new Port(tokens.get(i), false);
 				break;
 			case RemoteUser:
-				data.put(FieldType.RemoteUser, new RemoteUser(tokens.get(i)));
+				lineData[i] = new RemoteUser(tokens.get(i));
 				break;
 			case ProtocolVersion:
-				data.put(FieldType.ProtocolVersion, new Protocol(tokens.get(i)));
+				lineData[i] = new Protocol(tokens.get(i));
 				break;
 			case Host:
-				data.put(FieldType.Host, new Host(tokens.get(i)));
+				lineData[i] = new Host(tokens.get(i));
 				break;
 			case StatusCode:
-				data.put(FieldType.StatusCode, new StatusCode(tokens.get(i)));
+				lineData[i] = new StatusCode(tokens.get(i));
 				break;
 			case SubStatus:
-				data.put(FieldType.SubStatus, new SubStatus(tokens.get(i)));
+				lineData[i] = new SubStatus(tokens.get(i));
 				break;
 			case Win32Status:
-				data.put(FieldType.Win32Status, new Win32Status(tokens.get(i)));
+				lineData[i] = new Win32Status(tokens.get(i));
 				break;
 			case SizeOfRequest:
-				data.put(FieldType.SizeOfRequest, new SizeOfRequest(tokens.get(i)));
+				lineData[i] = new SizeOfRequest(tokens.get(i));
 				break;
 			case SizeOfResponse:
-				data.put(FieldType.SizeOfResponse, new SizeOfResponse(tokens.get(i)));
+				lineData[i] = new SizeOfResponse(tokens.get(i));
 				break;
 			case TimeTaken:
-				data.put(FieldType.TimeTaken, new TimeTaken(tokens.get(i), false));
+				lineData[i] = new TimeTaken(tokens.get(i), false);
 				break;
 			default:
 				throw new ParseException("Unknown field", super.getPos());
 			}
 		}
-		return new ParsedLine(data);
+		return new ParsedLine(lineData);
 	}
     /**
 	 * Nastavljanje formata za parsanje datuma.
@@ -194,11 +187,7 @@ public class IISParser extends AbsParser {
 			this.fieldType = fields;
 		}
 	}
-	/**
-     * Metoda, ki ustvari iterator
-     *
-     * @return Iterator za sprehod po datoteki
-     */
+
     @Override
     public Iterator<ParsedLine> iterator() {
         try {
