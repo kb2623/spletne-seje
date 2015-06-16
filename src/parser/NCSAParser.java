@@ -158,7 +158,7 @@ public class NCSAParser extends AbsParser {
 		}
 		return new ParsedLine(lineData);
 	}
-	
+
     @Override
     public Iterator<ParsedLine> iterator() {
         try {

@@ -1,5 +1,6 @@
 package parser;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
@@ -11,12 +12,38 @@ public class ParsedLine implements Iterable<Field> {
 
 	private Field[] array;
 	/**
-	 * Konstruktor.
+	 * Konstruktor, ki kot parameter prejeme ze ustvarjeno tabelo. V primeru, ko uporabimo ta konstruktor je metoda add neuporabna, razen v primeru ko obstajajo v tabeli <code>null</code> vrednosti.
 	 *
 	 * @param array Seznam, ki vsebuje podatke o obdelani vrstici.
 	 */
 	public ParsedLine(Field[] array) {
 		this.array = array;
+	}
+	/**
+	 * Konstruktor, ki ustvari tabelo in jo napolne z <code>null</code> vrednostmi.
+	 *
+	 * @param size
+	 */
+	public ParsedLine(int size) {
+		array = new Field[size];
+		Arrays.fill(array, null);
+	}
+	/**
+	 * Metoda za dodajanje. Metoda doda nov element na prvo mesto tabeli, kjer se nahaja <code>null</code> vrednost
+	 *
+	 * @param field Element za vnos v tabelo
+	 * @return <code>true</code>, ko je bil nov element dodan v tabelo, <code>false</code>, ko elemeta nismo mogli dodati
+	 * @throws NullPointerException Parameter <code>field</code> je <code>null</code> vrednost
+	 */
+	public boolean add(Field field) throws NullPointerException{
+		if (field == null) throw new NullPointerException();
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] == null) {
+				array[i] = field;
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Metoda, ki ustvari kljuc za vrstico v log datoteki.
@@ -56,7 +83,7 @@ public class ParsedLine implements Iterable<Field> {
 	 *
 	 * @return Koncnica zahtevanega resursa.
 	 */
-	private String getExtension() {
+	public String getExtension() {
 		for (int i = 0; i < array.length; i++) {
 			if (array[i] instanceof RequestLine) return ((RequestLine) array[i]).getExtension();
 			if (array[i] instanceof UriStem) return ((UriStem) array[i]).getExtension();
@@ -73,6 +100,14 @@ public class ParsedLine implements Iterable<Field> {
 		StringBuilder builder = new StringBuilder();
 		this.forEach(f -> builder.append(f.izpis()).append(' ').append("||").append(' '));
 		return builder.toString();
+	}
+
+	public Field get(int i) {
+		try {
+			return array[i];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 
 	@Override

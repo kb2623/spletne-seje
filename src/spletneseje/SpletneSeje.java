@@ -117,7 +117,7 @@ public class SpletneSeje {
 		//RadixTree<ParsedLine> data = new RadixTree<>();
 		ArrayList<String> list = new ArrayList<>();
 		for(ParsedLine tmp = logParser.parseLine(); tmp != null; tmp = logParser.parseLine()) {
-			String sTmp = ((RequestLine) tmp.getMap().get(FieldType.RequestLine)).getExtension();
+			String sTmp = tmp.getExtension();
 			int index = list.indexOf(sTmp);
 			if(index == -1) {
 				System.out.println(logParser.getPos()+" "+sTmp);
