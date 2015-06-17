@@ -7,6 +7,7 @@ import spletneseje.fields.FieldType;
 import spletneseje.fields.ncsa.RequestLine;
 import spletneseje.parser.datastruct.ParsedLine;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
@@ -186,7 +187,7 @@ public class NCSAParserTest {
         try (NCSAParser parser1 = new NCSAParser(pathNCSACombined)) {
             parser1.setFieldType(FieldType.createCombinedLogFormat(false));
             parser1.forEach(Assert::assertNotNull);
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             assert false;
         }
     }
@@ -197,8 +198,6 @@ public class NCSAParserTest {
         try (NCSAParser parser1 = new NCSAParser(new StringReader(testNiz))) {
             parser1.setFieldType(FieldType.createCombinedLogFormat(true));
             parser1.forEach(Assert::assertNotNull);
-        } catch (IOException e) {
-            assert false;
         }
     }
 

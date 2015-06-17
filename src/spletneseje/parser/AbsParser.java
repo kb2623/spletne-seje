@@ -147,8 +147,10 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
     public abstract Iterator<ParsedLine> iterator();
 
 	@Override
-	public void close() throws IOException {
-		file.close();
+	public void close() {
+		try {
+			file.close();
+		} catch (IOException ignore) {}
 		pos = -1;
 	}
 }
