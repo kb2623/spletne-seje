@@ -221,10 +221,8 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			}
 
 			@Override
-			public V next() {
-				if(!this.hasNext()) {
-					return null;
-				}
+			public V next() throws NoSuchElementException {
+				if(!this.hasNext()) throw new NoSuchElementException();
 				V tmp = this.next.data;
 				if(!this.next.children.isEmpty()) {
 					this.stackIt.push(this.next.children.iterator());

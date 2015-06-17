@@ -10,17 +10,15 @@ import org.kohsuke.args4j.CmdLineException;
 import org.tmatesoft.sqljet.core.SqlJetException;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
-import datastruct.RadixTree;
-import fields.ncsa.RequestLine;
-import parser.ParsedLine;
-import parser.AbsParser;
-import parser.ArgsParser;
-import parser.FieldType;
-import parser.IISParser;
-import parser.NCSAParser;
-import parser.W3CParser;
+import spletneseje.parser.datastruct.ParsedLine;
+import spletneseje.parser.AbsParser;
+import spletneseje.parser.ArgsParser;
+import spletneseje.fields.FieldType;
+import spletneseje.parser.IISParser;
+import spletneseje.parser.NCSAParser;
+import spletneseje.parser.W3CParser;
 
-import analyzer.LogAnalyzer;
+import spletneseje.analyzer.LogAnalyzer;
 
 public class SpletneSeje {
 

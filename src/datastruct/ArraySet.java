@@ -117,11 +117,7 @@ public class ArraySet<E> implements Set<E> {
     public Iterator<E> iterator() {
         return new Iterator<E>() {
 
-            private int i;
-
-            {
-                i = 0;
-            }
+            private int i = 0;
 
             @Override
             public boolean hasNext() {
@@ -134,11 +130,11 @@ public class ArraySet<E> implements Set<E> {
 
             @SuppressWarnings("unchecked")
             @Override
-            public E next() {
+            public E next() throws NoSuchElementException {
                 try {
                     return (E) array[i++];
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    return null;
+                    throw new NoSuchElementException();
                 }
             }
         };
