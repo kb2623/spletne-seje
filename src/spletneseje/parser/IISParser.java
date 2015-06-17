@@ -4,13 +4,11 @@ import spletneseje.fields.*;
 import spletneseje.fields.w3c.*;
 import spletneseje.parser.datastruct.ParsedLine;
 
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-@SuppressWarnings("all")
+@SuppressWarnings("deprecation")
 public class IISParser extends AbsParser {
 
 	private DateTimeFormatter timeFormat;
@@ -18,19 +16,58 @@ public class IISParser extends AbsParser {
 	private List<FieldType> fieldType;
 	/**
 	 * Konstruktor ki uporabi prevzeti knstriktor razreda {@link ParserAbs}.
-	 * Dodatne prevzete nastavitve:<p>
-	 * fieldType = <code>null</code><p>
-	 * format datuma = <code>dd/MM/yyyy</code><p>
-	 * format časa = <code>HH:mm:ss</code><p>
-	 * locale = Sistemsko prevzet
 	 *
 	 * @see parser.ParserAbs#ParserAbs()
+	 * @see IISParser#setDefaultFields()
 	 */
 	public IISParser() {
 		super();
+		setDefaultFields();
+	}
+	/**
+	 * Konstruktor ki tudi odpre datoteko
+	 *
+	 * @param path
+	 * @throws FileNotFoundException
+	 * @see AbsParser#AbsParser(String)
+	 * @see IISParser#setDefaultFields()
+	 */
+	public IISParser(String path) throws FileNotFoundException {
+		super(path);
+		setDefaultFields();
+	}
+	/**
+	 *
+	 * @param input
+	 * @see AbsParser#AbsParser(StringReader)
+	 * @see IISParser#setDefaultFields()
+	 */
+	@Deprecated
+	public IISParser(StringReader input) {
+		super(input);
+		setDefaultFields();
+	}
+	/**
+	 *
+	 * @param reader
+	 * @see AbsParser#AbsParser(BufferedReader)
+	 * @see IISParser#setDefaultFields()
+	 */
+	public IISParser(BufferedReader reader) {
+		super(reader);
+		setDefaultFields();
+	}
+	/**
+	 * Metoda nastavi prevzete vrednosti poljem razreda:
+	 * <p><code>fieldType = null</code></p>
+	 * <p><code>dateFormat = dd/MM/yyyy</code></p>
+	 * <p><code>timeFormat = HH:mm:ss</code></p>
+	 * <p><code>locale = Locale.US</code></p>
+	 */
+	private void setDefaultFields() {
 		fieldType = null;
-		this.dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy").withLocale(Locale.US);
-		this.timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.US);
+		dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy").withLocale(Locale.US);
+		timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.US);
 	}
 	/**
 	 * Metoda, ki zarcleni polja v vrstici log datoteke.

@@ -1,7 +1,6 @@
 package spletneseje.parser;
 
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -14,7 +13,7 @@ import spletneseje.parser.datastruct.ParsedLine;
  * Parser za formate: Extended Log Format
  * @author klemen
  */
-
+@SuppressWarnings("deprecation")
 public class W3CParser extends AbsParser {
 
 	private DateTimeFormatter timeFormat;
@@ -22,19 +21,57 @@ public class W3CParser extends AbsParser {
 	private List<FieldType> fieldType;
 	/**
 	 * Konstruktor ki uporabi prevzeti oknstriktor razreda {@link ParserAbs}.
-	 * Dodatne prevzete nastavitve:<p>
-	 * fieldType = <code>null</code><p>
-	 * format datuma = <code>yyyy-MM-dd</code><p>
-	 * format časa = <code>HH:mm:ss</code><p>
-	 * locale = Sistemsko prevzet
 	 *
-	 * @see parser.ParserAbs#ParserAbs()
+	 * @see AbsParser#AbsParser()
+	 * @see W3CParser#setDefaultFields()
 	 */
 	public W3CParser() {
 		super();
+		setDefaultFields();
+	}
+	/**
+	 *
+	 * @param path Pot datoteko predstavljena z nizom
+	 * @throws FileNotFoundException Datoteko ne obstaja
+	 * @see AbsParser#AbsParser(String)
+	 * @see W3CParser#setDefaultFields()
+	 */
+	public W3CParser(String path) throws FileNotFoundException {
+		super(path);
+		setDefaultFields();
+	}
+	/**
+	 *
+	 * @param input
+	 * @see AbsParser#AbsParser(StringReader)
+	 * @see W3CParser#setDefaultFields()
+	 */
+	@Deprecated
+	public W3CParser(StringReader input) {
+		super(input);
+		setDefaultFields();
+	}
+	/**
+	 *
+	 * @param reader
+	 * @see AbsParser#AbsParser(BufferedReader)
+	 * @see W3CParser#setDefaultFields()
+	 */
+	public W3CParser(BufferedReader reader) {
+		super(reader);
+		setDefaultFields();
+	}
+	/**
+	 * Metoda nastavi prevzete vrednosti poljem razreda:
+	 * <p><code>fieldType = null</code></p>
+	 * <p><code>dateFormat = dd/MM/yyyy</code></p>
+	 * <p><code>timeFormat = HH:mm:ss</code></p>
+	 * <p><code>locale = Locale.US</code></p>
+	 */
+	private void setDefaultFields() {
 		fieldType = null;
-		this.dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.US);
-		this.timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.US);
+		dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.US);
+		timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.US);
 	}
 	/**
 	 * Nastavljanje formata za parsanje datuma

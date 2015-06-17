@@ -1,7 +1,6 @@
 package spletneseje.parser;
 
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -19,18 +18,57 @@ public class NCSAParser extends AbsParser {
 	private DateTimeFormatter formatter;
 	private List<FieldType> fieldType;
 	/**
-	 * Konstruktor ki uporabi prevzeti oknstriktor razreda {@link ParserAbs}.
-	 * Dodatne prevzete nastavitve:<p>
-	 * fieldType = <code>null</code><p>
-	 * format datuma = <code>dd/MMM/yyyy:HH:mm:ss Z</code><p>
-	 * locale = Sistemsko prevzet
+	 * Konstruktor ki nastavi polja na prevzete vrednosti
 	 *
-	 * @see parser.ParserAbs#ParserAbs()
+	 * @see ParserAbs#ParserAbs()
+	 * @see NCSAParser#setDefaultFields()
 	 */
 	public NCSAParser() {
 		super();
+		setDefaultFields();
+	}
+	/**
+	 * Konstruktor ki odpre tudi datoteko
+	 *
+	 * @param path Pot do datoteke predstavljena z nizom
+	 * @throws FileNotFoundException Datoteka ne obstaja
+	 * @see AbsParser#AbsParser(String)
+	 * @see NCSAParser#setDefaultFields()
+	 */
+	public NCSAParser(String path) throws FileNotFoundException {
+		super(path);
+		setDefaultFields();
+	}
+	/**
+	 *
+	 * @param input
+	 * @see AbsParser#AbsParser(StringReader)
+	 * @see IISParser#setDefaultFields()
+	 */
+	@Deprecated
+	public NCSAParser(StringReader input) {
+		super(input);
+		setDefaultFields();
+	}
+	/**
+	 *
+	 * @param reader
+	 * @see AbsParser#AbsParser(BufferedReader)
+	 * @see IISParser#setDefaultFields()
+	 */
+	public NCSAParser(BufferedReader reader) {
+		super(reader);
+		setDefaultFields();
+	}
+	/**
+	 * Metoda ki nastavi polja na prevzete vrednosti.
+	 * <p><code>fieldType = null</code></p>
+	 * <p><code>formatter = dd/MMM/yyyy:HH:mm:ss Z</code></p>
+	 * <p><code>locale = Locale.US</code></p>
+	 */
+	private void setDefaultFields() {
 		fieldType = null;
-		this.formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
+		formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
 	}
 	/**
 	 * Nastavljanje formata za parsanje datuma.
@@ -116,7 +154,6 @@ public class NCSAParser extends AbsParser {
 		if (fieldType == null) throw new NullPointerException("Tipi polji niso specificirani!!!");
 		Field[] lineData = new Field[fieldType.size()];
 		List<String> tokens = parse(super.getLine());
-		if(tokens == null) return null;
 		if(tokens.size() != fieldType.size()) throw new ParseException("Bad field types", super.getPos());
 		for(int i = 0; i < fieldType.size(); i++) {
 			switch(fieldType.get(i)) {

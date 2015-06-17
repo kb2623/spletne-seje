@@ -54,6 +54,16 @@ public class NCSAParserTest {
     }
 
     @Test
+    public void testNCSAParserCommonTryResource() {
+        try (NCSAParser parser1 = new NCSAParser(pathNCSACommon)) {
+            parser1.setFieldType(FieldType.createCommonLogFormat());
+            for (ParsedLine list : parser1) list.forEach(Assert::assertNotNull);
+        } catch(NullPointerException | IOException e) {
+            assert false;
+        }
+    }
+
+    @Test
     public void testNCSAParserCommonForEach() {
         try {
             //Odpri datoteko
@@ -111,7 +121,7 @@ public class NCSAParserTest {
             //Odpri datoteko
             parser.openFile(pathNCSACombined);
             //Nastavi tipe podatkov
-            parser.setFieldType(FieldType.createCommonLogFormat());
+            parser.setFieldType(FieldType.createCombinedLogFormat(false));
             //Pridobi podatke
             parser.forEach(line -> line.forEach(Assert::assertNotNull));
             //Zapri datoteko
@@ -145,7 +155,7 @@ public class NCSAParserTest {
             //Odpri datoteko
             parser.openFile(pathNCSACombined);
             //Nastavi tipe podatkov
-            parser.setFieldType(FieldType.createCommonLogFormat());
+            parser.setFieldType(FieldType.createCombinedLogFormat(false));
             //Pridobi podatke
             parser.forEach(line -> line.forEach(Assert::assertNotNull));
             //Zapri datoteko
@@ -167,6 +177,27 @@ public class NCSAParserTest {
             //Zapri datoteko
             parser.closeFile();
         } catch(NullPointerException | IOException e) {
+            assert false;
+        }
+    }
+
+    @Test
+    public void testNCSAParserCombinedTryResource() {
+        try (NCSAParser parser1 = new NCSAParser(pathNCSACombined)) {
+            parser1.setFieldType(FieldType.createCombinedLogFormat(false));
+            parser1.forEach(Assert::assertNotNull);
+        } catch (IOException e) {
+            assert false;
+        }
+    }
+
+    @Test
+    public void testNCSAParserCombinedCookieTryResource() {
+        String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
+        try (NCSAParser parser1 = new NCSAParser(new StringReader(testNiz))) {
+            parser1.setFieldType(FieldType.createCombinedLogFormat(true));
+            parser1.forEach(Assert::assertNotNull);
+        } catch (IOException e) {
             assert false;
         }
     }

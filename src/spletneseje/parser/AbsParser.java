@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  *
  * @author klemen
  */
-public abstract class AbsParser implements Iterable<ParsedLine> {
+public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	/**
 	 * Vrstica v datoteki
 	 */
@@ -30,26 +30,56 @@ public abstract class AbsParser implements Iterable<ParsedLine> {
 	 * datoteka = null
 	 */
 	public AbsParser() {
-		pos = 0;
+		pos = -1;
 		file = null;
+	}
+	/**
+	 * Konstruktor ki tudi opre datoteko
+	 *
+	 * @param path Pot do datoteke, predstavljena z nizom
+	 * @throws FileNotFoundException Datoteka ne obstaja
+	 */
+	public AbsParser(String path) throws FileNotFoundException {
+		file = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+		pos = 0;
+	}
+	/**
+	 * Konstruktor namenjen testiranju
+	 *
+	 * @param input Vhodni tok predstavljen z nizem
+	 */
+	@Deprecated
+	public AbsParser(StringReader input) {
+		file = new BufferedReader(input);
+		pos = 0;
+	}
+	/**
+	 * konstruktor ki uporabe že odprt tok
+	 *
+	 * @param file Datoteka predstavljena z vhodnim tokom
+	 */
+	public AbsParser(BufferedReader file) {
+		this.file = file;
+		pos = 0;
 	}
 	/**
 	 * Metoda za odpiranje datoteke
 	 *
 	 * @param path Pot do datoteke, predstavljena z nizom
-	 * @throws FileNotFoundException Napaka datoteka ne obstaja
+	 * @throws FileNotFoundException Datoteka ne obstaja
 	 */
 	public void openFile(String path) throws FileNotFoundException {
 		file = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+		pos = 0;
 	}
 	/**
-	 * Metoda za nstavljanje ze odprte datoteke
+	 * Metoda za nstavljanje že odprte datoteke
 	 *
-	 * @param reader
-	 * @throws FileNotFoundException
+	 * @param reader Vhodni tok
 	 */
-	public void openFile(BufferedReader reader) throws FileNotFoundException {
+	public void openFile(BufferedReader reader) {
 		file = reader;
+		pos = 0;
 	}
 	/**
 	 * Metoda namenjena testiranju, ki spremeni niz
@@ -61,6 +91,7 @@ public abstract class AbsParser implements Iterable<ParsedLine> {
 	@Deprecated
 	public void openFile(StringReader input) throws FileNotFoundException {
 		file = new BufferedReader(input);
+		pos = 0;
 	}
 	/**
 	 * Metoda ki vrne celotno vrstico, ki jo je potrebno še parsati
@@ -77,13 +108,14 @@ public abstract class AbsParser implements Iterable<ParsedLine> {
 		return line;
 	}
 	/**
-	 * Metoda za parsanje datoteke
+	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
 	 *
 	 * @return Obdelano vrstico
 	 * @throws ParseException Napaka pri obdelavi datoteke
 	 * @throws IOException Napaka pri branju datoeke
 	 * @throws NullPointerException Lastnosti niso pravilno nstavljene
 	 * @see Field
+	 * @see ParsedLine
 	 */
 	public abstract ParsedLine parseLine() throws ParseException, NullPointerException, IOException;
 	/**
@@ -93,6 +125,7 @@ public abstract class AbsParser implements Iterable<ParsedLine> {
 	 */
 	public void closeFile() throws IOException {
 		file.close();
+		pos = -1;
 	}
     /**
      * Metoda, ki vrne stevilko vrstice v kateri se nahaja parser
@@ -113,4 +146,9 @@ public abstract class AbsParser implements Iterable<ParsedLine> {
     @Override
     public abstract Iterator<ParsedLine> iterator();
 
+	@Override
+	public void close() throws IOException {
+		file.close();
+		pos = -1;
+	}
 }
