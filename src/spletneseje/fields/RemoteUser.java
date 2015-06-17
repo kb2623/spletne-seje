@@ -16,6 +16,11 @@ public class RemoteUser implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return (user != null) ? user : "-";
+	}
+
+	@Override
 	public String getKey() {
 		return user;
 	}

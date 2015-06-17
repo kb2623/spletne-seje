@@ -26,6 +26,11 @@ public class DateTime implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return dateTime.toString();
+	}
+
+	@Override
 	public String getKey() {
 		return null;
 	}

@@ -13,12 +13,16 @@ public class UriStem implements Field {
 	public String getExtension() {
 		int indexOfExtension = resurse.lastIndexOf('.');
 		int indexOfLastSeparator = resurse.lastIndexOf('/');
-		return (indexOfExtension < indexOfLastSeparator) ? 
-				null : resurse.substring(indexOfExtension+1);
+		return (indexOfExtension < indexOfLastSeparator) ? null : resurse.substring(indexOfExtension+1);
 	}
 
 	@Override
 	public String izpis() {
+		return resurse;
+	}
+
+	@Override
+	public String toString() {
 		return resurse;
 	}
 

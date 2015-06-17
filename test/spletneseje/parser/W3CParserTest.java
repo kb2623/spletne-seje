@@ -8,26 +8,41 @@ import spletneseje.parser.datastruct.ParsedLine;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
 public class W3CParserTest {
 
-    private String pathW3C;
+    private List<String> listW3C;
 
     private W3CParser parser;
 
     public W3CParserTest() {
         String os = System.getProperty("os.name");
         if(os.contains("Windows")) {
-            // TODO Nastavi pravo pot do datoteke
-            pathW3C = System.getProperty("user.dir") + "\\Logs\\";
+            listW3C = getFilesNames(System.getProperty("user.dir") + "\\Logs\\Extended\\");
         } else {
-            // TODO Nastavi pravo pot do datoteke
-            pathW3C = System.getProperty("user.dir") + "/Logs/";
+            listW3C = getFilesNames(System.getProperty("user.dir") + "/Logs/Extended/");
         }
+    }
+
+    private List<String> getFilesNames(String path) {
+        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(Paths.get(path))) {
+            List<String> list = new ArrayList<>();
+            dirStream.forEach(file -> list.add(file.toString()));
+            return list;
+        } catch (IOException e) {
+            assert false;
+        }
+        return null;
     }
 
     @Before
@@ -36,7 +51,7 @@ public class W3CParserTest {
     }
 
     @Test
-    public void testW3C() {
+    public void testParseStringOne() {
         String testNiz = "#Software: Microsoft Internet Information Services 6.0\n"
                 +"#Version: 1.0\n"
                 +"#Date: 2006-10-22 22:17:15\n"
@@ -74,7 +89,7 @@ public class W3CParserTest {
     }
 
     @Test
-    public void testW3CTwo() {
+    public void testParseLineStringTwo() {
         String testNiz = "#Software: Microsoft Internet Information Services 6.0\n"
                 +"#Version: 1.0\n"
                 +"#Date: 2009-04-01 00:00:00\n"
@@ -92,6 +107,17 @@ public class W3CParserTest {
             //Zapri datoteko
             parser.closeFile();
         } catch(ParseException | IOException e) {
+            assert false;
+        }
+    }
+
+    @Test
+    public void testParseLineFileOne() {
+        try {
+            parser.openFile(listW3C.get(0));
+            parser.forEach(System.out::println);
+            parser.closeFile();
+        } catch (IOException e) {
             assert false;
         }
     }

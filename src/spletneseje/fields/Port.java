@@ -16,9 +16,14 @@ public class Port implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return (isSrever ? "Server" : "Client") + " port " + portNumber;
+	}
+
+	@Override
 	public String getKey() {
 		if(!isSrever) {
-			return ""+portNumber;
+			return String.valueOf(portNumber);
 		} else {
 			return null;
 		}

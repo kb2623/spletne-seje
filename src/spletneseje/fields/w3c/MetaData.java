@@ -20,6 +20,11 @@ public class MetaData implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return data;
+	}
+
+	@Override
 	public String getKey() {
 		return null;
 	}

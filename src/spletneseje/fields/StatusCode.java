@@ -10,7 +10,12 @@ public class StatusCode implements Field {
 	
 	@Override
 	public String izpis() {
-		return "" + status;
+		return String.valueOf(status);
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(status);
 	}
 
 	@Override

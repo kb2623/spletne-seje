@@ -20,6 +20,11 @@ public class Address implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return (serverAddress ? "Server" : "Client") + " " + address.getHostAddress();
+	}
+
+	@Override
 	public String getKey() {
 		return !serverAddress ? address.getHostAddress() : null;
 	}

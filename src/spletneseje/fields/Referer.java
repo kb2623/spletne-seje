@@ -21,6 +21,11 @@ public class Referer implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return referer != null ? this.referer.getPath() : "-";
+	}
+
+	@Override
 	public String getKey() {
 		return null;
 	}

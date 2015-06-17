@@ -34,6 +34,15 @@ public class UriQuery implements Field {
 	}
 
 	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
+		if (map == null) builder.append('-');
+		else map.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(" = ").append(e.getValue()).append(']'));
+		return builder.append(']').toString();
+	}
+
+	@Override
 	public String getKey() {
 		return null;
 	}

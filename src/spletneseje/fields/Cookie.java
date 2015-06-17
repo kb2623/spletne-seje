@@ -52,6 +52,20 @@ public class Cookie implements Field {
 	}
 
 	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
+		if(map == null) {
+			builder.append('-');
+		} else {
+			for(Entry<String, String> entry : map.entrySet()) {
+				builder.append('[').append(entry.getKey()).append(" = ").append(entry.getValue()).append(']');
+			}
+		}
+		return builder.append(']').toString();
+	}
+
+	@Override
 	public String getKey() {
 		StringBuilder builder = new StringBuilder();
 		if(map == null) {

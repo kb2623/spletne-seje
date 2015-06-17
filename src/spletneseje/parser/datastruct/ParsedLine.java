@@ -164,4 +164,20 @@ public class ParsedLine implements Iterable<Field> {
 	public void forEach(Consumer<? super Field> consumer) {
 		for (int i = 0; i < array.length; i++) consumer.accept(array[i]);
 	}
+
+	@Override
+	public String toString() {
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append('[');
+			for (int i = 0; true; ) {
+				builder.append(array[i].izpis());
+				if (++i < array.length) builder.append(' ').append("||").append(' ');
+				else break;
+			}
+			return builder.append(']').toString();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "[]";
+		}
+	}
 }

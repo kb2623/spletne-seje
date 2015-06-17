@@ -31,7 +31,12 @@ public class UserAgent implements Field {
 	public String izpis() {
 		return userAgentString;
 	}
-	
+
+	@Override
+	public String toString() {
+		return userAgentString;
+	}
+
 	@Override
 	public String getKey() {
 		return userAgentString;

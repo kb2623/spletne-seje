@@ -7,12 +7,18 @@ public class Host implements Field {
 	private String host;
 	
 	public Host(String hostName) {
-		host = hostName;
+		if (!hostName.equals("-")) host = hostName;
+		else host = null;
 	}
 
 	@Override
 	public String izpis() {
-		return host;
+		return host == null ? "-" : host;
+	}
+
+	@Override
+	public String toString() {
+		return host != null ? host : "-";
 	}
 
 	@Override

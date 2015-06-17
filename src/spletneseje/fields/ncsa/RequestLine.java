@@ -68,7 +68,12 @@ public class RequestLine implements Field {
 	public String izpis() {
 		return method.izpis() + " " + url.getPath() + " " + url.getQuery();
 	}
-	
+
+	@Override
+	public String toString() {
+		return method.toString() + " " + url.getPath() + " " + url.getQuery();
+	}
+
 	@Override
 	public String getKey() {
 		return null;

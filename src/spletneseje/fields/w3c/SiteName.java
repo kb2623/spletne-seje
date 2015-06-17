@@ -16,6 +16,11 @@ public class SiteName implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return name;
+	}
+
+	@Override
 	public String getKey() {
 		return null;
 	}

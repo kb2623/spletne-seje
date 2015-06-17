@@ -23,6 +23,11 @@ public class Time implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return time.toString();
+	}
+
+	@Override
 	public String getKey() {
 		return null;
 	}

@@ -10,7 +10,12 @@ public class SizeOfResponse implements Field {
 
 	@Override
 	public String izpis() {
-		return "" + size;
+		return String.valueOf(size);
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(size);
 	}
 
 	@Override

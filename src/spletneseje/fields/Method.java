@@ -68,6 +68,11 @@ public enum Method implements Field {
 	}
 
 	@Override
+	public String toString() {
+		return method;
+	}
+
+	@Override
 	public String getKey() {
 		return null;
 	}

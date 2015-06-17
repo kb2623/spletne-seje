@@ -11,6 +11,7 @@ public class Protocol implements Field {
 		String[] tab = protocolAndVersion.split("/");
 		if (tab.length == 1) {
 			protocol = tab[0];
+			version = null;
 		} else {
 			protocol = tab[0];
 			version = tab[1];
@@ -27,7 +28,12 @@ public class Protocol implements Field {
 
 	@Override
 	public String izpis() {
-		return protocol + " version " + version;
+		return protocol + (version != null ? " version " + version : "");
+	}
+
+	@Override
+	public String toString() {
+		return protocol + (version == null ? "" : " version " + version);
 	}
 
 	@Override

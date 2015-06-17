@@ -14,7 +14,12 @@ public class TimeTaken implements Field {
 
 	@Override
 	public String izpis() {
-		return time + "";
+		return String.valueOf(time);
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(time);
 	}
 
 	@Override

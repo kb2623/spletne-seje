@@ -1,12 +1,9 @@
 package spletneseje.fields;
 
 import java.io.File;
-import java.io.StringReader;
 import java.util.*;
 
 import static org.junit.Assert.*;
-
-import org.junit.Assert;
 import org.junit.Test;
 
 import org.tmatesoft.sqljet.core.SqlJetException;
@@ -16,12 +13,6 @@ import org.tmatesoft.sqljet.core.table.ISqlJetTable;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 import spletneseje.fields.w3c.*;
-import spletneseje.parser.datastruct.ParsedLine;
-import spletneseje.parser.W3CParser;
-import spletneseje.fields.Cookie;
-import spletneseje.fields.UserAgent;
-import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

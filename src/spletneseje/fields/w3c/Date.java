@@ -23,6 +23,11 @@ public class Date implements Field{
 	}
 
 	@Override
+	public String toString() {
+		return date.toString();
+	}
+
+	@Override
 	public String getKey() {
 		return null;
 	}
