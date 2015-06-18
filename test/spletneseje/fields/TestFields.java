@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.*;
 
 import static org.junit.Assert.*;
+
+import com.sleepycat.je.Environment;
 import org.junit.Test;
 
 import org.tmatesoft.sqljet.core.SqlJetException;
@@ -12,7 +14,6 @@ import org.tmatesoft.sqljet.core.table.ISqlJetCursor;
 import org.tmatesoft.sqljet.core.table.ISqlJetTable;
 import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
-import spletneseje.fields.w3c.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -126,4 +127,10 @@ public class TestFields {
 		LocalDateTime dateTime = LocalDateTime.parse("26/Jul/2002:12:11:52 +0000", formatter);
 		assertEquals(26, dateTime.getDayOfMonth());
 	}
+
+	@Test
+	public void testDBOpen() {
+
+	}
+
 }
