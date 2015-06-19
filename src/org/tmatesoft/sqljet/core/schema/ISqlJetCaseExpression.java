@@ -23,11 +23,11 @@ import java.util.List;
  */
 public interface ISqlJetCaseExpression extends ISqlJetExpression {
 
-    public ISqlJetExpression getExpression();
+    ISqlJetExpression getExpression();
 
-    public List<ISqlJetExpression> getConditions();
+    List<ISqlJetExpression> getConditions();
 
-    public List<ISqlJetExpression> getValues();
+    List<ISqlJetExpression> getValues();
 
-    public ISqlJetExpression getDefaultValue();
+    ISqlJetExpression getDefaultValue();
 }

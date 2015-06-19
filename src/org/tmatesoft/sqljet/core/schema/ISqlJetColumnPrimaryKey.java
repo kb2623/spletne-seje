@@ -22,9 +22,9 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetColumnPrimaryKey extends ISqlJetColumnConstraint {
 
-    public Boolean isAscending();
+    Boolean isAscending();
 
-    public boolean isAutoincremented();
+    boolean isAutoincremented();
 
-    public SqlJetConflictAction getConflictAction();
+    SqlJetConflictAction getConflictAction();
 }

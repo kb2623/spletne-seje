@@ -27,7 +27,7 @@ public interface ISqlJetUnaryExpression extends ISqlJetExpression {
      * @author TMate Software Ltd.
      * @author Dmitry Stadnik (dtrace@seznam.cz)
      */
-    public enum Operation {
+    enum Operation {
         PLUS, MINUS, NEGATE, NOT;
 
         public static Operation decode(String s) {
@@ -59,7 +59,7 @@ public interface ISqlJetUnaryExpression extends ISqlJetExpression {
         }
     }
 
-    public Operation getOperation();
+    Operation getOperation();
 
-    public ISqlJetExpression getExpression();
+    ISqlJetExpression getExpression();
 }

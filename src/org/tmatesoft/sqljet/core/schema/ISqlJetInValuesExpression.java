@@ -23,5 +23,5 @@ import java.util.List;
  */
 public interface ISqlJetInValuesExpression extends ISqlJetInExpression {
 
-    public List<ISqlJetExpression> getValues();
+    List<ISqlJetExpression> getValues();
 }

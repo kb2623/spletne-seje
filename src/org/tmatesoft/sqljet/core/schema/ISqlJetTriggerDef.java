@@ -24,16 +24,16 @@ public interface ISqlJetTriggerDef {
      * 
      * @return name of this trigger.
      */
-    public String getName();
+    String getName();
 
     /**
      * 
      * @return name of the table this trigger is set on.
      */
-    public String getTableName();
+    String getTableName();
     
     /**
      * @return SQL used to define this trigger.
      */
-    public String toSQL();
+    String toSQL();
 }

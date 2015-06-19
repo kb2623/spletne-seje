@@ -823,7 +823,7 @@ public class SqlJetMemPage extends SqlJetCloneable {
             psize = get2byte(data, pbegin + 2);
             if (pbegin + psize + 3 >= pnext && pnext > 0) {
                 int frag = pnext - (pbegin + psize);
-                if ((frag < 0) || (frag > (int) SqlJetUtility.getUnsignedByte(data, pPage.hdrOffset + 7))) {
+                if ((frag < 0) || (frag > SqlJetUtility.getUnsignedByte(data, pPage.hdrOffset + 7))) {
                     throw new SqlJetException(SqlJetErrorCode.CORRUPT);
                 }
                 SqlJetUtility.putUnsignedByte(data, pPage.hdrOffset + 7, (byte) (SqlJetUtility.getUnsignedByte(data,
@@ -1144,11 +1144,9 @@ public class SqlJetMemPage extends SqlJetCloneable {
 	 * @param apCellPos
      * @param aSize
      *            Sizes of the cells
-	 * @param aSizePos
-     *
-     * @throws SqlJetException
+	 * @throws SqlJetException
      */
-    public void assemblePage(int nCell, ISqlJetMemoryPointer[] apCell, int apCellPos, int[] aSize, int aSizePos) throws SqlJetException {
+    public void assemblePage(int nCell, ISqlJetMemoryPointer[] apCell, int apCellPos, int[] aSize) throws SqlJetException {
         final SqlJetMemPage pPage = this;
 
         int i; /* Loop counter */
@@ -1225,8 +1223,7 @@ public class SqlJetMemPage extends SqlJetCloneable {
      *
      * @throws SqlJetException
      */
-    public int fillInCell(ISqlJetMemoryPointer pCell, ISqlJetMemoryPointer pKey, long nKey, ISqlJetMemoryPointer pData,
-            int nData, int nZero) throws SqlJetException {
+    public int fillInCell(ISqlJetMemoryPointer pCell, ISqlJetMemoryPointer pKey, long nKey, ISqlJetMemoryPointer pData, int nData, int nZero) throws SqlJetException {
 
         final SqlJetMemPage pPage = this;
         int pnSize = 0;
@@ -1409,7 +1406,7 @@ public class SqlJetMemPage extends SqlJetCloneable {
 
 	    assert( pFrom.isInit );
 	    assert( pFrom.nFree>=iToHdr );
-	    assert( get2byte(aFrom.getMoved(iFromHdr+5)) <= (int)pBt.usableSize );
+	    assert( get2byte(aFrom.getMoved(iFromHdr+5)) <= pBt.usableSize);
 
 	    /* Copy the b-tree node content from page pFrom to page pTo. */
 	    iData = get2byte(aFrom.getMoved(iFromHdr+5));
@@ -1427,9 +1424,7 @@ public class SqlJetMemPage extends SqlJetCloneable {
 	    /* If this is an auto-vacuum database, update the pointer-map entries
 	    ** for any b-tree or overflow pages that pTo now contains the pointers to.
 	    */
-	    if( ISAUTOVACUUM() ){
-	    	pTo.setChildPtrmaps();
-	    }
+	    if(ISAUTOVACUUM()) pTo.setChildPtrmaps();
 	}
 
 	@Override

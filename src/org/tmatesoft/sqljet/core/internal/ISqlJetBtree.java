@@ -45,8 +45,7 @@ import org.tmatesoft.sqljet.core.internal.schema.SqlJetSchema;
  */
 public interface ISqlJetBtree {
 
-    SqlJetAutoVacuumMode SQLJET_DEFAULT_AUTOVACUUM = SqlJetUtility.getEnumSysProp("SQLJET_DEFAULT_AUTOVACUUM",
-            SqlJetAutoVacuumMode.NONE);
+    SqlJetAutoVacuumMode SQLJET_DEFAULT_AUTOVACUUM = SqlJetUtility.getEnumSysProp("SQLJET_DEFAULT_AUTOVACUUM", SqlJetAutoVacuumMode.NONE);
 
     String SQLITE_FILE_HEADER = "SQLite format 3";
 
@@ -54,8 +53,7 @@ public interface ISqlJetBtree {
      * * The header string that appears at the beginning of every* SQLite
      * database.
      */
-    ISqlJetMemoryPointer zMagicHeader = SqlJetUtility.wrapPtr(SqlJetUtility.addZeroByteEnd(SqlJetUtility
-            .getBytes(SQLITE_FILE_HEADER)));
+    ISqlJetMemoryPointer zMagicHeader = SqlJetUtility.wrapPtr(SqlJetUtility.addZeroByteEnd(SqlJetUtility.getBytes(SQLITE_FILE_HEADER)));
 
     /**
      * Open a database file.
@@ -77,8 +75,7 @@ public interface ISqlJetBtree {
 	 * @param permissions
 	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
-    void open(File filename, ISqlJetDbHandle db, Set<SqlJetBtreeFlags> flags, final SqlJetFileType type,
-            final Set<SqlJetFileOpenPermission> permissions) throws SqlJetException;
+    void open(File filename, ISqlJetDbHandle db, Set<SqlJetBtreeFlags> flags, final SqlJetFileType type, final Set<SqlJetFileOpenPermission> permissions) throws SqlJetException;
 
     /**
      * Close an open database and invalidate all cursors.

@@ -23,9 +23,9 @@ import java.util.List;
  */
 public interface ISqlJetTypeDef {
 
-    public List<String> getNames();
+    List<String> getNames();
 
-    public Double getSize1();
+    Double getSize1();
 
-    public Double getSize2();
+    Double getSize2();
 }

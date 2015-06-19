@@ -26,12 +26,12 @@ public interface ISqlJetBindParameter extends ISqlJetExpression {
      * 
      * @return position
      */
-    public Integer getPosition();
+    Integer getPosition();
 
     /**
      * Parameter name.
      * 
      * @return name
      */
-    public String getName();
+    String getName();
 }

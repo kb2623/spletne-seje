@@ -50,9 +50,7 @@ public class SqlJetDbHandle implements ISqlJetDbHandle {
     private ISqlJetBusyHandler busyHandler;
 
     public SqlJetDbHandle() {
-        if (config.isSynchronizedThreading()) {
-            mutex = new SqlJetMutex();
-        }
+        if (config.isSynchronizedThreading()) mutex = new SqlJetMutex();
     }
 
     public SqlJetDbHandle(ISqlJetFileSystem fs) {

@@ -27,7 +27,7 @@ public interface ISqlJetFunctionLiteral extends ISqlJetExpression {
      * @author TMate Software Ltd.
      * @author Dmitry Stadnik (dtrace@seznam.cz)
      */
-    public enum Function {
+    enum Function {
         CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP;
 
         public static Function decode(String s) {
@@ -56,5 +56,5 @@ public interface ISqlJetFunctionLiteral extends ISqlJetExpression {
     }
 
 	@Override
-    public Function getValue();
+    Function getValue();
 }

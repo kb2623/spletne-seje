@@ -23,17 +23,17 @@ import java.util.List;
  */
 public interface ISqlJetColumnDef {
 
-    public String getName();
+    String getName();
 
-    public String getQuotedName();
+    String getQuotedName();
 
-    public ISqlJetTypeDef getType();
+    ISqlJetTypeDef getType();
 
-    public SqlJetTypeAffinity getTypeAffinity();
+    SqlJetTypeAffinity getTypeAffinity();
 
-    public boolean hasExactlyIntegerType();
+    boolean hasExactlyIntegerType();
 
-    public List<ISqlJetColumnConstraint> getConstraints();
+    List<ISqlJetColumnConstraint> getConstraints();
 
     int getIndex();
 }

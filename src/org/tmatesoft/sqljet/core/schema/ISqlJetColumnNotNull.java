@@ -22,5 +22,5 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetColumnNotNull extends ISqlJetColumnConstraint {
 
-    public SqlJetConflictAction getConflictAction();
+    SqlJetConflictAction getConflictAction();
 }

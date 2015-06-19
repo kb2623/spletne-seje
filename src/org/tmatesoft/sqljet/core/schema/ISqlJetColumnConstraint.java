@@ -20,6 +20,5 @@ package org.tmatesoft.sqljet.core.schema;
  * @author Dmitry Stadnik (dtrace@seznam.cz)
  */
 public interface ISqlJetColumnConstraint {
-
-    public String getName();
+    String getName();
 }

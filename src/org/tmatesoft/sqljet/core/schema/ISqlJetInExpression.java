@@ -21,7 +21,7 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetInExpression extends ISqlJetExpression {
 
-    public ISqlJetExpression getExpression();
+    ISqlJetExpression getExpression();
 
-    public boolean isNot();
+    boolean isNot();
 }

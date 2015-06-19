@@ -21,7 +21,7 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetCollateExpression extends ISqlJetExpression {
 
-    public ISqlJetExpression getExpression();
+    ISqlJetExpression getExpression();
 
-    public String getCollationName();
+    String getCollationName();
 }

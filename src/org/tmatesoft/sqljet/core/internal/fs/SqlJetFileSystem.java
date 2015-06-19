@@ -192,7 +192,7 @@ public class SqlJetFileSystem implements ISqlJetFileSystem {
 
         boolean noLock = SqlJetFileType.MAIN_DB != type;
 
-        return new SqlJetFile(this, file, filePath, type, permissions, noLock);
+        return new SqlJetFile(file, filePath, type, permissions, noLock);
 
     }
 

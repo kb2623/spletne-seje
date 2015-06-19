@@ -54,13 +54,12 @@ public enum SqlJetBtreeFlags {
     /**
      * 
      */
-    private SqlJetBtreeFlags() {
-    }
+    SqlJetBtreeFlags() {}
     
     /**
      * 
      */
-    private SqlJetBtreeFlags(SqlJetPagerFlags pagerFlag) {
+    SqlJetBtreeFlags(SqlJetPagerFlags pagerFlag) {
         this.pagerFlag = pagerFlag;
     }
     
@@ -75,11 +74,9 @@ public enum SqlJetBtreeFlags {
         if(null==btreeFlags) return null;
         final Set<SqlJetPagerFlags> Set = SqlJetUtility.noneOf(SqlJetPagerFlags.class);
 		btreeFlags.stream().
-			map((flag) -> flag.getPagerFlag()).
-			filter((f) -> (null!=f)).
-			forEach((f) -> {
-				Set.add(f);
-		});
+			map(SqlJetBtreeFlags::getPagerFlag).
+			filter(f -> null != f).
+			forEach(Set::add);
         return Set;
     }
     

@@ -66,13 +66,13 @@ public enum SqlJetDeviceCharacteristics {
     /**
      * Set ioCapAtomicSize
      */
-    private SqlJetDeviceCharacteristics(final int ioCapAtomicSize) {
+    SqlJetDeviceCharacteristics(final int ioCapAtomicSize) {
         this.ioCapAtomicSize = ioCapAtomicSize;
     }
 
     /**
      * 
      */
-    private SqlJetDeviceCharacteristics() {
+    SqlJetDeviceCharacteristics() {
     }
 }

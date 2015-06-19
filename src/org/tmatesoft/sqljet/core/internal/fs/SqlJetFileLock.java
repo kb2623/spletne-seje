@@ -62,9 +62,7 @@ public class SqlJetFileLock extends FileLock {
     public void release() throws IOException {
         locksCount--;
         if (locksCount == 0) {
-            if (fileLock.isValid()) {
-                fileLock.release();
-            }
+            if (fileLock.isValid()) fileLock.release();
             manager.deleteLock(this);
         }
     }

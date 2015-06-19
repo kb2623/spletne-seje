@@ -3594,7 +3594,7 @@ public class SqlJetPager implements ISqlJetPager, ISqlJetLimits, ISqlJetPageCall
              * the for(...) loop below.
              */
             aNew = new PagerSavepoint[nSavepoint];
-            SqlJetUtility.memcpy(aNew, aSavepoint, nSavepoint);
+            SqlJetUtility.memcpy(aNew, aSavepoint);
             this.aSavepoint = aNew;
             ii = this.nSavepoint;
             this.nSavepoint = nSavepoint;

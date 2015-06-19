@@ -44,7 +44,7 @@ public interface ISqlJetBinaryExpression extends ISqlJetExpression {
      * @author Dmitry Stadnik (dtrace@seznam.cz)
      * 
      */
-    public enum Operation {
+    enum Operation {
 
         /**
          * Logical "or" : <code>OR</code>
@@ -239,19 +239,19 @@ public interface ISqlJetBinaryExpression extends ISqlJetExpression {
      * 
      * @return operation
      */
-    public Operation getOperation();
+    Operation getOperation();
 
     /**
      * Left expression.
      * 
      * @return left expression
      */
-    public ISqlJetExpression getLeftExpression();
+    ISqlJetExpression getLeftExpression();
 
     /**
      * Right expression.
      * 
      * @return right expression
      */
-    public ISqlJetExpression getRightExpression();
+    ISqlJetExpression getRightExpression();
 }

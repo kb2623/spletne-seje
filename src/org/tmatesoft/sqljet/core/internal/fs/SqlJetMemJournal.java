@@ -69,7 +69,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
         FileChunk pNext;
         /** Content of this chunk */
         ISqlJetMemoryPointer zChunk = SqlJetUtility.allocatePtr(JOURNAL_CHUNKSIZE);
-    };
+    }
 
     /*
      * * An instance of this object serves as a cursor into the rollback
@@ -78,7 +78,7 @@ public class SqlJetMemJournal implements ISqlJetFile {
     private static class FilePoint {
         long iOffset; /* Offset from the beginning of the file */
         FileChunk pChunk; /* Specific chunk into which cursor points */
-    };
+    }
 
     FileChunk pFirst; /* Head of in-memory chunk-list */
     FilePoint endpoint = new FilePoint(); /* Pointer to the end of the file */

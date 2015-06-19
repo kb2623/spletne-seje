@@ -980,9 +980,7 @@ public class SqlJetBtreeShared {
         SqlJetMemPage pPage = null;
 
         assert (mutex.held());
-        if (pgno == 0) {
-            throw new SqlJetException(SqlJetErrorCode.CORRUPT);
-        }
+        if (pgno == 0) throw new SqlJetException(SqlJetErrorCode.CORRUPT);
 
         /*
          * It is often the case that the page we want is already in cache.* If

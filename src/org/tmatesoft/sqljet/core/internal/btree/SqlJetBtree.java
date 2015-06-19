@@ -38,7 +38,6 @@ import org.tmatesoft.sqljet.core.internal.ISqlJetKeyInfo;
 import org.tmatesoft.sqljet.core.internal.ISqlJetLimits;
 import org.tmatesoft.sqljet.core.internal.ISqlJetMemoryPointer;
 import org.tmatesoft.sqljet.core.internal.ISqlJetPage;
-import org.tmatesoft.sqljet.core.internal.ISqlJetPageCallback;
 import org.tmatesoft.sqljet.core.internal.ISqlJetPager;
 import org.tmatesoft.sqljet.core.internal.SqlJetAutoVacuumMode;
 import org.tmatesoft.sqljet.core.internal.SqlJetBtreeFlags;
@@ -74,8 +73,7 @@ public class SqlJetBtree implements ISqlJetBtree {
         }
     }
 
-    private static final ISqlJetMemoryPointer PAGE1_21 = SqlJetUtility.wrapPtr(new byte[] { (byte) 0100, (byte) 040,
-            (byte) 040 });
+    private static final ISqlJetMemoryPointer PAGE1_21 = SqlJetUtility.wrapPtr(new byte[] { (byte) 0100, (byte) 040, (byte) 040 });
 
     /** The database connection holding this btree */
     ISqlJetDbHandle db;
@@ -90,7 +88,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * the Btree structure. At most one of these may open a write transaction,
      * but any number may have active read transactions.
      */
-    static enum TransMode {
+    enum TransMode {
         NONE, READ, WRITE
     }
 
@@ -154,8 +152,7 @@ public class SqlJetBtree implements ISqlJetBtree {
         assert (db != null);
         assert (db.getMutex().held());
         final ISqlJetBusyHandler busyHandler = db.getBusyHandler();
-        if (busyHandler == null)
-            return false;
+        if (busyHandler == null) return false;
         return busyHandler.call(number);
     }
 
@@ -267,9 +264,7 @@ public class SqlJetBtree implements ISqlJetBtree {
      * org.tmatesoft.sqljet.core.SqlJetFileType, java.util.Set)
      */
 	@Override
-    public void open(File filename, ISqlJetDbHandle db, Set<SqlJetBtreeFlags> flags, final SqlJetFileType type,
-            final Set<SqlJetFileOpenPermission> permissions) throws SqlJetException {
-
+    public void open(File filename, ISqlJetDbHandle db, Set<SqlJetBtreeFlags> flags, final SqlJetFileType type, final Set<SqlJetFileOpenPermission> permissions) throws SqlJetException {
         ISqlJetFileSystem pVfs; /* The VFS to use for this btree */
         SqlJetBtreeShared pBt = null; /* Shared part of btree structure */
         int nReserve;
@@ -292,16 +287,13 @@ public class SqlJetBtree implements ISqlJetBtree {
          * If this Btree is a candidate for shared cache, try to find an
          * existing BtShared object that we can share with
          */
-        if (!isMemdb && !db.getFlags().contains(SqlJetDbFlags.Vtab) && filename != null
-                && !"".equals(filename.getPath())) {
+        if (!isMemdb && !db.getFlags().contains(SqlJetDbFlags.Vtab) && filename != null && !"".equals(filename.getPath())) {
             if (db.getConfig().isSharedCacheEnabled()) {
                 this.sharable = true;
                 db.getFlags().add(SqlJetDbFlags.SharedCache);
                 final String fullPathname = pVfs.getFullPath(filename);
                 synchronized (sharedCacheList) {
-                    final Iterator<SqlJetBtreeShared> i = sharedCacheList.iterator();
-                    while (i.hasNext()) {
-                        pBt = i.next();
+                    for (final Iterator<SqlJetBtreeShared> i = sharedCacheList.iterator(); i.hasNext(); pBt = i.next()) {
                         assert (pBt.nRef > 0);
                         final String pagerFilename = pVfs.getFullPath(pBt.pPager.getFileName());
                         if (fullPathname.equals(pagerFilename) && pVfs == pBt.pPager.getFileSystem()) {
@@ -331,18 +323,16 @@ public class SqlJetBtree implements ISqlJetBtree {
                 pBt.pPager = new SqlJetPager();
                 pBt.pPager.open(pVfs, filename, SqlJetBtreeFlags.toPagerFlags(flags), type, permissions);
                 pBt.pPager.readFileHeader(zDbHeader.remaining(), zDbHeader);
-                pBt.pPager.setBusyhandler((int number) -> invokeBusyHandler(number));
+                pBt.pPager.setBusyhandler(this::invokeBusyHandler);
                 this.pBt = pBt;
-                pBt.pPager.setReiniter((ISqlJetPage page) -> pageReinit(page));
+                pBt.pPager.setReiniter(this::pageReinit);
 
                 pBt.pCursor = null;
                 pBt.pPage1 = null;
                 pBt.readOnly = pBt.pPager.isReadOnly();
                 pBt.pageSize = SqlJetUtility.get2byte(zDbHeader, 16);
 
-                if (pBt.pageSize < ISqlJetLimits.SQLJET_MIN_PAGE_SIZE
-                        || pBt.pageSize > ISqlJetLimits.SQLJET_MAX_PAGE_SIZE
-                        || ((pBt.pageSize - 1) & pBt.pageSize) != 0) {
+                if (pBt.pageSize < ISqlJetLimits.SQLJET_MIN_PAGE_SIZE || pBt.pageSize > ISqlJetLimits.SQLJET_MAX_PAGE_SIZE || ((pBt.pageSize - 1) & pBt.pageSize) != 0) {
                     pBt.pageSize = ISqlJetLimits.SQLJET_DEFAULT_PAGE_SIZE;
                     pBt.pageSize = pBt.pPager.setPageSize(pBt.pageSize);
                     /*
@@ -422,9 +412,7 @@ public class SqlJetBtree implements ISqlJetBtree {
         } catch (SqlJetException e) {
 
             // btree_open_out:
-            if (pBt != null && pBt.pPager != null) {
-                pBt.pPager.close();
-            }
+            if (pBt != null && pBt.pPager != null) pBt.pPager.close();
             throw e;
         }
 
@@ -780,10 +768,8 @@ public class SqlJetBtree implements ISqlJetBtree {
                 }
 
                 pageSize = SqlJetUtility.get2byte(page1, 16);
-                if (((pageSize - 1) & pageSize) != 0 || pageSize < ISqlJetLimits.SQLJET_MIN_PAGE_SIZE
-                        || (ISqlJetLimits.SQLJET_MAX_PAGE_SIZE < 32768)) {
+                if (((pageSize - 1) & pageSize) != 0 || pageSize < ISqlJetLimits.SQLJET_MIN_PAGE_SIZE || (ISqlJetLimits.SQLJET_MAX_PAGE_SIZE < 32768))
                     throw new SqlJetException(rc);
-                }
                 assert ((pageSize & 7) == 0);
                 usableSize = pageSize - SqlJetUtility.getUnsignedByte(page1, 20);
                 if (pageSize != pBt.pageSize) {
@@ -802,9 +788,7 @@ public class SqlJetBtree implements ISqlJetBtree {
                     pBt.pageSize = pBt.pPager.setPageSize(pBt.pageSize);
                     return;
                 }
-                if (usableSize < 500) {
-                    throw new SqlJetException(rc);
-                }
+                if (usableSize < 500) throw new SqlJetException(rc);
                 pBt.pageSize = pageSize;
                 pBt.usableSize = usableSize;
                 pBt.autoVacuum = (SqlJetUtility.get4byte(page1, 36 + 4 * 4) > 0);
@@ -995,8 +979,7 @@ public class SqlJetBtree implements ISqlJetBtree {
 
             integrity();
             leave();
-            if (rc != null)
-                throw rc;
+            if (rc != null) throw rc;
         }
 
 
@@ -1180,9 +1163,7 @@ public class SqlJetBtree implements ISqlJetBtree {
                 if (this.inTrans != TransMode.NONE) {
                     assert (pBt.nTransaction > 0);
                     pBt.nTransaction--;
-                    if (0 == pBt.nTransaction) {
-                        pBt.inTransaction = TransMode.NONE;
-                    }
+                    if (0 == pBt.nTransaction) pBt.inTransaction = TransMode.NONE;
                 }
 
                 this.inTrans = TransMode.NONE;
@@ -1845,9 +1826,7 @@ public class SqlJetBtree implements ISqlJetBtree {
                     ISqlJetPage pFromPage = null;
                     int iFrom = (int) (iOff / nFromPageSize) + 1;
 
-                    if (iFrom == pBtFrom.PENDING_BYTE_PAGE()) {
-                        continue;
-                    }
+                    if (iFrom == pBtFrom.PENDING_BYTE_PAGE()) continue;
 
                     pFromPage = pBtFrom.pPager.getPage(iFrom);
 
@@ -1923,9 +1902,7 @@ public class SqlJetBtree implements ISqlJetBtree {
                 ISqlJetPage pFromPage = null;
                 int iFrom = (int) (iOff / nFromPageSize) + 1;
 
-                if (iFrom == pBtFrom.PENDING_BYTE_PAGE() || iFrom > nFromPage) {
-                    continue;
-                }
+                if (iFrom == pBtFrom.PENDING_BYTE_PAGE() || iFrom > nFromPage) continue;
 
                 pFromPage = pBtFrom.pPager.getPage(iFrom);
                 ISqlJetMemoryPointer zFrom = pFromPage.getData();
@@ -2242,9 +2219,7 @@ public class SqlJetBtree implements ISqlJetBtree {
              * requested from the pager layer in the above block. Release it
              * now.
              */
-            if (pBt.pPage1 == null) {
-                pDbPage.unref();
-            }
+            if (pBt.pPage1 == null) pDbPage.unref();
 
             /* Grab the read-lock on page 1. */
             lockTable(1, SqlJetBtreeLockMode.READ);

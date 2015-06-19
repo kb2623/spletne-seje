@@ -21,9 +21,9 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetForeignKeyDeferrable {
 
-    public boolean isNot();
+    boolean isNot();
 
-    public boolean isInitiallyDeferred();
+    boolean isInitiallyDeferred();
 
-    public boolean isInitiallyImmediate();
+    boolean isInitiallyImmediate();
 }

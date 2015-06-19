@@ -53,8 +53,7 @@ import org.tmatesoft.sqljet.core.internal.fs.util.SqlJetFileUtil;
  */
 public class SqlJetFile implements ISqlJetFile {
 
-    private static final boolean SQLJET_LOG_FILES = SqlJetUtility.getBoolSysProp(SqlJetLogDefinitions.SQLJET_LOG_FILES,
-            false);
+    private static final boolean SQLJET_LOG_FILES = SqlJetUtility.getBoolSysProp(SqlJetLogDefinitions.SQLJET_LOG_FILES, false);
 
     private static final boolean SQLJET_LOG_FILES_PERFORMANCE = SqlJetUtility.getBoolSysProp(
             SqlJetLogDefinitions.SQLJET_LOG_FILES_PERFORMANCE, false);
@@ -124,7 +123,7 @@ public class SqlJetFile implements ISqlJetFile {
         /** Number of pointers to this structure */
         private int numRef = 1;
         private FileLock sharedLock = null;
-    };
+    }
 
     /**
      * An instance of the following structure is allocated for each open inode.
@@ -141,7 +140,7 @@ public class SqlJetFile implements ISqlJetFile {
         private Map<Thread, LockInfo> lockInfoMap = new ConcurrentHashMap<>();
         /** Malloced space holding fd's awaiting a close() */
         private List<RandomAccessFile> pending = new ArrayList<>();
-    };
+    }
 
     private final static Map<String, OpenFile> openFiles = new HashMap<>();
 
@@ -161,7 +160,6 @@ public class SqlJetFile implements ISqlJetFile {
     private SqlJetFileLockManager fileLockManager;
 
     /**
-     * @param fileSystem
      * @param file
      * @param filePath
      * @param permissions
@@ -169,8 +167,7 @@ public class SqlJetFile implements ISqlJetFile {
      * @param noLock
      */
 
-    SqlJetFile(final SqlJetFileSystem fileSystem, final RandomAccessFile file, final File filePath,
-            final SqlJetFileType fileType, final Set<SqlJetFileOpenPermission> permissions, final boolean noLock) {
+    SqlJetFile(final RandomAccessFile file, final File filePath, final SqlJetFileType fileType, final Set<SqlJetFileOpenPermission> permissions, final boolean noLock) {
         this.file = file;
         this.filePath = filePath;
         this.filePathResolved = filePath.getAbsolutePath();
@@ -204,7 +201,7 @@ public class SqlJetFile implements ISqlJetFile {
     public synchronized Set<SqlJetFileOpenPermission> getPermissions() {
         // return clone to avoid manipulations with file's permissions
         HashSet<SqlJetFileOpenPermission> permissionsCopy = new HashSet<>();
-		permissions.stream().forEach((permission) -> permissionsCopy.add(permission));
+		permissions.stream().forEach(permissionsCopy::add);
         return permissionsCopy;
     }
 

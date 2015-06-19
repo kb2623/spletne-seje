@@ -346,7 +346,7 @@ public interface ISqlJetBtreeCursor {
 	 * @return 
 	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
-    public boolean saveCursorPosition() throws SqlJetException;
+    boolean saveCursorPosition() throws SqlJetException;
 
     /**
      * Restore the cursor to the position it was in (or as close to as possible)
@@ -356,6 +356,6 @@ public interface ISqlJetBtreeCursor {
      * saveCursorPosition().
 	 * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
-    public void restoreCursorPosition() throws SqlJetException;
+    void restoreCursorPosition() throws SqlJetException;
 
 }

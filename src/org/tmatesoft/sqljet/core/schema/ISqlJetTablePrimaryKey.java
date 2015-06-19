@@ -23,9 +23,9 @@ import java.util.List;
  */
 public interface ISqlJetTablePrimaryKey extends ISqlJetTableConstraint {
 
-    public List<String> getColumns();
+    List<String> getColumns();
 
-    public SqlJetConflictAction getConflictAction();
+    SqlJetConflictAction getConflictAction();
 
-    public String getIndexName();
+    String getIndexName();
 }

@@ -1,7 +1,7 @@
 /**
  * SqlJetDataBase.java
  * Copyright (C) 2009-2013 TMate Software Ltd
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
@@ -40,10 +40,10 @@ import org.tmatesoft.sqljet.core.table.engine.SqlJetEngine;
  * Connection to database. This class currently is main entry point in SQLJet
  * API.
  * </p>
- * 
+ *
  * <p>
  * It allows to perform next tasks:
- * 
+ *
  * <ul>
  * <li>Open existed and create new SQLite database.</li>
  * <li>Get and modify database's schema.</li>
@@ -51,9 +51,9 @@ import org.tmatesoft.sqljet.core.table.engine.SqlJetEngine;
  * <li>Read, search and modify data in database.</li>
  * <li>Get and set database's options.</li>
  * </ul>
- * 
+ *
  * </p>
- * 
+ *
  * @author TMate Software Ltd.
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
  * @author Dmitry Stadnik (dtrace@seznam.cz)
@@ -64,7 +64,7 @@ public class SqlJetDb extends SqlJetEngine {
      * File name for in memory database.
      */
     public static final File IN_MEMORY = new File(ISqlJetPager.MEMORY_DB);
-    
+
     private SqlJetDb temporaryDb;
 
     /**
@@ -72,7 +72,7 @@ public class SqlJetDb extends SqlJetEngine {
      * Creates connection to database but not open it. Doesn't open database
      * file until not called method {@link #open()}.
      * </p>
-     * 
+     *
      * <p>
      * File could be null or have special value {@link #IN_MEMORY}. If file is
      * null then will be created temporary file which will be deleted at close.
@@ -80,7 +80,7 @@ public class SqlJetDb extends SqlJetEngine {
      * database will placed in memory. If regular file is specified but doesn't
      * exist then it will be tried to created.
      * </p>
-     * 
+     *
      * @param file
      *            path to data base. Could be null or {@link #IN_MEMORY}.
      * @param writable
@@ -104,7 +104,7 @@ public class SqlJetDb extends SqlJetEngine {
      * database. First lock will be created when be called any method which
      * requires real access to options or schema.
      * <p>
-     * 
+     *
      * <p>
      * File could be null or have special value {@link #IN_MEMORY}. If file is
      * null then will be created temporary file which will be deleted at close.
@@ -112,12 +112,12 @@ public class SqlJetDb extends SqlJetEngine {
      * database will placed in memory. If regular file is specified but doesn't
      * exist then it will be tried to created.
      * </p>
-     * 
+     *
      * @param file
      *            path to data base. Could be null or {@link #IN_MEMORY}.
      * @param write
      *            open for writing if true.
-	 * @return 
+     * @return
      * @throws SqlJetException
      *             if any trouble with access to file or database format.
      */
@@ -159,10 +159,10 @@ public class SqlJetDb extends SqlJetEngine {
      * connection from multiple threads. It is not related with transactions and
      * locks of database file. For concurrent access to database from threads or
      * processes use transactions.
-     * 
+     *
      * @param op operation to run
      * @return result of the {@link ISqlJetRunnableWithLock#runWithLock(SqlJetDb)} call.
-     *  
+     *
      * @throws SqlJetException in case operation fails to run.
      */
     public Object runWithLock(final ISqlJetRunnableWithLock op) throws SqlJetException {
@@ -171,9 +171,9 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Get database schema.
-     * 
+     *
      * @return database schema.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public ISqlJetSchema getSchema() throws SqlJetException {
         return getSchemaInternal();
@@ -181,10 +181,10 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Open table.
-     * 
+     *
      * @param tableName name of the table to open.
      * @return opened table
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public ISqlJetTable getTable(final String tableName) throws SqlJetException {
         checkOpen();
@@ -194,10 +194,10 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Run modifications in write transaction.
-     * 
+     *
      * @param op transaction to run.
      * @return result of the {@link ISqlJetTransaction#run(SqlJetDb)} call.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public Object runWriteTransaction(ISqlJetTransaction op) throws SqlJetException {
         checkOpen();
@@ -210,10 +210,10 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Run read-only transaction.
-     * 
+     *
      * @param op transaction to run.
      * @return result of the {@link ISqlJetTransaction#run(SqlJetDb)} call.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public Object runReadTransaction(ISqlJetTransaction op) throws SqlJetException {
         checkOpen();
@@ -222,13 +222,13 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Run transaction.
-     * 
+     *
      * @param op
      *            transaction's body (closure).
      * @param mode
      *            transaction's mode.
      * @return result of the {@link ISqlJetTransaction#run(SqlJetDb)} call.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public Object runTransaction(final ISqlJetTransaction op, final SqlJetTransactionMode mode) throws SqlJetException {
         return runEngineTransaction((SqlJetEngine engine) -> op.run(SqlJetDb.this), mode);
@@ -237,10 +237,10 @@ public class SqlJetDb extends SqlJetEngine {
     /**
      * Executes pragma statement. If statement queries pragma value then pragma
      * value will be returned.
-	 * 
-	 * @param sql
-	 * @return 
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     *
+     * @param sql
+     * @return
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public Object pragma(final String sql) throws SqlJetException {
         checkOpen();
@@ -250,12 +250,12 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Create table from SQL clause.
-     * 
+     *
      * @param sql
      *            CREATE TABLE ... sentence.
      * @return definition of create table.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException   
-	 */
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
+     */
     public ISqlJetTableDef createTable(final String sql) throws SqlJetException {
         checkOpen();
         return (ISqlJetTableDef) runWriteTransaction((SqlJetDb db) -> getSchemaInternal().createTable(sql));
@@ -263,12 +263,12 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Create index from SQL clause.
-     * 
+     *
      * @param sql
      *            CREATE INDEX ... sentence.
      * @return definition of created index.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException  
-	 */
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
+     */
     public ISqlJetIndexDef createIndex(final String sql) throws SqlJetException {
         checkOpen();
         return (ISqlJetIndexDef) runWriteTransaction((SqlJetDb db) -> getSchemaInternal().createIndex(sql));
@@ -276,67 +276,67 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Drop table.
-     * 
+     *
      * @param tableName name of table to drop.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException  
-	 */
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
+     */
     public void dropTable(final String tableName) throws SqlJetException {
         checkOpen();
         runWriteTransaction((SqlJetDb db) -> {
-			getSchemaInternal().dropTable(tableName);
-			return null;
-		});
+            getSchemaInternal().dropTable(tableName);
+            return null;
+        });
     }
 
     /**
      * Drop index.
-     * 
+     *
      * @param indexName name of the index to drop.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void dropIndex(final String indexName) throws SqlJetException {
         checkOpen();
         runWriteTransaction((SqlJetDb db) -> {
-			getSchemaInternal().dropIndex(indexName);
-			return null;
-		});
+            getSchemaInternal().dropIndex(indexName);
+            return null;
+        });
     }
 
     /**
      * Drop view.
-     * 
+     *
      * @param viewName name of the view to drop.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void dropView(final String viewName) throws SqlJetException {
         checkOpen();
         runWriteTransaction((SqlJetDb db) -> {
-			getSchemaInternal().dropView(viewName);
-			return null;
-		});
+            getSchemaInternal().dropView(viewName);
+            return null;
+        });
     }
-    
+
     /**
      * Drop trigger.
-     * 
+     *
      * @param triggerName name of the trigger to drop.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public void dropTrigger(final String triggerName) throws SqlJetException {
         checkOpen();
         runWriteTransaction((SqlJetDb db) -> {
-			getSchemaInternal().dropTrigger(triggerName);
-			return null;
-		});
+            getSchemaInternal().dropTrigger(triggerName);
+            return null;
+        });
     }
 
     /**
      * Alters table.
-     * 
+     *
      * @param sql
      *            ALTER TABLE ... sentence.
      * @return altered table schema definition.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public ISqlJetTableDef alterTable(final String sql) throws SqlJetException {
         checkOpen();
@@ -346,38 +346,38 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * Creates virtual table from SQL clause.
-     * 
+     *
      * @param sql
      *            CREATE VIRTUAL TABLE ... sentence.
      * @return definition of create virtual table.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException 
-	 */
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
+     */
     public ISqlJetVirtualTableDef createVirtualTable(final String sql) throws SqlJetException {
         checkOpen();
         return (ISqlJetVirtualTableDef) runWriteTransaction((SqlJetDb db) -> getSchemaInternal().createVirtualTable(sql, 0));
     }
-    
+
     /**
      * Creates view from SQL clause.
-     * 
+     *
      * @param sql
      *            CREATE VIEW X AS SELECT ... sentence.
      * @return definition of the view being created.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException  
-	 */
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
+     */
     public ISqlJetViewDef createView(final String sql) throws SqlJetException {
         checkOpen();
         return (ISqlJetViewDef) runWriteTransaction((SqlJetDb db) -> getSchemaInternal().createView(sql));
     }
 
-    
+
     /**
      * Creates trigger from SQL clause.
-     * 
+     *
      * @param sql
      *            CREATE TRIGGER ... sentence.
      * @return definition of the trigger being created.
-	 * @throws org.tmatesoft.sqljet.core.SqlJetException
+     * @throws org.tmatesoft.sqljet.core.SqlJetException
      */
     public ISqlJetTriggerDef createTrigger(final String sql) throws SqlJetException {
         checkOpen();
@@ -386,44 +386,42 @@ public class SqlJetDb extends SqlJetEngine {
 
     /**
      * @see #getTemporaryDatabase(boolean)
-     * 
+     *
      * @return SqlJetDb object for temporary database
      * @throws SqlJetException
      */
     public SqlJetDb getTemporaryDatabase() throws SqlJetException {
         return getTemporaryDatabase(false);
     }
-    
+
     /**
      * Opens temporary on-disk database which life span is less or equal to that
      * of this object. Temporary database is closed and deleted as soon as 
      * this database connection is closed.
-     * 
+     *
      * Temporary file is used to store temporary database.
-     * 
+     *
      * Subsequent calls to this method will return the same temporary database
      * In case previously create temporary database is closed by the user, 
      * then another one is created by this method. 
-     * 
+     *
      * @param inMemory when true open temporary database in memory. 
-     * 
+     *
      * @return temporary database being created or existing temporary database.
      * @throws SqlJetException
      */
     public SqlJetDb getTemporaryDatabase(final boolean inMemory) throws SqlJetException {
-        checkOpen();        
+        checkOpen();
         return (SqlJetDb) runWithLock((SqlJetDb db) -> {
-			if (temporaryDb == null || !temporaryDb.isOpen()) {
-				closeTemporaryDatabase();
-				final File tmpDbFile = getTemporaryDatabaseFile(inMemory);
-				if (tmpDbFile != null) {
-					temporaryDb = SqlJetDb.open(tmpDbFile, true);
-				}
-			}
-			return temporaryDb;
-		});
+            if (temporaryDb == null || !temporaryDb.isOpen()) {
+                closeTemporaryDatabase();
+                final File tmpDbFile = getTemporaryDatabaseFile(inMemory);
+                if (tmpDbFile != null) temporaryDb = SqlJetDb.open(tmpDbFile, true);
+            }
+            return temporaryDb;
+        });
     }
-    
+
     @Override
     protected void closeResources() throws SqlJetException {
         closeTemporaryDatabase();
@@ -433,26 +431,20 @@ public class SqlJetDb extends SqlJetEngine {
         if (temporaryDb != null) {
             temporaryDb.close();
             File tmpDbFile = temporaryDb.getFile();
-            if (tmpDbFile != null && !IN_MEMORY.equals(tmpDbFile)) {
-                getFileSystem().delete(tmpDbFile, false);
-            }
+            if (tmpDbFile != null && !IN_MEMORY.equals(tmpDbFile)) getFileSystem().delete(tmpDbFile, false);
         }
         temporaryDb = null;
     }
 
     private File getTemporaryDatabaseFile(boolean inMemory) throws SqlJetException {
-        if (inMemory) {
-            return IN_MEMORY;
-        }
+        if (inMemory) return IN_MEMORY;
         File tmpDbFile = null;
         try {
             tmpDbFile = getFileSystem().getTempFile();
         } catch (IOException e) {
             throw new SqlJetException(SqlJetErrorCode.CANTOPEN, e);
         }
-        if (tmpDbFile == null) {
-            throw new SqlJetException(SqlJetErrorCode.CANTOPEN);
-        }
+        if (tmpDbFile == null) throw new SqlJetException(SqlJetErrorCode.CANTOPEN);
         return tmpDbFile;
     }
 }

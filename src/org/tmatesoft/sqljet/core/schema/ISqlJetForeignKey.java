@@ -23,11 +23,11 @@ import java.util.List;
  */
 public interface ISqlJetForeignKey {
 
-    public String getForeignTableName();
+    String getForeignTableName();
 
-    public List<String> getColumnNames();
+    List<String> getColumnNames();
 
-    public List<ISqlJetForeignKeyAction> getActions();
+    List<ISqlJetForeignKeyAction> getActions();
 
-    public ISqlJetForeignKeyDeferrable getDeferrable();
+    ISqlJetForeignKeyDeferrable getDeferrable();
 }

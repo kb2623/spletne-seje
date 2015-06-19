@@ -53,10 +53,9 @@ public enum SqlJetEncoding {
 
     private String charsetName = "error";
 
-    private SqlJetEncoding() {
-    }
+    SqlJetEncoding() { }
 
-    private SqlJetEncoding(String charsetName) {
+    SqlJetEncoding(String charsetName) {
         this.charsetName = charsetName;
     }
 

@@ -21,5 +21,5 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetColumnCollate extends ISqlJetColumnConstraint {
 
-    public String getCollation();
+    String getCollation();
 }

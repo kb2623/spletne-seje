@@ -21,9 +21,9 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetColumnExpression extends ISqlJetExpression {
 
-    public String getColumnName();
+    String getColumnName();
 
-    public String getTableName();
+    String getTableName();
 
-    public String getDatabaseName();
+    String getDatabaseName();
 }

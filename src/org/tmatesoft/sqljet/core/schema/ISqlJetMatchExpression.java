@@ -27,7 +27,7 @@ public interface ISqlJetMatchExpression extends ISqlJetExpression {
      * @author TMate Software Ltd.
      * @author Dmitry Stadnik (dtrace@seznam.cz)
      */
-    public enum Operation {
+    enum Operation {
         LIKE, GLOB, REGEXP, MATCH;
 
         public static Operation decode(String s) {
@@ -59,13 +59,13 @@ public interface ISqlJetMatchExpression extends ISqlJetExpression {
         }
     }
 
-    public ISqlJetExpression getExpression();
+    ISqlJetExpression getExpression();
 
-    public Operation getOperation();
+    Operation getOperation();
 
-    public boolean isNot();
+    boolean isNot();
 
-    public ISqlJetExpression getMatchExpression();
+    ISqlJetExpression getMatchExpression();
 
-    public ISqlJetExpression getEscapeExpression();
+    ISqlJetExpression getEscapeExpression();
 }

@@ -27,7 +27,7 @@ public interface ISqlJetRaiseExpression extends ISqlJetExpression {
      * @author TMate Software Ltd.
      * @author Dmitry Stadnik (dtrace@seznam.cz)
      */
-    public enum Action {
+    enum Action {
         IGNORE, ROLLBACK, ABORT, FAIL;
 
         public static Action decode(String s) {
@@ -59,7 +59,7 @@ public interface ISqlJetRaiseExpression extends ISqlJetExpression {
         }
     }
 
-    public Action getAction();
+    Action getAction();
 
-    public String getErrorMessage();
+    String getErrorMessage();
 }

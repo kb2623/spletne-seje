@@ -21,7 +21,7 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetCastExpression extends ISqlJetExpression {
 
-    public ISqlJetExpression getExpression();
+    ISqlJetExpression getExpression();
 
-    public ISqlJetTypeDef getType();
+    ISqlJetTypeDef getType();
 }

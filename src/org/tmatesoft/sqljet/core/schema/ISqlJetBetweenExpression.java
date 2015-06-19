@@ -37,26 +37,26 @@ public interface ISqlJetBetweenExpression extends ISqlJetExpression {
      * 
      * @return expression
      */
-    public ISqlJetExpression getExpression();
+    ISqlJetExpression getExpression();
 
     /**
      * Checks is NOT used.
      * 
      * @return true if NOT is used
      */
-    public boolean isNot();
+    boolean isNot();
 
     /**
      * Lower bound.
      * 
      * @return lower bound
      */
-    public ISqlJetExpression getLowerBound();
+    ISqlJetExpression getLowerBound();
 
     /**
      * Upper bound.
      * 
      * @return upper bound
      */
-    public ISqlJetExpression getUpperBound();
+    ISqlJetExpression getUpperBound();
 }

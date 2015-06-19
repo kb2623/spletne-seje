@@ -21,11 +21,11 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetIndexedColumn {
 
-    public String getName();
+    String getName();
 
-    public String getCollation();
+    String getCollation();
 
-    public SqlJetSortingOrder getSortingOrder();
+    SqlJetSortingOrder getSortingOrder();
 
     ISqlJetColumnDef getTableColumn();
 

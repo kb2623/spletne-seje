@@ -43,7 +43,7 @@ public enum SqlJetBtreeTableCreateFlags {
     /**
      * 
      */
-    private SqlJetBtreeTableCreateFlags(byte value) {
+    SqlJetBtreeTableCreateFlags(byte value) {
         this.value = value;
     }
     

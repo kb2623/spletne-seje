@@ -23,7 +23,7 @@ import java.util.List;
  */
 public interface ISqlJetTableForeignKey extends ISqlJetTableConstraint {
 
-    public List<String> getColumnNames();
+    List<String> getColumnNames();
 
-    public ISqlJetForeignKey getForeignKey();
+    ISqlJetForeignKey getForeignKey();
 }

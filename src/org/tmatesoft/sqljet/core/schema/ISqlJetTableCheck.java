@@ -21,5 +21,5 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetTableCheck extends ISqlJetTableConstraint {
 
-    public ISqlJetExpression getExpression();
+    ISqlJetExpression getExpression();
 }

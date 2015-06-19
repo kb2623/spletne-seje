@@ -52,9 +52,9 @@ public class SqlJetFileLockManager {
         FileLock createLock(long position, long size, boolean shared) throws IOException;
     }
 
-    private ILockCreator tryLockCreator = (long position, long size, boolean shared) -> fileChannel.tryLock(position, size, shared);
+    private ILockCreator tryLockCreator = fileChannel::tryLock;
 
-    private ILockCreator lockCreator = (long position, long size, boolean shared) -> fileChannel.lock(position, size, shared);
+    private ILockCreator lockCreator = fileChannel::lock;
 
     private FileLock createLock(long position, long size, boolean shared, ILockCreator lockCreator)
             throws IOException {

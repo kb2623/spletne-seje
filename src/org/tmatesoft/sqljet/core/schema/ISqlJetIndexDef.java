@@ -23,19 +23,19 @@ import java.util.List;
  */
 public interface ISqlJetIndexDef {
 
-    public String getName();
+    String getName();
 
-    public String getTableName();
+    String getTableName();
 
-    public boolean isUnique();
+    boolean isUnique();
 
-    public List<ISqlJetIndexedColumn> getColumns();
+    List<ISqlJetIndexedColumn> getColumns();
 
-    public ISqlJetIndexedColumn getColumn(String name);
+    ISqlJetIndexedColumn getColumn(String name);
 
-    public String toSQL();
+    String toSQL();
 
-    public boolean isImplicit();
+    boolean isImplicit();
 
     int getPage();
 }

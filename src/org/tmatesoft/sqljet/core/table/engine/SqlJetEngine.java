@@ -52,23 +52,14 @@ import org.tmatesoft.sqljet.core.table.SqlJetDefaultBusyHandler;
  * @author Sergey Scherbina (sergey.scherbina@gmail.com)
  * 
  */
-public class SqlJetEngine {
+public class SqlJetEngine implements AutoCloseable {
 
-	private static final Set<SqlJetBtreeFlags> READ_FLAGS = Collections
-			.unmodifiableSet(SqlJetUtility.of(SqlJetBtreeFlags.READONLY));
-	private static final Set<SqlJetFileOpenPermission> READ_PERMISSIONS = Collections
-			.unmodifiableSet(SqlJetUtility
-					.of(SqlJetFileOpenPermission.READONLY));
-	private static final Set<SqlJetBtreeFlags> WRITE_FLAGS = Collections
-			.unmodifiableSet(SqlJetUtility.of(SqlJetBtreeFlags.READWRITE,
-					SqlJetBtreeFlags.CREATE));
-	private static final Set<SqlJetFileOpenPermission> WRITE_PREMISSIONS = Collections
-			.unmodifiableSet(SqlJetUtility.of(
-					SqlJetFileOpenPermission.READWRITE,
-					SqlJetFileOpenPermission.CREATE));
+	private static final Set<SqlJetBtreeFlags> READ_FLAGS = Collections.unmodifiableSet(SqlJetUtility.of(SqlJetBtreeFlags.READONLY));
+	private static final Set<SqlJetFileOpenPermission> READ_PERMISSIONS = Collections.unmodifiableSet(SqlJetUtility.of(SqlJetFileOpenPermission.READONLY));
+	private static final Set<SqlJetBtreeFlags> WRITE_FLAGS = Collections.unmodifiableSet(SqlJetUtility.of(SqlJetBtreeFlags.READWRITE, SqlJetBtreeFlags.CREATE));
+	private static final Set<SqlJetFileOpenPermission> WRITE_PREMISSIONS = Collections.unmodifiableSet(SqlJetUtility.of(SqlJetFileOpenPermission.READWRITE, SqlJetFileOpenPermission.CREATE));
 
-	protected static final ISqlJetFileSystemsManager FILE_SYSTEM_MANAGER = SqlJetFileSystemsManager
-			.getManager();
+	protected static final ISqlJetFileSystemsManager FILE_SYSTEM_MANAGER = SqlJetFileSystemsManager.getManager();
 
 	protected ISqlJetFileSystem fileSystem = FILE_SYSTEM_MANAGER.find(null);
 
@@ -96,8 +87,7 @@ public class SqlJetEngine {
 	 * @param writable
 	 * @param fs
 	 */
-	public SqlJetEngine(final File file, final boolean writable,
-			final ISqlJetFileSystem fs) {
+	public SqlJetEngine(final File file, final boolean writable, final ISqlJetFileSystem fs) {
 		this.writable = writable;
 		this.file = file;
 		this.fileSystem = fs;
@@ -109,15 +99,11 @@ public class SqlJetEngine {
 	 * @param fsName
 	 * @throws SqlJetException
 	 */
-	public SqlJetEngine(final File file, final boolean writable,
-			final String fsName) throws SqlJetException {
+	public SqlJetEngine(final File file, final boolean writable, final String fsName) throws SqlJetException {
 		this.writable = writable;
 		this.file = file;
 		this.fileSystem = FILE_SYSTEM_MANAGER.find(fsName);
-		if (this.fileSystem == null) {
-			throw new SqlJetException(String.format(
-					"File system '%s' not found", fsName));
-		}
+		if (this.fileSystem == null) throw new SqlJetException(String.format("File system '%s' not found", fsName));
 	}
 
 	/**
@@ -125,8 +111,7 @@ public class SqlJetEngine {
 	 * @param isDefault
 	 * @throws SqlJetException
 	 */
-	public void registerFileSystem(final ISqlJetFileSystem fs,
-			final boolean isDefault) throws SqlJetException {
+	public void registerFileSystem(final ISqlJetFileSystem fs, final boolean isDefault) throws SqlJetException {
 		FILE_SYSTEM_MANAGER.register(fs, isDefault);
 	}
 
@@ -134,8 +119,7 @@ public class SqlJetEngine {
 	 * @param fs
 	 * @throws SqlJetException
 	 */
-	public void unregisterFileSystem(final ISqlJetFileSystem fs)
-			throws SqlJetException {
+	public void unregisterFileSystem(final ISqlJetFileSystem fs) throws SqlJetException {
 		FILE_SYSTEM_MANAGER.unregister(fs);
 	}
 
@@ -170,8 +154,7 @@ public class SqlJetEngine {
 	}
 
 	protected void checkOpen() throws SqlJetException {
-		if (!isOpen())
-			throw new SqlJetException(SqlJetErrorCode.MISUSE, "Database closed");
+		if (!isOpen()) throw new SqlJetException(SqlJetErrorCode.MISUSE, "Database closed");
 	}
 
 	/**
@@ -189,31 +172,24 @@ public class SqlJetEngine {
 			dbHandle = new SqlJetDbHandle(fileSystem);
 			dbHandle.setBusyHandler(new SqlJetDefaultBusyHandler());
 			btree = new SqlJetBtree();
-			final Set<SqlJetBtreeFlags> flags = EnumSet
-					.copyOf(writable ? WRITE_FLAGS : READ_FLAGS);
-			final Set<SqlJetFileOpenPermission> permissions = EnumSet
-					.copyOf(writable ? WRITE_PREMISSIONS : READ_PERMISSIONS);
-			final SqlJetFileType type = (file != null ? SqlJetFileType.MAIN_DB
-					: SqlJetFileType.TEMP_DB);
+			final Set<SqlJetBtreeFlags> flags = EnumSet.copyOf(writable ? WRITE_FLAGS : READ_FLAGS);
+			final Set<SqlJetFileOpenPermission> permissions = EnumSet.copyOf(writable ? WRITE_PREMISSIONS : READ_PERMISSIONS);
+			final SqlJetFileType type = (file != null ? SqlJetFileType.MAIN_DB : SqlJetFileType.TEMP_DB);
 			btree.open(file, dbHandle, flags, type, permissions);
 
 			// force readonly.
 			ISqlJetFile file = btree.getPager().getFile();
 			if (file != null) {
-				Set<SqlJetFileOpenPermission> realPermissions = btree
-						.getPager().getFile().getPermissions();
-				writable = realPermissions
-						.contains(SqlJetFileOpenPermission.READWRITE);
+				Set<SqlJetFileOpenPermission> realPermissions = btree.getPager().getFile().getPermissions();
+				writable = realPermissions.contains(SqlJetFileOpenPermission.READWRITE);
 			}
 			open = true;
 		} else {
-			throw new SqlJetException(SqlJetErrorCode.MISUSE,
-					"Database is open already");
+			throw new SqlJetException(SqlJetErrorCode.MISUSE, "Database is open already");
 		}
 	}
 
-	public Object runSynchronized(ISqlJetEngineSynchronized op)
-			throws SqlJetException {
+	public Object runSynchronized(ISqlJetEngineSynchronized op) throws SqlJetException {
 		checkOpen();
 		dbHandle.getMutex().enter();
 		try {
@@ -231,6 +207,7 @@ public class SqlJetEngine {
 	 *             it is possible to get exception if there is actvie
 	 *             transaction and rollback did not success.
 	 */
+    @Override
 	public void close() throws SqlJetException {
 		if (open) {
 			runSynchronized((SqlJetEngine engine) -> {
@@ -242,14 +219,11 @@ public class SqlJetEngine {
 				closeResources();
 				return null;
 			});
-			if (!open) {
-				dbHandle = null;
-			}
+			if (!open) dbHandle = null;
 		}
 	}
 
-	protected void closeResources() throws SqlJetException {
-	}
+	protected void closeResources() throws SqlJetException { }
 
 	/*
 	 * (non-Javadoc)
@@ -264,9 +238,7 @@ public class SqlJetEngine {
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			if (open) {
-				close();
-			}
+			if (open) close();
 		} finally {
 			super.finalize();
 		}
@@ -298,9 +270,7 @@ public class SqlJetEngine {
 	 */
 	public ISqlJetOptions getOptions() throws SqlJetException {
 		checkOpen();
-		if (null == btree.getSchema()) {
-			readSchema();
-		}
+		if (null == btree.getSchema()) readSchema();
 		return dbHandle.getOptions();
 	}
 
@@ -310,10 +280,7 @@ public class SqlJetEngine {
 	 * @throws org.tmatesoft.sqljet.core.SqlJetException
 	 */
 	public void refreshSchema() throws SqlJetException {
-		if (null == btree.getSchema()
-				|| !getOptions().verifySchemaVersion(false)) {
-			readSchema();
-		}
+		if (null == btree.getSchema() || !getOptions().verifySchemaVersion(false)) readSchema();
 	}
 
 	protected SqlJetSchema getSchemaInternal() throws SqlJetException {
@@ -453,9 +420,7 @@ public class SqlJetEngine {
 	public void beginTransaction(final SqlJetTransactionMode mode) throws SqlJetException {
 		checkOpen();
 		runSynchronized((SqlJetEngine engine) -> {
-			if (!isTransactionStarted(mode)) {
-				doBeginTransaction(mode);
-			}
+			if (!isTransactionStarted(mode)) doBeginTransaction(mode);
 			return null;
 		});
 	}
@@ -468,9 +433,7 @@ public class SqlJetEngine {
 	public void commit() throws SqlJetException {
 		checkOpen();
 		runSynchronized((SqlJetEngine engine) -> {
-			if (isInTransaction()) {
-				doCommitTransaction();
-			}
+			if (isInTransaction()) doCommitTransaction();
 			return null;
 		});
 	}
@@ -515,9 +478,7 @@ public class SqlJetEngine {
 					success = true;
 					return result;
 				} finally {
-					if (!success) {
-						doRollbackTransaction();
-					}
+					if (!success) doRollbackTransaction();
 					transaction = false;
 					transactionMode = null;
 				}
@@ -526,12 +487,10 @@ public class SqlJetEngine {
 	}
 
 	private boolean isTransactionStarted(final SqlJetTransactionMode mode) {
-		return transaction
-				&& (transactionMode == mode || mode == SqlJetTransactionMode.READ_ONLY);
+		return transaction && (transactionMode == mode || mode == SqlJetTransactionMode.READ_ONLY);
 	}
 
-	private void doBeginTransaction(final SqlJetTransactionMode mode)
-			throws SqlJetException {
+	private void doBeginTransaction(final SqlJetTransactionMode mode) throws SqlJetException {
 		btree.beginTrans(mode);
 		refreshSchema();
 		transaction = true;

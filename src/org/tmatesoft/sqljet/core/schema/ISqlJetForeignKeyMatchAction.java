@@ -21,5 +21,5 @@ package org.tmatesoft.sqljet.core.schema;
  */
 public interface ISqlJetForeignKeyMatchAction extends ISqlJetForeignKeyAction {
 
-    public String getName();
+    String getName();
 }

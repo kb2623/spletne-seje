@@ -23,11 +23,11 @@ import java.util.List;
  */
 public interface ISqlJetFunctionExpression extends ISqlJetExpression {
 
-    public String getName();
+    String getName();
 
-    public boolean areDistinctArguments();
+    boolean areDistinctArguments();
 
-    public List<ISqlJetExpression> getArguments();
+    List<ISqlJetExpression> getArguments();
 
-    public boolean isAll();
+    boolean isAll();
 }

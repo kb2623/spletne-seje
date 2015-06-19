@@ -22,5 +22,5 @@ package org.tmatesoft.sqljet.core.schema;
 public interface ISqlJetStringLiteral extends ISqlJetLiteralValue {
 
 	@Override
-    public String getValue();
+    String getValue();
 }
