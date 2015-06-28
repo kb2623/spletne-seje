@@ -1,2 +1,5 @@
-# spletne-seje
-Razpletanje sej iz log datotek spletnega strežnika
+# SpletneSeje #
+
+Program za odelavo log datotek.
+
+Uporabljena licenca [GPL V3](LICENSE.md)
