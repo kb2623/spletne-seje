@@ -12,4 +12,4 @@
 hs_err_pid*
 
 #needed warpper for Gradle
-!gradle/
+!gradle/gradle-wrapper.jar
