@@ -1,5 +1,5 @@
 #needed warpper for Gradle
-!gradle/*.jar
+!gradle/**/*.jar
 
 *.class
 
