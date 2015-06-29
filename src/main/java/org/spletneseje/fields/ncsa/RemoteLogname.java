@@ -26,7 +26,7 @@ public class RemoteLogname implements Field {
 
 	@Override
 	public String toString() {
-		return (logname != null) ? logname : "";
+		return (logname != null) ? logname : "-";
 	}
 
 	@Override

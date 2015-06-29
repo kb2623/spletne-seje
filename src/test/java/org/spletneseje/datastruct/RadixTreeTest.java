@@ -3,8 +3,6 @@ package org.spletneseje.datastruct;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.spletneseje.datastruct.DuplicateKeyException;
-import org.spletneseje.datastruct.RadixTree;
 
 import java.util.Iterator;
 

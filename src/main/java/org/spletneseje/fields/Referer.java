@@ -41,7 +41,7 @@ public class Referer implements Field {
 
 	@Override
 	public String getKey() {
-		return "";
+		return uri != null ? uri.getFile() : "";
 	}
 
 	@Override

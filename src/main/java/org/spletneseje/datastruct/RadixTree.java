@@ -11,10 +11,14 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		private String key;
 		private List<RadixNode> children;
 
-		public RadixNode(V data, String key) {
+		public RadixNode(V data, String key, List<RadixNode> children) {
 			this.data = data;
 			this.key = key;
-			this.children = new LinkedList<>();
+			this.children = children;
+		}
+
+		public RadixNode(V data, String key) {
+			this(data, key, new LinkedList<>());
 		}
 
 		public RadixNode() {
@@ -68,8 +72,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 				node.data = data;
 			}
 		} else {
-			RadixNode tmp1 = new RadixNode(node.data, node.key.substring(numMatchChar, node.key.length()));
-			tmp1.children = node.children;
+			RadixNode tmp1 = new RadixNode(node.data, node.key.substring(numMatchChar, node.key.length()), node.children);
 			node.key = key.substring(0, numMatchChar);
 			node.children = new LinkedList<>();
 			node.children.add(tmp1);
@@ -121,8 +124,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 					for (Iterator<RadixNode> it = parent.children.iterator(); it.hasNext(); ) {
 						if(it.next().key.equals(node.key)) it.remove();
 					}
-					if(parent.children.size() == 1 && parent.data == null && !parent.key.equals(""))
-						this.mergeNodes(parent, parent.children.get(0));
+					if(parent.children.size() == 1 && parent.data == null && !parent.key.equals("")) this.mergeNodes(parent, parent.children.get(0));
 				} else if(node.children.size() == 1) {
 					this.mergeNodes(node, node.children.get(0));
 				} else {
@@ -163,7 +165,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Deprecated
 	public void printTree() {
-		this.printTree(0, this.rootNode);
+		printTree(0, this.rootNode);
 	}
 
 	@Deprecated
@@ -175,69 +177,69 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		} else {
 			System.out.printf("%s%n", node.key);
 		}
-		for (RadixNode child : node.children) this.printTree(len + node.key.length(), child);
+		for (RadixNode child : node.children) printTree(len + node.key.length(), child);
 	}
 
 	@Override
 	public Iterator<V> iterator() {
 		return new Iterator<V>() {
 
-			private final org.spletneseje.datastruct.Stack<Iterator<RadixNode>> stackIt;
+			private final Stack<Iterator<RadixNode>> stackIt;
 			private RadixNode next;
 
 			{
-				this.stackIt = new org.spletneseje.datastruct.Stack<>();
+				this.stackIt = new Stack<>();
 				this.stackIt.push(rootNode.children.iterator());
-				if(!this.stackIt.peek().hasNext()) {
-					this.next = null;
+				if(!stackIt.peek().hasNext()) {
+					next = null;
 				} else {
-					RadixNode tmpNode = this.stackIt.peek().next();
+					RadixNode tmpNode = stackIt.peek().next();
 					while(tmpNode.data == null) {
-						this.stackIt.push(tmpNode.children.iterator());
-						tmpNode = this.stackIt.peek().next();
+						stackIt.push(tmpNode.children.iterator());
+						tmpNode = stackIt.peek().next();
 					}
-					this.next = tmpNode;
+					next = tmpNode;
 				}
 			}
 
 			@Override
 			public boolean hasNext() {
-				return this.next != null;
+				return next != null;
 			}
 
 			@Override
 			public V next() throws NoSuchElementException {
-				if(!this.hasNext()) throw new NoSuchElementException();
-				V tmp = this.next.data;
-				if(!this.next.children.isEmpty()) {
-					this.stackIt.push(this.next.children.iterator());
-					RadixNode tmpNode = this.stackIt.peek().next();
+				if(!hasNext()) throw new NoSuchElementException();
+				V tmp = next.data;
+				if(!next.children.isEmpty()) {
+					stackIt.push(next.children.iterator());
+					RadixNode tmpNode = stackIt.peek().next();
 					while(tmpNode.data == null) {
-						this.stackIt.push(tmpNode.children.iterator());
-						tmpNode = this.stackIt.peek().next();
+						stackIt.push(tmpNode.children.iterator());
+						tmpNode = stackIt.peek().next();
 					}
-					this.next = tmpNode;
-				} else if(this.stackIt.peek().hasNext()) {
-					RadixNode tmpNode = this.stackIt.peek().next();
+					next = tmpNode;
+				} else if(stackIt.peek().hasNext()) {
+					RadixNode tmpNode = stackIt.peek().next();
 					while(tmpNode.data == null) {
-						this.stackIt.push(tmpNode.children.iterator());
-						tmpNode = this.stackIt.peek().next();
+						stackIt.push(tmpNode.children.iterator());
+						tmpNode = stackIt.peek().next();
 					}
-					this.next = tmpNode;
+					next = tmpNode;
 				} else {
 					do{
-						this.stackIt.pop();
-						if(this.stackIt.isEmpty()) {
-							this.next = null;
+						stackIt.pop();
+						if(stackIt.isEmpty()) {
+							next = null;
 							return tmp;
 						}
-					} while(!this.stackIt.peek().hasNext());
-					RadixNode tmpNode = this.stackIt.peek().next();
+					} while(!stackIt.peek().hasNext());
+					RadixNode tmpNode = stackIt.peek().next();
 					while(tmpNode.data == null) {
-						this.stackIt.push(tmpNode.children.iterator());
-						tmpNode = this.stackIt.peek().next();
+						stackIt.push(tmpNode.children.iterator());
+						tmpNode = stackIt.peek().next();
 					}
-					this.next = tmpNode;
+					next = tmpNode;
 				}
 				return tmp;
 			}
@@ -315,10 +317,10 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 						}
 					}
 					if(parent.children.size() == 1 && parent.data == null && !parent.key.equals(""))
-						this.mergeNodes(parent, parent.children.get(0));
+						mergeNodes(parent, parent.children.get(0));
 				} else if(node.children.size() == 1) {
 					data = node.data;
-					this.mergeNodes(node, node.children.get(0));
+					mergeNodes(node, node.children.get(0));
 				} else {
 					data = node.data;
 					node.data = null;
