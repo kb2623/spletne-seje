@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UriQuery implements Field {
-	
+
 	private HashMap<String, String> map;
-	
+
 	public UriQuery(String niz) {
-		if(niz.charAt(0) != '-') {
+		if (niz.charAt(0) != '-') {
 			map = new HashMap<>();
-			for(String s : niz.split("&")) {
+			for (String s : niz.split("&")) {
 				String[] tab = s.split("=");
-				if(tab.length == 2) {
+				if (tab.length == 2) {
 					map.put(tab[0], tab[1]);
 				} else {
 					map.put(tab[0], "-");
@@ -28,11 +28,12 @@ public class UriQuery implements Field {
 	}
 
 	@Override
-	public String izpis() {		
+	public String izpis() {
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
 		if (map == null) builder.append('-');
-		else map.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(" = ").append(e.getValue()).append(']'));
+		else
+			map.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(" = ").append(e.getValue()).append(']'));
 		return builder.append(']').toString();
 	}
 
@@ -41,7 +42,8 @@ public class UriQuery implements Field {
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
 		if (map == null) builder.append('-');
-		else map.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(" = ").append(e.getValue()).append(']'));
+		else
+			map.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(" = ").append(e.getValue()).append(']'));
 		return builder.append(']').toString();
 	}
 
@@ -53,5 +55,10 @@ public class UriQuery implements Field {
 	@Override
 	public FieldType getFieldType() {
 		return FieldType.UriQuery;
+	}
+
+	@Override
+	public String getKey() {
+		return "";
 	}
 }

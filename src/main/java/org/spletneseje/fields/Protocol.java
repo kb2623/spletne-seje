@@ -1,10 +1,10 @@
 package org.spletneseje.fields;
 
 public class Protocol implements Field {
-	
+
 	private String protocol;
 	private float version;
-	
+
 	public Protocol(String protocolAndVersion) {
 		String[] tab = protocolAndVersion.split("/");
 		if (tab.length == 1) {
@@ -42,5 +42,10 @@ public class Protocol implements Field {
 	@Override
 	public FieldType getFieldType() {
 		return FieldType.ProtocolVersion;
+	}
+
+	@Override
+	public String getKey() {
+		return "";
 	}
 }

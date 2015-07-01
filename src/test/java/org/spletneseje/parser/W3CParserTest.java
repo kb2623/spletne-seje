@@ -59,7 +59,7 @@ public class W3CParserTest {
             //Zapri datoteko
             parser.closeFile();
         } catch(ParseException | IOException e) {
-            assert false;
+            fail();
         }
     }
 
@@ -82,7 +82,7 @@ public class W3CParserTest {
             //Zapri datoteko
             parser.closeFile();
         } catch(ParseException | IOException e) {
-            assert false;
+            fail();
         }
     }
 
@@ -100,7 +100,7 @@ public class W3CParserTest {
             assertEquals("[#Fields: | date | time | s-sitename | s-computername | s-ip | cs-method | cs-uri-stem | cs-uri-query | s-port | cs-username | c-ip | cs-version | cs(User-Agent) | cs(Cookie) | cs(Referer) | cs-host | sc-status | sc-substatus | sc-win32-status | sc-bytes | cs-bytes | time-taken]", parser1.parseLine().izpis());
             assertEquals("[2009-03-31 | 23:59:59 | W3SVC1779542266 | GTWEB1 | Server 217.72.80.140 | GET | /oddelki/racunalniskiDodatki/dept.asp | [[dept_id = 2181]] | Server port 80 | - | Client 89.142.123.239 | HTTP version 1.1 | Mozilla/5.0 (Windows; N; Windows NT 6.0; sl; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1 | [[referencna = -][__utmz = 237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa][GAMBIT_ID = 89.142.126.214-4231287712.29944903][ASPSESSIONIDASARQBAB = MDLBNDABLMEFLDGCFIFOJIGM][__utmb = 237691092.48.10.1238543004][__utmc = 237691092][__utma = 237691092.2338317182835442000.1214229487.1238435165.1238543004.8][productsForComparison = 712150%21701041%21610119%21403083]] | /oddelki/racunalnistvo/izd_3298_712150_HP_LaserJet_M1120_MFP | www.enaa.com | 200 | 0 | 0 | 69359 | 901 | 562000]", parser1.parseLine().izpis());
         } catch (ParseException | IOException e) {
-            assert false;
+            fail();
         }
     }
 
@@ -109,7 +109,7 @@ public class W3CParserTest {
         try (AbsParser parser1 = new W3CParser(ClassLoader.getSystemResource(pathW3C + "ex100614.log").getFile())) {
             parser1.forEach(System.out::println);
         } catch (IOException e) {
-            assert false;
+            fail();
         }
     }
 
@@ -120,7 +120,7 @@ public class W3CParserTest {
             parser.forEach(System.out::println);
             parser.closeFile();
         } catch (IOException e) {
-            assert false;
+            fail();
         }
     }
 }

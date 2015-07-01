@@ -24,20 +24,11 @@ public class NCSAParserTest {
 
     private NCSAParser parser;
 
-    public NCSAParserTest() {
-        String os = System.getProperty("os.name");
-        if(os.contains("Windows")) {
-            pathNCSACombined = System.getProperty("user.dir") + "\\Logs\\Combined\\access_log";
-            pathNCSACommon = System.getProperty("user.dir") + "\\Logs\\Common\\logCommon";
-        } else {
-            pathNCSACombined = System.getProperty("user.dir") + "/Logs/Combined/access_log";
-            pathNCSACommon = System.getProperty("user.dir") + "/Logs/Common/logCommon";
-        }
-    }
-
     @Before
     public void setUp() throws Exception {
         parser = new NCSAParser();
+        pathNCSACombined = ClassLoader.getSystemResource("Logs/Combined/access_log").getFile();
+        pathNCSACommon = ClassLoader.getSystemResource("Logs/Common/logCommon").getFile();
     }
 
     @Test

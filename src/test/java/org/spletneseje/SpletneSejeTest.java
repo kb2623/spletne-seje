@@ -26,8 +26,8 @@ public class SpletneSejeTest {
 
     @Before
     public void setUp() {
-        pathNCSACombined = ClassLoader.getSystemResource("/Logs/Combined/access_log").getFile();
-        pathNCSACommon = ClassLoader.getSystemResource("/Logs/Common/logCommon").getFile();
+        pathNCSACombined = ClassLoader.getSystemResource("Logs/Combined/access_log").getFile();
+        pathNCSACommon = ClassLoader.getSystemResource("Logs/Common/logCommon").getFile();
         parser = new NCSAParser();
     }
 

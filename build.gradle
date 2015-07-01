@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.antlr', name: 'antlr', version: '3.5.2'
+    compile group: 'args4j', name: 'args4j', version: '2.32'
+    compile group: 'org.tmatesoft.sqljet', name: 'sqljet', version: '1.1.10'
+    testCompile group: 'org.tmatesoft.sqljet', name: 'sqljet', version: '1.1.10'
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
-    testCompile group: 'org.easymock', name: 'easymock', version: '3.3.1'
 }

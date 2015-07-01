@@ -33,6 +33,11 @@ public class ComputerName implements Field {
 	public boolean equals(Object o) {
 		return o instanceof ComputerName && getName().equals(((ComputerName) o).getName());
 	}
+	
+	@Override
+	public String getKey() {
+		return "";
+	}
 
 	@Override
 	public FieldType getFieldType() {

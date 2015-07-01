@@ -38,4 +38,9 @@ public class Host implements Field {
 	public FieldType getFieldType() {
 		return FieldType.Host;
 	}
+
+	@Override
+	public String getKey() {
+		return "";
+	}
 }

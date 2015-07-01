@@ -4,9 +4,9 @@ import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
 public class SiteName implements Field {
-	
+
 	private String name;
-	
+
 	public SiteName(String name) {
 		this.name = name;
 	}
@@ -33,5 +33,10 @@ public class SiteName implements Field {
 	@Override
 	public FieldType getFieldType() {
 		return FieldType.SiteName;
+	}
+
+	@Override
+	public String getKey() {
+		return "";
 	}
 }
