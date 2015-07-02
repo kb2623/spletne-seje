@@ -1,11 +1,12 @@
 package org.spletneseje.fields.w3c;
 
+import org.spletneseje.database.annotation.Entry;
 import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
 public class Win32Status implements Field {
-	
-	private int status;
+
+	@Entry private int status;
 	
 	public Win32Status(String status) {
 		this.status = Integer.valueOf(status);

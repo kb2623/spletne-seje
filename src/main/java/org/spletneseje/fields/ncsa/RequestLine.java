@@ -2,19 +2,15 @@ package org.spletneseje.fields.ncsa;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.spletneseje.fields.Field;
-import org.spletneseje.fields.FieldType;
-import org.spletneseje.fields.Method;
-import org.spletneseje.fields.Protocol;
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.fields.*;
 
-public class RequestLine implements Field {
+public class RequestLine extends File {
 
-	private Method method;
-	private URL url;
-	private Protocol protocol;
+	@Entry	private Method method;
+	private URL uri;
+	@Entry	private Protocol protocol;
 	/**
 	 * Konstruktor
 	 *
@@ -23,9 +19,9 @@ public class RequestLine implements Field {
 	 * @param protocol Uporabljen protokol
 	 * @throws MalformedURLException Podan nepravilen URL naslov
 	 */
-	public RequestLine(String method, String url, String protocol) throws MalformedURLException {
+	public RequestLine(String method, String uri, String protocol) throws MalformedURLException {
 		String[] tab = protocol.split("/");
-		this.url = new URL(tab[0], "", url);
+		this.uri = new URL(tab[0], "", uri);
 		this.protocol = new Protocol(protocol);
 		this.method = Method.setMethod(method);
 	}
@@ -35,8 +31,8 @@ public class RequestLine implements Field {
 	 * @return Url naslov
 	 * @see URL
 	 */
-	public URL getUrl() {
-		return this.url;
+	public URL getUri() {
+		return this.uri;
 	}
 	/**
 	 * Getter metoda za method
@@ -55,64 +51,45 @@ public class RequestLine implements Field {
 	public Protocol getProtocol() {
 		return protocol;
 	}
-	/**
-	 * Metoda, ki vrne koncnico zahtevanega resursa
-	 *
-	 * @return
-	 *      OK -> Koncnica zahtevanega resursa
-	 *      ERROR -> <code>null</code>
-	 */
-	public String getExtension() {
-		int indexOfExtension = url.getPath().lastIndexOf('.');
-		int indexOfLastSeparator = url.getPath().lastIndexOf('/');
-		return (indexOfExtension < indexOfLastSeparator) ? null : url.getPath().substring(indexOfExtension+1);
-	}
-	/**
-	 * Metoda vrne query string
-	 *
-	 * @return query niz
-	 */
-	public String getQueryToString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append('[');
-		getQuery().entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(" = ").append(e.getValue()).append(']'));
-		return builder.append(']').toString();
-	}
-	/**
-	 * Metoda vrne query niz v sodatkovni strukturi slovar
-	 *
-	 * @return slovar, ki vsebuje kot
-	 *      ključ -> ključ qury niza
-	 *      vrednost -> vresnost query niza
-	 */
-	public Map<String, String> getQuery() {
-		HashMap<String, String> map = new HashMap<>();
-		if (url.getQuery() == null) return map;
-		for (String s : url.getQuery().split("&")) {
-			String[] tmp = s.split("=");
-			map.put(tmp[0], tmp[1]);
-		}
-		return map;
-	}
 
 	@Override
 	public String izpis() {
-		return method.izpis() + " " + url.getPath() + " " + url.getQuery() + " " + protocol.izpis();
-	}
-
-	@Override
-	public String toString() {
-		return method.toString() + " " + url.getPath() + " " + url.getQuery() + " " + protocol.toString();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		return o instanceof RequestLine && (o == this || method == ((RequestLine) o).getMethod() && protocol.equals(((RequestLine) o).getProtocol()) && url.equals(((RequestLine) o).getUrl()));
+		return method.izpis() + " " + uri.getPath() + " " + uri.getQuery() + " " + protocol.izpis();
 	}
 
 	@Override
 	public FieldType getFieldType() {
 		return FieldType.RequestLine;
+	}
+
+	@Override
+	public String getExtension() {
+		int indexOfExtension = uri.getPath().lastIndexOf('.');
+		int indexOfLastSeparator = uri.getPath().lastIndexOf('/');
+		return (indexOfExtension < indexOfLastSeparator) ? null : uri.getPath().substring(indexOfExtension+1);
+	}
+
+	@Override
+	public UriQuery getQuery() {
+		return new UriQuery(uri.getQuery());
+	}
+
+	/**
+	 * @return
+	 */
+	@Override
+	@Entry public String file() {
+		return uri.getFile();
+	}
+
+	@Override
+	public String toString() {
+		return method.toString() + " " + uri.getPath() + " " + uri.getQuery() + " " + protocol.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof RequestLine && (o == this || method == ((RequestLine) o).getMethod() && protocol.equals(((RequestLine) o).getProtocol()) && uri.equals(((RequestLine) o).getUri()));
 	}
 
 }

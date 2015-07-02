@@ -1,9 +1,12 @@
 package org.spletneseje.fields;
 
-public class Port implements Field {
-	
-	private int portNumber;
-	private boolean isServer;
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
+
+@Table public class Port implements Field {
+
+	@Entry(unique = true) private int portNumber;
+	@Entry private boolean isServer;
 	
 	public Port(String number, boolean isServer) {
 		this.isServer = isServer;

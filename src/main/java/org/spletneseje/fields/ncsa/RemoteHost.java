@@ -1,11 +1,13 @@
 package org.spletneseje.fields.ncsa;
 
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
 import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
-public class RemoteHost implements Field {
-	
-	private String name;
+@Table public class RemoteHost implements Field {
+
+	@Entry private String name;
 	
 	public RemoteHost(String name) {
 		if (!name.equalsIgnoreCase("-")) {

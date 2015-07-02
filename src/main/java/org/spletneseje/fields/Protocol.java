@@ -1,15 +1,23 @@
 package org.spletneseje.fields;
 
-public class Protocol implements Field {
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
 
-	private String protocol;
-	private float version;
+@Table public class Protocol implements Field {
+
+	@Entry private String protocol;
+	@Entry(unique = true) private float version;
 
 	public Protocol(String protocolAndVersion) {
 		String[] tab = protocolAndVersion.split("/");
 		if (tab.length == 1) {
-			protocol = tab[0];
-			version = 0;
+			if (tab[0].equalsIgnoreCase("http")) {
+				protocol = tab[0];
+				version = 0;
+			} else {
+				protocol = "HTTP";
+				version = Float.valueOf(tab[0]);
+			}
 		} else {
 			protocol = tab[0];
 			version = Float.valueOf(tab[1]);
@@ -26,7 +34,7 @@ public class Protocol implements Field {
 
 	@Override
 	public String izpis() {
-		return protocol + "/" + version;
+		return protocol + " version " + version;
 	}
 
 	@Override

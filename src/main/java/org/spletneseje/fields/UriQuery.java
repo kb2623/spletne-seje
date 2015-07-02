@@ -1,26 +1,32 @@
 package org.spletneseje.fields;
 
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class UriQuery implements Field {
+@Table public class UriQuery implements Field {
 
-	private HashMap<String, String> map;
+	@Entry private HashMap<String, String> map;
 
 	public UriQuery(String niz) {
-		if (niz.charAt(0) != '-') {
-			map = new HashMap<>();
-			for (String s : niz.split("&")) {
-				String[] tab = s.split("=");
-				if (tab.length == 2) {
-					map.put(tab[0], tab[1]);
-				} else {
-					map.put(tab[0], "-");
-				}
-			}
+		if (niz != null && niz.charAt(0) != '-') {
+			if (niz.charAt(0) == '?') map = setupMap(niz.substring(1));
+			else map = setupMap(niz);
 		} else {
 			map = null;
 		}
+	}
+
+	private HashMap<String, String> setupMap(String niz) {
+		HashMap<String, String> tMap = new HashMap<>();
+		for (String s : niz.split("&")) {
+			String[] tab = s.split("=");
+			if (tab.length == 2) tMap.put(tab[0], tab[1]);
+			else tMap.put(tab[0], "-");
+		}
+		return tMap;
 	}
 
 	public Map<String, String> getMap() {
@@ -41,8 +47,7 @@ public class UriQuery implements Field {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
-		if (map == null) builder.append('-');
-		else
+		if (map != null)
 			map.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(" = ").append(e.getValue()).append(']'));
 		return builder.append(']').toString();
 	}

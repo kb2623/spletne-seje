@@ -1,8 +1,11 @@
 package org.spletneseje.fields;
 
-public class UserAgent implements Field {
-	
-	private String userAgentString;
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
+
+@Table public class UserAgent implements Field {
+
+	@Entry private String userAgentString;
 	
 	public UserAgent(String info, LogType type) {
 		userAgentString = type.parseUserAgent(info);

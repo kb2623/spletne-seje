@@ -3,6 +3,7 @@ package org.spletneseje.fields.ncsa;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.spletneseje.database.annotation.Entry;
 import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
@@ -12,8 +13,8 @@ import org.spletneseje.fields.FieldType;
  *
  */
 public class DateTime implements Field {
-	
-	private LocalDateTime dateTime;
+
+	@Entry private LocalDateTime dateTime;
 	/** 
 	 * @param date Čas predstavljen z nizom
 	 * @param formatter Objek, ki predstavlja format

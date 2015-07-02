@@ -176,7 +176,7 @@ public class NCSAParserTest {
                 if (f == null) {
                     assert false;
                 } else if (f instanceof RequestLine) {
-                    URL r = ((RequestLine) f).getUrl();
+                    URL r = ((RequestLine) f).getUri();
                     System.out.print(((RequestLine) f).getMethod().izpis() + " | " + r.getPath() + " | " + r.getQuery() + " | " + r.getProtocol() + " | ");
                 } else {
                     System.out.print(f.izpis() + " || ");

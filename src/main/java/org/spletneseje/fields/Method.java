@@ -1,10 +1,14 @@
 package org.spletneseje.fields;
+
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
+
 /**
  * Razred sharanjuje podatke o uporabljeni metodi
  * 
  * @author klemen
  */
-public enum Method implements Field {
+@Table public enum Method implements Field {
 
 	// Vse HTTP metode
 	GET {
@@ -106,7 +110,7 @@ public enum Method implements Field {
 	}
 
 	@Override
-	public String toString() {
+	@Entry(unique = true) public String toString() {
 		return getMethod();
 	}
 

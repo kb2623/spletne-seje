@@ -1,11 +1,14 @@
 package org.spletneseje.fields;
 
+import org.spletneseje.database.annotation.Table;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-public class Cookie implements Field {
+@Table(noRowId = true) public class Cookie implements Field {
 
+	@org.spletneseje.database.annotation.Entry
 	private HashMap<String, String> map;
 
 	public Cookie(String line, LogType type) throws IllegalArgumentException {

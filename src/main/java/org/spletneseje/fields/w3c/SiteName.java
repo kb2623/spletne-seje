@@ -1,11 +1,13 @@
 package org.spletneseje.fields.w3c;
 
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
 import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
-public class SiteName implements Field {
+@Table public class SiteName implements Field {
 
-	private String name;
+	@Entry private String name;
 
 	public SiteName(String name) {
 		this.name = name;

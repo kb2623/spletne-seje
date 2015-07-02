@@ -1,11 +1,13 @@
 package org.spletneseje.fields.ncsa;
 
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
 import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
-public class RemoteLogname implements Field {
-	
-	private String logname;
+@Table public class RemoteLogname implements Field {
+
+	@Entry private String logname;
 	
 	public RemoteLogname(String logname) {
 		if(!logname.equalsIgnoreCase("-")) {

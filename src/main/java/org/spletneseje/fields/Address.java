@@ -1,11 +1,14 @@
 package org.spletneseje.fields;
 
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class Address implements Field {
-	
-	private boolean serverAddress;
+@Table public class Address implements Field {
+
+	@Entry private boolean serverAddress;
 	private InetAddress address;
 	
 	public Address(String address, boolean isServerAdderess) throws UnknownHostException {
@@ -19,6 +22,10 @@ public class Address implements Field {
 
 	public InetAddress getAddress() {
 		return address;
+	}
+
+	@Entry(unique = true) private String address() {
+		return address.getHostAddress();
 	}
 
 	@Override

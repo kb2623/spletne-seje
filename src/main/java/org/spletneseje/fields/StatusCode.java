@@ -1,8 +1,10 @@
 package org.spletneseje.fields;
 
+import org.spletneseje.database.annotation.Entry;
+
 public class StatusCode implements Field {
 
-	private int status;
+	@Entry private int status;
 	
 	public StatusCode(String status) {
 		this.status = Integer.valueOf(status);

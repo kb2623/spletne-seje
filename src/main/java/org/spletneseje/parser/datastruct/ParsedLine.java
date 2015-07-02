@@ -5,8 +5,10 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 import org.spletneseje.fields.Field;
+import org.spletneseje.fields.File;
+import org.spletneseje.fields.Referer;
 import org.spletneseje.fields.ncsa.RequestLine;
-import org.spletneseje.fields.w3c.UriStem;
+import org.spletneseje.fields.UriStem;
 
 public class ParsedLine implements Iterable<Field> {
 
@@ -42,28 +44,28 @@ public class ParsedLine implements Iterable<Field> {
 		return false;
 	}
 	/**
-	 * Metoda, ki preverja ali je zahteva po spletni strani ali po resursu za spletno stran.
+	 * Metoda pove ali vrstica v zapisu vsebuje resurs
 	 *
-	 * @return Zahteva resurs ali spletna stran.
+	 * @return
+	 * 		<code>true</code> -> Vrstica vsebuje resurs
+	 * 		<code>false</code> -> Vrstica ne vsebuje resursa li na ne vsebuje polja, ki identificira resurs
 	 */
-	public boolean isResurse() {
-		String extension = getExtension();
-		switch ((extension != null) ? extension : "") {
-		case "php": case "png": case "css": case "js": case "jpg": case "txt": case "gif": case "ico": case "xml": case "csv":
-			return true;
-		default:
-			return false;
+	public boolean isResource() {
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] instanceof File && !(array[i] instanceof Referer)) return ((File) array[i]).isResource();
 		}
+		return false;
 	}
 	/**
-	 * Metoda, ki vrne koncnico zahtevanega resursa.
+	 * Vrne končnico zahtevane resursa
 	 *
-	 * @return Koncnica zahtevanega resursa.
+	 * @return
+	 * 		OK -> niz, ki vsebuje končnico
+	 * 		ERROR -> <code>null</code>
 	 */
 	public String getExtension() {
 		for (int i = 0; i < array.length; i++) {
-			if (array[i] instanceof RequestLine) return ((RequestLine) array[i]).getExtension();
-			if (array[i] instanceof UriStem) return ((UriStem) array[i]).getExtension();
+			if (array[i] instanceof File) return ((File) array[i]).getExtension();
 		}
 		return null;
 	}

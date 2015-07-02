@@ -91,7 +91,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
      * @throws FileNotFoundException
      */
     @Deprecated
-    public void openFile(StringReader input) throws FileNotFoundException {
+    public void openFile(StringReader input) {
         file = new BufferedReader(input);
         if (pos > 0) pos = 0;
     }

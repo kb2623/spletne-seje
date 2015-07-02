@@ -1,11 +1,13 @@
 package org.spletneseje.fields.w3c;
 
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
 import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
-public class Host implements Field {
-	
-	private String host;
+@Table public class Host implements Field {
+
+	@Entry private String host;
 	
 	public Host(String hostName) {
 		if (!hostName.equals("-")) {

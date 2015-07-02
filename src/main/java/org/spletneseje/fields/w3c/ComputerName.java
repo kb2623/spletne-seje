@@ -1,11 +1,13 @@
 package org.spletneseje.fields.w3c;
 
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
 import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
-public class ComputerName implements Field {
-	
-	private String name;
+@Table public class ComputerName implements Field {
+
+	@Entry private String name;
 	
 	public ComputerName(String name) {
 		if(!name.equalsIgnoreCase("-")) {

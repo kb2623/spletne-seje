@@ -30,7 +30,7 @@ public class WebPage {
     }
 
     public boolean add(ParsedLine line) throws NoSuchElementException {
-        if (!line.isResurse()) return false;
+        if (!line.isResource()) return false;
         for (Field entry : line) {
             if (valeList.containsKey(entry.getFieldType())) {
                 List<Field> list = valeList.get(entry.getFieldType());

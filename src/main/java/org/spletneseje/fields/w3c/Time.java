@@ -3,12 +3,13 @@ package org.spletneseje.fields.w3c;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import org.spletneseje.database.annotation.Entry;
 import org.spletneseje.fields.Field;
 import org.spletneseje.fields.FieldType;
 
 public class Time implements Field {
-	
-	private LocalTime time;
+
+	@Entry private LocalTime time;
 	/**
 	 * 
 	 * @param time

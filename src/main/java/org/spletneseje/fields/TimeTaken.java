@@ -1,8 +1,10 @@
 package org.spletneseje.fields;
 
+import org.spletneseje.database.annotation.Entry;
+
 public class TimeTaken implements Field {
-	
-	private long time;
+
+	@Entry private long time;
 	
 	public TimeTaken(String time, boolean milliseconds) {
 		if(milliseconds) {

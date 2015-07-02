@@ -82,6 +82,7 @@ public class W3CParserTest {
             //Zapri datoteko
             parser.closeFile();
         } catch(ParseException | IOException e) {
+            System.out.println(e.getMessage());
             fail();
         }
     }

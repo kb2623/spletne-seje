@@ -55,7 +55,7 @@ public class SpletneSejeTest {
             for (Map.Entry<String, List<ParsedLine>> entry : testMap.entrySet()) {
                 System.out.println(entry.getKey() + " <> " + entry.getValue().size());
                 entry.getValue().stream().forEach((f1) -> {
-                    if (!f1.isResurse()) System.out.print("\t" + f1.izpis() + "\n");
+                    if (!f1.isResource()) System.out.print("\t" + f1.izpis() + "\n");
                 });
                 System.out.println();
             }
@@ -88,7 +88,7 @@ public class SpletneSejeTest {
             for (Map.Entry<String, List<ParsedLine>> entry : testMap.entrySet()) {
                 System.out.println(entry.getKey() + " <> " + entry.getValue().size());
                 entry.getValue().stream().forEach((f1) -> {
-                    if (!f1.isResurse()) System.out.print("\t" + f1.izpis() + "\n");
+                    if (!f1.isResource()) System.out.print("\t" + f1.izpis() + "\n");
                 });
                 System.out.println();
             }

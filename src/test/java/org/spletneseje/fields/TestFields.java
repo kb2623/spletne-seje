@@ -94,12 +94,12 @@ public class TestFields {
 			//Ustvarjanje nove table v PB
 			ISqlJetTable table = jetDb.getTable("employees");
 			//Dodajanje zapisov v PB
-			table.insert("Prochaskova", "Elena", Calendar.getInstance().getTimeInMillis());
-			table.insert("Scherbina", "Sergei", Calendar.getInstance().getTimeInMillis());
-			table.insert("Vadishev", "Semen", Calendar.getInstance().getTimeInMillis());
-			table.insert("Sinjushkin", "Alexander", Calendar.getInstance().getTimeInMillis());
-		    table.insert("Stadnik", "Dmitry", Calendar.getInstance().getTimeInMillis());
-		    table.insert("Kitaev", "Alexander", Calendar.getInstance().getTimeInMillis());
+			System.out.print(table.insert("Prochaskova", "Elena", Calendar.getInstance().getTimeInMillis()) + ", ");
+			System.out.print(table.insert("Scherbina", "Sergei", Calendar.getInstance().getTimeInMillis()) + ", ");
+			System.out.print(table.insert("Vadishev", "Semen", Calendar.getInstance().getTimeInMillis()) + ", ");
+			System.out.print(table.insert("Sinjushkin", "Alexander", Calendar.getInstance().getTimeInMillis()) + ", ");
+			System.out.print(table.insert("Stadnik", "Dmitry", Calendar.getInstance().getTimeInMillis()) + ", ");
+			System.out.println(table.insert("Kitaev", "Alexander", Calendar.getInstance().getTimeInMillis()));
 			jetDb.commit();
 		} catch(Exception e) {
 			jetDb.rollback();
@@ -331,6 +331,71 @@ public class TestFields {
 	}
 
 	@Test
+	public void testSQLightAlterTable() throws SqlJetException {
+		File dbFile = new File("dbFile");
+		dbFile.delete();
+		SqlJetDb jetDb = SqlJetDb.open(dbFile, true);
+		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
+		try {
+			jetDb.createTable("CREATE TABLE employees (id INTEGER PRIMARY KEY ASC, second_name TEXT, first_name TEXT NOT NULL, date_of_birth INTEGER NOT NULL)");
+			jetDb.createIndex("CREATE INDEX sname_index ON employees(second_name)");
+			jetDb.createIndex("CREATE INDEX name_index ON employees(first_name)");
+			jetDb.commit();
+		} catch(Exception e) {
+			jetDb.rollback();
+		}
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("second_name", "Berkovic");
+		map.put("first_name", "Alojz");
+		map.put("date_of_birth", Calendar.getInstance().getTimeInMillis());
+		HashMap<String, Object> map1 = new HashMap<>();
+		map1.put("first_name", "Kristina");
+		map1.put("date_of_birth", Calendar.getInstance().getTimeInMillis());
+		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
+		try {
+			ISqlJetTable table = jetDb.getTable("employees");
+			System.out.println(table.insertByFieldNames(map));
+			table.insertByFieldNames(map1);
+			table.insert("Prochaskova", "Elena", Calendar.getInstance().getTimeInMillis());
+			table.insert("Scherbina", "Sergei", Calendar.getInstance().getTimeInMillis());
+			table.insert("Vadishev", "Semen", Calendar.getInstance().getTimeInMillis());
+			table.insert("Sinjushkin", "Alexander", Calendar.getInstance().getTimeInMillis());
+			table.insert("Stadnik", "Dmitry", Calendar.getInstance().getTimeInMillis());
+			table.insert("Kitaev", "Alexander", Calendar.getInstance().getTimeInMillis());
+			table.insert("Berkovic", "Klemen", Calendar.getInstance().getTimeInMillis());
+			table.insert("Berkovic", "Marko", Calendar.getInstance().getTimeInMillis());
+			table.insert("Berkovic", "Simon", Calendar.getInstance().getTimeInMillis());
+			jetDb.commit();
+		} catch(Exception e) {
+			jetDb.rollback();
+		}
+		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
+		try {
+			jetDb.alterTable("ALTER TABLE employees ADD phone_number INTEGER");
+			jetDb.commit();
+		} catch(Exception e) {
+			jetDb.rollback();
+		}
+		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
+		try {
+			ISqlJetTable table = jetDb.getTable("employees");
+			table.insert("Berkovic", "Kristina", Calendar.getInstance().getTimeInMillis(), 41123123);
+			table.insert("Berkovic", "Alojz", Calendar.getInstance().getTimeInMillis(), 31012012);
+			jetDb.commit();
+		} catch(Exception e) {
+			jetDb.rollback();
+		}
+		System.out.println("Print test!!!");
+		jetDb.beginTransaction(SqlJetTransactionMode.READ_ONLY);
+		ISqlJetTable table = jetDb.getTable("employees");
+		for (ISqlJetCursor cursor = table.open(); !cursor.eof(); cursor.next())
+			System.out.println(cursor.getRowId() + " : " + cursor.getInteger(0) + " " + cursor.getString(1) + " " + cursor.getString(2) + " " + cursor.getInteger(3) + " " + cursor.getInteger(4));
+		jetDb.commit();
+		jetDb.close();
+		dbFile.delete();
+	}
+
+	@Test
 	public void testDateParsing() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
 		LocalDateTime dateTime = LocalDateTime.parse("26/Jul/2002:12:11:52 +0000", formatter);
@@ -343,23 +408,23 @@ public class TestFields {
         assertEquals("GET", line.getMethod().toString());
         assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
         assertEquals("HTTP/1.1", line.getProtocol().toString());
-        assertEquals("[[test = hello][limit = 18]]", line.getQueryToString());
-        assertEquals("/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello", line.getUrl().getFile());
-        assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getUrl().getPath());
+        assertEquals("[[test = hello][limit = 18]]", line.getQuery().toString());
+        assertEquals("/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello", line.getUri().getFile());
+        assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getUri().getPath());
         line = new RequestLine("POST", "/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", "HTTP/1.1");
         assertEquals("POST", line.getMethod().toString());
         assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
         assertEquals("HTTP/1.1", line.getProtocol().toString());
-        assertEquals("[[limit = 10]]", line.getQueryToString());
-        assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", line.getUrl().getFile());
-        assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css", line.getUrl().getPath());
+        assertEquals("[[limit = 10]]", line.getQuery().toString());
+        assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", line.getUri().getFile());
+        assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css", line.getUri().getPath());
         line = new RequestLine("GET", "/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", "HTTP");
         assertEquals("GET", line.getMethod().toString());
         assertEquals(0, line.getProtocol().getVersion(), 0.01);
         assertEquals("HTTP", line.getProtocol().toString());
-        assertEquals("[]", line.getQueryToString());
-        assertEquals("/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", line.getUrl().getFile());
-        assertEquals("/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", line.getUrl().getPath());
+        assertEquals("[]", line.getQuery().toString());
+        assertEquals("/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", line.getUri().getFile());
+        assertEquals("/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", line.getUri().getPath());
     }
 
 }

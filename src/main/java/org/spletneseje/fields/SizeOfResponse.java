@@ -1,8 +1,10 @@
 package org.spletneseje.fields;
 
+import org.spletneseje.database.annotation.Entry;
+
 public class SizeOfResponse implements Field {
-	
-	private int size;
+
+	@Entry private int size;
 	
 	public SizeOfResponse(String size) {
 		this.size = Integer.valueOf(size);

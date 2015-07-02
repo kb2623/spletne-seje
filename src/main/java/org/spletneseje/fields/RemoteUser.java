@@ -1,15 +1,14 @@
 package org.spletneseje.fields;
 
-public class RemoteUser implements Field {
-	
-	private String user;
+import org.spletneseje.database.annotation.Entry;
+import org.spletneseje.database.annotation.Table;
+
+@Table public class RemoteUser implements Field {
+
+	@Entry private String user = null;
 	
 	public RemoteUser(String user) {
-		if(!user.equalsIgnoreCase("-")) {
-			this.user = user;
-		} else {
-			user = null;
-		}
+		if(!user.equalsIgnoreCase("-")) this.user = user;
 	}
 
 	public String getUser() {

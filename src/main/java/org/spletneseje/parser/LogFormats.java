@@ -7,7 +7,7 @@ import java.util.List;
 
 public enum LogFormats {
 
-    CommonLogFormat() {
+    CommonLogFormat {
         @Override
         public List<FieldType> create(List<String> args) {
             List<FieldType> list = new ArrayList<>();
@@ -22,7 +22,7 @@ public enum LogFormats {
             return list;
         }
     },
-    CombinedLogFormat() {
+    CombinedLogFormat {
         @Override
         public List<FieldType> create(List<String> args) {
             List<FieldType> list = LogFormats.CommonLogFormat.create(null);
@@ -32,55 +32,53 @@ public enum LogFormats {
             return list;
         }
     },
-    CustomLogFormat() {
+    CustomLogFormat {
         @Override
         public List<FieldType> create(List<String> args) {
             List<FieldType> list = new ArrayList<>();
             args.forEach(symbol -> {
                 switch (symbol) {
-                case "%%": list.add(null);				        break;
-                case "%a": list.add(FieldType.ClientIP); 		break;
-                case "%A": list.add(FieldType.ServerIP);        break;
-                case "%B": list.add(FieldType.SizeOfResponse);  break;
-                case "%b": list.add(FieldType.SizeOfResponse);  break;
-                case "%C": list.add(FieldType.Cookie);			break;
-                case "%D": list.add(null);				        break;
-                case "%e": list.add(null);				        break;
-                case "%f": list.add(null);				        break;
-                case "%h": list.add(FieldType.RemoteHost);		break;
-                case "%H": list.add(FieldType.ProtocolVersion);	break;
-                case "%i": list.add(null);				        break;
-                case "%k": list.add(null);				        break;
-                case "%l": list.add(FieldType.RemoteLogname);	break;
-                case "%L": list.add(null);				        break;
-                case "%m": list.add(FieldType.Method);			break;
-                case "%n": list.add(null);				        break;
-                case "%o": list.add(null);				        break;
-                case "%p": list.add(FieldType.ServerPort);		break;
-                case "%P": list.add(null);				        break;
-                case "%q": list.add(FieldType.UriQuery);		break;
-                case "%r": list.add(FieldType.RequestLine);		break;
-                case "%R": list.add(null);				        break;
-                case "%s": list.add(FieldType.StatusCode);		break;
-                case "%t": list.add(FieldType.DateTime);		break;
-                case "%T": list.add(FieldType.TimeTaken);		break;
-                case "%u": list.add(FieldType.RemoteUser);		break;
-                case "%U": list.add(FieldType.UriStem);			break;
-                case "%v": list.add(null);				        break;
-                case "%V": list.add(null);				        break;
-                case "%X": list.add(null);				        break;
-                case "%I": list.add(FieldType.SizeOfRequest);	break;
-                case "%O": list.add(null);				        break;
-                case "%S": list.add(null);				        break;
-                case "%^ti": list.add(null);			        break;
-                case "%^to": list.add(null);			        break;
-                default: list.add(null);
+                case "%%": list.add(FieldType.Unknown);	                break;
+                case "%a": list.add(FieldType.ClientIP); 		        break;
+                case "%A": list.add(FieldType.ServerIP);                break;
+                case "%B": list.add(FieldType.SizeOfResponse);          break;
+                case "%b": list.add(FieldType.SizeOfResponse);          break;
+                case "%C": list.add(FieldType.Cookie);			        break;
+                case "%D": list.add(FieldType.TimeTaken);               break;
+                case "%e": list.add(FieldType.Unknown);                 break;
+                case "%f": list.add(FieldType.UriStem);	                break;
+                case "%h": list.add(FieldType.RemoteHost);		        break;
+                case "%H": list.add(FieldType.ProtocolVersion);	        break;
+                case "%k": list.add(FieldType.KeepAliveNumber);         break;
+                case "%l": list.add(FieldType.RemoteLogname);	        break;
+                case "%m": list.add(FieldType.Method);			        break;
+                case "%P": list.add(FieldType.ProcesID);                break;
+                case "%q": list.add(FieldType.UriQuery);		        break;
+                case "%r": list.add(FieldType.RequestLine);		        break;
+                case "%s": list.add(FieldType.StatusCode);		        break;
+                case "%t": list.add(FieldType.DateTime);		        break;
+                case "%T": list.add(FieldType.TimeTaken);		        break;
+                case "%u": list.add(FieldType.RemoteUser);		        break;
+                case "%U": list.add(FieldType.UriStem);			        break;
+                case "%v": list.add(FieldType.ComputerName);            break;
+                case "%V": list.add(FieldType.ComputerName);            break;
+                case "%X": list.add(null);				                break;
+                case "%I": list.add(FieldType.SizeOfRequest);	        break;
+                case "%O": list.add(FieldType.SizeOfResponse);          break;
+                case "%S": list.add(FieldType.SizeOfTransfer);          break;
+                case "%^ti": list.add(null);			                break;
+                case "%^to": list.add(null);			                break;
+                case "%p":
+                case "%{local}p":
+                case "%{canonical}p": list.add(FieldType.ServerPort);   break;
+                case "%{remote}p": list.add(FieldType.ClientPort);      break;
+                default: list.add(FieldType.Unknown);
                 }
             });
             return list;
         }
     },
-    ExtendedLogFormat() {
+    ExtendedLogFormat {
         @Override
         public List<FieldType> create(List<String> args) {
             List<FieldType> list = new ArrayList<>();
@@ -109,6 +107,7 @@ public enum LogFormats {
                 case "sc-bytes":		list.add(FieldType.SizeOfResponse);	break;
                 case "cs-bytes":		list.add(FieldType.SizeOfRequest);	break;
                 case "time-taken":		list.add(FieldType.TimeTaken);		break;
+                case "#Fields:":                                            break;
                 default:				list.add(FieldType.Unknown);		break;
                 }
             });
