@@ -17,5 +17,7 @@ public interface Field {
 	 *
 	 * @return
 	 */
-	FieldType getFieldType();
+	default FieldType getFieldType() {
+		return null;
+	}
 }

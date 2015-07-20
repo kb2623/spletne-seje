@@ -1,9 +1,7 @@
-package org.sessionization.fields.w3c;
+package org.sessionization.fields;
 
-import org.sessionization.fields.FieldType;
 import org.oosqljet.annotation.Entry;
 import org.oosqljet.annotation.Table;
-import org.sessionization.fields.Field;
 
 @Table public class Host implements Field {
 

@@ -6,8 +6,7 @@ import java.net.URL;
 
 public class FileQuery extends File {
 
-	@Entry
-	private UriQuery query;
+	@Entry private UriQuery query;
 
 	public FileQuery(URL url) {
 		super(url.getFile());

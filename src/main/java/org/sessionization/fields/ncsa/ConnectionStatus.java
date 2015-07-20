@@ -6,15 +6,9 @@ import org.oosqljet.annotation.Table;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
-@Table public enum ConnectionStatus implements Field, SqlMapping<ConnectionStatus, Integer> {
+@Table public enum ConnectionStatus implements Field {
 
     KeepAliveResponse {
-        @Override
-        public Integer inMaping(ConnectionStatus connectionStatus) {
-            // TODO
-            return null;
-        }
-
         @Override
         public String izpis() {
             return "+";
@@ -22,23 +16,11 @@ import org.sessionization.fields.FieldType;
     },
     CloseResponse {
         @Override
-        public Integer inMaping(ConnectionStatus connectionStatus) {
-            // TODO
-            return null;
-        }
-
-        @Override
         public String izpis() {
             return "-";
         }
     },
     Aborted {
-        @Override
-        public Integer inMaping(ConnectionStatus connectionStatus) {
-            // TODO
-            return null;
-        }
-
         @Override
         public String izpis() {
             return "X";
@@ -65,11 +47,5 @@ import org.sessionization.fields.FieldType;
     @Override
     public FieldType getFieldType() {
         return FieldType.ConnectionStatus;
-    }
-
-    @Override
-    public ConnectionStatus outMaping(Integer in) {
-        // TODO
-        return null;
     }
 }

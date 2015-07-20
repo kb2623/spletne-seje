@@ -1,6 +1,5 @@
 package org.sessionization.fields;
 
-import org.oosqljet.SqlMapping;
 import org.oosqljet.annotation.Table;
 
 /**
@@ -8,16 +7,10 @@ import org.oosqljet.annotation.Table;
  * 
  * @author klemen
  */
-@Table public enum Method implements Field, SqlMapping<Method, Integer> {
+@Table public enum Method implements Field {
 
 	// Vse HTTP metode
 	GET {
-        @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
         @Override
 		public String getMethod() {
 			return "GET";
@@ -25,23 +18,11 @@ import org.oosqljet.annotation.Table;
 	},
 	HEAD() {
         @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
-        @Override
 		public String getMethod() {
 			return "HEAD";
 		}
 	},
 	POST() {
-        @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
         @Override
 		public String getMethod() {
 			return "POST";
@@ -49,23 +30,11 @@ import org.oosqljet.annotation.Table;
 	},
 	PUT() {
         @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
-        @Override
 		public String getMethod() {
 			return "PUT";
 		}
 	},
 	DELETE() {
-        @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
         @Override
 		public String getMethod() {
 			return "DELETE";
@@ -73,47 +42,23 @@ import org.oosqljet.annotation.Table;
 	},
 	TRACE() {
         @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
-        @Override
 		public String getMethod() {
 			return "TRACE";
 		}
 	},
 	OPTIONS() {
         @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
-        @Override
 		public String getMethod() {
 			return "OPTIONS";
 		}
 	},
 	CONNECT() {
-        @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
-        @Override
+		@Override
 		public String getMethod() {
 			return "CONNECT";
 		}
 	},
 	PATCH() {
-        @Override
-        public Integer inMaping(Method method) {
-            // TODO
-            return null;
-        }
-
         @Override
 		public String getMethod() {
 			return "PATCH";
@@ -172,10 +117,4 @@ import org.oosqljet.annotation.Table;
 	public FieldType getFieldType() {
 		return FieldType.Method;
 	}
-
-    @Override
-    public Method outMaping(Integer in) {
-        // TODO
-        return null;
-    }
 }

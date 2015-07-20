@@ -14,10 +14,6 @@ public class TableClass {
         return getAnnotation().name().isEmpty() ? c.getSimpleName() : getAnnotation().name();
     }
 
-    public Class getType() {
-        return c;
-    }
-
     public Table getAnnotation() {
         return (Table) c.getAnnotation(Table.class);
     }

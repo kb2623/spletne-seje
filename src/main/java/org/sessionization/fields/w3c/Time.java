@@ -3,14 +3,12 @@ package org.sessionization.fields.w3c;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import org.oosqljet.SqlMapping;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
-import org.oosqljet.annotation.Entry;
 
-public class Time implements Field, SqlMapping<LocalTime, Long> {
+public class Time implements Field {
 
-	@Entry private LocalTime time;
+	private LocalTime time;
 	/**
 	 * 
 	 * @param time
@@ -43,16 +41,4 @@ public class Time implements Field, SqlMapping<LocalTime, Long> {
 	public FieldType getFieldType() {
 		return FieldType.Time;
 	}
-
-    @Override
-    public Long inMaping(LocalTime localTime) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    public LocalTime outMaping(Long in) {
-        // TODO
-        return null;
-    }
 }

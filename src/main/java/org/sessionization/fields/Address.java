@@ -1,13 +1,12 @@
 package org.sessionization.fields;
 
-import org.oosqljet.SqlMapping;
 import org.oosqljet.annotation.Entry;
 import org.oosqljet.annotation.Table;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-@Table public class Address implements Field, SqlMapping<InetAddress, String> {
+@Table public class Address implements Field {
 
 	@Entry private boolean serverAddress;
 	@Entry private InetAddress address;
@@ -48,17 +47,5 @@ import java.net.UnknownHostException;
 	@Override
 	public FieldType getFieldType() {
 		return (serverAddress) ? FieldType.ServerIP : FieldType.ClientIP;
-	}
-
-	@Override
-	public String inMaping(InetAddress inetAddress) {
-		//TODO
-		return null;
-	}
-
-	@Override
-	public InetAddress outMaping(String in) {
-		//TODO
-		return null;
 	}
 }

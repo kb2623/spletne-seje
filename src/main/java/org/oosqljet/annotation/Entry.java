@@ -8,40 +8,45 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Entry {
-    /**
-     *
-     * @return
-     */
-    String[] name() default "";
-    /**
-     *
-     * @return
-     */
-    boolean primaryKey() default false;
-    /**
-     *
-     * @return
-     */
-    String[] index() default "";
-    /**
-     *
-     * @return
-     */
-    boolean notNull() default true;
-    /**
-     *
-     * @return
-     */
-    boolean unique() default false;
 	/**
 	 *
 	 * @return
 	 */
-	boolean autoincrement() default false;
-    /**
-     *
-     * @return
-     */
-    Direction increment() default Direction.ASC;
+	String[] name() default "";
+	/**
+	 *
+	 * @return
+	 */
+	String[] arrayName() default "";
+	/**
+	 *
+	 * @return
+	 */
+	String[] mapName() default "";
+	/**
+	 *
+	 * @return
+	 */
+	String enumName() default "";
+	/**
+	 *
+	 * @return
+	 */
+	boolean primaryKey() default false;
+	/**
+	 *
+	 * @return
+	 */
+	String[] index() default "";
+	/**
+	 *
+	 * @return
+	 */
+	boolean notNull() default false;
+	/**
+	 *
+	 * @return
+	 */
+	boolean unique() default false;
 
 }

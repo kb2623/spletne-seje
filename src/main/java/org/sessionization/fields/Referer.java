@@ -1,7 +1,6 @@
 package org.sessionization.fields;
 
 import org.oosqljet.annotation.Entry;
-import org.sessionization.fields.w3c.Host;
 
 import java.net.URL;
 

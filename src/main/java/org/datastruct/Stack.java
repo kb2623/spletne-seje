@@ -1,5 +1,7 @@
 package org.datastruct;
 
+import java.util.NoSuchElementException;
+
 public class Stack<T> {
 	
 	class StackNode {
@@ -19,24 +21,24 @@ public class Stack<T> {
 		this.top = null; 
 	}
 
+	public Stack(T data) {
+		push(data);
+	}
+
 	public void push(T e) { 
 		this.top = new StackNode(e, this.top); 
 	}
 
-	public T pop() {
-		if(this.isEmpty()) {
-			return null;
-		}
+	public T pop() throws NoSuchElementException {
+		if(this.isEmpty()) throw new NoSuchElementException();
 		T ret = this.top.data;
 		this.top = this.top.prev;
 		return ret;
 	}
 
 	public T peek() {
-		if(this.isEmpty()) {
-			return null;
-		}
-		return this.top.data;
+		if(this.isEmpty()) return null;
+		else return this.top.data;
 	}
 	
 	public boolean isEmpty() {

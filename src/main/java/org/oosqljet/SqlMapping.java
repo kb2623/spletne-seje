@@ -1,16 +1,28 @@
 package org.oosqljet;
 
-public interface SqlMapping<I, O> {
+import java.lang.reflect.ParameterizedType;
+
+/**
+ * @param <I> Tip objekta, ki ga želimo zapisati v podatkovno bazo. Tip je omejen na primitivne podatkovne tipe, ter String. v nasprotnem primeru dobimo napako.
+ * @param <O> Tip obkekta, ki ga zapišemo v podatkovno bazo
+ */
+public abstract class SqlMapping<I, O> {
     /**
-     *
-     * @param in
-     * @return
+     * Metoda, ki pretvori objekt <code>in</code> v obliko za zapis v podatkovno bazo.
+	 *
+     * @param in Objekt ki za želimo zapisati v podatkovno bazo
+     * @return Objekt v obliki za zapis v podatkovno bazo
      */
-    O inMaping(I in);
+    public abstract O inMapping(I in);
     /**
-     *
-     * @param in
-     * @return
+     * Metoda, ki pretvori objekt <code>in</code> v objekt, ki ga imamo v razredu.
+	 *
+     * @param in Objekt iz podatkovne baze
+     * @return Objekt, ki se nahaja v razredu
      */
-    I outMaping(O in);
+    public abstract I outMapping(O in);
+
+	protected Class getReturnType(Class<? extends I> parameterType) throws NoSuchMethodException {
+		return this.getClass().getMethod("inMapping", parameterType).getReturnType();
+	}
 }

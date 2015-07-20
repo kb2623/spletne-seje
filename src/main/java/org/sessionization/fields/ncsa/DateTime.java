@@ -3,8 +3,6 @@ package org.sessionization.fields.ncsa;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.oosqljet.SqlMapping;
-import org.oosqljet.annotation.Entry;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
@@ -13,9 +11,9 @@ import org.sessionization.fields.FieldType;
  * @author klemen
  *
  */
-public class DateTime implements Field, SqlMapping<LocalDateTime, Long> {
+public class DateTime implements Field {
 
-	@Entry private LocalDateTime dateTime;
+	private LocalDateTime dateTime;
 	/** 
 	 * @param date Čas predstavljen z nizom
 	 * @param formatter Objek, ki predstavlja format
@@ -46,17 +44,5 @@ public class DateTime implements Field, SqlMapping<LocalDateTime, Long> {
 	@Override
 	public FieldType getFieldType() {
 		return FieldType.DateTime;
-	}
-
-	@Override
-	public Long inMaping(LocalDateTime localDateTime) {
-        // TODO
-		return null;
-	}
-
-	@Override
-	public LocalDateTime outMaping(Long in) {
-        // TODO
-		return null;
 	}
 }

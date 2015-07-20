@@ -1,10 +1,9 @@
 package org.oosqljet;
 
-import org.oosqljet.annotation.Direction;
 import org.oosqljet.annotation.Entry;
 import org.oosqljet.annotation.Table;
 
-@Table(name = "test") public class TestClass implements SqlMapping<Long, Long> {
+@Table(name = "test") public class TestClass {
     @Entry int pInt = 10;
 
     @Entry boolean pBool = false;
@@ -27,22 +26,12 @@ import org.oosqljet.annotation.Table;
 
     @Entry public String date;
 
-    @Entry private Direction dirrection = Direction.ASC;
-
     @Entry Object[] array = {10, "asdf"};
+
+	@Entry TestClass test;
 
     public TestClass(String name, String date) {
         this.name = name;
         this.date = date;
     }
-
-	@Override
-	public Long inMaping(Long in) {
-		return null;
-	}
-
-	@Override
-	public Long outMaping(Long in) {
-		return null;
-	}
 }

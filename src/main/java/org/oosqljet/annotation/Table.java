@@ -18,4 +18,9 @@ public @interface Table {
      * @return
      */
     boolean noRowId() default false;
+	/**
+	 *
+	 * @return
+	 */
+	boolean autoId() default false;
 }

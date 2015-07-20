@@ -5,7 +5,7 @@ import org.oosqljet.annotation.Table;
 
 import java.net.URL;
 
-@Table public class File {
+@Table public abstract class File implements Field {
 
 	@Entry private String file;
 
@@ -13,7 +13,6 @@ import java.net.URL;
 		if(!file.equals("-"))  this.file = file;
 		else this.file = null;
 	}
-
 	/**
 	 * Getter metoda za URL
 	 *
