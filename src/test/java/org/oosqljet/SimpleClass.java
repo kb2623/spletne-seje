@@ -1,17 +1,17 @@
 package org.oosqljet;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 import java.time.LocalDateTime;
 
 @Table(autoId = true) public class SimpleClass {
 
-	@Entry
+	@Column
 	private String name;
-	@Entry(name = {"sec_name", "we_will_not_need_this1", "we_will_not_need_this2"})
+	@Column(name = {"sec_name", "we_will_not_need_this1", "we_will_not_need_this2"})
 	private String surname;
-	@Entry(name = "date_of_birth")
+	@Column(name = "date_of_birth")
 	private LocalDateTime born;
 
 	public SimpleClass(String name, String surname, LocalDateTime date) {

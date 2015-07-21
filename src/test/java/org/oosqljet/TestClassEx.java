@@ -1,6 +1,6 @@
 package org.oosqljet;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +8,10 @@ import java.util.List;
 
 public class TestClassEx extends TestClass {
 
-    @Entry private Collection collection;
-    @Entry private List list;
+    @Column
+	 private Collection collection;
+    @Column
+	 private List list;
 
     public TestClassEx(String name, String date) {
         super(name, date);

@@ -1,37 +1,51 @@
 package org.oosqljet;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
-@Table(name = "test") public class TestClass {
-    @Entry int pInt = 10;
+@Table(name = "test")
+public class TestClass {
+	@Column
+	int pInt = 10;
 
-    @Entry boolean pBool = false;
+	@Column
+	boolean pBool = false;
 
-    @Entry double pDouble = 1.3;
+	@Column
+	double pDouble = 1.3;
 
-    @Entry float pFloat = 1;
+	@Column
+	float pFloat = 1;
 
-    @Entry char pChar = 'a';
+	@Column
+	char pChar = 'a';
 
-    @Entry long pLong = 2;
+	@Column
+	long pLong = 2;
 
-	@Entry byte pByte = 2;
+	@Column
+	byte pByte = 2;
 
-    @Entry short pShort = 2;
+	@Column
+	short pShort = 2;
 
-    @Entry int[] primitiveArray = {1, 2, 3};
+	@Column
+	int[] primitiveArray = {1, 2, 3};
 
-    @Entry(primaryKey = true) private String name;
+	@Column(primaryKey = true)
+	private String name;
 
-    @Entry public String date;
+	@Column
+	public String date;
 
-    @Entry Object[] array = {10, "asdf"};
+	@Column
+	Object[] array = {10, "asdf"};
 
-	@Entry TestClass test;
+	@Column
+	TestClass test;
 
-    public TestClass(String name, String date) {
-        this.name = name;
-        this.date = date;
-    }
+	public TestClass(String name, String date) {
+		this.name = name;
+		this.date = date;
+	}
 }

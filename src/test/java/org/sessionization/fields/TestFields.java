@@ -76,7 +76,7 @@ public class TestFields {
         assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
         assertEquals("HTTP/1.1", line.getProtocol().toString());
         assertEquals("[[test = hello][limit = 18]]", line.getFile().getQuery().toString());
-        assertEquals("/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello", line.getFile().toString());
+        assertEquals("/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello[[test = hello][limit = 18]]", line.getFile().toString());
         assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getFile().getFile());
         line = new RequestLine("POST", "/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", "HTTP/1.1");
         assertEquals("POST", line.getMethod().toString());
@@ -97,7 +97,7 @@ public class TestFields {
 	public void testReferer() throws MalformedURLException {
 		URL u = new URL("http://sfashion.si/hlace?limit=30");
 		System.out.println(u.getAuthority() + "\n" + u.getFile());
-		u = new URL("http/1.1", null, "/hlace?limit=30");
+		u = new URL("http", null, "/hlace?limit=30");
 		System.out.println(u.getProtocol() + "\n" + u.getFile());
 	}
 

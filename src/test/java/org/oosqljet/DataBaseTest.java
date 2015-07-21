@@ -13,6 +13,12 @@ import org.sessionization.fields.File;
 import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 import org.sessionization.fields.Referer;
+import org.tmatesoft.sqljet.core.SqlJetException;
+import org.tmatesoft.sqljet.core.SqlJetTransactionMode;
+import org.tmatesoft.sqljet.core.schema.ISqlJetColumnDef;
+import org.tmatesoft.sqljet.core.table.ISqlJetCursor;
+import org.tmatesoft.sqljet.core.table.ISqlJetTable;
+import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -33,7 +39,7 @@ public class DataBaseTest {
 	}
 
 	@Test(expected = TableAnnotationException.class)
-	public void testCreateTables() throws EntryAnnotationException, NoSuchMethodException, TableAnnotationException, IllegalAccessException {
+	public void testCreateTables() throws EntryAnnotationException, NoSuchMethodException, TableAnnotationException, IllegalAccessException, SqlJetException {
 		db.createTables("hello");
 	}
 
@@ -60,7 +66,7 @@ public class DataBaseTest {
 		System.out.println("\nFields with Field Annotation");
 		Field[] fields = anotations.getClass().getDeclaredFields();
 		for (Field field : fields) {
-			if (field.isAnnotationPresent(Entry.class)) {
+			if (field.isAnnotationPresent(Column.class)) {
 				System.out.print(field.getName() + " - " + field.getType().getName() + " >> ");
 				if (field.getType().isPrimitive()) System.out.print("primitive ");
 				if (field.getType().isArray()) System.out.print("array ");
@@ -131,61 +137,6 @@ public class DataBaseTest {
 				i++;
 		} catch (ClassCastException ignore) {}
 		return i;
-	}
-
-	@Test
-	public void testSQLight() throws ClassNotFoundException, SQLException {
-		Connection con = null;
-		Statement stat = null;
-		Class.forName("org.sqlite.JDBC");
-		java.io.File dbFile = new java.io.File("dbFile");
-		try {
-			con = DriverManager.getConnection("jdbc:sqlite:" + dbFile.toString());
-			con.setAutoCommit(false);
-		} catch (SQLException e) {
-			fail(e.getMessage());
-		}
-		try {
-			stat = con.createStatement();
-			stat.execute("CREATE TABLE employees (id INTEGER, second_name TEXT NOT NULL , first_name TEXT NOT NULL, date_of_birth INTEGER NOT NULL, PRIMARY KEY(id ASC))");
-			stat.close();
-			con.commit();
-		} catch (SQLException e) {
-			con.rollback();
-			fail(e.getMessage());
-		}
-		try {
-			stat = con.createStatement();
-			stat.execute("INSERT INTO employees VALUES(null, Prochaskova, Elena," + Calendar.getInstance().getTimeInMillis() + ")");
-			stat.execute("INSERT INTO employees VALUES(null, Scherbina, Sergei," + Calendar.getInstance().getTimeInMillis() + ")");
-			stat.execute("INSERT INTO employees VALUES(null, Vadishev, Semen," + Calendar.getInstance().getTimeInMillis() + ")");
-			stat.execute("INSERT INTO employees VALUES(null, Sinjushkin, Alexander," + Calendar.getInstance().getTimeInMillis() + ")");
-			stat.execute("INSERT INTO employees VALUES(null, Stadnik, Dmitry," + Calendar.getInstance().getTimeInMillis() + ")");
-			stat.execute("INSERT INTO employees VALUES(null, Kitaev, Dmitry," + Calendar.getInstance().getTimeInMillis() + ")");
-			stat.execute("INSERT INTO employees VALUES(null, Kitaev, Alexander," + Calendar.getInstance().getTimeInMillis() + ")");
-			stat.close();
-			con.commit();
-		} catch (SQLException e) {
-			con.rollback();
-			fail(e.getMessage());
-		}
-		try {
-			stat = con.createStatement();
-			for (ResultSet set = stat.executeQuery("SELECT * FROM employees"); set.next(); ) {
-				System.out.println(set.getInt(0) + " " + set.getString(1) + " " + set.getString(2) + " " + set.getInt(3));
-			}
-			stat.close();
-			con.commit();
-		} catch (SQLException e) {
-			fail(e.getMessage());
-		}
-		try {
-			con.close();
-		} catch (SQLException e) {
-			con.rollback();
-			fail(e.getMessage());
-		}
-		dbFile.delete();
 	}
 
 	@Test
@@ -712,8 +663,8 @@ public class DataBaseTest {
 
 	private class TestNoAnno {
 
-		@Entry private int number;
-		@Entry private String line;
+		@Column private int number;
+		@Column private String line;
 
 	}
 
@@ -768,13 +719,13 @@ public class DataBaseTest {
 
 	@Table
 	private class TClass0 {
-		@Entry(primaryKey = true)
+		@Column(primaryKey = true)
 		private int number;
-		@Entry(primaryKey = true, name = {"pk1", "pk2", "pk3", "pk4"})
+		@Column(primaryKey = true, name = {"pk1", "pk2", "pk3", "pk4"})
 		private TClass1 tclass1;
-		@Entry
+		@Column
 		private String text;
-		@Entry(name = {"pp_id"})
+		@Column(name = {"pp_id"})
 		private TClass3 tclass3;
 
 		public TClass0() {
@@ -787,9 +738,9 @@ public class DataBaseTest {
 
 	@Table
 	private class TClass1 {
-		@Entry(primaryKey = true)
+		@Column(primaryKey = true)
 		private int number;
-		@Entry(primaryKey = true, name = {"pk1_c1", "pk2_c1"})
+		@Column(primaryKey = true, name = {"pk1_c1", "pk2_c1"})
 		private TClass2 tclass2;
 
 		public TClass1() {
@@ -800,11 +751,11 @@ public class DataBaseTest {
 
 	@Table
 	private class TClass2 {
-		@Entry
+		@Column
 		private int number;
-		@Entry(primaryKey = true)
+		@Column(primaryKey = true)
 		private String text;
-		@Entry(primaryKey = true)
+		@Column(primaryKey = true)
 		private float realNum;
 
 		public TClass2() {
@@ -816,11 +767,11 @@ public class DataBaseTest {
 
 	@Table
 	private class TClass3 {
-		@Entry(primaryKey = true)
+		@Column(primaryKey = true)
 		private int number;
-		@Entry
+		@Column
 		private double realNum;
-		@Entry(name = {"pk1", "pk2", "pk3"})
+		@Column(name = {"pk1", "pk2", "pk3"})
 		private TClass1 tclass1;
 
 		public TClass3() {
@@ -866,13 +817,13 @@ public class DataBaseTest {
 
 	@Table
 	private class TClassArray {
-		@Entry
+		@Column
 		private int[] tab1;
-		@Entry
+		@Column
 		private int[][] tab2;
-		@Entry
+		@Column
 		private List<Integer> list1;
-		@Entry
+		@Column
 		private List<List<Integer>> list2;
 
 		public TClassArray() {
@@ -913,9 +864,9 @@ public class DataBaseTest {
 
 	@Table(autoId = true)
 	private class TClassOneE {
-	  @Entry
+	  @Column
 	  private int num;
-	  @Entry
+	  @Column
 	  private float fNum;
 
 	  public TClassOneE() {
@@ -926,7 +877,7 @@ public class DataBaseTest {
 
 	@Table
 	private class TClassTwoE extends TClassOneE {
-	  @Entry
+	  @Column
 	  private double dNum;
 	  private int num;
 	  private float fNum;
@@ -961,7 +912,7 @@ public class DataBaseTest {
 	}
 
 	private class TClassTwoEE extends TClassOneE {
-	  @Entry
+	  @Column
 	  private double dNum;
 	  private int num;
 	  private float fNum;

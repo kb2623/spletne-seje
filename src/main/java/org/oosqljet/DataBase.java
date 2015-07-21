@@ -1,6 +1,11 @@
 package org.oosqljet;
 
 import org.oosqljet.exception.*;
+import org.tmatesoft.sqljet.core.SqlJetException;
+import org.tmatesoft.sqljet.core.SqlJetTransactionMode;
+import org.tmatesoft.sqljet.core.schema.ISqlJetColumnDef;
+import org.tmatesoft.sqljet.core.table.ISqlJetTable;
+import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,16 +22,16 @@ public class DataBase implements AutoCloseable {
 		mappings = new HashMap<>();
 	}
 
-	public DataBase(File file) throws FileNotFoundException {
+	public DataBase(File file) throws FileNotFoundException, SqlJetException {
 		if (file.isFile()) data = SqlJetDb.open(file, true);
 		else throw new FileNotFoundException("[" + file.getPath() + "] is not a file");
 	}
 
-	public DataBase(String path) throws FileNotFoundException {
+	public DataBase(String path) throws FileNotFoundException, SqlJetException {
 		this(new File(path));
 	}
 
-	public void open(File file) throws DataBaseFileException, FileNotFoundException {
+	public void open(File file) throws DataBaseFileException, FileNotFoundException, SqlJetException {
 		if (data == null || !data.isOpen()) {
 			if (file.isFile()) data = SqlJetDb.open(file, true);
 			else throw new FileNotFoundException("[" + file.getPath() + "] is not a file");
@@ -84,7 +89,7 @@ public class DataBase implements AutoCloseable {
 				if (entrys.get(cDef.getName()) != null) entrys.remove(cDef.getName());
 			}
 			if (!entrys.isEmpty()) {
-				// TODO
+				// TODO Če slučajno dobiš primarni ključ potem moreš prepisati vse podatki, izbrisati tabelo in ustvariti novo tabelo
 				System.out.println("Aletering table");
 				for (EntryClass e : entrys.values()) {
 				  System.out.println(e.getName(0));
