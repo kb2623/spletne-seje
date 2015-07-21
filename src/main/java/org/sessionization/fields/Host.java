@@ -1,11 +1,11 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 @Table public class Host implements Field {
 
-	@Entry private String host;
+	@Column private String host;
 	
 	public Host(String hostName) {
 		if (!hostName.equals("-")) {

@@ -1,12 +1,12 @@
 package org.sessionization.fields.w3c;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
 public class SubStatus implements Field {
 
-	@Entry private int status;
+	@Column private int status;
 	
 	public SubStatus(String status) {
 		this.status = Integer.valueOf(status);

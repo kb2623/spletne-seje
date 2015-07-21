@@ -1,12 +1,12 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 @Table public class Protocol implements Field {
 
-	@Entry private String protocol;
-	@Entry(unique = true) private float version;
+	@Column private String protocol;
+	@Column(unique = true) private float version;
 
 	public Protocol(String protocolAndVersion) {
 		String[] tab = protocolAndVersion.split("/");

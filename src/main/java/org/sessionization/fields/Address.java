@@ -1,6 +1,6 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 import java.net.InetAddress;
@@ -8,8 +8,8 @@ import java.net.UnknownHostException;
 
 @Table public class Address implements Field {
 
-	@Entry private boolean serverAddress;
-	@Entry private InetAddress address;
+	@Column private boolean serverAddress;
+	@Column private InetAddress address;
 	
 	public Address(String address, boolean isServerAdderess) throws UnknownHostException {
 		this.serverAddress = isServerAdderess;

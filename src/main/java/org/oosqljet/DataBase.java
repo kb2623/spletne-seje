@@ -1,11 +1,6 @@
 package org.oosqljet;
 
 import org.oosqljet.exception.*;
-import org.tmatesoft.sqljet.core.SqlJetException;
-import org.tmatesoft.sqljet.core.SqlJetTransactionMode;
-import org.tmatesoft.sqljet.core.schema.ISqlJetColumnDef;
-import org.tmatesoft.sqljet.core.table.ISqlJetTable;
-import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,16 +17,16 @@ public class DataBase implements AutoCloseable {
 		mappings = new HashMap<>();
 	}
 
-	public DataBase(File file) throws SqlJetException, FileNotFoundException {
+	public DataBase(File file) throws FileNotFoundException {
 		if (file.isFile()) data = SqlJetDb.open(file, true);
 		else throw new FileNotFoundException("[" + file.getPath() + "] is not a file");
 	}
 
-	public DataBase(String path) throws SqlJetException, FileNotFoundException {
+	public DataBase(String path) throws FileNotFoundException {
 		this(new File(path));
 	}
 
-	public void open(File file) throws SqlJetException, DataBaseFileException, FileNotFoundException {
+	public void open(File file) throws DataBaseFileException, FileNotFoundException {
 		if (data == null || !data.isOpen()) {
 			if (file.isFile()) data = SqlJetDb.open(file, true);
 			else throw new FileNotFoundException("[" + file.getPath() + "] is not a file");
@@ -91,6 +86,10 @@ public class DataBase implements AutoCloseable {
 			if (!entrys.isEmpty()) {
 				// TODO
 				System.out.println("Aletering table");
+				for (EntryClass e : entrys.values()) {
+				  System.out.println(e.getName(0));
+				}
+				System.out.println();
 			}
 		} catch (SqlJetException ignore) {
 			if (table != null) {

@@ -1,7 +1,5 @@
 package org.sessionization.fields.ncsa;
 
-import org.oosqljet.SqlMapping;
-import org.oosqljet.annotation.Entry;
 import org.oosqljet.annotation.Table;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;

@@ -2,12 +2,12 @@ package org.sessionization.fields.w3c;
 
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 @Table public class SiteName implements Field {
 
-	@Entry private String name;
+	@Column private String name;
 
 	public SiteName(String name) {
 		this.name = name;

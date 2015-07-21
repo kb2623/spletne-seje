@@ -4,14 +4,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.sessionization.fields.*;
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.sessionization.fields.Method;
 
 public class RequestLine implements Field {
 
-	@Entry private Method method;
-	@Entry private FileQuery uri;
-	@Entry private Protocol protocol;
+	@Column private Method method;
+	@Column private FileQuery uri;
+	@Column private Protocol protocol;
 	/**
 	 * Konstruktor
 	 *

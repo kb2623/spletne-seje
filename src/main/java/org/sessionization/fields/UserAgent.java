@@ -1,11 +1,11 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 @Table public class UserAgent implements Field {
 
-	@Entry private String userAgentString;
+	@Column private String userAgentString;
 	
 	public UserAgent(String info, LogType type) {
 		userAgentString = type.parseUserAgent(info);

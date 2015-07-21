@@ -10,15 +10,9 @@ import org.oosqljet.exception.SqlMappingException;
 import org.oosqljet.exception.TableAnnotationException;
 import org.sessionization.fields.FieldType;
 import org.sessionization.fields.File;
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 import org.sessionization.fields.Referer;
-import org.tmatesoft.sqljet.core.SqlJetException;
-import org.tmatesoft.sqljet.core.SqlJetTransactionMode;
-import org.tmatesoft.sqljet.core.schema.ISqlJetColumnDef;
-import org.tmatesoft.sqljet.core.table.ISqlJetCursor;
-import org.tmatesoft.sqljet.core.table.ISqlJetTable;
-import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -26,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.sql.*;
 
 @SuppressWarnings({"deprecated", "unused"})
 public class DataBaseTest {
@@ -37,18 +32,16 @@ public class DataBaseTest {
 		db = new DataBase();
 	}
 
-	@Test
-	public void testCreateTables() throws EntryAnnotationException, NoSuchMethodException, SqlJetException, TableAnnotationException, IllegalAccessException {
+	@Test(expected = TableAnnotationException.class)
+	public void testCreateTables() throws EntryAnnotationException, NoSuchMethodException, TableAnnotationException, IllegalAccessException {
 		db.createTables("hello");
 	}
 
-	@Test(expected = SqlJetException.class)
-	public void testSqlJetException() throws SqlJetException {
+	@Test
+	public void testSqlJetException() {
 		StringBuilder builder = new StringBuilder().append("From Java");
 		builder.insert(0, "Hello ");
-		System.out.println(builder.toString());
-		SqlJetDb db = SqlJetDb.open(new java.io.File("."), true);
-		db.getTable(null);
+		assertEquals("Hello From Java", builder.toString());
 	}
 
 	@Test
@@ -141,56 +134,57 @@ public class DataBaseTest {
 	}
 
 	@Test
-	public void testSQLight() throws SqlJetException {
-		//Odpri datoteko
+	public void testSQLight() throws ClassNotFoundException, SQLException {
+		Connection con = null;
+		Statement stat = null;
+		Class.forName("org.sqlite.JDBC");
 		java.io.File dbFile = new java.io.File("dbFile");
-		//Izbriši datoteko, če že obstaja
-		dbFile.delete();
-		//Ustvari novo SQLight bazo
-		SqlJetDb jetDb = SqlJetDb.open(dbFile, true);
-		//začni s transakcijami
-		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
 		try {
-			//Kreiranje tabele
-			jetDb.createTable("CREATE TABLE employees (second_name TEXT NOT NULL PRIMARY KEY , first_name TEXT NOT NULL, date_of_birth INTEGER NOT NULL)");
-			//Če transakcija uspe
-			jetDb.commit();
-		} catch(Exception e) {
-			//Če transakcija ne uspe
-			jetDb.rollback();
+			con = DriverManager.getConnection("jdbc:sqlite:" + dbFile.toString());
+			con.setAutoCommit(false);
+		} catch (SQLException e) {
+			fail(e.getMessage());
 		}
-		//začni z novimi transakcijami
-		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
 		try {
-			//Ustvarjanje nove table v PB
-			ISqlJetTable table = jetDb.getTable("employees");
-			//Dodajanje zapisov v PB
-			System.out.print(table.insert("Prochaskova", "Elena", Calendar.getInstance().getTimeInMillis()) + ", ");
-			System.out.print(table.insert("Scherbina", "Sergei", Calendar.getInstance().getTimeInMillis()) + ", ");
-			System.out.print(table.insert("Vadishev", "Semen", Calendar.getInstance().getTimeInMillis()) + ", ");
-			System.out.print(table.insert("Sinjushkin", "Alexander", Calendar.getInstance().getTimeInMillis()) + ", ");
-			System.out.print(table.insert("Stadnik", "Dmitry", Calendar.getInstance().getTimeInMillis()) + ", ");
-			System.out.println(table.insert("Kitaev", "Alexander", Calendar.getInstance().getTimeInMillis()));
-			jetDb.commit();
-		} catch(Exception e) {
-			jetDb.rollback();
+			stat = con.createStatement();
+			stat.execute("CREATE TABLE employees (id INTEGER, second_name TEXT NOT NULL , first_name TEXT NOT NULL, date_of_birth INTEGER NOT NULL, PRIMARY KEY(id ASC))");
+			stat.close();
+			con.commit();
+		} catch (SQLException e) {
+			con.rollback();
+			fail(e.getMessage());
 		}
-		//začni z novimi transakcijami
-		jetDb.beginTransaction(SqlJetTransactionMode.WRITE);
 		try {
-			//Ustvarjanje nove table v PB
-			ISqlJetTable table = jetDb.getTable("employees1");
-			ISqlJetCursor cursor = table.open();
-			while(!cursor.eof()) {
-				System.out.println(cursor.getRowId()+" : "+cursor.getString(0)+" "+cursor.getString(1)+" "+cursor.getInteger(2));
-				cursor.next();
+			stat = con.createStatement();
+			stat.execute("INSERT INTO employees VALUES(null, Prochaskova, Elena," + Calendar.getInstance().getTimeInMillis() + ")");
+			stat.execute("INSERT INTO employees VALUES(null, Scherbina, Sergei," + Calendar.getInstance().getTimeInMillis() + ")");
+			stat.execute("INSERT INTO employees VALUES(null, Vadishev, Semen," + Calendar.getInstance().getTimeInMillis() + ")");
+			stat.execute("INSERT INTO employees VALUES(null, Sinjushkin, Alexander," + Calendar.getInstance().getTimeInMillis() + ")");
+			stat.execute("INSERT INTO employees VALUES(null, Stadnik, Dmitry," + Calendar.getInstance().getTimeInMillis() + ")");
+			stat.execute("INSERT INTO employees VALUES(null, Kitaev, Dmitry," + Calendar.getInstance().getTimeInMillis() + ")");
+			stat.execute("INSERT INTO employees VALUES(null, Kitaev, Alexander," + Calendar.getInstance().getTimeInMillis() + ")");
+			stat.close();
+			con.commit();
+		} catch (SQLException e) {
+			con.rollback();
+			fail(e.getMessage());
+		}
+		try {
+			stat = con.createStatement();
+			for (ResultSet set = stat.executeQuery("SELECT * FROM employees"); set.next(); ) {
+				System.out.println(set.getInt(0) + " " + set.getString(1) + " " + set.getString(2) + " " + set.getInt(3));
 			}
-			jetDb.commit();
-		} catch(Exception e) {
-			jetDb.rollback();
+			stat.close();
+			con.commit();
+		} catch (SQLException e) {
+			fail(e.getMessage());
 		}
-		//Ko končaš z delom
-		jetDb.close();
+		try {
+			con.close();
+		} catch (SQLException e) {
+			con.rollback();
+			fail(e.getMessage());
+		}
 		dbFile.delete();
 	}
 
@@ -637,7 +631,7 @@ public class DataBaseTest {
 	}
 
 	@Test
-	public void testSQLightAlterTable() throws SqlJetException {
+	public void testSQLightInsertWithMap() throws SqlJetException {
 		java.io.File dbFile = new java.io.File("dbFile");
 		dbFile.delete();
 		SqlJetDb jetDb = SqlJetDb.open(dbFile, true);
@@ -713,6 +707,7 @@ public class DataBaseTest {
 			file.delete();
 			throw e;
 		}
+		file.delete();
 	}
 
 	private class TestNoAnno {
@@ -768,6 +763,7 @@ public class DataBaseTest {
 			file.delete();
 			throw e;
 		}
+		file.delete();
 	}
 
 	@Table
@@ -865,7 +861,7 @@ public class DataBaseTest {
 			file.delete();
 			throw e;
 		}
-
+		file.delete();
 	}
 
 	@Table
@@ -895,5 +891,108 @@ public class DataBaseTest {
 			list2.get(1).add(3);
 			list2.get(1).add(4);
 		}
+	}
+
+	@Test
+	public void testCreateTableExtendClassNewTableName() throws IOException, SqlJetException, TableAnnotationException, IllegalAccessException, DataBaseFileException, EntryAnnotationException, NoSuchMethodException {
+		TClassOneE test = new TClassTwoE();
+		java.io.File file = new java.io.File("test.test");
+		file.createNewFile();
+		db.open(file);
+		try {
+		  db.createTables(test);
+		  assertEquals(3, db.getDataBase().getTable("TClassTwoE").getDefinition().getColumns().size());
+		  assertEquals(0, db.getDataBase().getTable("TClassTwoE").getDefinition().getConstraints().size());
+		} catch (Exception e) {
+		  System.out.println(e.getMessage());
+		  file.delete();
+		  throw e;
+		}
+		file.delete();
+	}
+
+	@Table(autoId = true)
+	private class TClassOneE {
+	  @Entry
+	  private int num;
+	  @Entry
+	  private float fNum;
+
+	  public TClassOneE() {
+		 num = 1;
+		 fNum = 2;
+	  }
+	}
+
+	@Table
+	private class TClassTwoE extends TClassOneE {
+	  @Entry
+	  private double dNum;
+	  private int num;
+	  private float fNum;
+
+	  public TClassTwoE() {
+		 super();
+		 dNum = 1.1;
+		 num = 2;
+		 fNum = 3;
+	  }
+	}
+
+	@Test
+	public void testCreateTableExtendClass() throws IOException, SqlJetException, TableAnnotationException, IllegalAccessException, DataBaseFileException, EntryAnnotationException, NoSuchMethodException {
+		TClassTwoEE test = new TClassTwoEE();
+		java.io.File file = new java.io.File("test.test");
+		file.createNewFile();
+		db.open(file);
+		try {
+		  db.createTables(test);
+		  for (ISqlJetColumnDef cDef : db.getDataBase().getTable("TClassOneE").getDefinition().getColumns()) {
+			 System.out.println(cDef.getName());
+		  }
+		  assertEquals(4, db.getDataBase().getTable("TClassOneE").getDefinition().getColumns().size());
+		  assertEquals(1, db.getDataBase().getTable("TClassOneE").getDefinition().getConstraints().size());
+		} catch (Exception e) {
+		  System.out.println(e.getMessage());
+		  file.delete();
+		  throw e;
+		}
+		file.delete();
+	}
+
+	private class TClassTwoEE extends TClassOneE {
+	  @Entry
+	  private double dNum;
+	  private int num;
+	  private float fNum;
+
+	  public TClassTwoEE() {
+		 super();
+		 dNum = 1.1;
+		 num = 2;
+		 fNum = 3;
+	  }
+	}
+	
+	@Test
+	public void testCreateTableExtendClassAlterTable() throws IOException, SqlJetException, TableAnnotationException, IllegalAccessException, DataBaseFileException, EntryAnnotationException, NoSuchMethodException {
+	  TClassOneE testOne = new TClassOneE();
+	  TClassTwoEE testTwo = new TClassTwoEE();
+	  java.io.File file = new java.io.File("test.test");
+	  file.createNewFile();
+	  db.open(file);
+	  try {
+		  db.createTables(testOne);
+		  assertEquals(3, db.getDataBase().getTable("TClassOneE").getDefinition().getColumns().size());
+		  assertEquals(1, db.getDataBase().getTable("TClassOneE").getDefinition().getConstraints().size());
+		  db.createTables(testTwo);
+		  assertEquals(4, db.getDataBase().getTable("TClassOneE").getDefinition().getColumns().size());
+		  assertEquals(1, db.getDataBase().getTable("TClassOneE").getDefinition().getConstraints().size());
+		} catch (Exception e) {
+		  System.out.println(e.getMessage());
+		  file.delete();
+		  throw e;
+		}
+		file.delete();
 	}
 }

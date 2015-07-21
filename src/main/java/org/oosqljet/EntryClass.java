@@ -1,6 +1,6 @@
 package org.oosqljet;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -18,8 +18,8 @@ public class EntryClass {
 		return field;
 	}
 
-	public Entry getAnnotation() {
-		return field.getAnnotation(Entry.class);
+	public Column getAnnotation() {
+		return field.getAnnotation(Column.class);
 	}
 
 	private String getNameFromAnno(int index) throws ArrayIndexOutOfBoundsException {

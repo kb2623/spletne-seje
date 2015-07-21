@@ -1,13 +1,13 @@
 package org.sessionization.fields.w3c;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
 @Table public class ComputerName implements Field {
 
-	@Entry private String name;
+	@Column private String name;
 	
 	public ComputerName(String name) {
 		if(!name.equalsIgnoreCase("-")) {

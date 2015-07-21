@@ -1,10 +1,10 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 
 public class StatusCode implements Field {
 
-	@Entry private int status;
+	@Column private int status;
 	
 	public StatusCode(String status) {
 		this.status = Integer.valueOf(status);

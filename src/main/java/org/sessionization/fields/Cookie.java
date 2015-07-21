@@ -1,14 +1,15 @@
 package org.sessionization.fields;
 
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.Map;
 
 @Table(noRowId = true) public class Cookie implements Field {
 
-	@org.oosqljet.annotation.Entry
+	@Column
 	private HashMap<String, String> map;
 
 	public Cookie(String line, LogType type) throws IllegalArgumentException {
@@ -39,8 +40,8 @@ import java.util.Map.Entry;
 		if(map == null) {
 			builder.append('-');
 		} else {
-			for(Entry<String, String> entry : map.entrySet())
-				builder.append('[').append(entry.getKey()).append(" = ").append(entry.getValue()).append(']');
+			for(Map.Entry<String, String> Column : map.entrySet())
+				builder.append('[').append(Column.getKey()).append(" = ").append(Column.getValue()).append(']');
 		}
 		return builder.append(']').toString();
 	}
@@ -52,8 +53,8 @@ import java.util.Map.Entry;
 		if(map == null) {
 			builder.append('-');
 		} else {
-			for(Entry<String, String> entry : map.entrySet())
-				builder.append('[').append(entry.getKey()).append(" = ").append(entry.getValue()).append(']');
+			for(Map.Entry<String, String> Column : map.entrySet())
+				builder.append('[').append(Column.getKey()).append(" = ").append(Column.getValue()).append(']');
 		}
 		return builder.append(']').toString();
 	}
@@ -62,7 +63,7 @@ import java.util.Map.Entry;
 	public String getKey() {
 		if (map == null) return "";
 		StringBuilder builder = new StringBuilder();
-		map.entrySet().stream().forEach((entry) -> builder.append(entry.getKey()).append(entry.getValue()));
+		map.entrySet().stream().forEach((Column) -> builder.append(Column.getKey()).append(Column.getValue()));
 		return builder.toString();
 	}
 
@@ -76,9 +77,9 @@ import java.util.Map.Entry;
 		if(!(obj instanceof Cookie)) {
 			return false;
 		} else {
-			Iterator<Entry<String, String>> itThis = map.entrySet().iterator(), itObj = ((Cookie) obj).getMap().entrySet().iterator();
+			Iterator<Map.Entry<String, String>> itThis = map.entrySet().iterator(), itObj = ((Cookie) obj).getMap().entrySet().iterator();
 			while(itThis.hasNext() && itObj.hasNext()) {
-				Entry<String, String> entityObj = itObj.next(),	entityThis = itThis.next();
+				Map.Entry<String, String> entityObj = itObj.next(),	entityThis = itThis.next();
 				if(!entityObj.getKey().equals(entityThis.getKey()) || !entityObj.getValue().equals(entityThis.getValue())) return false;
 			}
 			return !itObj.hasNext() && !itThis.hasNext();

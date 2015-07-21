@@ -2,12 +2,12 @@ package org.sessionization.fields.ncsa;
 
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 @Table public class RemoteLogname implements Field {
 
-	@Entry private String logname;
+	@Column private String logname;
 	
 	public RemoteLogname(String logname) {
 		if(!logname.equalsIgnoreCase("-")) {

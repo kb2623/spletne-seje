@@ -1,12 +1,12 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 
 import java.net.URL;
 
 public class FileQuery extends File {
 
-	@Entry private UriQuery query;
+	@Column private UriQuery query;
 
 	public FileQuery(URL url) {
 		super(url.getFile());

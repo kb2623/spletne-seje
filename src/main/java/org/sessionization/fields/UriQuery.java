@@ -1,6 +1,6 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Table public class UriQuery implements Field {
 
-	@Entry private HashMap<String, String> map;
+	@Column private HashMap<String, String> map;
 
 	public UriQuery(String niz) {
 		if (niz != null && niz.charAt(0) != '-') {

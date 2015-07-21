@@ -2,12 +2,12 @@ package org.sessionization;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.parser.*;
-import org.tmatesoft.sqljet.core.SqlJetException;
 
 import org.oosqljet.DataBase;
 import org.sessionization.parser.datastruct.ParsedLine;
@@ -21,7 +21,7 @@ public class SpletneSeje {
 	private DataBase database;
 
 	@SuppressWarnings("deprecation")
-	public SpletneSeje(String[] args) throws CmdLineException, NullPointerException, ParseException, SqlJetException, IOException {
+	public SpletneSeje(String[] args) throws CmdLineException, NullPointerException, ParseException, IOException {
 		//Parsanje vhodnih argumentov
 		argsParser = new ArgsParser(args);
 
@@ -123,9 +123,6 @@ public class SpletneSeje {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 			System.exit(4);
-		} catch (SqlJetException e) {
-			System.out.println(e.getMessage());
-			System.exit(5);
 		}
 	}
 

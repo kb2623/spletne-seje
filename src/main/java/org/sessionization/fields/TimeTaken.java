@@ -1,10 +1,10 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 
 public class TimeTaken implements Field {
 
-	@Entry private long time;
+	@Column private long time;
 	
 	public TimeTaken(String time, boolean milliseconds) {
 		if(milliseconds) {

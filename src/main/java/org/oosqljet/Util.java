@@ -1,7 +1,7 @@
 package org.oosqljet;
 
 import org.datastruct.RadixTree;
-import org.oosqljet.annotation.Entry;
+import org.oosqljet.annotation.Column;
 import org.oosqljet.annotation.Table;
 
 import java.lang.annotation.Annotation;
@@ -19,7 +19,7 @@ public class Util {
 	 */
 	public static TableClass getTableAnnotation(Object in) throws NullPointerException {
 		if (in == null) throw new NullPointerException();
-		for (Class c = in.getClass(); !c.getName().equals("java.lang.Object"); c = c.getSuperclass()) {
+		for (Class c = in.getClass(); c.getSuperclass() != null; c = c.getSuperclass()) {
 			Annotation anno = c.getDeclaredAnnotation(Table.class);
 			if (anno != null) return new TableClass(c);
 		}
@@ -32,7 +32,7 @@ public class Util {
 	 */
 	public static TableClass getTableAnnotation(Class in) throws NullPointerException {
 		if (in == null) throw new NullPointerException();
-		for (Class c = in; !c.getName().equals("java.lang.Object"); c = c.getSuperclass()) {
+		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
 			Annotation[] anno = c.getAnnotationsByType(Table.class);
 			if (anno.length > 0) return new TableClass(c);
 		}
@@ -48,11 +48,13 @@ public class Util {
 	public static Map<String, EntryClass> getEntryAnnotations(Object in) throws NullPointerException {
 		if (in == null) throw new NullPointerException();
 		Map<String, EntryClass> tab = new RadixTree<>();
-		for (Field field : in.getClass().getDeclaredFields()) {
-			if (field.isAnnotationPresent(Entry.class)) {
+		for (Class c = in.getClass(); c.getSuperclass() != null; c = c.getSuperclass()) {
+		  for (Field field : c.getDeclaredFields()) {
+			 if (field.isAnnotationPresent(Column.class)) {
 				EntryClass tmp = new EntryClass(field);
 				tab.put(tmp.getName(0), tmp);
-			}
+			 }
+		  }
 		}
 		return !tab.isEmpty() ? tab : null;
 	}
