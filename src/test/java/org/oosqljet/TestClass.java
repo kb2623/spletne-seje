@@ -23,7 +23,7 @@ public class TestClass {
 	@Column
 	long pLong = 2;
 
-	@Column
+	@Column(arrayName = {"some names","some names","some names"})
 	byte pByte = 2;
 
 	@Column

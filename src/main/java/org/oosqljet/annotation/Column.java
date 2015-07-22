@@ -27,11 +27,6 @@ public @interface Column {
 	 *
 	 * @return
 	 */
-	String enumName() default "";
-	/**
-	 *
-	 * @return
-	 */
 	boolean primaryKey() default false;
 	/**
 	 *

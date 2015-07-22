@@ -1,53 +1,31 @@
 package org.oosqljet;
 
 import org.oosqljet.exception.*;
-import org.tmatesoft.sqljet.core.SqlJetException;
-import org.tmatesoft.sqljet.core.SqlJetTransactionMode;
-import org.tmatesoft.sqljet.core.schema.ISqlJetColumnDef;
-import org.tmatesoft.sqljet.core.table.ISqlJetTable;
-import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class DataBase implements AutoCloseable {
 
-	private SqlJetDb data;
+	private SqlDriver driver;
 	private Map<Class, SqlMapping> mappings;
 
 	public DataBase() {
 		mappings = new HashMap<>();
 	}
 
-	public DataBase(File file) throws FileNotFoundException, SqlJetException {
-		if (file.isFile()) data = SqlJetDb.open(file, true);
+	public DataBase(String protocol, File file, Properties properties) throws FileNotFoundException, ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+		if (file.isFile()) driver = new SqlDriver(protocol, file, properties);
 		else throw new FileNotFoundException("[" + file.getPath() + "] is not a file");
 	}
 
-	public DataBase(String path) throws FileNotFoundException, SqlJetException {
-		this(new File(path));
-	}
-
-	public void open(File file) throws DataBaseFileException, FileNotFoundException, SqlJetException {
-		if (data == null || !data.isOpen()) {
-			if (file.isFile()) data = SqlJetDb.open(file, true);
-			else throw new FileNotFoundException("[" + file.getPath() + "] is not a file");
-		} else {
-			throw new DataBaseFileException("File is already opend!!!");
-		}
-	}
-
-	public void open(String path) throws SqlJetException, DataBaseFileException, FileNotFoundException {
-		if (data == null || !data.isOpen()) {
-			File file = new File(path);
-			if (file.isFile()) data = SqlJetDb.open(new File(path), true);
-			else throw new FileNotFoundException("[" + "] is not a file!!!");
-		} else {
-			throw new DataBaseFileException("File is already opend!!!");
-		}
+	public DataBase(String protocol, String path, Properties properties) throws FileNotFoundException, ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+		this(protocol, new File(path), properties);
 	}
 	/**
 	 *
@@ -57,7 +35,7 @@ public class DataBase implements AutoCloseable {
 	 * @throws TableAnnotationException V razredu majnka notacija za tabelo
 	 * @throws IllegalAccessException Napaka pri dostopu do vrenosti polja v objektu
 	 */
-	private ForeignKey createTableVisitor(Object in) throws TableAnnotationException, IllegalAccessException, SqlJetException, EntryAnnotationException, NoSuchMethodException {
+	private ForeignKey createTableVisitor(Object in) throws TableAnnotationException, IllegalAccessException, EntryAnnotationException, NoSuchMethodException, SQLException {
 		TableClass table = Util.getTableAnnotation(in);
 		if (table == null)
 			throw new TableAnnotationException("Missing @Table in [" + in.getClass().getName() + "]");
@@ -65,14 +43,19 @@ public class DataBase implements AutoCloseable {
 		if (entrys.isEmpty())
 			throw new EntryAnnotationException("Missing @Entry in [" + in.getClass().getName() + "]");
 		StringBuilder query[] = {
-			new StringBuilder(), // Niz za kreiranje tabele, brez referenc
-			new StringBuilder(), // Niza ki predstavlja tuje kjuče
-			new StringBuilder() // Niz ki predstavlja primarne ključe
+				new StringBuilder(), // Niz za kreiranje tabele, brez referenc
+				new StringBuilder(), // Niza ki predstavlja tuje kjuče
+				new StringBuilder() // Niz ki predstavlja primarne ključe
 		};
 		ForeignKey refs = new ForeignKey(table);
 		try {
-			if (table == null) throw new SqlJetException("");
-			ISqlJetTable dbTable = data.getTable(table.getName());
+			ResultSet res = driver.getTables(table.getName());
+			if (!res.next()) {
+				res.close();
+				throw new AssertionError();
+			} else {
+				res.close();
+			}
 			for (EntryClass e : entrys.values()) if (e.getAnnotation().primaryKey()) {
 				// TODO poštudiraj kaj se zgodi če imaš enume, array, collectione in mape
 				if (e.type().isPrimitive() || String.class.isAssignableFrom(e.type())
@@ -85,18 +68,25 @@ public class DataBase implements AutoCloseable {
 					refs.addAll(createTableVisitor(e.get(in)), e, false);
 				}
 			}
-			for (ISqlJetColumnDef cDef : dbTable.getDefinition().getColumns()) {
-				if (entrys.get(cDef.getName()) != null) entrys.remove(cDef.getName());
-			}
+			res = driver.getColumns(table.getName());
+			while (res.next()) entrys.remove(res.getString("COLUMN_NAME"));
+			res.close();
+			driver.commit();
 			if (!entrys.isEmpty()) {
-				// TODO Če slučajno dobiš primarni ključ potem moreš prepisati vse podatki, izbrisati tabelo in ustvariti novo tabelo
-				System.out.println("Aletering table");
-				for (EntryClass e : entrys.values()) {
-				  System.out.println(e.getName(0));
+				for (EntryClass e : entrys.values())
+					createTableString(in, query, e, refs, 0);
+				try (SqlStatement statement = driver.getStatement()) {
+					for (String s : query[0].toString().split(","))
+						statement.execUpdate("ALTER TABLE " + table.getName() + " ADD " + s);
+					for (String s : query[1].toString().split(","))
+						statement.execUpdate("ALTER TABLE " + table.getName() + " ADD " + s);
+					driver.commit();
+				} catch (SQLException e) {
+					driver.rollback();
+					throw e;
 				}
-				System.out.println();
 			}
-		} catch (SqlJetException ignore) {
+		} catch (AssertionError ignore) {
 			if (table != null) {
 				query[0].append("CREATE TABLE ").append(table.getName()).append('(');
 				if (table.getAnnotation().autoId()) {
@@ -111,15 +101,15 @@ public class DataBase implements AutoCloseable {
 			for (StringBuilder b : query) if (b.length() > 0) {
 				b.deleteCharAt(b.length() - 1);
 			}
-			createTable(query[0].toString() +
+			driver.execUpdate(query[0].toString() +
 					(query[2].length() > 0 ? ",PRIMARY KEY(" + query[2].toString() + ")" : "") +
 					(query[1].length() > 0 ? "," +query[1].toString() : "") +
-					(table.getAnnotation().noRowId() ? ") WITHOUT ROWID;" : ");"));
+					(table.getAnnotation().noRowId() ? ") WITHOUT ROWID;" : ")"));
 		}
 		return refs.shiftAll();
 	}
 
-	private void createTableString(Object in, StringBuilder[] query, EntryClass e, ForeignKey refs, int index) throws SqlJetException, NoSuchMethodException, EntryAnnotationException, IllegalAccessException, TableAnnotationException {
+	private void createTableString(Object in, StringBuilder[] query, EntryClass e, ForeignKey refs, int index) throws NoSuchMethodException, EntryAnnotationException, IllegalAccessException, TableAnnotationException, SQLException {
 		SQLightDataType type = SQLightDataType.makeDataType(index < 3 ? e.type().getSimpleName() : in.getClass().getSimpleName());
 		if (type != null) {
 			query[0].append(e.getName(index) + " " + type.toString());
@@ -142,11 +132,10 @@ public class DataBase implements AutoCloseable {
 				if (e.getAnnotation().notNull()) query[0].append(" NOT NULL");
 			} else {
 				type = SQLightDataType.INTEGER;
-				createTable("CREATE TABLE " + enumtable.getName() + "(" +
-				  enumtable.getName() + "_id INTEGER," +
-				  e.getName(index) + " TEXT UNIQUE," +
-				  "PRIMARY KEY(" + enumtable.getName() + "_id)" +
-				  ");"
+				driver.execUpdate(
+						"CREATE TABLE " + enumtable.getName() + "(" +
+								enumtable.getName() + "_id INTEGER," + e.getName(index) + " TEXT UNIQUE," +
+								"PRIMARY KEY(" + enumtable.getName() + "_id))"
 				);
 				query[0].append(e.getName(index) + " " + type.toString());
 				if (e.getAnnotation().primaryKey() && index < 3) {
@@ -156,7 +145,7 @@ public class DataBase implements AutoCloseable {
 				query[1].append("FOREIGN KEY(" + e.getName(index) + ") REFERENCES " + enumtable.getName() + "(" + enumtable.getName() + "_id),");
 			}
 		} else if (e.type().isArray() && index < 3) {
-			createTable("CREATE TABLE " + e.getName(1) + "(id INTEGER, PRIMARY KEY(id));");
+			driver.execUpdate("CREATE TABLE " + e.getName(1) + "(id INTEGER, PRIMARY KEY(id))");
 			StringBuilder[] arrayVal = {
 			 new StringBuilder("CREATE TABLE " + e.getName(2) + "(" + e.getName(1) + " INTEGER REFERENCES " + e.getName(1) + "(id),"),
 			 new StringBuilder("PRIMARY KEY(" + e.getName(1) + ",")
@@ -165,13 +154,14 @@ public class DataBase implements AutoCloseable {
 			int dim = 0;
 			for (Class c = value.getClass(); c.isArray(); c = c.getComponentType()) {
 				arrayVal[0].append("dim_" + dim + "_pos INTEGER,");
-				arrayVal[1].append("dim_" + dim + "_pos,");
+				arrayVal[2].append("dim_" + dim + "_pos,");
 				dim++;
 				value = Array.get(value, 0);
 			}
 			arrayVal[1].deleteCharAt(arrayVal[1].length() - 1).append("),");
 			createTableString(value, arrayVal, e, null, 3); 			
-			createTable(arrayVal[0].toString() + "," + arrayVal[1].deleteCharAt(arrayVal[1].length() - 1).toString() + ");");
+			driver.execUpdate(arrayVal[0].toString() + ","
+					+ arrayVal[1].deleteCharAt(arrayVal[1].length() - 1).toString() + ")");
 			query[0].append(e.getName(0) + " INTEGER");
 			if (e.getAnnotation().primaryKey()) {
 				query[2].append(e.getName(0) + ",");
@@ -179,10 +169,11 @@ public class DataBase implements AutoCloseable {
 			}
 			query[1].append("FOREIGN KEY(" + e.getName(0) + ") REFERENCES " + e.getName(1) + "(id),");
 		} else if (Collection.class.isAssignableFrom(e.type()) && index < 3) {
-			createTable("CREATE TABLE " + e.getName(1) + "(id INTEGER, PRIMARY KEY(id));");
+			driver.execUpdate("CREATE TABLE " + e.getName(1) + "(id INTEGER, PRIMARY KEY(id))");
 			StringBuilder[] arrayVal = {
-				new StringBuilder("CREATE TABLE " + e.getName(2) + "(" + e.getName(1) + " INTEGER REFERENCES " + e.getName(1) + "(id),"),
-				new StringBuilder("PRIMARY KEY(" + e.getName(1) + ",")
+					new StringBuilder("CREATE TABLE " + e.getName(2) + "("
+							+ e.getName(1) + " INTEGER REFERENCES " + e.getName(1) + "(id),"),
+					new StringBuilder("PRIMARY KEY(" + e.getName(1) + ",")
 			};
 			Object value = null;
 			int dim = 0;
@@ -190,7 +181,7 @@ public class DataBase implements AutoCloseable {
 			try {
 				while (it.hasNext()) {
 					arrayVal[0].append("dim_" + dim + "_pos INTEGER,");
-					arrayVal[1].append("dim_" + dim + "_pos,");
+					arrayVal[2].append("dim_" + dim + "_pos,");
 					dim++;
 					value = it.next();
 					it = ((Collection) value).iterator();
@@ -198,7 +189,8 @@ public class DataBase implements AutoCloseable {
 			} catch (ClassCastException ignoreCast) {}
 			arrayVal[1].deleteCharAt(arrayVal[1].length() - 1).append("),");
 			createTableString(value, arrayVal, e, null, 3);
-			createTable(arrayVal[0].toString() + "," + arrayVal[1].deleteCharAt(arrayVal[1].length() - 1).toString() + ");");
+			driver.execUpdate(arrayVal[0].toString() + ","
+					+ arrayVal[1].deleteCharAt(arrayVal[1].length() - 1).toString() + ")");
 			query[0].append(e.getName(0) + " INTEGER");
 			if (e.getAnnotation().primaryKey()) {
 				query[2].append(e.getName(0) + ",");
@@ -206,13 +198,14 @@ public class DataBase implements AutoCloseable {
 			}
 			query[1].append("FOREIGN KEY(" + e.getName(0) + ") REFERENCES " + e.getName(1) + "(id),");
 		} else if (Map.class.isAssignableFrom(e.type())) {
-			// TODO Naredi podobno kot za Collection in Array
+			StringBuilder builder = new StringBuilder();
+			builder.append("CREATE TABLE " + e.getName(0) + "(");
+			// TODO
+			builder.append("CREATE TABLE " + e.getName(1) + "(");
+			// TODO
 		} else {
 			if (mappings.containsKey(index < 3 ? e.type() : in.getClass())) {
-				try {
-					type = SQLightDataType.makeDataType(mappings.get(e.type()).getReturnType(e.type()).getSimpleName());
-				} catch (NoSuchMethodException ignoreGet) {
-				}
+				type = SQLightDataType.makeDataType(mappings.get(e.type()).getReturnType(e.type()).getSimpleName());
 				query[0].append(e.getName(0) + " " + type.toString());
 				if (e.getAnnotation().primaryKey() && index < 3) {
 					query[2].append(e.getName(0) + ",");
@@ -233,18 +226,7 @@ public class DataBase implements AutoCloseable {
 		}
 	}
 
-	private void createTable(String query) throws SqlJetException {
-		data.beginTransaction(SqlJetTransactionMode.WRITE);
-		try {
-			data.createTable(query);
-			data.commit();
-		} catch (SqlJetException e) {
-			data.rollback();
-			throw e;
-		}
-	}
-
-	public void createTables(Object in) throws TableAnnotationException, IllegalAccessException, SqlJetException, EntryAnnotationException, NoSuchMethodException {
+	public void createTables(Object in) throws TableAnnotationException, IllegalAccessException,  EntryAnnotationException, NoSuchMethodException, SQLException {
 		createTableVisitor(in);
 	}
 
@@ -261,8 +243,7 @@ public class DataBase implements AutoCloseable {
 		return null;
 	}
 
-	public void insert(Object input) throws DataBaseFileException, IllegalAccessException, TableAnnotationException, EntryAnnotationException {
-		if (!data.isOpen()) throw new DataBaseFileException("No file opend!!!");
+	public void insert(Object input) throws IllegalAccessException, TableAnnotationException, EntryAnnotationException {
 		insertObject(input, false);
 	}
 
@@ -271,7 +252,7 @@ public class DataBase implements AutoCloseable {
 		return null;
 	}
 
-	public Object lookup(Object input) {
+	public Object lookup(Object input, Class... conditions) {
 		// TODO
 		return null;
 	}
@@ -285,12 +266,12 @@ public class DataBase implements AutoCloseable {
 	}
 
 	@Deprecated
-	protected SqlJetDb getDataBase() {
-		return data;
+	protected SqlDriver getDataBase() {
+		return driver;
 	}
 
 	@Override
-	public void close() throws SqlJetException {
-		data.close();
+	public void close() throws SQLException {
+		driver.close();
 	}
 }

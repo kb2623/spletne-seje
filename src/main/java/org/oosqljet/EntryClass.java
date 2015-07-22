@@ -3,6 +3,7 @@ package org.oosqljet;
 import org.oosqljet.annotation.Column;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class EntryClass {
 		}
 	}
 
-	private String getMapName(int index) throws ArrayIndexOutOfBoundsException {
+	public String getMapName(int index) throws ArrayIndexOutOfBoundsException {
 		if (index < 2) {
 			try {
 				if (getAnnotation().mapName()[0].isEmpty())
@@ -55,13 +56,13 @@ public class EntryClass {
 					return getAnnotation().mapName()[index];
 			} catch (ArrayIndexOutOfBoundsException e) {
 				switch (index) {
-					case 0: return field.getType().getSimpleName() + field.getName() + "key";
-					case 1: return field.getType().getSimpleName() + field.getName() + "mvalue";
+					case 0: return ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getTypeName() + "key";
+					case 1: return ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1].getTypeName() + "mvalue";
 					default: return null;
 				}
 			}
 		} else {
-			return getCollectionName(index);
+			return getCollectionName(index - 2);
 		}
 	}
 
