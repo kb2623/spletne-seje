@@ -1,6 +1,6 @@
-package org.oosqljet;
+package org.oosql;
 
-import java.lang.reflect.ParameterizedType;
+import org.oosql.exception.MappingException;
 
 /**
  * @param <I> Tip objekta, ki ga želimo zapisati v podatkovno bazo. Tip je omejen na primitivne podatkovne tipe, ter String. v nasprotnem primeru dobimo napako.
@@ -22,7 +22,11 @@ public abstract class SqlMapping<I, O> {
      */
     public abstract I outMapping(O in);
 
-	protected Class getReturnType(Class<? extends I> parameterType) throws NoSuchMethodException {
-		return this.getClass().getMethod("inMapping", parameterType).getReturnType();
+	protected Class getReturnType(Class<? extends I> parameterType) throws MappingException {
+		try {
+			return this.getClass().getMethod("inMapping", parameterType).getReturnType();
+		} catch (NoSuchMethodException e) {
+			throw new MappingException(e.getMessage());
+		}
 	}
 }

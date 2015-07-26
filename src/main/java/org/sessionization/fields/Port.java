@@ -1,12 +1,15 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 
-@Table public class Port implements Field {
+@Table 
+public class Port implements Field {
 
-	@Column(unique = true) private int portNumber;
-	@Column private boolean isServer;
+	@Column(unique = true) 
+	private int portNumber;
+	@Column 
+	private boolean isServer;
 	
 	public Port(String number, boolean isServer) {
 		this.isServer = isServer;

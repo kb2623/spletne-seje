@@ -1,6 +1,6 @@
-package org.oosqljet;
+package org.oosql;
 
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Table;
 
 public class TableClass {
 
@@ -11,10 +11,10 @@ public class TableClass {
     }
 
     public String getName() {
-        return getAnnotation().name().isEmpty() ? c.getSimpleName() : getAnnotation().name();
+        return getAnno().name().isEmpty() ? c.getSimpleName() : getAnno().name();
     }
 
-    public Table getAnnotation() {
+    public Table getAnno() {
         return (Table) c.getAnnotation(Table.class);
     }
 

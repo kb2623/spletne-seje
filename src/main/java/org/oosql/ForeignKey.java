@@ -1,6 +1,7 @@
-package org.oosqljet;
+package org.oosql;
 
-import org.oosqljet.exception.EntryAnnotationException;
+import org.oosql.exception.ColumnAnnotationException;
+import org.oosql.exception.OosqlException;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -83,11 +84,11 @@ public class ForeignKey {
 		this(table, new LinkedList<>());
 	}
 
-	public String getEntryQuery(EntryClass classEntry, Map<Class, SqlMapping> mappings) throws EntryAnnotationException, NoSuchMethodException {
+	public String getEntryQuery(EntryClass classEntry, Map<Class, SqlMapping> mappings) throws OosqlException {
 		StringBuilder builder = new StringBuilder();
 		String entryName;
 		int i = 0;
-		if (table.getAnnotation().autoId()) {
+		if (table.getAnno().autoId()) {
 			entryName = classEntry.getName(i);
 			if (entryName != null) {
 				builder.append(entryName + " INTEGER,");
@@ -110,7 +111,7 @@ public class ForeignKey {
 					} else if (mappings.containsKey(e.type()))
 						type = SQLightDataType.makeDataType(mappings.get(e.type()).getReturnType(e.type()).getSimpleName());
 					else
-						throw new EntryAnnotationException(e.typeName() + " >> " + e.getName() + " | " + e.toString());
+						throw new ColumnAnnotationException(e.typeName() + " >> " + e.getName() + " | " + e.toString());
 				}
 				builder.append(entryName + " " + type.toString() + ",");
 				i++;
@@ -126,7 +127,7 @@ public class ForeignKey {
 		StringBuilder builder = new StringBuilder();
 		String entryName;
 		int i = 0;
-		if (table.getAnnotation().autoId()) {
+		if (table.getAnno().autoId()) {
 			entryName = classEntry.getName(i);
 			if (entryName != null)
 				builder.append(table.getName() + "_id,");
@@ -147,7 +148,7 @@ public class ForeignKey {
 		StringBuilder[] builder = {new StringBuilder(), new StringBuilder()};
 		String entryName;
 		int i = 0;
-		if (table.getAnnotation().autoId()) {
+		if (table.getAnno().autoId()) {
 			entryName = classEntry.getName(i);
 			if (entryName != null) {
 				builder[0].append(entryName + ",");

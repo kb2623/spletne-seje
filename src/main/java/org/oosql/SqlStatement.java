@@ -1,4 +1,4 @@
-package org.oosqljet;
+package org.oosql;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

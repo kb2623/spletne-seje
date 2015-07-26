@@ -2,11 +2,12 @@ package org.sessionization.fields.w3c;
 
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
-import org.oosqljet.annotation.Column;
+import org.oosql.annotation.Column;
 
 public class Win32Status implements Field {
 
-	@Column private int status;
+	@Column 
+	private int status;
 	
 	public Win32Status(String status) {
 		this.status = Integer.valueOf(status);

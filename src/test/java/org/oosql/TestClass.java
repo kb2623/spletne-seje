@@ -1,7 +1,7 @@
-package org.oosqljet;
+package org.oosql;
 
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 
 @Table(name = "test")
 public class TestClass {

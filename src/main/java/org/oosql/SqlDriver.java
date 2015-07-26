@@ -1,4 +1,4 @@
-package org.oosqljet;
+package org.oosql;
 
 import java.io.File;
 import java.sql.*;

@@ -1,12 +1,15 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 
-@Table public class Protocol implements Field {
+@Table 
+public class Protocol implements Field {
 
-	@Column private String protocol;
-	@Column(unique = true) private float version;
+	@Column 
+	private String protocol;
+	@Column(unique = true) 
+	private float version;
 
 	public Protocol(String protocolAndVersion) {
 		String[] tab = protocolAndVersion.split("/");

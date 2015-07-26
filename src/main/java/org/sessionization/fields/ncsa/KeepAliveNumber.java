@@ -1,13 +1,13 @@
 package org.sessionization.fields.ncsa;
 
-
 import org.sessionization.fields.FieldType;
-import org.oosqljet.annotation.Column;
+import org.oosql.annotation.Column;
 import org.sessionization.fields.Field;
 
 public class KeepAliveNumber implements Field {
 
-    @Column private int number;
+    @Column 
+	 private int number;
 
     public KeepAliveNumber(String niz) {
         number = Integer.valueOf(niz);

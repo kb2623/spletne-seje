@@ -2,14 +2,13 @@ package org.sessionization;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.parser.*;
 
-import org.oosqljet.DataBase;
+import org.oosql.DataBase;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import org.sessionization.analyzer.LogAnalyzer;

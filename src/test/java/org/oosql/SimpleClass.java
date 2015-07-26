@@ -1,12 +1,12 @@
-package org.oosqljet;
+package org.oosql;
 
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 
 import java.time.LocalDateTime;
 
-@Table(autoId = true) public class SimpleClass {
-
+@Table(autoId = true)
+public class SimpleClass {
 	@Column
 	private String name;
 	@Column(name = {"sec_name", "we_will_not_need_this1", "we_will_not_need_this2"})
@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 		return surname;
 	}
 
-	public LocalDateTime getDateBorn() {
+	public LocalDateTime getBorn() {
 		return born;
 	}
 }

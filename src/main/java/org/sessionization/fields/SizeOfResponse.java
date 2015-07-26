@@ -1,10 +1,11 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Column;
+import org.oosql.annotation.Column;
 
 public class SizeOfResponse implements Field {
 
-	@Column private int size;
+	@Column 
+	private int size;
 	
 	public SizeOfResponse(String size) {
 		this.size = Integer.valueOf(size);

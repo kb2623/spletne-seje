@@ -1,10 +1,11 @@
 package org.sessionization.fields.ncsa;
 
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Table;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
-@Table public enum ConnectionStatus implements Field {
+@Table 
+public enum ConnectionStatus implements Field {
 
     KeepAliveResponse {
         @Override

@@ -1,6 +1,6 @@
-package org.oosqljet;
+package org.oosql;
 
-import org.oosqljet.annotation.Column;
+import org.oosql.annotation.Column;
 
 import java.util.ArrayList;
 import java.util.Collection;

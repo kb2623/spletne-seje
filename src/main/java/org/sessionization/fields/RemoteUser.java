@@ -1,11 +1,13 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 
-@Table public class RemoteUser implements Field {
+@Table 
+public class RemoteUser implements Field {
 
-	@Column private String user = null;
+	@Column 
+	private String user = null;
 	
 	public RemoteUser(String user) {
 		if(!user.equalsIgnoreCase("-")) this.user = user;

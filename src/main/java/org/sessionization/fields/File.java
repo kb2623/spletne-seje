@@ -1,13 +1,15 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 
 import java.net.URL;
 
-@Table public abstract class File implements Field {
+@Table 
+public abstract class File implements Field {
 
-	@Column private String file;
+	@Column 
+	private String file;
 
 	public File(String file) {
 		if(!file.equals("-"))  this.file = file;

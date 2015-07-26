@@ -1,8 +1,8 @@
-package org.oosqljet;
+package org.oosql;
 
 import org.datastruct.RadixTree;
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -51,7 +51,7 @@ public class Util {
 		for (Class c = in.getClass(); c.getSuperclass() != null; c = c.getSuperclass()) {
 		  for (Field field : c.getDeclaredFields()) {
 			 if (field.isAnnotationPresent(Column.class)) {
-				EntryClass tmp = new EntryClass(field);
+				EntryClass tmp = new EntryClass(field, in);
 				tab.put(tmp.getName(0), tmp);
 			 }
 		  }

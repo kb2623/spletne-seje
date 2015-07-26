@@ -1,6 +1,9 @@
-package org.oosqljet;
+package org.oosql;
 
-import org.oosqljet.exception.*;
+import org.oosql.exception.OosqlException;
+import org.oosql.exception.ColumnAnnotationException;
+import org.oosql.exception.MappingException;
+import org.oosql.exception.TableAnnotationException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,13 +38,13 @@ public class DataBase implements AutoCloseable {
 	 * @throws TableAnnotationException V razredu majnka notacija za tabelo
 	 * @throws IllegalAccessException Napaka pri dostopu do vrenosti polja v objektu
 	 */
-	private ForeignKey createTableVisitor(Object in) throws TableAnnotationException, IllegalAccessException, EntryAnnotationException, NoSuchMethodException, SQLException {
+	private ForeignKey createTableVisitor(Object in) throws OosqlException, IllegalAccessException, SQLException {
 		TableClass table = Util.getTableAnnotation(in);
 		if (table == null)
 			throw new TableAnnotationException("Missing @Table in [" + in.getClass().getName() + "]");
 		Map<String, EntryClass> entrys = Util.getEntryAnnotations(in);
 		if (entrys.isEmpty())
-			throw new EntryAnnotationException("Missing @Entry in [" + in.getClass().getName() + "]");
+			throw new ColumnAnnotationException("Missing @Entry in [" + in.getClass().getName() + "]");
 		StringBuilder query[] = {
 				new StringBuilder(), // Niz za kreiranje tabele, brez referenc
 				new StringBuilder(), // Niza ki predstavlja tuje kjuče
@@ -56,13 +59,13 @@ public class DataBase implements AutoCloseable {
 			} else {
 				res.close();
 			}
-			for (EntryClass e : entrys.values()) if (e.getAnnotation().primaryKey()) {
+			for (EntryClass e : entrys.values()) if (e.columnAnno().pk()) {
 				// TODO poštudiraj kaj se zgodi če imaš enume, array, collectione in mape
-				if (e.type().isPrimitive() || String.class.isAssignableFrom(e.type())
-						|| e.type().isEnum()
-						|| Collection.class.isAssignableFrom(e.type()) || e.type().isArray()
-						|| Map.class.isAssignableFrom(e.type())
-						|| mappings.containsKey(e.type())) {
+				if (e.getType().isPrimitive() || String.class.isAssignableFrom(e.getType())
+						|| e.getType().isEnum()
+						|| Collection.class.isAssignableFrom(e.getType()) || e.getType().isArray()
+						|| Map.class.isAssignableFrom(e.getType())
+						|| mappings.containsKey(e.getType())) {
 					refs.add(e);
 				} else {
 					refs.addAll(createTableVisitor(e.get(in)), e, false);
@@ -89,7 +92,7 @@ public class DataBase implements AutoCloseable {
 		} catch (AssertionError ignore) {
 			if (table != null) {
 				query[0].append("CREATE TABLE ").append(table.getName()).append('(');
-				if (table.getAnnotation().autoId()) {
+				if (table.getAnno().autoId()) {
 					query[0].append(table.getName() + "_id INTEGER,");
 					query[2].append(table.getName() + "_id,");
 				}
@@ -103,52 +106,53 @@ public class DataBase implements AutoCloseable {
 			}
 			driver.execUpdate(query[0].toString() +
 					(query[2].length() > 0 ? ",PRIMARY KEY(" + query[2].toString() + ")" : "") +
-					(query[1].length() > 0 ? "," +query[1].toString() : "") +
-					(table.getAnnotation().noRowId() ? ") WITHOUT ROWID;" : ")"));
+					(query[1].length() > 0 ? "," + query[1].toString() : "") +
+					(table.getAnno().noRowId() ? ") WITHOUT ROWID;" : ")"));
 		}
 		return refs.shiftAll();
 	}
 
-	private void createTableString(Object in, StringBuilder[] query, EntryClass e, ForeignKey refs, int index) throws NoSuchMethodException, EntryAnnotationException, IllegalAccessException, TableAnnotationException, SQLException {
-		SQLightDataType type = SQLightDataType.makeDataType(index < 3 ? e.type().getSimpleName() : in.getClass().getSimpleName());
+	private void createTableString(Object in, StringBuilder[] query, EntryClass e, ForeignKey refs, int index) throws IllegalAccessException, SQLException, OosqlException {
+		String type = SQLightDataType.makeDataType(index < 3 ? e.getType().getSimpleName() : in.getClass().getSimpleName());
 		if (type != null) {
-			query[0].append(e.getName(index) + " " + type.toString());
-			if (e.getAnnotation().primaryKey() && index < 3) {
+			query[0].append(e.getName(index) + " " + type);
+			if (e.columnAnno().pk() && index < 3) {
 				query[2].append(e.getName(index) + ",");
 				refs.add(e);
 			}
-			if (e.getAnnotation().unique()) query[0].append(" UNIQUE");
-			if (e.getAnnotation().notNull()) query[0].append(" NOT NULL");
-		} else if (e.type().isEnum()) {
+			if (e.columnAnno().unique()) query[0].append(" UNIQUE");
+			if (e.columnAnno().notNull()) query[0].append(" NOT NULL");
+		} else if (e.getType().isEnum()) {
 			TableClass enumtable = Util.getTableAnnotation(e.get(in));
 			if (enumtable == null) {
 				type = SQLightDataType.TEXT;
-				query[0].append(e.getName(index) + " " + type.toString());
-				if (e.getAnnotation().primaryKey() && index < 3) {
+				query[0].append(e.getName(index) + " " + type);
+				if (e.columnAnno().pk() && index < 3) {
 					query[2].append(e.getName(index) + ",");
 					refs.add(e);
 				}
-				if (e.getAnnotation().unique()) query[0].append(" UNIQUE");
-				if (e.getAnnotation().notNull()) query[0].append(" NOT NULL");
+				if (e.columnAnno().unique()) query[0].append(" UNIQUE");
+				if (e.columnAnno().notNull()) query[0].append(" NOT NULL");
 			} else {
 				type = SQLightDataType.INTEGER;
 				driver.execUpdate(
 						"CREATE TABLE " + enumtable.getName() + "(" +
-								enumtable.getName() + "_id INTEGER," + e.getName(index) + " TEXT UNIQUE," +
+								enumtable.getName() + "_id INTEGER," +
+								e.getName(index) + " TEXT UNIQUE," +
 								"PRIMARY KEY(" + enumtable.getName() + "_id))"
 				);
-				query[0].append(e.getName(index) + " " + type.toString());
-				if (e.getAnnotation().primaryKey() && index < 3) {
+				query[0].append(e.getName(index) + " " + type);
+				if (e.columnAnno().pk() && index < 3) {
 					query[2].append(e.getName(index) + ",");
 					refs.add(e);
 				}
 				query[1].append("FOREIGN KEY(" + e.getName(index) + ") REFERENCES " + enumtable.getName() + "(" + enumtable.getName() + "_id),");
 			}
-		} else if (e.type().isArray() && index < 3) {
+		} else if (e.getType().isArray() && index < 3) {
 			driver.execUpdate("CREATE TABLE " + e.getName(1) + "(id INTEGER, PRIMARY KEY(id))");
 			StringBuilder[] arrayVal = {
-			 new StringBuilder("CREATE TABLE " + e.getName(2) + "(" + e.getName(1) + " INTEGER REFERENCES " + e.getName(1) + "(id),"),
-			 new StringBuilder("PRIMARY KEY(" + e.getName(1) + ",")
+					new StringBuilder("CREATE TABLE " + e.getName(2) + "(" + e.getName(1) + " INTEGER REFERENCES " + e.getName(1) + "(id),"),
+					new StringBuilder("PRIMARY KEY(" + e.getName(1) + ",")
 			};
 			Object value = e.get(in);
 			int dim = 0;
@@ -163,12 +167,12 @@ public class DataBase implements AutoCloseable {
 			driver.execUpdate(arrayVal[0].toString() + ","
 					+ arrayVal[1].deleteCharAt(arrayVal[1].length() - 1).toString() + ")");
 			query[0].append(e.getName(0) + " INTEGER");
-			if (e.getAnnotation().primaryKey()) {
+			if (e.columnAnno().pk()) {
 				query[2].append(e.getName(0) + ",");
 				refs.add(e);
 			}
 			query[1].append("FOREIGN KEY(" + e.getName(0) + ") REFERENCES " + e.getName(1) + "(id),");
-		} else if (Collection.class.isAssignableFrom(e.type()) && index < 3) {
+		} else if (Collection.class.isAssignableFrom(e.getType()) && index < 3) {
 			driver.execUpdate("CREATE TABLE " + e.getName(1) + "(id INTEGER, PRIMARY KEY(id))");
 			StringBuilder[] arrayVal = {
 					new StringBuilder("CREATE TABLE " + e.getName(2) + "("
@@ -192,32 +196,32 @@ public class DataBase implements AutoCloseable {
 			driver.execUpdate(arrayVal[0].toString() + ","
 					+ arrayVal[1].deleteCharAt(arrayVal[1].length() - 1).toString() + ")");
 			query[0].append(e.getName(0) + " INTEGER");
-			if (e.getAnnotation().primaryKey()) {
+			if (e.columnAnno().pk()) {
 				query[2].append(e.getName(0) + ",");
 				refs.add(e);
 			}
 			query[1].append("FOREIGN KEY(" + e.getName(0) + ") REFERENCES " + e.getName(1) + "(id),");
-		} else if (Map.class.isAssignableFrom(e.type())) {
+		} else if (Map.class.isAssignableFrom(e.getType())) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("CREATE TABLE " + e.getName(0) + "(");
 			// TODO
 			builder.append("CREATE TABLE " + e.getName(1) + "(");
 			// TODO
 		} else {
-			if (mappings.containsKey(index < 3 ? e.type() : in.getClass())) {
-				type = SQLightDataType.makeDataType(mappings.get(e.type()).getReturnType(e.type()).getSimpleName());
-				query[0].append(e.getName(0) + " " + type.toString());
-				if (e.getAnnotation().primaryKey() && index < 3) {
+			if (mappings.containsKey(index < 3 ? e.getType() : in.getClass())) {
+				type = SQLightDataType.makeDataType(mappings.get(e.getType()).getReturnType(e.getType()).getSimpleName());
+				query[0].append(e.getName(0) + " " + type);
+				if (e.columnAnno().pk() && index < 3) {
 					query[2].append(e.getName(0) + ",");
 					refs.add(e);
 				}
-				if (e.getAnnotation().unique()) query[0].append(" UNIQUE");
-				if (e.getAnnotation().notNull()) query[0].append(" NOT NULL");
+				if (e.columnAnno().unique()) query[0].append(" UNIQUE");
+				if (e.columnAnno().notNull()) query[0].append(" NOT NULL");
 			} else {
 				ForeignKey ret = createTableVisitor(e.get(in));
 				String addCols = ret.getEntryQuery(e, mappings);
 				if (!addCols.isEmpty()) query[0].append(addCols);
-				if (e.getAnnotation().primaryKey() && index < 3) {
+				if (e.columnAnno().pk() && index < 3) {
 					query[2].append(ret.getPrimaryKeys(e) + ",");
 					refs.addAll(ret, e, true);
 				}
@@ -226,24 +230,24 @@ public class DataBase implements AutoCloseable {
 		}
 	}
 
-	public void createTables(Object in) throws TableAnnotationException, IllegalAccessException,  EntryAnnotationException, NoSuchMethodException, SQLException {
+	public void createTables(Object in) throws OosqlException, IllegalAccessException, SQLException {
 		createTableVisitor(in);
 	}
 
-	private Object insertObject(Object in, boolean inArray) throws TableAnnotationException, IllegalAccessException, EntryAnnotationException {
+	private Object insertObject(Object in, boolean inArray) throws OosqlException, IllegalAccessException {
 		TableClass table = Util.getTableAnnotation(in);
 		if (table == null && !inArray)
 			throw new TableAnnotationException("Missing @Table in [" + in.getClass().getName() + "]");
 		Map<String, EntryClass> entrys = Util.getEntryAnnotations(in);
 		if (entrys.isEmpty())
-			throw new EntryAnnotationException("Missing @Entry in [" + in.getClass().getName() + "]");
+			throw new ColumnAnnotationException("Missing @Entry in [" + in.getClass().getName() + "]");
 		for (EntryClass e : entrys.values()) {
 			// TODO
 		}
 		return null;
 	}
 
-	public void insert(Object input) throws IllegalAccessException, TableAnnotationException, EntryAnnotationException {
+	public void insert(Object input) throws IllegalAccessException, OosqlException {
 		insertObject(input, false);
 	}
 
@@ -257,10 +261,10 @@ public class DataBase implements AutoCloseable {
 		return null;
 	}
 
-	public void addMappings(SqlMapping mapping, Class c) throws NoSuchMethodException, SqlMappingException {
+	public void addMappings(SqlMapping mapping, Class c) throws NoSuchMethodException, MappingException {
 		SQLightDataType type = SQLightDataType.makeDataType(mapping.getReturnType(c).getSimpleName());
 		if (type == null)
-			throw new SqlMappingException("Cannot map \"" + c.getName() + "\" to \"" + mapping.getReturnType(c).getName() + "\"");
+			throw new MappingException("Cannot map \"" + c.getName() + "\" to \"" + mapping.getReturnType(c).getName() + "\"");
 		else
 			mappings.put(c, mapping);
 	}

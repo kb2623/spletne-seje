@@ -2,11 +2,12 @@ package org.sessionization.fields.ncsa;
 
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
-import org.oosqljet.annotation.Column;
+import org.oosql.annotation.Column;
 
 public class ProcessID implements Field {
 
-    @Column private int id;
+    @Column 
+	 private int id;
 
     public ProcessID(String niz) {
         id = Integer.valueOf(niz);

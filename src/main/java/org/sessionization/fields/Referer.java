@@ -1,12 +1,13 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Column;
+import org.oosql.annotation.Column;
 
 import java.net.URL;
 
 public class Referer extends FileQuery implements Field {
 
-	@Column Host host;
+	@Column 
+	Host host;
 
 	public Referer(URL url) {
 		super(url);

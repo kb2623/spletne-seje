@@ -1,18 +1,17 @@
-package org.oosqljet;
+package org.oosql;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.oosqljet.exception.EntryAnnotationException;
-import org.oosqljet.exception.SqlMappingException;
-import org.oosqljet.exception.TableAnnotationException;
+import org.oosql.exception.MappingException;
+import org.oosql.exception.OosqlException;
+import org.oosql.exception.TableAnnotationException;
 import org.sessionization.fields.FieldType;
 import org.sessionization.fields.File;
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 import org.sessionization.fields.Referer;
-import org.tmatesoft.sqljet.core.SqlJetException;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -32,8 +31,29 @@ public class DataBaseTest {
 		db = new DataBase();
 	}
 
+	private enum DataType implements SqlDataType {
+		Text {
+			@Override
+			public String getDateType() {
+				return null;
+			}
+		},
+		Int {
+			@Override
+			public String getDateType() {
+				return null;
+			}
+		},
+		Real {
+			@Override
+			public String getDateType() {
+				return null;
+			}
+		}
+	}
+
 	@Test(expected = TableAnnotationException.class)
-	public void testCreateTables() throws EntryAnnotationException, NoSuchMethodException, TableAnnotationException, IllegalAccessException, SQLException {
+	public void testCreateTables() throws OosqlException, IllegalAccessException, SQLException {
 		db.createTables("hello");
 	}
 
@@ -45,7 +65,7 @@ public class DataBaseTest {
 	}
 
 	@Test
-	public void testReflections() throws NoSuchMethodException {
+	public void testReflections() throws MappingException {
 		TestClass anotations = new TestClass("klemen", "1.1.1992");
 
 		System.out.println("Class with Table Annotation");
@@ -134,7 +154,7 @@ public class DataBaseTest {
 	}
 
 	@Test(expected = TableAnnotationException.class)
-	public void testCreateTableAnnotaionException() throws NoSuchMethodException, SqlMappingException, SqlJetException, IOException, IllegalAccessException, TableAnnotationException, EntryAnnotationException {
+	public void testCreateTableAnnotaionException() throws IOException, IllegalAccessException, OosqlException{
 		TestNoAnno test = new TestNoAnno();
 		java.io.File file = new java.io.File("test.test");
 		file.createNewFile();
@@ -143,13 +163,15 @@ public class DataBaseTest {
 
 	private class TestNoAnno {
 
-		@Column private int number;
-		@Column private String line;
+		@Column(dataType = DataType.Int)
+		private int number;
+		@Column(dataType = DataType.Text)
+		private String line;
 
 	}
 
 	@Test
-	public void testSimpleClassCreateTable() throws NoSuchMethodException, SqlMappingException, SqlJetException,IOException, IllegalAccessException, TableAnnotationException, EntryAnnotationException {
+	public void testSimpleClassCreateTable() throws IOException, IllegalAccessException, OosqlException, NoSuchMethodException {
 		SimpleClass test = new SimpleClass("Klemen", "Berkovic", LocalDateTime.now());
 		SqlMapping<LocalDateTime, Integer> mapDate = new SqlMapping<LocalDateTime, Integer>() {
 			@Override
@@ -169,7 +191,7 @@ public class DataBaseTest {
 	}
 
 	@Test
-	public void testCreateTableReferences() throws NoSuchMethodException, SqlMappingException, SqlJetException, IOException, IllegalAccessException, TableAnnotationException, EntryAnnotationException {
+	public void testCreateTableReferences() throws IOException, IllegalAccessException, OosqlException {
 		TClass0 test = new TClass0();
 		java.io.File file = new java.io.File("test.test");
 		file.createNewFile();
@@ -178,9 +200,9 @@ public class DataBaseTest {
 
 	@Table
 	private class TClass0 {
-		@Column(primaryKey = true)
+		@Column(dataType = DataType.Int, pk = true)
 		private int number;
-		@Column(primaryKey = true, name = {"pk1", "pk2", "pk3", "pk4"})
+		@Column(pk = true, name = {"pk1", "pk2", "pk3", "pk4"})
 		private TClass1 tclass1;
 		@Column
 		private String text;
@@ -197,9 +219,9 @@ public class DataBaseTest {
 
 	@Table
 	private class TClass1 {
-		@Column(primaryKey = true)
+		@Column(pk = true)
 		private int number;
-		@Column(primaryKey = true, name = {"pk1_c1", "pk2_c1"})
+		@Column(pk = true, name = {"pk1_c1", "pk2_c1"})
 		private TClass2 tclass2;
 
 		public TClass1() {
@@ -212,9 +234,9 @@ public class DataBaseTest {
 	private class TClass2 {
 		@Column
 		private int number;
-		@Column(primaryKey = true)
+		@Column(pk = true)
 		private String text;
-		@Column(primaryKey = true)
+		@Column(pk = true)
 		private float realNum;
 
 		public TClass2() {
@@ -226,7 +248,7 @@ public class DataBaseTest {
 
 	@Table
 	private class TClass3 {
-		@Column(primaryKey = true)
+		@Column(pk = true)
 		private int number;
 		@Column
 		private double realNum;
@@ -241,7 +263,7 @@ public class DataBaseTest {
 	}
 
 	@Test
-	public void testCreateTableArray() throws IOException, SqlJetException, TableAnnotationException, IllegalAccessException, EntryAnnotationException, NoSuchMethodException {
+	public void testCreateTableArray() throws IOException, IllegalAccessException, OosqlException {
 		TClassArray test = new TClassArray();
 		java.io.File file = new java.io.File("test.test");
 		file.createNewFile();
@@ -278,7 +300,7 @@ public class DataBaseTest {
 	}
 
 	@Test
-	public void testCreateTableExtendClassNewTableName() throws IOException, SqlJetException, TableAnnotationException, IllegalAccessException, EntryAnnotationException, NoSuchMethodException {
+	public void testCreateTableExtendClassNewTableName() throws IOException, IllegalAccessException, OosqlException {
 		TClassOneE test = new TClassTwoE();
 		java.io.File file = new java.io.File("test.test");
 		file.createNewFile();
@@ -314,7 +336,7 @@ public class DataBaseTest {
 	}
 
 	@Test
-	public void testCreateTableExtendClass() throws IOException, SqlJetException, TableAnnotationException, IllegalAccessException, EntryAnnotationException, NoSuchMethodException {
+	public void testCreateTableExtendClass() throws IOException, IllegalAccessException, OosqlException {
 		TClassTwoEE test = new TClassTwoEE();
 		java.io.File file = new java.io.File("test.test");
 		file.createNewFile();
@@ -336,7 +358,7 @@ public class DataBaseTest {
 	}
 
 	@Test
-	public void testCreateTableExtendClassAlterTable() throws IOException, SqlJetException, TableAnnotationException, IllegalAccessException, EntryAnnotationException, NoSuchMethodException {
+	public void testCreateTableExtendClassAlterTable() throws IOException, IllegalAccessException, OosqlException {
 		TClassOneE testOne = new TClassOneE();
 		TClassTwoEE testTwo = new TClassTwoEE();
 		java.io.File file = new java.io.File("test.test");

@@ -2,11 +2,12 @@ package org.sessionization.fields.ncsa;
 
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
-import org.oosqljet.annotation.Column;
+import org.oosql.annotation.Column;
 
 public class SizeOfTransfer implements Field {
 
-    @Column private int size;
+    @Column 
+	 private int size;
 
     public SizeOfTransfer(String niz) {
         size = Integer.valueOf(niz);

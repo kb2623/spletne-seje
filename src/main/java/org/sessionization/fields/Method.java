@@ -1,14 +1,14 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Table;
 
 /**
  * Razred sharanjuje podatke o uporabljeni metodi
  * 
  * @author klemen
  */
-@Table public enum Method implements Field {
-
+@Table 
+public enum Method implements Field {
 	// Vse HTTP metode
 	GET {
         @Override

@@ -1,13 +1,14 @@
 package org.sessionization.fields;
 
-import org.oosqljet.annotation.Column;
-import org.oosqljet.annotation.Table;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Table;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-@Table(noRowId = true) public class Cookie implements Field {
+@Table(noRowId = true) 
+public class Cookie implements Field {
 
 	@Column
 	private HashMap<String, String> map;
