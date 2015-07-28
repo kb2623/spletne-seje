@@ -1,7 +1,9 @@
 package org.oosql;
 
+import org.oosql.annotation.CTable;
 import org.oosql.annotation.Column;
 import org.oosql.annotation.Table;
+import org.oosql.exception.ColumnAnnotationException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -20,8 +22,7 @@ public class Util {
 		if (in == null) throw new NullPointerException();
 		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
 			Annotation anno = c.getDeclaredAnnotation(Table.class);
-			if (anno != null)
-				return anno.name().isEmpty() ? new CTable(anno, in.getSimpleName()) : return (Table) anno;
+			if (anno != null) return ((Table) anno).name().isEmpty() ? new CTable((Table) anno, in.getSimpleName()) : (Table) anno;
 		}
 		return null;
 	}
@@ -50,4 +51,16 @@ public class Util {
 			return null;
 		}
 	}
+	
+	public static boolean hasEmptyNames(String[] array) throws ColumnAnnotationException {
+		if (array.length > 1) {
+			for (int i = 0; i < array.length; i++) if (array[i].isEmpty()) {
+				throw new ColumnAnnotationException("on index [" + i + "] is empty String for name");
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 }

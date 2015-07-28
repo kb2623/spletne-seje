@@ -29,5 +29,5 @@ public @interface Column {
 	 *
 	 * @return
 	 */
-	DataType dataType() default @DataType;
+	String dataType() default "";
 }

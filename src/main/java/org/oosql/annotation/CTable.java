@@ -7,7 +7,7 @@ public class CTable implements Table {
 	private String name;
 	private boolean noRowId;
 	private boolean autoId;
-	private DataType autoIdType;
+	private String autoIdType;
 
 	public CTable(Table tab) {
 		name = tab.name();
@@ -37,7 +37,7 @@ public class CTable implements Table {
 	}
 
 	@Override
-	public DataType autoIdType() {
+	public String autoIdType() {
 		return autoIdType;
 	}
 

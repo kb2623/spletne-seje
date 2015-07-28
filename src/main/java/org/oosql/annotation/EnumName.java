@@ -17,10 +17,10 @@ public @interface EnumName {
 	 *
 	 * @return
 	 */
-	DataType primaryKeyType() default @DataType;
+	String primaryKeyType();
 	/**
 	 *
 	 * @return
 	 */
-	DataType valueDateType() default @DataType;
+	String valueDateType();
 }

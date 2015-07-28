@@ -1,7 +1,10 @@
 package org.oosql.tree;
 
+import org.oosql.Util;
 import org.oosql.annotation.Column;
 import org.oosql.annotation.CColumn;
+import org.oosql.annotation.Table;
+import org.oosql.exception.ColumnAnnotationException;
 
 import java.lang.reflect.Field;
 
@@ -9,10 +12,26 @@ public class ColumnLeaf implements IColumn {
 
 	private Column anno;
 
-	public ColumnLeaf(Field field) {
+	public ColumnLeaf(Column column, String name) {
+		anno = new CColumn(column, name);
+	}
+
+	public ColumnLeaf(Field field) throws ColumnAnnotationException {
 		Column anno = field.getAnnotation(Column.class);
-		if (!anno.name()[0].isEmpty()) this.anno = anno;
-		else this.anno = new CColumn(anno, field.getName());
+		try {
+			if (!Util.hasEmptyNames(anno.name())) this.anno = anno;
+			else this.anno = new CColumn(anno, field.getName());
+		} catch (ColumnAnnotationException e) {
+			throw new ColumnAnnotationException("field \"" + field.getName() + "\" " + e.getMessage());
+		}
+	}
+
+	public ColumnLeaf(Table table) {
+		anno = new CColumn(table);
+	}
+
+	public Column getColumn() {
+		return anno;
 	}
 
 	public String getName() {
@@ -20,7 +39,7 @@ public class ColumnLeaf implements IColumn {
 	}
 
 	public String getType() {
-		return anno.dataType().getDateType();
+		return anno.dataType();
 	}
 
 	public boolean isPrimaryKey() {
@@ -33,5 +52,13 @@ public class ColumnLeaf implements IColumn {
 
 	public boolean isUnique() {
 		return anno.unique();
+	}
+
+	public String[] izpis() {
+		return new String[]{
+				getName() + " " + getType() + (isPrimaryKey() || isNotNull() ? " NOT NULL" : "") + (!isPrimaryKey() && isUnique() ? " UNIQUE" : ""),
+				isPrimaryKey() ? getName() : "",
+				""
+		};
 	}
 }

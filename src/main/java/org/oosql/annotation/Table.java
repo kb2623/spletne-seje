@@ -27,5 +27,5 @@ public @interface Table {
 	 *
 	 * @return
 	 */
-	DataType autoIdType() default @DataType;
+	String autoIdType() default "";
 }

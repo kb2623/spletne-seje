@@ -8,7 +8,7 @@ public class CColumn implements Column {
 	private boolean pk;
 	private boolean notNull;
 	private boolean unique;
-	private DataType type;
+	private String type;
 
 	public CColumn(Column col) {
 		name = col.name();
@@ -28,7 +28,7 @@ public class CColumn implements Column {
 		pk = true;
 		notNull = true;
 		unique = true;
-		type = tab.dataType();
+		type = tab.autoIdType();
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class CColumn implements Column {
 	}
 
 	@Override
-	public DataType dataType() {
+	public String dataType() {
 		return type;
 	}
 
