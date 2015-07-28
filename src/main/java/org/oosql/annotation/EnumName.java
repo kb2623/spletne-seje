@@ -13,4 +13,14 @@ public @interface EnumName {
 	 * @return
 	 */
 	String name() default "";
+	/**
+	 *
+	 * @return
+	 */
+	DataType primaryKeyType() default @DataType;
+	/**
+	 *
+	 * @return
+	 */
+	DataType valueDateType() default @DataType;
 }

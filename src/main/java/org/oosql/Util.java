@@ -1,13 +1,12 @@
 package org.oosql;
 
-import org.datastruct.RadixTree;
 import org.oosql.annotation.Column;
 import org.oosql.annotation.Table;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class Util {
 	/**
@@ -17,24 +16,12 @@ public class Util {
 	 * @return Podatke o notacijo če notacija obstaja, v nosprotnem primeru null;
 	 * @see TableClass
 	 */
-	public static TableClass getTableAnnotation(Object in) throws NullPointerException {
-		if (in == null) throw new NullPointerException();
-		for (Class c = in.getClass(); c.getSuperclass() != null; c = c.getSuperclass()) {
-			Annotation anno = c.getDeclaredAnnotation(Table.class);
-			if (anno != null) return new TableClass(c);
-		}
-		return null;
-	}
-	/**
-	 *
-	 * @param in
-	 * @return
-	 */
-	public static TableClass getTableAnnotation(Class in) throws NullPointerException {
+	public static Table getTableAnnotation(Class in) throws NullPointerException {
 		if (in == null) throw new NullPointerException();
 		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
-			Annotation[] anno = c.getAnnotationsByType(Table.class);
-			if (anno.length > 0) return new TableClass(c);
+			Annotation anno = c.getDeclaredAnnotation(Table.class);
+			if (anno != null)
+				return anno.name().isEmpty() ? new CTable(anno, in.getSimpleName()) : return (Table) anno;
 		}
 		return null;
 	}
@@ -45,17 +32,22 @@ public class Util {
 	 * @return
 	 * @see List
 	 */
-	public static Map<String, EntryClass> getEntryAnnotations(Object in) throws NullPointerException {
+	public static List<Field> getEntryAnnotations(Class in) throws NullPointerException {
 		if (in == null) throw new NullPointerException();
-		Map<String, EntryClass> tab = new RadixTree<>();
-		for (Class c = in.getClass(); c.getSuperclass() != null; c = c.getSuperclass()) {
+		List<Field> tab = new LinkedList<>();
+		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
 		  for (Field field : c.getDeclaredFields()) {
-			 if (field.isAnnotationPresent(Column.class)) {
-				EntryClass tmp = new EntryClass(field, in);
-				tab.put(tmp.getName(0), tmp);
-			 }
+			 if (field.isAnnotationPresent(Column.class)) tab.add(field);
 		  }
 		}
 		return !tab.isEmpty() ? tab : null;
+	}
+
+	public static Class getReturnType(Class<? extends SqlMapping> in, Class parameter) {
+		try {
+			return in.getMethod("inMapping", parameter).getReturnType();
+		} catch (NoSuchMethodException e) {
+			return null;
+		}
 	}
 }

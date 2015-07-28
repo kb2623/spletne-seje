@@ -2,11 +2,12 @@ package org.sessionization.fields;
 
 import org.oosql.annotation.Column;
 
+// TODO poštudiraj kako mapirati primarne tipe
 public class SizeOfRequest implements Field {
 
 	@Column 
 	private int size;
-	
+
 	public SizeOfRequest(String size) {
 		this.size = Integer.valueOf(size);
 	}
@@ -34,5 +35,4 @@ public class SizeOfRequest implements Field {
 	public FieldType getFieldType() {
 		return FieldType.SizeOfRequest;
 	}
-
 }

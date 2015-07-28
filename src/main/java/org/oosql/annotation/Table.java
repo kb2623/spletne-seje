@@ -23,4 +23,9 @@ public @interface Table {
 	 * @return
 	 */
 	boolean autoId() default false;
+	/**
+	 *
+	 * @return
+	 */
+	DataType autoIdType() default @DataType;
 }

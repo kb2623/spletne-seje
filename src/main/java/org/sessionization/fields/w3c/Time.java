@@ -3,10 +3,11 @@ package org.sessionization.fields.w3c;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import org.oosql.SqlMapping;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
-public class Time implements Field {
+public class Time implements Field, SqlMapping<LocalTime, String> {
 
 	private LocalTime time;
 	/**
@@ -40,5 +41,17 @@ public class Time implements Field {
 	@Override
 	public FieldType getFieldType() {
 		return FieldType.Time;
+	}
+
+	@Override
+	public String inMapping(LocalTime in) {
+		// TODO
+		return null;
+	}
+
+	@Override
+	public LocalTime outMapping(String in) {
+		// TODO
+		return null;
 	}
 }
