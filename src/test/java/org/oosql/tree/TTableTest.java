@@ -88,6 +88,53 @@ public class TTableTest {
 	}
 
 	@Test
+	public void testClassExtendName() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(dataType = JDBCType.VARCHAR, lengthType = 25)
+			private String text;
+			@Column(dataType = JDBCType.REAL)
+			private float realNumber;
+		}
+		@Table(name = "test")
+		class TestTwo extends TestOne {
+			@Column(name = {"two_number"})
+			private int number;
+			@Column(dataType = JDBCType.VARCHAR, lengthType = 25, name = {"two_text"})
+			private String text;
+			@Column(dataType = JDBCType.REAL, name = {"two_realNumber"})
+			private float realNumber;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testClassExtendOneName() throws OosqlException {
+		@Table(name = "test")
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(dataType = JDBCType.VARCHAR, lengthType = 25)
+			private String text;
+			@Column(dataType = JDBCType.REAL)
+			private float realNumber;
+		}
+		class TestTwo extends TestOne {
+			@Column(name = {"two_number"})
+			private int number;
+			@Column(dataType = JDBCType.VARCHAR, lengthType = 25, name = {"two_text"})
+			private String text;
+			@Column(dataType = JDBCType.REAL, name = {"two_realNumber"})
+			private float realNumber;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test
 	public void testTwoClassOne() throws OosqlException {
 		@Table
 		class TestOne {
@@ -211,6 +258,45 @@ public class TTableTest {
 			@Column(pk = true)
 			private TestOne classOne;
 			@Column(pk = true)
+			private TestTwo classTwo;
+		}
+		TTable table = new TTable(TestThree.class);
+		table.izpis();
+	}
+
+	@Test(expected = ColumnAnnotationException.class)
+	public void testThreeClassThreeEmptyName() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(dataType = JDBCType.VARCHAR, lengthType = 25)
+			private String text;
+			@Column(dataType = JDBCType.REAL)
+			private float realNumber;
+		}
+		@Table
+		class TestTwo {
+			@Column(pk = true)
+			private int number;
+			@Column(dataType = JDBCType.VARCHAR, lengthType = 25)
+			private String text;
+			@Column(dataType = JDBCType.REAL)
+			private float realNumber;
+			@Column(pk = true)
+			private TestOne classOne;
+		}
+		@Table
+		class TestThree {
+			@Column(pk = true)
+			private int number;
+			@Column(dataType = JDBCType.VARCHAR, lengthType = 25)
+			private String text;
+			@Column(dataType = JDBCType.REAL)
+			private float realNumber;
+			@Column(pk = true)
+			private TestOne classOne;
+			@Column(name = {"tt_1id", "tt_2id", ""}, pk = true)
 			private TestTwo classTwo;
 		}
 		TTable table = new TTable(TestThree.class);

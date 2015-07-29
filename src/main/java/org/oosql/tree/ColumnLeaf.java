@@ -22,7 +22,7 @@ public class ColumnLeaf implements IColumn {
 			if (!Util.hasEmptyNames(anno.name())) this.anno = anno;
 			else this.anno = new CColumn(anno, field.getName());
 		} catch (ColumnAnnotationException e) {
-			throw new ColumnAnnotationException("field \"" + field.getName() + "\" " + e.getMessage());
+			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);
 		}
 	}
 

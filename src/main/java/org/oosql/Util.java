@@ -55,7 +55,7 @@ public class Util {
 	public static boolean hasEmptyNames(String[] array) throws ColumnAnnotationException {
 		if (array.length > 0) {
 			for (int i = 0; i < array.length; i++) if (array[i].isEmpty()) {
-				throw new ColumnAnnotationException("on index [" + i + "] is empty String for name");
+				throw new ColumnAnnotationException("has empty name on index [" + i + "]");
 			}
 			return false;
 		} else {

@@ -24,27 +24,23 @@ public class ColumnNode implements IColumn {
 			setUpColumns(table);
 			refTable = table;
 		} catch (ColumnAnnotationException e) {
-			throw new ColumnAnnotationException("field \"" + field.getName() + "\" " + e.getMessage());
+			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);
 		}
 	}
 
 	private void setUpColumns(TTable table) throws ColumnAnnotationException {
-		try {
-			int index = 0;
-			for (IColumn c : table.getReferences()) {
-				if (c instanceof ColumnLeaf) {
-					columns.add(new ColumnRef(c.getColumn(), getName(index)));
+		int index = 0;
+		for (IColumn c : table.getReferences()) {
+			if (c instanceof ColumnLeaf) {
+				columns.add(new ColumnRef(c.getColumn(), getName(index)));
+				index++;
+			} else {
+				int j;
+				for (ColumnRef r : ((ColumnNode) c).getAdditionalColumns()) {
+					columns.add(new ColumnRef(r.getColumn(), getName(index)));
 					index++;
-				} else {
-					int j;
-					for (ColumnRef r : ((ColumnNode) c).getAdditionalColumns()) {
-						columns.add(new ColumnRef(r.getColumn(), getName(index)));
-						index++;
-					}
 				}
 			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new ColumnAnnotationException("missing column names");
 		}
 	}
 
@@ -56,8 +52,12 @@ public class ColumnNode implements IColumn {
 		return anno.pk();
 	}
 
-	public String getName(int index) throws ArrayIndexOutOfBoundsException {
-		return anno.name()[index];
+	public String getName(int index) throws ColumnAnnotationException {
+		try {
+			return anno.name()[index];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ColumnAnnotationException("missing names for Compound key");
+		}
 	}
 
 	public boolean isNotNull() {

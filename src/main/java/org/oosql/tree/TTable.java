@@ -41,6 +41,8 @@ public class TTable {
 					// TODO imamo razred, ki nima Table annotacije, lahko pa vsebuje Column anotacijo, če pa tudi tega nima potem vrži napako
 					throw error;
 				}
+			} catch (ColumnAnnotationException error) {
+				throw new ColumnAnnotationException("Class [" + in.getName() + "]", error);
 			}
 		}
 	}
@@ -50,13 +52,7 @@ public class TTable {
 		if (fieldType.isPrimitive() || String.class.isAssignableFrom(fieldType)) {
 			return new ColumnLeaf(field);
 		} else if (fieldType.isEnum()) {
-			Table table = Util.getTableAnnotation(fieldType);
-			if (table == null) {
-				// TODO
-			} else {
-				// TODO
-			}
-			return null;
+			return new ColumnEnum(field);
 		} else if (fieldType.isArray()) {
 			// TODO
 			int dim = 0;
