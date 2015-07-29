@@ -18,7 +18,6 @@ public @interface ArrayName {
 	 * @return
 	 */
 	String valueName() default "";
-
 	/**
 	 *
 	 * @return

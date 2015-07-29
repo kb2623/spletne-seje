@@ -22,7 +22,7 @@ public class Util {
 		if (in == null) throw new NullPointerException();
 		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
 			Annotation anno = c.getDeclaredAnnotation(Table.class);
-			if (anno != null) return ((Table) anno).name().isEmpty() ? new CTable((Table) anno, in.getSimpleName()) : (Table) anno;
+			if (anno != null) return ((Table) anno).name().isEmpty() ? new CTable((Table) anno, c.getSimpleName()) : (Table) anno;
 		}
 		return null;
 	}
@@ -53,7 +53,7 @@ public class Util {
 	}
 	
 	public static boolean hasEmptyNames(String[] array) throws ColumnAnnotationException {
-		if (array.length > 1) {
+		if (array.length > 0) {
 			for (int i = 0; i < array.length; i++) if (array[i].isEmpty()) {
 				throw new ColumnAnnotationException("on index [" + i + "] is empty String for name");
 			}

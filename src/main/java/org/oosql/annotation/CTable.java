@@ -1,19 +1,22 @@
 package org.oosql.annotation;
 
 import java.lang.annotation.Annotation;
+import java.sql.JDBCType;
 
 public class CTable implements Table {
 
 	private String name;
 	private boolean noRowId;
-	private boolean autoId;
-	private String autoIdType;
+	private boolean id;
+	private JDBCType idType;
+	private String pkConstraintName;
 
 	public CTable(Table tab) {
 		name = tab.name();
 		noRowId = tab.noRowId();
-		autoId = tab.autoId();
-		autoIdType = tab.autoIdType();
+		id = tab.id();
+		idType = tab.idType();
+		pkConstraintName = tab.pkConstraintName();
 	}
 
 	public CTable(Table tab, String name) {
@@ -32,13 +35,18 @@ public class CTable implements Table {
 	}
 
 	@Override
-	public boolean autoId() {
-		return autoId;
+	public boolean id() {
+		return id;
 	}
 
 	@Override
-	public String autoIdType() {
-		return autoIdType;
+	public JDBCType idType() {
+		return idType;
+	}
+
+	@Override
+	public String pkConstraintName() {
+		return pkConstraintName;
 	}
 
 	@Override

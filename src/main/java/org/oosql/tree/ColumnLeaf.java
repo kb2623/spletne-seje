@@ -39,7 +39,7 @@ public class ColumnLeaf implements IColumn {
 	}
 
 	public String getType() {
-		return anno.dataType();
+		return anno.dataType().getName() + (anno.lengthType() > 0 ? "(" + anno.lengthType() + ")" : "");
 	}
 
 	public boolean isPrimaryKey() {
@@ -58,7 +58,7 @@ public class ColumnLeaf implements IColumn {
 		return new String[]{
 				getName() + " " + getType() + (isPrimaryKey() || isNotNull() ? " NOT NULL" : "") + (!isPrimaryKey() && isUnique() ? " UNIQUE" : ""),
 				isPrimaryKey() ? getName() : "",
-				""
+				null
 		};
 	}
 }

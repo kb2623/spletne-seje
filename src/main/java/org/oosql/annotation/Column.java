@@ -1,6 +1,7 @@
 package org.oosql.annotation;
 
 import java.lang.annotation.*;
+import java.sql.JDBCType;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -29,5 +30,10 @@ public @interface Column {
 	 *
 	 * @return
 	 */
-	String dataType() default "";
+	JDBCType dataType() default JDBCType.INTEGER;
+	/**
+	 *
+	 * @return
+	 */
+	int lengthType() default 0;
 }

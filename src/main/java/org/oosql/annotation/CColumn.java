@@ -1,6 +1,7 @@
 package org.oosql.annotation;
 
 import java.lang.annotation.Annotation;
+import java.sql.JDBCType;
 
 public class CColumn implements Column {
 
@@ -8,7 +9,8 @@ public class CColumn implements Column {
 	private boolean pk;
 	private boolean notNull;
 	private boolean unique;
-	private String type;
+	private JDBCType type;
+	private int typeLength;
 
 	public CColumn(Column col) {
 		name = col.name();
@@ -16,6 +18,7 @@ public class CColumn implements Column {
 		notNull = col.notNull();
 		unique = col.unique();
 		type = col.dataType();
+		typeLength = col.lengthType();
 	}
 
 	public CColumn(Column col, String name) {
@@ -28,7 +31,8 @@ public class CColumn implements Column {
 		pk = true;
 		notNull = true;
 		unique = true;
-		type = tab.autoIdType();
+		type = tab.idType();
+		typeLength = 0;
 	}
 
 	@Override
@@ -52,8 +56,13 @@ public class CColumn implements Column {
 	}
 
 	@Override
-	public String dataType() {
+	public JDBCType dataType() {
 		return type;
+	}
+
+	@Override
+	public int lengthType() {
+		return typeLength;
 	}
 
 	@Override

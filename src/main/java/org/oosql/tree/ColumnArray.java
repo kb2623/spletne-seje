@@ -7,8 +7,8 @@ import java.lang.reflect.Field;
 
 public class ColumnArray extends ColumnNode {
 
-	private TTable tabelaVrednost;
-	private List<ColumnLeaf> vresnot;
+	protected TTable tabelaVrednost;
+	protected List<ColumnRef> vresnot;
 
 	public ColumnArray(Field field, TTable table) throws ColumnAnnotationException {
 		super(field, table);

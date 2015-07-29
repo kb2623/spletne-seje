@@ -1,47 +1,19 @@
 package org.oosql.tree;
 
 import org.oosql.Util;
-import org.oosql.annotation.CColumn;
 import org.oosql.annotation.Column;
+import org.oosql.annotation.CColumn;
 import org.oosql.exception.ColumnAnnotationException;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.LinkedList;
 import java.lang.reflect.Field;
 
 public class ColumnNode implements IColumn {
 
-	private class ColumnRef implements IColumn {
-		private String name;
-		private Column ref;
-
-		public ColumnRef(Column ref, String name) {
-			this.ref = ref;
-			this.name = name;
-		}
-
-		@Override
-		public boolean isPrimaryKey() {
-			return false;
-		}
-
-		public String[] izpis() {
-			return new String[]{
-					name + " " + ref.dataType(),
-					name,
-					ref.name()[0]
-			};
-		}
-
-		@Override
-		public Column getColumn() {
-			return new CColumn(ref, name);
-		}
-	}
-
-	private Column anno;
-	private List<ColumnRef> columns;
-	private TTable refTable;
+	protected Column anno;
+	protected List<ColumnRef> columns;
+	protected TTable refTable;
 
 	public ColumnNode(Field field, TTable table) throws ColumnAnnotationException {
 		Column anno = field.getAnnotation(Column.class);

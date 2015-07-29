@@ -30,7 +30,7 @@ public class TTable {
 			throw new ColumnAnnotationException("Column annotations missing in \"" + in.getClass().getName() + "\"!!!");
 		else
 			columns = new LinkedList<>();
-		if (table.autoId()) columns.add(new ColumnLeaf(table));
+		if (table.id()) columns.add(new ColumnLeaf(table));
 		for (Field e : entrys) {
 			try {
 				columns.add(procesEntry(e));
@@ -64,13 +64,13 @@ public class TTable {
 			return null;
 		} else if (Collection.class.isAssignableFrom(fieldType)) {
 			// TODO
-			int dim = 0;
+			int dim = 1;
 			Class c;
 			for (String s : ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getTypeName().replace(">", "").split("<")) {
-				dim++;
 				try {
 					c = Class.forName(s);
 					if (!Collection.class.isAssignableFrom(c)) break;
+					else dim++;
 				} catch (ClassNotFoundException e) {
 					break;
 				}
