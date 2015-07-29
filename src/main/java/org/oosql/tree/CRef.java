@@ -1,14 +1,14 @@
 package org.oosql.tree;
 
 import org.oosql.annotation.Column;
-import org.oosql.annotation.CColumn;
+import org.oosql.annotation.ColumnC;
 
-public class ColumnRef implements IColumn {
+public class CRef implements IColumn {
 	private String name;
 	private Column ref;
 
-	public ColumnRef(Column ref, String name) {
-		this.ref = ref;
+	public CRef(Column ref, String name) {
+		this.ref  = ref;
 		this.name = name;
 	}
 
@@ -19,7 +19,7 @@ public class ColumnRef implements IColumn {
 
 	public String[] izpis() {
 		return new String[]{
-				name + " " + ref.dataType(),
+				name + " " + ref.type(),
 				name,
 				ref.name()[0]
 		};
@@ -27,6 +27,6 @@ public class ColumnRef implements IColumn {
 
 	@Override
 	public Column getColumn() {
-		return new CColumn(ref, name);
+		return new ColumnC(ref, name);
 	}
 }

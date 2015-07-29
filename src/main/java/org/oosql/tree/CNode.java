@@ -1,50 +1,54 @@
 package org.oosql.tree;
 
 import org.oosql.Util;
-import org.oosql.annotation.Column;
-import org.oosql.annotation.CColumn;
+import org.oosql.annotation.*;
 import org.oosql.exception.ColumnAnnotationException;
 
 import java.util.List;
 import java.util.LinkedList;
 import java.lang.reflect.Field;
 
-public class ColumnNode implements IColumn {
+public class CNode implements IColumn {
 
 	protected Column anno;
-	protected List<ColumnRef> columns;
+	protected List<CRef> columns;
 	protected TTable refTable;
 
-	public ColumnNode(Field field, TTable table) throws ColumnAnnotationException {
+	public CNode() {
+		anno 		= null;
+		columns 	= new LinkedList<>();
+		refTable = null;
+	}
+
+	public CNode(Field field, TTable table) throws ColumnAnnotationException {
+		this();
 		Column anno = field.getAnnotation(Column.class);
 		try {
-			if (!Util.hasEmptyNames(anno.name())) this.anno = anno;
-			else this.anno = new CColumn(anno, field.getName());
-			columns = new LinkedList<>();
-			setUpColumns(table);
+			if (!Util.hasEmptyNames(anno)) this.anno = anno;
+			else this.anno = new ColumnC(anno, field.getName());
 			refTable = table;
+			setUpColumns();
 		} catch (ColumnAnnotationException e) {
 			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);
 		}
 	}
 
-	private void setUpColumns(TTable table) throws ColumnAnnotationException {
+	protected void setUpColumns() throws ColumnAnnotationException {
 		int index = 0;
-		for (IColumn c : table.getReferences()) {
-			if (c instanceof ColumnLeaf) {
-				columns.add(new ColumnRef(c.getColumn(), getName(index)));
+		for (IColumn c : refTable.getReferences()) {
+			if (c instanceof CLeaf) {
+				columns.add(new CRef(c.getColumn(), getName(index)));
 				index++;
 			} else {
-				int j;
-				for (ColumnRef r : ((ColumnNode) c).getAdditionalColumns()) {
-					columns.add(new ColumnRef(r.getColumn(), getName(index)));
+				for (CRef r : ((CNode) c).getAdditionalColumns()) {
+					columns.add(new CRef(r.getColumn(), getName(index)));
 					index++;
 				}
 			}
 		}
 	}
 
-	protected List<ColumnRef> getAdditionalColumns() {
+	protected List<CRef> getAdditionalColumns() {
 		return columns;
 	}
 
@@ -83,7 +87,7 @@ public class ColumnNode implements IColumn {
 		};
 		for (int i = 0; i < this.columns.size(); i++) {
 			String tab[] = this.columns.get(i).izpis();
-			columns.append("," + tab[0] + (isPrimaryKey() ? " NOT NULL" : "") + "\n");
+			columns.append("," + tab[0] + (isPrimaryKey() ? " NOT NULL" : ""));
 			if (isPrimaryKey()) primaryKey.append("," + tab[1]);
 			reference[0].append("," + tab[1]);
 			reference[1].append("," + tab[2]);

@@ -3,7 +3,7 @@ package org.sessionization.fields.ncsa;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.oosql.SqlMapping;
+import org.oosql.ISqlMapping;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
@@ -12,7 +12,7 @@ import org.sessionization.fields.FieldType;
  * @author klemen
  *
  */
-public class DateTime implements Field, SqlMapping<LocalDateTime, String> {
+public class DateTime implements Field, ISqlMapping<LocalDateTime, String> {
 
 	private LocalDateTime dateTime;
 	/** 

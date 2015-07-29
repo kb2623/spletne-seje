@@ -3,11 +3,11 @@ package org.sessionization.fields.w3c;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import org.oosql.SqlMapping;
+import org.oosql.ISqlMapping;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
-public class Time implements Field, SqlMapping<LocalTime, String> {
+public class Time implements Field, ISqlMapping<LocalTime, String> {
 
 	private LocalTime time;
 	/**

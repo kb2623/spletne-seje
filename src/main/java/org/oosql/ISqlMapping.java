@@ -6,7 +6,7 @@ import org.oosql.exception.MappingException;
  * @param <I> Tip objekta, ki ga želimo zapisati v podatkovno bazo. Tip je omejen na primitivne podatkovne tipe, ter String. v nasprotnem primeru dobimo napako.
  * @param <O> Tip obkekta, ki ga zapišemo v podatkovno bazo
  */
-public interface SqlMapping<I, O> {
+public interface ISqlMapping<I, O> {
 	/**
 	 * Metoda, ki pretvori objekt <code>in</code> v obliko za zapis v podatkovno bazo.
 	 *

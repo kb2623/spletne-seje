@@ -1,26 +1,21 @@
 package org.oosql.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.annotation.Retention;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.RetentionPolicy;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ArrayName {
+public @interface ArrayTable {
 	/**
 	 *
 	 * @return
 	 */
-	String arrayName() default "";
+	Table arrayTable() default @Table(id = @Column(pk = true));
 	/**
 	 *
 	 * @return
 	 */
-	String valueName() default "";
-	/**
-	 *
-	 * @return
-	 */
-	Column column() default @Column;
+	Table valueTable() default @Table;
 }

@@ -1,14 +1,13 @@
 package org.sessionization.fields.w3c;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.oosql.SqlMapping;
+import org.oosql.ISqlMapping;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
-public class Date implements Field, SqlMapping<LocalDate, String> {
+public class Date implements Field, ISqlMapping<LocalDate, String> {
 
 	private LocalDate date;
 

@@ -1,8 +1,8 @@
 package org.oosql.tree;
 
 import org.oosql.Util;
-import org.oosql.SqlMapping;
-import org.oosql.annotation.Table;
+import org.oosql.ISqlMapping;
+import org.oosql.annotation.*;
 import org.oosql.exception.OosqlException;
 import org.oosql.exception.TableAnnotationException;
 import org.oosql.exception.ColumnAnnotationException;
@@ -19,6 +19,13 @@ public class TTable {
 	private String tableName;
 	private List<IColumn> columns;
 
+	protected TTable(EnumTable columns, Table table) {
+		tableName = table.name();
+		this.columns = new LinkedList<>();
+		this.columns.add(new CLeaf(columns.keyColumn()));
+		this.columns.add(new CLeaf(columns.valueColumn()));
+	}
+
 	public TTable(Class in) throws OosqlException {
 		Table table = Util.getTableAnnotation(in);
 		if (table == null)
@@ -30,12 +37,12 @@ public class TTable {
 			throw new ColumnAnnotationException("Column annotations missing in \"" + in.getClass().getName() + "\"!!!");
 		else
 			columns = new LinkedList<>();
-		if (table.id()) columns.add(new ColumnLeaf(table));
+		if (!table.id().equals(new ColumnC())) columns.add(new CLeaf(table.id()));
 		for (Field e : entrys) {
 			try {
 				columns.add(procesEntry(e));
 			} catch (TableAnnotationException error) {
-				if (SqlMapping.class.isAssignableFrom(e.getType())) {
+				if (ISqlMapping.class.isAssignableFrom(e.getType())) {
 					// TODO Imamo razred, ki ima mapiranje
 				} else {
 					// TODO imamo razred, ki nima Table annotacije, lahko pa vsebuje Column anotacijo, če pa tudi tega nima potem vrži napako
@@ -50,13 +57,23 @@ public class TTable {
 	private IColumn procesEntry(Field field) throws OosqlException {
 		Class fieldType = field.getType();
 		if (fieldType.isPrimitive() || String.class.isAssignableFrom(fieldType)) {
-			return new ColumnLeaf(field);
+			return new CLeaf(field);
 		} else if (fieldType.isEnum()) {
-			return new ColumnEnum(field);
+			Table table = Util.getTableAnnotation(fieldType);
+			Column column = field.getAnnotation(Column.class);
+			if (table == null) {
+				return new CLeaf(field);
+			} else {
+				EnumTable eName = field.getAnnotation(EnumTable.class);
+				return new CEnum(field, table, eName == null ? new EnumTableC(table) : eName);
+			}
 		} else if (fieldType.isArray()) {
 			// TODO
 			int dim = 0;
-			for (Class c = fieldType; c.isArray(); c = c.getComponentType()) dim++;
+			Class c;
+			for (c = fieldType; c.isArray(); c = c.getComponentType()) dim++;
+			// TODO
+//			IColumn value = procesEntry(procesEntry(c));
 			return null;
 		} else if (Collection.class.isAssignableFrom(fieldType)) {
 			// TODO
@@ -76,7 +93,7 @@ public class TTable {
 			// Imamo slovar
 			return null;
 		} else {
-			return new ColumnNode(field, new TTable(fieldType));
+			return new CNode(field, new TTable(fieldType));
 		}
 	}
 
@@ -98,7 +115,7 @@ public class TTable {
 			String[] tab = c.izpis();
 			colunms.append("\t" + tab[0] + ",\n");
 			if (c.isPrimaryKey()) primaryKey.append("," + tab[1]);
-			if (c instanceof ColumnNode) refs.append("\t," + tab[2] + "\n");
+			if (c instanceof CNode) refs.append("\t," + tab[2] + "\n");
 		}
 		if (primaryKey.length() < 0) colunms.deleteCharAt(colunms.length() - 2);
 		if (primaryKey.length() > 0) primaryKey.deleteCharAt(0).insert(0, "\tPRIMARY KEY(").append(")\n");

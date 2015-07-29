@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MapName {
+public @interface MapTable {
 	/**
 	 *
 	 * @return
@@ -22,10 +22,15 @@ public @interface MapName {
 	 *
 	 * @return
 	 */
-	ArrayName[] arrayName() default {};
+	ArrayTable[] arrayName() default {};
 	/**
 	 *
 	 * @return
 	 */
-	EnumName[] enumName() default {};
+	EnumTable[] enumName() default {};
+	/**
+	 *
+	 * @return
+	 */
+	Column[] columnName() default {};
 }

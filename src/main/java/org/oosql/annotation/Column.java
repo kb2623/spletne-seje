@@ -30,10 +30,15 @@ public @interface Column {
 	 *
 	 * @return
 	 */
-	JDBCType dataType() default JDBCType.INTEGER;
+	JDBCType type() default JDBCType.INTEGER;
 	/**
 	 *
 	 * @return
 	 */
-	int lengthType() default 0;
+	int typeLen() default 0;
+	/**
+	 *
+	 * @return
+	 */
+	String constaraintName() default "";
 }

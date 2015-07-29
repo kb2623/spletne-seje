@@ -1,6 +1,6 @@
 package org.oosql;
 
-import org.oosql.annotation.CTable;
+import org.oosql.annotation.TableC;
 import org.oosql.annotation.Column;
 import org.oosql.annotation.Table;
 import org.oosql.exception.ColumnAnnotationException;
@@ -22,7 +22,9 @@ public class Util {
 		if (in == null) throw new NullPointerException();
 		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
 			Annotation anno = c.getDeclaredAnnotation(Table.class);
-			if (anno != null) return ((Table) anno).name().isEmpty() ? new CTable((Table) anno, c.getSimpleName()) : (Table) anno;
+			if (anno != null)
+				return ((Table) anno).name().isEmpty() ?
+						new TableC((Table) anno, c.getSimpleName(), null, null, null) : (Table) anno;
 		}
 		return null;
 	}
@@ -44,7 +46,7 @@ public class Util {
 		return !tab.isEmpty() ? tab : null;
 	}
 
-	public static Class getReturnType(Class<? extends SqlMapping> in, Class parameter) {
+	public static Class getReturnType(Class<? extends ISqlMapping> in, Class parameter) {
 		try {
 			return in.getMethod("inMapping", parameter).getReturnType();
 		} catch (NoSuchMethodException e) {
@@ -52,7 +54,8 @@ public class Util {
 		}
 	}
 	
-	public static boolean hasEmptyNames(String[] array) throws ColumnAnnotationException {
+	public static boolean hasEmptyNames(Column column) throws ColumnAnnotationException {
+		String[] array = column.name();
 		if (array.length > 0) {
 			for (int i = 0; i < array.length; i++) if (array[i].isEmpty()) {
 				throw new ColumnAnnotationException("has empty name on index [" + i + "]");
