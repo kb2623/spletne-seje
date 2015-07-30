@@ -23,4 +23,9 @@ public @interface ArrayTable {
 	 * @return
 	 */
 	Column valueColum() default @Column;
+	/**
+	 *
+	 * @return
+	 */
+	EnumTable enumColumn() default @EnumTable;
 }

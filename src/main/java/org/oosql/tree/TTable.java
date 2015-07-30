@@ -82,7 +82,7 @@ public class TTable {
 				} else if (Map.class.isAssignableFrom(c)) {
 					throw new ColumnAnnotationException("Nested Map not supported");
 				} else {
-					// TODO
+					IColumn valueCol = processClass(c, field.getAnnotation(ArrayTable.class).valueColum());
 				}
 				return null;
 			} else if (Collection.class.isAssignableFrom(fieldType)) {
