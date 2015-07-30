@@ -35,7 +35,7 @@ public class Util {
 	 * @return
 	 * @see List
 	 */
-	public static List<Field> getEntryAnnotations(Class in) throws NullPointerException {
+	public static List<Field> getColumnFields(Class in) throws NullPointerException {
 		if (in == null) throw new NullPointerException();
 		List<Field> tab = new LinkedList<>();
 		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {

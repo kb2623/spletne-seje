@@ -18,4 +18,9 @@ public @interface ArrayTable {
 	 * @return
 	 */
 	Table valueTable() default @Table;
+	/**
+	 *
+	 * @return
+	 */
+	Column valueColum() default @Column;
 }

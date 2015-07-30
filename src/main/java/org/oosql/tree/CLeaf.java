@@ -12,38 +12,33 @@ public class CLeaf implements IColumn {
 
 	private Column anno;
 
-	public CLeaf(Field field) throws ColumnAnnotationException {
-		try {
-			Column anno = field.getAnnotation(Column.class);
-			if (!Util.hasEmptyNames(anno)) {
-				if (field.getType().isEnum() && anno.type().equals(JDBCType.INTEGER)) {
-					if (anno.typeLen() <= 0) {
-						this.anno = new ColumnC(anno, null, null, null, null, JDBCType.VARCHAR, 25, null);
-					} else {
-						this.anno = new ColumnC(anno, null, null, null, null, JDBCType.VARCHAR, anno.typeLen(), null);
-					}
+	public CLeaf(Column anno, Class type, String altName) throws ColumnAnnotationException {
+		if (!Util.hasEmptyNames(anno)) {
+			if (type.isEnum() && anno.type().equals(JDBCType.INTEGER)) {
+				if (anno.typeLen() <= 0) {
+					this.anno = new ColumnC(anno, null, null, null, null, JDBCType.VARCHAR, 25, null);
 				} else {
-					this.anno = anno;
+					this.anno = new ColumnC(anno, null, null, null, null, JDBCType.VARCHAR, anno.typeLen(), null);
 				}
 			} else {
-				if (field.getType().isEnum() && anno.type().equals(JDBCType.INTEGER)) {
-					if (anno.typeLen() <= 0) {
-						this.anno = new ColumnC(anno, new String[]{field.getName()}, null, null, null, JDBCType.VARCHAR, 25, null);
-					} else {
-						this.anno = new ColumnC(anno, new String[]{field.getName()}, null, null, null, JDBCType.VARCHAR, anno.typeLen(), null);
-					}
-				} else {
-					this.anno = new ColumnC(anno, field.getName());
-				}
+				this.anno = anno;
 			}
-		} catch (ColumnAnnotationException e) {
-			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);
+		} else {
+			if (type.isEnum() && anno.type().equals(JDBCType.INTEGER)) {
+				if (anno.typeLen() <= 0) {
+					this.anno = new ColumnC(anno, new String[]{altName}, null, null, null, JDBCType.VARCHAR, 25, null);
+				} else {
+					this.anno = new ColumnC(anno, new String[]{altName}, null, null, null, JDBCType.VARCHAR, anno.typeLen(), null);
+				}
+			} else {
+				this.anno = new ColumnC(anno, altName);
+			}
 		}
 	}
 
-	public CLeaf(Column column) {
-		if (column.pk())	anno = column;
-		else anno = new ColumnC(column, null, true, null, null, null, null, null);
+	public CLeaf(Column column, boolean pk) {
+		if (pk && column.pk())	anno = column;
+		else anno = new ColumnC(column, null, null, null, null, null, null, null);
 	}
 
 	public Column getColumn() {

@@ -14,6 +14,6 @@ public abstract class OosqlException  extends Exception {
 	 * @param throwable
 	 */
 	public OosqlException(String message, Throwable throwable) {
-		super(message + " : " + throwable.getMessage(), throwable);
+		super(message + " > " + throwable.getMessage(), throwable);
 	}
 }

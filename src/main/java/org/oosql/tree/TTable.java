@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 
 public class TTable {
 
@@ -22,84 +21,115 @@ public class TTable {
 	protected TTable(EnumTable columns, Table table) {
 		tableName = table.name();
 		this.columns = new LinkedList<>();
-		this.columns.add(new CLeaf(columns.keyColumn()));
-		this.columns.add(new CLeaf(columns.valueColumn()));
+		this.columns.add(new CLeaf(columns.keyColumn(), true));
+		this.columns.add(new CLeaf(columns.valueColumn(), false));
 	}
 
 	public TTable(Class in) throws OosqlException {
 		Table table = Util.getTableAnnotation(in);
 		if (table == null)
-			throw new TableAnnotationException("Table annotation missing in \"" + in.getClass().getName() + "\"!!!");
+			throw new TableAnnotationException("Missing in \"" + in.getClass().getName() + "\"!!!");
 		else
 			tableName = table.name();
-		List<Field> entrys = Util.getEntryAnnotations(in);
+		List<Field> entrys = Util.getColumnFields(in);
 		if (entrys == null)
-			throw new ColumnAnnotationException("Column annotations missing in \"" + in.getClass().getName() + "\"!!!");
+			throw new ColumnAnnotationException("Missing in \"" + in.getClass().getName() + "\"!!!");
 		else
 			columns = new LinkedList<>();
-		if (!table.id().equals(new ColumnC())) columns.add(new CLeaf(table.id()));
-		for (Field e : entrys) {
-			try {
-				columns.add(procesEntry(e));
-			} catch (TableAnnotationException error) {
-				if (ISqlMapping.class.isAssignableFrom(e.getType())) {
-					// TODO Imamo razred, ki ima mapiranje
+		if (!table.id().equals(new ColumnC())) columns.add(new CLeaf(table.id(), true));
+		for (Field e : entrys) try {
+			columns.add(procesField(e));
+		} catch (TableAnnotationException error) {
+			if (ISqlMapping.class.isAssignableFrom(e.getType())) {
+				// TODO Imamo razred, ki ima mapiranje
+			} else {
+				List<Field> inner = Util.getColumnFields(e.getType());
+				if (!inner.isEmpty()) {
+					for (Field ec : inner) try {
+						columns.add(procesField(ec));
+					} catch (ColumnAnnotationException errorIn) {
+						throw new ColumnAnnotationException("Inner class [" + e.getType().getName() + "]", errorIn);
+					}
 				} else {
-					// TODO imamo razred, ki nima Table annotacije, lahko pa vsebuje Column anotacijo, če pa tudi tega nima potem vrži napako
 					throw error;
 				}
-			} catch (ColumnAnnotationException error) {
-				throw new ColumnAnnotationException("Class [" + in.getName() + "]", error);
 			}
+		} catch (ColumnAnnotationException error) {
+			throw new ColumnAnnotationException("Class [" + in.getName() + "]", error);
 		}
 	}
 
-	private IColumn procesEntry(Field field) throws OosqlException {
-		Class fieldType = field.getType();
-		if (fieldType.isPrimitive() || String.class.isAssignableFrom(fieldType)) {
-			return new CLeaf(field);
-		} else if (fieldType.isEnum()) {
-			Table table = Util.getTableAnnotation(fieldType);
-			Column column = field.getAnnotation(Column.class);
-			if (table == null) {
-				return new CLeaf(field);
-			} else {
-				EnumTable eName = field.getAnnotation(EnumTable.class);
-				return new CEnum(field, table, eName == null ? new EnumTableC(table) : eName);
-			}
-		} else if (fieldType.isArray()) {
-			// TODO
-			int dim = 0;
-			Class c;
-			for (c = fieldType; c.isArray(); c = c.getComponentType()) dim++;
-			// TODO
-//			IColumn value = procesEntry(procesEntry(c));
-			return null;
-		} else if (Collection.class.isAssignableFrom(fieldType)) {
-			// TODO
-			int dim = 1;
-			Class c;
-			for (String s : ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getTypeName().replace(">", "").split("<")) {
-				try {
+	private IColumn procesField(Field field) throws OosqlException {
+		try {
+			Class fieldType = field.getType();
+			if (fieldType.isPrimitive() || String.class.isAssignableFrom(fieldType)) {
+				return new CLeaf(field.getAnnotation(Column.class), fieldType, field.getName());
+			} else if (fieldType.isEnum()) {
+				Table table = Util.getTableAnnotation(fieldType);
+				Column column = field.getAnnotation(Column.class);
+				if (table == null) {
+					return new CLeaf(field.getAnnotation(Column.class), fieldType, field.getName());
+				} else {
+					EnumTable eName = field.getAnnotation(EnumTable.class);
+					return new CEnum(field, table, eName == null ? new EnumTableC(table) : eName);
+				}
+			} else if (fieldType.isArray()) {
+				int dim = 0;
+				Class c;
+				for (c = fieldType; c.isArray(); c = c.getComponentType()) dim++;
+				if (Collection.class.isAssignableFrom(c)) {
+					throw new ColumnAnnotationException("Nested Collection not supported");
+				} else if (Map.class.isAssignableFrom(c)) {
+					throw new ColumnAnnotationException("Nested Map not supported");
+				} else {
+					// TODO
+				}
+				return null;
+			} else if (Collection.class.isAssignableFrom(fieldType)) {
+				int dim = 0;
+				Class c = null;
+				for (String s : field.getGenericType().getTypeName().replace(">", "").split("<")) try {
 					c = Class.forName(s);
 					if (!Collection.class.isAssignableFrom(c)) break;
 					else dim++;
 				} catch (ClassNotFoundException e) {
-					break;
+					throw new ColumnAnnotationException("Nested Array not supported");
 				}
+				if (Map.class.isAssignableFrom(c)) {
+					throw new ColumnAnnotationException("Nested Map not supported");
+				} else {
+					// TODO
+				}
+				return null;
+			} else if (Map.class.isAssignableFrom(fieldType)) {
+				// Imamo slovar
+				return null;
+			} else {
+				return new CNode(field.getAnnotation(Column.class), field.getName(), new TTable(fieldType));
 			}
+		} catch (ColumnAnnotationException e) {
+			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);
+		}
+	}
+
+	private IColumn processClass(Class type, Column column) throws OosqlException {
+		if (type.isPrimitive() || String.class.isAssignableFrom(type)) {
+			// TODO imamo primitivni tip oziroma niz
 			return null;
-		} else if (Map.class.isAssignableFrom(fieldType)) {
-			// Imamo slovar
+		} else if (type.isEnum()) {
+			// TODO imamo enum
+			return null;
+		} else if (ISqlMapping.class.isAssignableFrom(type)) {
+			// TODO imamo razred, ki uporablja preslikavo
 			return null;
 		} else {
-			return new CNode(field, new TTable(fieldType));
+			return new CNode(column, type.getSimpleName(), new TTable(type));
 		}
 	}
 
 	protected List<IColumn> getReferences() {
 		List<IColumn> list = new LinkedList<>();
-		for (IColumn c : columns) if (c.isPrimaryKey()) list.add(c);
+		columns.stream().filter(c -> c.isPrimaryKey()).forEach(c -> list.add(c));
 		return list;
 	}
 

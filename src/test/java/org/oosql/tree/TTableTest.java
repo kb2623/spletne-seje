@@ -11,6 +11,7 @@ import org.oosql.exception.ColumnAnnotationException;
 
 import java.sql.JDBCType;
 import java.util.List;
+import java.util.Map;
 
 public class TTableTest {
 
@@ -460,23 +461,93 @@ public class TTableTest {
 	}
 
 	@Test
-	public void testArray() throws OosqlException {
-		@Table
+	public void testClassWithNoTable() throws OosqlException {
 		class TestOne {
+			@Column(name = {"number_1"}, pk = true)
+			private int number;
+			@Column(name = {"text_1"}, type = JDBCType.VARCHAR, typeLen = 25)
+			private String text;
+			@Column(name = {"realNumber_1"}, type = JDBCType.REAL)
+			private float realNumber;
+		}
+		@Table
+		class TestTwo {
+			@Column
+			private TestOne testC;
 			@Column(pk = true)
 			private int number;
 			@Column(type = JDBCType.VARCHAR, typeLen = 25)
 			private String text;
 			@Column(type = JDBCType.REAL)
 			private float realNumber;
-			@Column
-			private EnumClassTest enumc;
-			@Column
-			private EnumTableTest enumt;
-			@Column
-			private int[][][] int_table;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testArray() throws OosqlException {
+		@Table
+		class TestOne {
 			@Column
 			private List<List<List<Integer>>> list;
+			@Column
+			private Integer[][][] array;
+		}
+		TTable table = new TTable(TestOne.class);
+		table.izpis();
+	}
+
+	@Test(expected = ColumnAnnotationException.class)
+	public void testArrayExceptionOne() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column
+			private List<List<List<Integer[][][]>>> special_list;
+		}
+		TTable table = new TTable(TestOne.class);
+		table.izpis();
+	}
+
+	@Test(expected = ColumnAnnotationException.class)
+	public void testArrayExceptionTwo() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column
+			private List<List<List<Integer>>>[][][] special_list;
+		}
+		TTable table = new TTable(TestOne.class);
+		table.izpis();
+	}
+
+	@Test(expected = ColumnAnnotationException.class)
+	public void testArrayExceptionThree() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column
+			private List<List<List<Map<Integer, String>>>> list_map;
+		}
+		TTable table = new TTable(TestOne.class);
+		table.izpis();
+	}
+
+	@Test(expected = ColumnAnnotationException.class)
+	public void testArrayExceptionFour() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column
+			private Map<Integer, String>[][][] array_map;
+		}
+		TTable table = new TTable(TestOne.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testMap() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column
+			private Map<Integer, String> test_map;
 		}
 		TTable table = new TTable(TestOne.class);
 		table.izpis();

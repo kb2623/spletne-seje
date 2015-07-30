@@ -6,7 +6,7 @@ public class ColumnAnnotationException extends OosqlException {
 	 * @param message
 	 */
 	public ColumnAnnotationException(String message) {
-		super("Column annotation " + message);
+		super("Column annotation: " + message);
 	}
 	/**
 	 *

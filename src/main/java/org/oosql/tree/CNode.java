@@ -20,17 +20,12 @@ public class CNode implements IColumn {
 		refTable = null;
 	}
 
-	public CNode(Field field, TTable table) throws ColumnAnnotationException {
+	public CNode(Column anno, String altName, TTable table) throws ColumnAnnotationException {
 		this();
-		Column anno = field.getAnnotation(Column.class);
-		try {
-			if (!Util.hasEmptyNames(anno)) this.anno = anno;
-			else this.anno = new ColumnC(anno, field.getName());
-			refTable = table;
-			setUpColumns();
-		} catch (ColumnAnnotationException e) {
-			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);
-		}
+		if (!Util.hasEmptyNames(anno)) this.anno = anno;
+		else this.anno = new ColumnC(anno, altName);
+		refTable = table;
+		setUpColumns();
 	}
 
 	protected void setUpColumns() throws ColumnAnnotationException {
