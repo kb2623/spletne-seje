@@ -27,7 +27,7 @@ public class TableC implements Table {
 
 	@Override
 	public String name() {
-		return name;
+		return name != null ? name : "";
 	}
 
 	@Override

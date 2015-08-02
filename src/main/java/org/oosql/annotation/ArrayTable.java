@@ -12,7 +12,7 @@ public @interface ArrayTable {
 	 *
 	 * @return
 	 */
-	Table arrayTable() default @Table(id = @Column(pk = true));
+	Table arrayTable() default @Table(id = @Column(name = {"array_id"}, pk = true));
 	/**
 	 *
 	 * @return

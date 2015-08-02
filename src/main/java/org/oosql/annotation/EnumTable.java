@@ -1,14 +1,19 @@
 package org.oosql.annotation;
 
+import java.sql.JDBCType;
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
-import java.sql.JDBCType;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumTable {
+	/**
+	 *
+	 * @return
+	 */
+	String name() default "";
 	/**
 	 *
 	 * @return

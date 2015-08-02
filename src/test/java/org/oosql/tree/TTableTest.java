@@ -394,7 +394,7 @@ public class TTableTest {
 	}
 
 	@Test
-	public void testEnumNewTableNewName() throws OosqlException {
+	public void testEnumNewTableSetName() throws OosqlException {
 		@Table
 		class TestOne {
 			@Column(pk = true)
@@ -405,6 +405,24 @@ public class TTableTest {
 			private float realNumber;
 			@Column
 			@EnumTable(keyColumn = @Column(name = {"id"}), valueColumn = @Column(name = {"value"}))
+			private EnumTableTest enumt;
+		}
+		TTable table = new TTable(TestOne.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testEnumNewTableSetAllNames() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String text;
+			@Column(type = JDBCType.REAL)
+			private float realNumber;
+			@Column
+			@EnumTable(name = "test_dela", keyColumn = @Column(name = {"id"}), valueColumn = @Column(name = {"value"}))
 			private EnumTableTest enumt;
 		}
 		TTable table = new TTable(TestOne.class);

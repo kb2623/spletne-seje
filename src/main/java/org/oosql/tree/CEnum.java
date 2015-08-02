@@ -7,24 +7,26 @@ import org.oosql.exception.ColumnAnnotationException;
 import java.lang.reflect.Field;
 
 public class CEnum extends CNode {
-	protected CEnum(Field field, Table table, EnumTable enumTable) throws ColumnAnnotationException {
+	protected CEnum(Column column, Table table, EnumTable enumTable, String altName) throws ColumnAnnotationException {
 		super();
 		try {
-			Column kc = null, vc = null;
+			Column kColumn = null, vColumn = null;
 			if (!enumTable.keyColumn().pk())
-				kc = new ColumnC(enumTable.keyColumn(), null, true, null, null, null, null, null);
+				kColumn = new ColumnC(enumTable.keyColumn(), null, true, null, null, null, null, null);
 			if (Util.hasEmptyNames(enumTable.keyColumn()))
-				kc = new ColumnC(enumTable.keyColumn(), table.name() + "_id");
+				kColumn = new ColumnC(enumTable.keyColumn(), table.name() + "_id");
 			if (Util.hasEmptyNames(enumTable.valueColumn()))
-				vc = new ColumnC(enumTable.valueColumn(), table.name() + "_value");
-			enumTable = new EnumTableC(enumTable, kc, vc);
-			kc = field.getAnnotation(Column.class);
-			if (Util.hasEmptyNames(kc)) anno = new ColumnC(kc, field.getName());
-			else anno = kc;
-			refTable = new TTable(enumTable, table);
+				vColumn = new ColumnC(enumTable.valueColumn(), table.name() + "_value");
+			if (enumTable.name().isEmpty())
+				enumTable = new EnumTableC(enumTable, table.name(), kColumn, vColumn);
+			else
+				enumTable = new EnumTableC(enumTable, null, kColumn, vColumn);
+			if (Util.hasEmptyNames(column)) anno = new ColumnC(column, altName);
+			else anno = column;
+			refTable = new TTable(enumTable);
 			setUpColumns();
 		} catch (ColumnAnnotationException e) {
-			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);
+			throw new ColumnAnnotationException("field [" + altName + "]", e);
 		}
 	}
 }

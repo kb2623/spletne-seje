@@ -18,8 +18,8 @@ public class TTable {
 	private String tableName;
 	private List<IColumn> columns;
 
-	protected TTable(EnumTable columns, Table table) {
-		tableName = table.name();
+	protected TTable(EnumTable columns) {
+		tableName = columns.name();
 		this.columns = new LinkedList<>();
 		this.columns.add(new CLeaf(columns.keyColumn(), true));
 		this.columns.add(new CLeaf(columns.valueColumn(), false));
@@ -71,19 +71,15 @@ public class TTable {
 					return new CLeaf(field.getAnnotation(Column.class), fieldType, field.getName());
 				} else {
 					EnumTable eName = field.getAnnotation(EnumTable.class);
-					return new CEnum(field, table, eName == null ? new EnumTableC(table) : eName);
+					return new CEnum(column, table, eName == null ? new EnumTableC(table) : eName, field.getName());
 				}
 			} else if (fieldType.isArray()) {
 				int dim = 0;
 				Class c;
 				for (c = fieldType; c.isArray(); c = c.getComponentType()) dim++;
-				if (Collection.class.isAssignableFrom(c)) {
-					throw new ColumnAnnotationException("Nested Collection not supported");
-				} else if (Map.class.isAssignableFrom(c)) {
-					throw new ColumnAnnotationException("Nested Map not supported");
-				} else {
-					IColumn valueCol = processClass(c, field.getAnnotation(ArrayTable.class).valueColum());
-				}
+				ArrayTable arrayAnno = field.getAnnotation(ArrayTable.class);
+				IColumn valueCol = processClass(c, arrayAnno != null ? arrayAnno.valueColum() : null);
+				// TODO
 				return null;
 			} else if (Collection.class.isAssignableFrom(fieldType)) {
 				int dim = 0;
@@ -95,14 +91,12 @@ public class TTable {
 				} catch (ClassNotFoundException e) {
 					throw new ColumnAnnotationException("Nested Array not supported");
 				}
-				if (Map.class.isAssignableFrom(c)) {
-					throw new ColumnAnnotationException("Nested Map not supported");
-				} else {
-					// TODO
-				}
+				ArrayTable arrayAnno = field.getAnnotation(ArrayTable.class);
+				IColumn valueCol = processClass(c, arrayAnno != null ? arrayAnno.valueColum() : null);
+				// TODO
 				return null;
 			} else if (Map.class.isAssignableFrom(fieldType)) {
-				// Imamo slovar
+				// TODO
 				return null;
 			} else {
 				return new CNode(field.getAnnotation(Column.class), field.getName(), new TTable(fieldType));
@@ -112,18 +106,26 @@ public class TTable {
 		}
 	}
 
-	private IColumn processClass(Class type, Column column) throws OosqlException {
-		if (type.isPrimitive() || String.class.isAssignableFrom(type)) {
-			// TODO imamo primitivni tip oziroma niz
-			return null;
+	private IColumn processClass(Class type, Object column) throws OosqlException {
+		if (Map.class.isAssignableFrom(type)) {
+			throw new ColumnAnnotationException("Nested Map not supported");
+		} else if (Collection.class.isAssignableFrom(type)) {
+			throw new ColumnAnnotationException("Nested Collection not supported");
+		} else if (type.isPrimitive() || String.class.isAssignableFrom(type)) {
+			return new CLeaf((Column) column, type, type.getSimpleName());
 		} else if (type.isEnum()) {
-			// TODO imamo enum
-			return null;
+			Table table = Util.getTableAnnotation(type);
+			if (table == null) {
+				return new CLeaf((Column) column, type, type.getSimpleName());
+			} else {
+				// TODO
+				return new CEnum();
+			}
 		} else if (ISqlMapping.class.isAssignableFrom(type)) {
 			// TODO imamo razred, ki uporablja preslikavo
 			return null;
 		} else {
-			return new CNode(column, type.getSimpleName(), new TTable(type));
+			return new CNode((Column) column, type.getSimpleName(), new TTable(type));
 		}
 	}
 

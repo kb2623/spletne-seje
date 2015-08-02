@@ -25,13 +25,13 @@ public class ColumnC implements Column {
 
 	public ColumnC() {
 		this(
-				new String[]{},
+				null,
 				false,
 				false,
 				false,
 				JDBCType.INTEGER,
 				0,
-				""
+				null
 		);
 	}
 
@@ -51,13 +51,18 @@ public class ColumnC implements Column {
 		this(
 				column,
 				new String[]{name},
-				null, null, null, null, null, null
+				null,
+				null,
+				null,
+				null,
+				null,
+				null
 		);
 	}
 
 	@Override
 	public String[] name() {
-		return name;
+		return name != null ? name : new String[]{};
 	}
 
 	@Override
@@ -87,7 +92,7 @@ public class ColumnC implements Column {
 
 	@Override
 	public String constaraintName() {
-		return constaraintName;
+		return constaraintName != null ? constaraintName : "";
 	}
 
 	@Override
