@@ -2,6 +2,7 @@ package org.oosql.tree;
 
 import org.junit.Test;
 
+import org.oosql.annotation.ArrayTable;
 import org.oosql.annotation.EnumTable;
 import org.oosql.annotation.Table;
 import org.oosql.annotation.Column;
@@ -513,6 +514,90 @@ public class TTableTest {
 			private Integer[][][] array;
 		}
 		TTable table = new TTable(TestOne.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testArrayClass() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String name;
+		}
+		@Table
+		class TestTwo {
+			@Column
+			private List<List<List<TestOne>>> list;
+			@Column
+			private TestOne[][][] array;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testArrayClassPk() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String name;
+		}
+		@Table
+		class TestTwo {
+			@Column(pk = true)
+			private List<List<List<TestOne>>> list;
+			@Column(pk = true)
+			private TestOne[][][][] array;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testArrayClassCompundKey() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(pk = true, type = JDBCType.VARCHAR, typeLen = 25)
+			private String name;
+		}
+		@Table
+		class TestTwo {
+			@Column
+			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}))
+			private List<List<List<TestOne>>> list;
+			@Column
+			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}))
+			private TestOne[][][] array;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testArrayClassCompundKeyTwo() throws OosqlException {
+		@Table
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(pk = true, type = JDBCType.VARCHAR, typeLen = 25)
+			private String name;
+		}
+		@Table
+		class TestTwo {
+			@Column(pk = true)
+			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}, pk = true))
+			private List<List<List<TestOne>>> list;
+			@Column(pk = true)
+			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}, pk = true))
+			private TestOne[][][] array;
+		}
+		TTable table = new TTable(TestTwo.class);
 		table.izpis();
 	}
 

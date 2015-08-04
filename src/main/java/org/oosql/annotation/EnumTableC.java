@@ -24,6 +24,38 @@ public class EnumTableC implements EnumTable {
 		);
 	}
 
+	public EnumTableC(String name) {
+		this(
+				name,
+				new ColumnC(new String[]{name + "_id"}, 	true,	 false, false, JDBCType.INTEGER, 0,  null),
+				new ColumnC(new String[]{name + "_value"}, false, false, false, JDBCType.VARCHAR, 25, null)
+		);
+	}
+
+	public EnumTableC(EnumTable table, String name) {
+		this(
+				table.name().isEmpty() ? name : table.name(),
+				new ColumnC(
+						table.keyColumn().name().length == 0 ? new String[]{name + "_id"} : table.keyColumn().name(),
+						true,
+						false,
+						false,
+						JDBCType.INTEGER,
+						0,
+						null
+				),
+				new ColumnC(
+						table.valueColumn().name().length == 0 ? new String[]{name + "_value"} : table.valueColumn().name(),
+						false,
+						false,
+						false,
+						JDBCType.VARCHAR,
+						25,
+						null
+				)
+		);
+	}
+
 	public EnumTableC(Table table) {
 		this(
 				table.name(),

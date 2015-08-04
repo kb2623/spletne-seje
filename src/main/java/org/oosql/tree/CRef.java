@@ -4,6 +4,7 @@ import org.oosql.annotation.Column;
 import org.oosql.annotation.ColumnC;
 
 public class CRef implements IColumn {
+
 	private String name;
 	private Column ref;
 
@@ -19,7 +20,7 @@ public class CRef implements IColumn {
 
 	public String[] izpis() {
 		return new String[]{
-				name + " " + ref.type(),
+				name + " " + ref.type() + (ref.typeLen() > 0 ? "(" + ref.typeLen() + ")" : ""),
 				name,
 				ref.name()[0]
 		};

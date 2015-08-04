@@ -30,15 +30,13 @@ public class CNode implements IColumn {
 
 	protected void setUpColumns() throws ColumnAnnotationException {
 		int index = 0;
-		for (IColumn c : refTable.getReferences()) {
-			if (c instanceof CLeaf) {
-				columns.add(new CRef(c.getColumn(), getName(index)));
+		for (IColumn c : refTable.getReferences()) if (c instanceof CLeaf) {
+			columns.add(new CRef(c.getColumn(), getName(index)));
+			index++;
+		} else {
+			for (CRef r : ((CNode) c).getAdditionalColumns()) {
+				columns.add(new CRef(r.getColumn(), getName(index)));
 				index++;
-			} else {
-				for (CRef r : ((CNode) c).getAdditionalColumns()) {
-					columns.add(new CRef(r.getColumn(), getName(index)));
-					index++;
-				}
 			}
 		}
 	}
@@ -74,24 +72,34 @@ public class CNode implements IColumn {
 
 	public String[] izpis() {
 		refTable.izpis();
+		return izpisRef();
+	}
+
+	protected String[] izpisRef() {
 		StringBuilder columns = new StringBuilder();
 		StringBuilder primaryKey = new StringBuilder();
 		StringBuilder[] reference = new StringBuilder[]{
 				new StringBuilder(),
 				new StringBuilder()
 		};
-		for (int i = 0; i < this.columns.size(); i++) {
-			String tab[] = this.columns.get(i).izpis();
-			columns.append("," + tab[0] + (isPrimaryKey() ? " NOT NULL" : ""));
-			if (isPrimaryKey()) primaryKey.append("," + tab[1]);
-			reference[0].append("," + tab[1]);
-			reference[1].append("," + tab[2]);
+		for (IColumn c : this.columns) {
+			String tab[] = c.izpis();
+			columns.append(tab[0] + (isPrimaryKey() ? " NOT NULL" : "") + ",\n\t");
+			if (isPrimaryKey()) primaryKey.append(tab[1] + ", ");
+			reference[0].append(tab[1] + ", ");
+			reference[1].append(tab[2] + ", ");
+		}
+		if (primaryKey.length() > 0) {
+			primaryKey.delete(primaryKey.length() - 2, primaryKey.length());
+		}
+		if (reference[0].length() > 0) {
+			reference[0].delete(reference[0].length() - 2, reference[0].length());
+			reference[1].delete(reference[1].length() - 2, reference[1].length());
 		}
 		return new String[]{
-				columns.deleteCharAt(0).deleteCharAt(columns.length() - 1).toString(),
-				primaryKey.length() > 0 ? primaryKey.deleteCharAt(0).toString() : "",
-				"FOREFIN KEY(" + reference[0].deleteCharAt(0).toString() + ") REFERNCES "
-						+ refTable.getTableName() + "(" + reference[1].deleteCharAt(0).toString() + ")"
+				columns.delete(columns.length() - 3, columns.length()).toString(),
+				primaryKey.length() > 0 ? primaryKey.toString() : "",
+				"FOREIGN KEY(" + reference[0].toString() + ") REFERNCES " + refTable.getTableName() + "(" + reference[1].toString() + ")"
 		};
 	}
 

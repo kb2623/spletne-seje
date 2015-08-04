@@ -37,8 +37,10 @@ public class CLeaf implements IColumn {
 	}
 
 	public CLeaf(Column column, boolean pk) {
-		if (pk && column.pk())	anno = column;
-		else anno = new ColumnC(column, null, null, null, null, null, null, null);
+		if (pk && column.pk())
+			anno = column;
+		else
+			anno = new ColumnC(column, null, null, null, null, null, null, null);
 	}
 
 	public Column getColumn() {
