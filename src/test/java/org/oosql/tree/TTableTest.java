@@ -31,6 +31,104 @@ public class TTableTest {
 	}
 
 	@Test
+	public void testClassNoTable() throws OosqlException {
+		class TestOne {
+			private int some_one;
+			@Column(name = {"test_some_one"}, pk = true)
+			private double some_two;
+			@Column
+			private String test_text;
+		}
+		@Table
+		class TestTwo {
+			@Column(pk = true)
+			private int number;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String text;
+			@Column(type = JDBCType.REAL)
+			private float realNumber;
+			private TestOne only_test;
+			@Column
+			private TestOne test_for_real;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test(expected = TableAnnotationException.class)
+	public void testClassNoTableLevelException() throws OosqlException {
+		class TestOne {
+			private int some_one;
+			@Column(name = {"test_some_one"}, pk = true)
+			private double some_two;
+			@Column
+			private String test_text;
+		}
+		class TestTwo {
+			@Column(pk = true)
+			private int number;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String text;
+			@Column(type = JDBCType.REAL)
+			private float realNumber;
+			private TestOne only_test;
+			@Column
+			private TestOne test_for_real;
+		}
+		@Table
+		class TestThree {
+			private int test_no_go;
+			@Column(pk = true, name = {"test_three_pk"})
+			private int test_pk;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String data;
+			@Column
+			private TestOne this_is_ok;
+			@Column
+			private TestTwo this_is_not_ok;
+		}
+		TTable table = new TTable(TestThree.class);
+	}
+
+	@Test
+	public void testClassNoTableMultiUse() throws OosqlException {
+		// FIXME
+		class TestOne {
+			private int some_one;
+			@Column(name = {"test_some_one"}, pk = true)
+			private double some_two;
+			@Column
+			private String test_text;
+		}
+		@Table
+		class TestTwo {
+			@Column(pk = true)
+			private int number;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String text;
+			@Column(type = JDBCType.REAL)
+			private float realNumber;
+			private TestOne only_test;
+			@Column
+			private TestOne test_for_real;
+		}
+		@Table
+		class TestThree {
+			private int test_no_go;
+			@Column(pk = true, name = {"test_three_pk"})
+			private int test_pk;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String data;
+			@Column
+			private TestOne this_is_ok;
+			@Column(pk = true, name = {"pk_test_two", "pk_test_one"})
+			private TestTwo this_is_ok_sec;
+		}
+		TTable table = new TTable(TestThree.class);
+		table.izpis();
+	}
+
+	@Test
 	public void testSimpleClass() throws OosqlException {
 		@Table
 		class TestOne {
@@ -509,7 +607,7 @@ public class TTableTest {
 		@Table
 		class TestOne {
 			@Column
-			private List<List<List<Integer>>> list;
+			private List<List<Integer>> list;
 			@Column
 			private Integer[][][] array;
 		}
@@ -524,6 +622,44 @@ public class TTableTest {
 			@Column(pk = true)
 			private int number;
 			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String name;
+		}
+		@Table
+		class TestTwo {
+			@Column
+			private List<List<List<TestOne>>> list;
+			@Column
+			private TestOne[][][] array;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testArrayClassNoTable() throws OosqlException {
+		class TestOne {
+			@Column
+			private int number;
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+			private String name;
+		}
+		@Table
+		class TestTwo {
+			@Column
+			private List<List<List<TestOne>>> list;
+			@Column
+			private TestOne[][][] array;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
+	@Test
+	public void testArrayClassNoTablePk() throws OosqlException {
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(pk = true, type = JDBCType.VARCHAR, typeLen = 25)
 			private String name;
 		}
 		@Table
@@ -594,7 +730,7 @@ public class TTableTest {
 			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}, pk = true))
 			private List<List<List<TestOne>>> list;
 			@Column(pk = true)
-			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}, pk = true))
+			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}, pk = true), dimPrefix = "cord-")
 			private TestOne[][][] array;
 		}
 		TTable table = new TTable(TestTwo.class);

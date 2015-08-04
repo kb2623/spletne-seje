@@ -38,12 +38,12 @@ public class TTable {
 	public TTable(Class in) throws OosqlException {
 		Table table = Util.getTableAnnotation(in);
 		if (table == null)
-			throw new TableAnnotationException("Missing in \"" + in.getClass().getName() + "\"!!!");
+			throw new TableAnnotationException("Missing in [" + in.getName() + "]!!!");
 		else
 			tableName = table.name();
 		List<Field> entrys = Util.getColumnFields(in);
 		if (entrys == null)
-			throw new ColumnAnnotationException("Missing in \"" + in.getClass().getName() + "\"!!!");
+			throw new ColumnAnnotationException("Missing in [" + in.getName() + "]!!!");
 		else
 			columns = new LinkedList<>();
 		if (!DefaultValues.isDefault(table.id()))
@@ -52,14 +52,18 @@ public class TTable {
 			columns.add(procesField(e));
 		} catch (TableAnnotationException error) {
 			List<Field> inner = Util.getColumnFields(e.getType());
-			if (!inner.isEmpty()) {
+			if (inner != null) {
 				for (Field ec : inner) try {
 					columns.add(procesField(ec));
 				} catch (ColumnAnnotationException errorIn) {
-					throw new ColumnAnnotationException("Inner class [" + e.getType().getName() + "]", errorIn);
+					throw new ColumnAnnotationException("Class [" + in.getName() + "] > field [" + e.getName() + "] " +
+							"> Inner class [" + e.getType().getName() + "]", errorIn);
+				} catch (TableAnnotationException errorIn) {
+					throw new TableAnnotationException("Class [" + in.getName() + "] > field [" + e.getName() + "] " +
+							"> Inner class [" + e.getType().getName() + "]", errorIn);
 				}
 			} else {
-				throw error;
+				throw new ColumnAnnotationException("Column annotations missing in [" + e.getType().getName() + "]");
 			}
 		} catch (ColumnAnnotationException error) {
 			throw new ColumnAnnotationException("Class [" + in.getName() + "]", error);
@@ -82,38 +86,28 @@ public class TTable {
 					return new CEnum(column, table, eName == null ? new EnumTableC(table) : eName, field.getName());
 				}
 			} else if (fieldType.isArray()) {
-				ArrayTable tables = field.getAnnotation(ArrayTable.class);
-				if (tables == null)
-					tables = new ArrayTableC(field.getName());
-				else
-					tables = new ArrayTableC(tables, field.getName());
 				int dim = 0;
 				Class c;
 				for (c = fieldType; c.isArray(); c = c.getComponentType()) dim++;
-				IColumn valueCol = processClassArray(c, tables);
-				return new CArray(field.getAnnotation(Column.class), field.getName(), tables, dim, valueCol);
+				return processArray(field.getAnnotation(Column.class), field.getAnnotation(ArrayTable.class), field.getName(), dim, c);
 			} else if (Collection.class.isAssignableFrom(fieldType)) {
-				ArrayTable tables = field.getAnnotation(ArrayTable.class);
-				if (tables == null)
-					tables = new ArrayTableC(field.getName());
-				else
-					tables = new ArrayTableC(tables, field.getName());
 				int dim = 0;
 				Class c = null;
 				for (String s : field.getGenericType().getTypeName().replace(">", "").split("<")) try {
 					c = Class.forName(s);
-					if (!Collection.class.isAssignableFrom(c))
+					if (!Collection.class.isAssignableFrom(c)) {
 						break;
-					else
+					} else {
 						dim++;
+					}
 				} catch (ClassNotFoundException e) {
-					if (s.endsWith("[]"))
+					if (s.endsWith("[]")) {
 						throw new ColumnAnnotationException("Nested Array not supported");
-					else
+					} else {
 						throw new ColumnAnnotationException(e.getMessage());
+					}
 				}
-				IColumn valueCol = processClassArray(c, tables);
-				return new CArray(field.getAnnotation(Column.class), field.getName(), tables, dim, valueCol);
+				return processArray(field.getAnnotation(Column.class), field.getAnnotation(ArrayTable.class), field.getName(), dim, c);
 			} else if (Map.class.isAssignableFrom(fieldType)) {
 				// TODO
 				return null;
@@ -125,7 +119,36 @@ public class TTable {
 			}
 		} catch (ColumnAnnotationException e) {
 			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);
+		} catch (TableAnnotationException e) {
+			throw new TableAnnotationException("field [" + field.getName() + "]", e);
 		}
+	}
+
+	private IColumn processArray(Column column, ArrayTable tables, String altName, int dim, Class innerType) throws OosqlException {
+		if (tables == null) {
+			tables = new ArrayTableC(altName);
+		} else {
+			tables = new ArrayTableC(tables, altName);
+		}
+		List<IColumn> valColumns = new LinkedList<>();
+		try {
+			valColumns.add(processClassArray(innerType, tables));
+		} catch (TableAnnotationException e) {
+			for (Field f : Util.getColumnFields(innerType)) try {
+				if (f.getType().isArray()) {
+					throw new ColumnAnnotationException("Nested arrays not supported");
+				} else if (Collection.class.isAssignableFrom(f.getType())) {
+					throw new ColumnAnnotationException("Nested Collections not supported");
+				} else if (Map.class.isAssignableFrom(f.getType())) {
+					throw new ColumnAnnotationException("Nested Map not supported");
+				} else {
+					valColumns.add(procesField(f));
+				}
+			} catch (ColumnAnnotationException eIn) {
+				throw new ColumnAnnotationException("Inner class [" + innerType.getName() + "]", eIn);
+			}
+		}
+		return new CArray(column, altName, tables, dim, valColumns);
 	}
 
 	private IColumn processClassArray(Class type, ArrayTable arrayTable) throws OosqlException {

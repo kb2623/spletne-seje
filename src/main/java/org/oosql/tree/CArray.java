@@ -24,12 +24,12 @@ public class CArray extends CNode {
 		tabelaVrednost = null;
 	}
 
-	public CArray(Column column, String altName, ArrayTable tables, int dim, IColumn valColumn) throws ColumnAnnotationException {
+	public CArray(Column column, String altName, ArrayTable tables, int dim, List<IColumn> valColumns) throws ColumnAnnotationException {
 		super(column, altName, new TTable(tables.arrayTable(), altName, new LinkedList<>()));
 		List<IColumn> list = new LinkedList<>();
 		list.add(new CNode(tables.arrayid(), altName, refTable));
 		for (int i = 0; i < dim; i++) list.add(new CLeaf(new ColumnC(tables.dimPrefix() + i, tables.dimType(), tables.dimLen()), Integer.class, null));
-		list.add(valColumn);
+		valColumns.forEach(c -> list.add(c));
 		tabelaVrednost = new TTable(tables.valueTable(), altName, list);
 	}
 
