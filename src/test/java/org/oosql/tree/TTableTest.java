@@ -3,7 +3,6 @@ package org.oosql.tree;
 import org.junit.Test;
 
 import org.oosql.annotation.ArrayTable;
-import org.oosql.annotation.EnumTable;
 import org.oosql.annotation.Table;
 import org.oosql.annotation.Column;
 import org.oosql.exception.OosqlException;
@@ -503,7 +502,6 @@ public class TTableTest {
 			@Column(type = JDBCType.REAL)
 			private float realNumber;
 			@Column
-			@EnumTable(keyColumn = @Column(name = {"id"}), valueColumn = @Column(name = {"value"}))
 			private EnumTableTest enumt;
 		}
 		TTable table = new TTable(TestOne.class);
@@ -521,7 +519,6 @@ public class TTableTest {
 			@Column(type = JDBCType.REAL)
 			private float realNumber;
 			@Column
-			@EnumTable(name = "test_dela", keyColumn = @Column(name = {"id"}), valueColumn = @Column(name = {"value"}))
 			private EnumTableTest enumt;
 		}
 		TTable table = new TTable(TestOne.class);
@@ -540,7 +537,6 @@ public class TTableTest {
 			@Column(type = JDBCType.REAL)
 			private float realNumber;
 			@Column(pk = true)
-			@EnumTable(keyColumn = @Column(name = {"id"}), valueColumn = @Column(name = {"value"}))
 			private EnumTableTest enumt;
 		}
 		@Table

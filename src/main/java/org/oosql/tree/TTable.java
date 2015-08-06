@@ -25,14 +25,14 @@ public class TTable {
 			tableName = table.name();
 		this.columns = columns;
 		if (!DefaultValues.isDefault(table.id()))
-			columns.add(new CLeaf(table.id(), true));
+			columns.add(new CLeaf(table.id()));
 	}
 
-	protected TTable(EnumTable table) {
+	protected TTable(Table table) {
 		tableName = table.name();
 		this.columns = new LinkedList<>();
-		this.columns.add(new CLeaf(table.keyColumn(), true));
-		this.columns.add(new CLeaf(table.valueColumn(), false));
+		this.columns.add(new CLeaf(table.id()));
+		this.columns.add(new CLeaf(table.enumColumn()));
 	}
 
 	public TTable(Class in) throws OosqlException {
@@ -47,7 +47,7 @@ public class TTable {
 		else
 			columns = new LinkedList<>();
 		if (!DefaultValues.isDefault(table.id()))
-			columns.add(new CLeaf(table.id(), true));
+			columns.add(new CLeaf(table.id()));
 		for (Field e : entrys) try {
 			columns.add(procesField(e));
 		} catch (TableAnnotationException error) {
@@ -80,10 +80,9 @@ public class TTable {
 				Table table = Util.getTableAnnotation(fieldType);
 				Column column = field.getAnnotation(Column.class);
 				if (table == null) {
-					return new CLeaf(field.getAnnotation(Column.class), fieldType, field.getName());
+					return new CLeaf(column, fieldType, field.getName());
 				} else {
-					EnumTable eName = field.getAnnotation(EnumTable.class);
-					return new CEnum(column, table, eName == null ? new EnumTableC(table) : eName, field.getName());
+					return new CEnum(column, table, field.getName());
 				}
 			} else if (fieldType.isArray()) {
 				int dim = 0;
@@ -164,7 +163,7 @@ public class TTable {
 			if (table == null) {
 				return new CLeaf(arrayTable.valueColum(), type, type.getSimpleName());
 			} else {
-				return new CEnum(arrayTable.valueColum(), table, arrayTable.enumColumn(), type.getSimpleName());
+				return new CEnum(arrayTable.valueColum(), table, type.getSimpleName());
 			}
 		} else if (ISqlMapping.class.isAssignableFrom(type)) {
 			// TODO imamo razred, ki uporablja preslikavo

@@ -1,7 +1,7 @@
 package org.oosql.annotation;
 
-import java.lang.annotation.Annotation;
 import java.sql.JDBCType;
+import java.lang.annotation.Annotation;
 
 public class ArrayTableC implements ArrayTable {
 
@@ -12,9 +12,8 @@ public class ArrayTableC implements ArrayTable {
 	private JDBCType	dimType;
 	private int			dimLen;
 	private Column 	vColumn;
-	private EnumTable eTable;
 
-	public ArrayTableC(Table arrayTable, Table valueTable, Column arrayid, String dimPrefix, JDBCType dimType, int dimLen, Column valueColumn, EnumTable enumTable) {
+	public ArrayTableC(Table arrayTable, Table valueTable, Column arrayid, String dimPrefix, JDBCType dimType, int dimLen, Column valueColumn) {
 		this.arrayTable = arrayTable;
 		this.valueTable = valueTable;
 		this.arrayid	 = arrayid;
@@ -22,10 +21,9 @@ public class ArrayTableC implements ArrayTable {
 		this.dimType	 = dimType;
 		this.dimLen		 = dimLen;
 		this.vColumn	 = valueColumn;
-		this.eTable		 = enumTable;
 	}
 
-	public ArrayTableC(ArrayTable table, Table arrayTable, Table valueTable, Column arrayid, String dimPrefix, JDBCType dimType, Integer dimLen, Column valueColumn, EnumTable enumColumn) {
+	public ArrayTableC(ArrayTable table, Table arrayTable, Table valueTable, Column arrayid, String dimPrefix, JDBCType dimType, Integer dimLen, Column valueColumn) {
 		this(
 				arrayTable 	== null ? table.arrayTable() : arrayTable,
 				valueTable 	== null ? table.valueTable() : valueTable,
@@ -33,8 +31,7 @@ public class ArrayTableC implements ArrayTable {
 				dimPrefix	== null ? table.dimPrefix()  : dimPrefix,
 				dimType		== null ? table.dimType()	  : dimType,
 				dimLen		== null ? table.dimLen()	  : dimLen,
-				valueColumn == null ? table.valueColum() : valueColumn,
-				enumColumn 	== null ? table.enumColumn() : enumColumn
+				valueColumn == null ? table.valueColum() : valueColumn
 		);
 	}
 
@@ -44,12 +41,14 @@ public class ArrayTableC implements ArrayTable {
 						name + "_array",
 						true,
 						new ColumnC(new String[]{"array_id"}, true, false, false, JDBCType.INTEGER, 0, null),
+						null,
 						null
 				),
 				new TableC(
 						name + "_value",
 						false,
 						new ColumnC(),
+						null,
 						null
 				),
 				new ColumnC(
@@ -64,8 +63,7 @@ public class ArrayTableC implements ArrayTable {
 				"dim_",
 				JDBCType.INTEGER,
 				0,
-				new ColumnC(new String[]{name + "_value"}, false, false, false, JDBCType.INTEGER, 0, null),
-				new EnumTableC(name)
+				new ColumnC(new String[]{name + "_value"}, false, false, false, JDBCType.INTEGER, 0, null)
 		);
 	}
 
@@ -83,12 +81,14 @@ public class ArrayTableC implements ArrayTable {
 								0,
 								null
 						),
+						null,
 						table.arrayTable().pkConstraintName().isEmpty() ? null : table.arrayTable().pkConstraintName()
 				),
 				new TableC(
 						table.valueTable().name().isEmpty() ? name + "_value" : table.valueTable().name(),
 						false,
 						new ColumnC(),
+						null,
 						table.valueTable().pkConstraintName().isEmpty() ? null : table.valueTable().pkConstraintName()
 				),
 				new ColumnC(
@@ -111,8 +111,7 @@ public class ArrayTableC implements ArrayTable {
 						JDBCType.INTEGER,
 						0,
 						null
-				),
-				new EnumTableC(table.enumColumn(), name)
+				)
 		);
 	}
 
@@ -149,11 +148,6 @@ public class ArrayTableC implements ArrayTable {
 	@Override
 	public Column valueColum() {
 		return vColumn;
-	}
-
-	@Override
-	public EnumTable enumColumn() {
-		return eTable;
 	}
 
 	@Override

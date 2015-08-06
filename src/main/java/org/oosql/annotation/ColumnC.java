@@ -1,7 +1,7 @@
 package org.oosql.annotation;
 
-import java.lang.annotation.Annotation;
 import java.sql.JDBCType;
+import java.lang.annotation.Annotation;
 
 public class ColumnC implements Column {
 

@@ -23,8 +23,7 @@ public class Util {
 		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
 			Annotation anno = c.getDeclaredAnnotation(Table.class);
 			if (anno != null)
-				return ((Table) anno).name().isEmpty() ?
-						new TableC((Table) anno, c.getSimpleName(), null, null, null) : (Table) anno;
+				return ((Table) anno).name().isEmpty() ? new TableC((Table) anno, c.getSimpleName(), null, null, null, null) : (Table) anno;
 		}
 		return null;
 	}
