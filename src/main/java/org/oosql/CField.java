@@ -16,19 +16,24 @@ public class CField {
 
 	protected Class type;
 	protected String name;
-	private Column columnAnno;
+	protected Column columnAnno;
+
+	protected CField() {
+		type = null;
+		name = null;
+		columnAnno = null;
+	}
 
 	public CField(Field field) throws OosqlException, ClassNotFoundException {
 		if ((columnAnno = field.getAnnotation(Column.class)) == null)
 			throw new ColumnAnnotationException("Missing Column annotatio on field [" + field.getName() + "] with type of [" + field.getType() + "]");
 		name = field.getName();
-		if (!field.getType().isArray() && !Collection.class.isAssignableFrom(field.getType()) && !Map.class.isAssignableFrom(field.getType())) {
-			type = field.getType();
-		}
+		type = field.getType();
 	}
 
-	protected CField(String name, Class type) throws ClassNotFoundException {
-		this.name = name;
+	protected CField(Field field, Class type) throws ClassNotFoundException {
+		columnAnno = field.getAnnotation(Column.class);
+		this.name = field.getName();
 		this.type = type;
 	}
 

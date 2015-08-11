@@ -23,7 +23,15 @@ public class CFieldMap extends CField {
 
 	private void setMap(Field field, String typeName, int index) {
 		mapAnno = field.getAnnotationsByType(MapTable.class)[index];
+		// TODO
+	}
 
+	private int indexOfLArrow(StringBuilder builder) {
+		if (builder.charAt(builder.length() - 1) == ']') {
+			return -1;
+		} else {
+			return builder.indexOf("<");
+		}
 	}
 
 	public MapTable getMapAnno() {

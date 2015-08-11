@@ -3,6 +3,7 @@ package org.oosql;
 import org.junit.Test;
 import org.oosql.annotation.ArrayTable;
 import org.oosql.annotation.Column;
+import org.oosql.annotation.MapTable;
 import org.oosql.annotation.Table;
 import org.oosql.exception.OosqlException;
 
@@ -16,7 +17,7 @@ public class ColumnFieldTest {
 	@Test
 	public void testOne() throws OosqlException, ClassNotFoundException {
 		@Table
-		class TestOne<E> {
+		class TestOne {
 			@Column
 			private int some_one;
 			@Column(name = {"test_some_one"}, pk = true)
@@ -47,6 +48,7 @@ public class ColumnFieldTest {
 			@ArrayTable
 			private List<List<List<Integer>>>[][][] array_five;
 //			@Column
+//			@MapTable
 //			private Map<Integer[], String[]> map_one;
 		}
 		for (Field f : Util.getColumnFields(TestOne.class)) {
