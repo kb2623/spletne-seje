@@ -1,10 +1,7 @@
 package org.oosql.tree;
 
-import org.oosql.Util;
 import org.oosql.annotation.*;
 import org.oosql.exception.ColumnAnnotationException;
-
-import java.lang.reflect.Field;
 
 public class CEnum extends CNode {
 	protected CEnum(Column column, Table table, String altName) throws ColumnAnnotationException {

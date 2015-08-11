@@ -1,19 +1,12 @@
 package org.oosql.tree;
 
-import org.oosql.Util;
-import org.oosql.ISqlMapping;
-import org.oosql.annotation.Table;
 import org.oosql.annotation.Column;
 import org.oosql.annotation.ColumnC;
 import org.oosql.annotation.ArrayTable;
-import org.oosql.exception.OosqlException;
 import org.oosql.exception.ColumnAnnotationException;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.lang.reflect.Field;
-import java.util.Map;
 
 public class CArray extends CNode {
 
@@ -24,13 +17,14 @@ public class CArray extends CNode {
 		tabelaVrednost = null;
 	}
 
-	public CArray(Column column, String altName, ArrayTable tables, int dim, List<IColumn> valColumns) throws ColumnAnnotationException {
-		super(column, altName, new TTable(tables.arrayTable(), altName, new LinkedList<>()));
+	public CArray(CFieldArray fieldArray, IColumn innerClass) throws ColumnAnnotationException {
+		super(fieldArray.getColumnAnno(), fieldArray.getName(), new TTable(fieldArray.getArrayAnno().arrayTable(), fieldArray.getName(), new LinkedList<>()));
 		List<IColumn> list = new LinkedList<>();
-		list.add(new CNode(tables.arrayid(), altName, refTable));
-		for (int i = 0; i < dim; i++) list.add(new CLeaf(new ColumnC(tables.dimPrefix() + i, tables.dimType(), tables.dimLen()), Integer.class, null));
-		valColumns.forEach(c -> list.add(c));
-		tabelaVrednost = new TTable(tables.valueTable(), altName, list);
+		list.add(new CNode(fieldArray.getArrayAnno().arrayid(), fieldArray.getName(), refTable));
+		for (int i = 0; i < fieldArray.getDimension(); i++)
+			list.add(new CLeaf(new ColumnC(fieldArray.getArrayAnno().dimPrefix() + i, fieldArray.getArrayAnno().dimType(), fieldArray.getArrayAnno().dimLen()), Integer.class, null));
+		list.add(innerClass);
+		tabelaVrednost = new TTable(fieldArray.getArrayAnno().valueTable(), fieldArray.getName(), list);
 	}
 
 	@Override

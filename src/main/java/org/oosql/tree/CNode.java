@@ -1,12 +1,10 @@
 package org.oosql.tree;
 
-import org.oosql.Util;
 import org.oosql.annotation.*;
 import org.oosql.exception.ColumnAnnotationException;
 
 import java.util.List;
 import java.util.LinkedList;
-import java.lang.reflect.Field;
 
 public class CNode implements IColumn {
 

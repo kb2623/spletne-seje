@@ -1,12 +1,10 @@
 package org.oosql.tree;
 
-import org.oosql.Util;
 import org.oosql.annotation.Column;
 import org.oosql.annotation.ColumnC;
 import org.oosql.exception.ColumnAnnotationException;
 
 import java.sql.JDBCType;
-import java.lang.reflect.Field;
 
 public class CLeaf implements IColumn {
 

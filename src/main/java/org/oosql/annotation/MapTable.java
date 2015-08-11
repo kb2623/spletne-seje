@@ -10,20 +10,10 @@ public @interface MapTable {
 	 *
 	 * @return
 	 */
-	String value() default "";
+	Column valueColumn() default @Column;
 	/**
 	 *
 	 * @return
 	 */
-	String key() default "";
-	/**
-	 *
-	 * @return
-	 */
-	ArrayTable[] arrayName() default {};
-	/**
-	 *
-	 * @return
-	 */
-	Column[] columnName() default {};
+	Column keyColumn() default @Column;
 }

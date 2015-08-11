@@ -1,6 +1,7 @@
-package org.oosql;
+package org.oosql.tree;
 
 import org.oosql.annotation.ArrayTable;
+import org.oosql.annotation.ArrayTableC;
 import org.oosql.annotation.Column;
 import org.oosql.exception.OosqlException;
 
@@ -15,29 +16,36 @@ public class CFieldArray extends CField {
 	private CField innerClass;
 	private int dimension = 0;
 	private ArrayTable arrayAnno;
+	protected static int index = 0;
 
 	public CFieldArray(Field field) throws OosqlException, ClassNotFoundException {
 		super(field);
+		CFieldMap.index = 0;
+		CFieldArray.index = 0;
 		if (field.getType().isArray()) {
-			setArray(field, field.getGenericType().getTypeName(), 0);
+			setArray(field, field.getName(), field.getGenericType().getTypeName());
 		} else if (Collection.class.isAssignableFrom(field.getType())) {
-			setCollection(field, field.getGenericType().getTypeName(), 0);
+			setCollection(field, field.getName(), field.getGenericType().getTypeName());
 		}
 	}
 
-	private CFieldArray(Field field, String typeName, int index) throws ClassNotFoundException, OosqlException {
-		super();
+	protected CFieldArray(Field field, String name, String typeName) throws ClassNotFoundException, OosqlException {
+		super(field.getAnnotation(Column.class), name);
 		if (typeName.endsWith("[]")) {
-			type = setArray(field, typeName, index);
+			type = setArray(field, name, typeName);
 		} else {
-			type = setCollection(field, typeName, index);
+			type = setCollection(field, name, typeName);
 		}
-		name = field.getName();
-		columnAnno = field.getAnnotation(Column.class);
+		index++;
 	}
 
-	private Class setCollection(Field field, String typeName, int index) throws ClassNotFoundException, OosqlException {
-		arrayAnno = field.getAnnotationsByType(ArrayTable.class)[index];
+	private Class setCollection(Field field, String name, String typeName) throws ClassNotFoundException, OosqlException {
+		try {
+			arrayAnno = field.getAnnotationsByType(ArrayTable.class)[index];
+			// TODO popravi notacijo če je seveda to potrebno
+		} catch (ArrayIndexOutOfBoundsException e) {
+			arrayAnno = new ArrayTableC(name);
+		}
 		StringBuilder builder = new StringBuilder(typeName);
 		int i = indexOfLArrow(builder);
 		Class c = Class.forName(builder.substring(0, builder.indexOf("<")));
@@ -49,16 +57,21 @@ public class CFieldArray extends CField {
 				break;
 			} else {
 				c = Class.forName(builder.substring(0, i));
-				builder.delete(0, i + 1).deleteCharAt(builder.length() - 1);
-				dimension++;
+				if (Collection.class.isAssignableFrom(c)) {
+					builder.delete(0, i + 1).deleteCharAt(builder.length() - 1);
+					dimension++;
+				} else {
+					builder.delete(i, builder.length());
+					break;
+				}
 			}
-		} while (Collection.class.isAssignableFrom(c));
+		} while (true);
 		if (builder.charAt(builder.length() - 1) == ']') {
-			innerClass = new CFieldArray(field, builder.toString(), index + 1);
+			innerClass = new CFieldArray(field, name + "_array", builder.toString());
 		} else if (Map.class.isAssignableFrom(c)) {
-			innerClass = new CFieldMap(field);
+			innerClass = new CFieldMap(field, name + "_map", builder.toString());
 		} else {
-			innerClass = new CField(field, Class.forName(builder.toString()));
+			innerClass = new CField(field, name + "_field", Class.forName(builder.toString()), arrayAnno.valueColum());
 		}
 		return c;
 	}
@@ -68,8 +81,13 @@ public class CFieldArray extends CField {
 		return buffer.indexOf("<");
 	}
 
-	private Class setArray(Field field, String typeName, int index) throws ClassNotFoundException, OosqlException {
-		arrayAnno = field.getAnnotationsByType(ArrayTable.class)[index];
+	private Class setArray(Field field, String name, String typeName) throws ClassNotFoundException, OosqlException {
+		try {
+			arrayAnno = field.getAnnotationsByType(ArrayTable.class)[index];
+			// TODO popravi notacijo če je seveda to potrebno
+		} catch (ArrayIndexOutOfBoundsException e) {
+			arrayAnno = new ArrayTableC(name);
+		}
 		StringBuilder builder = new StringBuilder(typeName);
 		do {
 			dimension++;
@@ -87,38 +105,38 @@ public class CFieldArray extends CField {
 			for (int i : dim) i = 0;
 			c = Class.forName(classURL);
 			if (Collection.class.isAssignableFrom(c)) {
-				innerClass = new CFieldArray(field, builder.toString(), index + 1);
+				innerClass = new CFieldArray(field, name + "_list", builder.toString());
 			} else if (Map.class.isAssignableFrom(c)) {
-				innerClass = new CFieldMap(field);
+				innerClass = new CFieldMap(field, name + "_map", builder.toString());
 			} else {
-				innerClass = new CField(field, c);
+				innerClass = new CField(field, name + "_field", c, arrayAnno.valueColum());
 			}
 			return Array.newInstance(c, dim).getClass();
 		} catch (ClassNotFoundException e) {
 			switch (builder.toString()) {
 			case "int":
-				innerClass = new CField(field, int.class);
+				innerClass = new CField(field, name + "_field", int.class, arrayAnno.valueColum());
 				return Array.newInstance(int.class, dim).getClass();
 			case "double":
-				innerClass = new CField(field, double.class);
+				innerClass = new CField(field, name + "_field", double.class, arrayAnno.valueColum());
 				return Array.newInstance(double.class, dim).getClass();
 			case "byte":
-				innerClass = new CField(field, byte.class);
+				innerClass = new CField(field, name + "_field", byte.class, arrayAnno.valueColum());
 				return Array.newInstance(byte.class, dim).getClass();
 			case "float":
-				innerClass = new CField(field, float.class);
+				innerClass = new CField(field, name + "_field", float.class, arrayAnno.valueColum());
 				return Array.newInstance(float.class, dim).getClass();
 			case "char":
-				innerClass = new CField(field, char.class);
+				innerClass = new CField(field, name + "_field", char.class, arrayAnno.valueColum());
 				return Array.newInstance(char.class, dim).getClass();
 			case "short":
-				innerClass = new CField(field, short.class);
+				innerClass = new CField(field, name + "_field", short.class, arrayAnno.valueColum());
 				return Array.newInstance(short.class, dim).getClass();
 			case "long":
-				innerClass = new CField(field, long.class);
+				innerClass = new CField(field, name + "_field", long.class, arrayAnno.valueColum());
 				return Array.newInstance(long.class, dim).getClass();
 			case "boolena":
-				innerClass = new CField(field, boolean.class);
+				innerClass = new CField(field, name + "_field", boolean.class, arrayAnno.valueColum());
 				return Array.newInstance(boolean.class, dim).getClass();
 			default:
 				throw e;
@@ -139,11 +157,11 @@ public class CFieldArray extends CField {
 	}
 
 	@Override
-	public Annotation getAnnotaion(Class annoType) {
+	public <T extends Annotation> T getAnnotation(Class<? extends T> annoType) {
 		if (annoType == ArrayTable.class) {
-			return arrayAnno;
+			return (T) arrayAnno;
 		} else {
-			return super.getAnnotaion(annoType);
+			return super.getAnnotation(annoType);
 		}
 	}
 

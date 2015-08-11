@@ -1,4 +1,4 @@
-package org.oosql;
+package org.oosql.tree;
 
 import org.oosql.annotation.ArrayTable;
 import org.oosql.annotation.Column;
@@ -18,10 +18,11 @@ public class CField {
 	protected String name;
 	protected Column columnAnno;
 
-	protected CField() {
+	protected CField(Column column, String  name) {
 		type = null;
-		name = null;
-		columnAnno = null;
+		this.name = name;
+		// TODO popravi notacijo če je seveda to potrebno
+		columnAnno = column;
 	}
 
 	public CField(Field field) throws OosqlException, ClassNotFoundException {
@@ -29,12 +30,15 @@ public class CField {
 			throw new ColumnAnnotationException("Missing Column annotatio on field [" + field.getName() + "] with type of [" + field.getType() + "]");
 		name = field.getName();
 		type = field.getType();
+		// TODO popravi notacijo, če je esveda to porebno
+		columnAnno = field.getAnnotation(Column.class);
 	}
 
-	protected CField(Field field, Class type) throws ClassNotFoundException {
-		columnAnno = field.getAnnotation(Column.class);
-		this.name = field.getName();
+	protected CField(Field field, String name, Class type, Column column) throws ClassNotFoundException {
+		this.name = name;
 		this.type = type;
+		// TODO popravi notacijo, če je seveda to porebno
+		columnAnno = column;
 	}
 
 	public Class getType() {
@@ -49,9 +53,9 @@ public class CField {
 		return columnAnno;
 	}
 
-	public Annotation getAnnotaion(Class annoType) {
+	public <T extends Annotation> T getAnnotation(Class<? extends T> annoType) {
 		if (annoType == Column.class) {
-			return columnAnno;
+			return (T) columnAnno;
 		} else {
 			return null;
 		}
