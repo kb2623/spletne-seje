@@ -4,13 +4,14 @@ import java.lang.annotation.*;
 import java.sql.JDBCType;
 
 @Target(ElementType.FIELD)
+@Repeatable(Columns.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
 	/**
 	 *
 	 * @return
 	 */
-	String[] name() default {};
+	String name() default "";
 	/**
 	 *
 	 * @return
@@ -36,9 +37,4 @@ public @interface Column {
 	 * @return
 	 */
 	int typeLen() default 0;
-	/**
-	 *
-	 * @return
-	 */
-	String constaraintName() default "";
 }

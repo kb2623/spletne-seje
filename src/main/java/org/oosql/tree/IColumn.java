@@ -13,9 +13,4 @@ public interface IColumn {
 	 * @return
 	 */
 	String[] izpis();
-	/**
-	 *
-	 * @return
-	 */
-	Column getColumn();
 }

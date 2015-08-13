@@ -10,30 +10,6 @@ public class CLeaf implements IColumn {
 
 	private Column anno;
 
-	public CLeaf(Column anno, Class type, String altName) throws ColumnAnnotationException {
-		if (!Util.hasEmptyNames(anno)) {
-			if (type.isEnum() && anno.type().equals(JDBCType.INTEGER)) {
-				if (anno.typeLen() <= 0) {
-					this.anno = new ColumnC(anno, null, null, null, null, JDBCType.VARCHAR, 25, null);
-				} else {
-					this.anno = new ColumnC(anno, null, null, null, null, JDBCType.VARCHAR, anno.typeLen(), null);
-				}
-			} else {
-				this.anno = anno;
-			}
-		} else {
-			if (type.isEnum() && anno.type().equals(JDBCType.INTEGER)) {
-				if (anno.typeLen() <= 0) {
-					this.anno = new ColumnC(anno, new String[]{altName}, null, null, null, JDBCType.VARCHAR, 25, null);
-				} else {
-					this.anno = new ColumnC(anno, new String[]{altName}, null, null, null, JDBCType.VARCHAR, anno.typeLen(), null);
-				}
-			} else {
-				this.anno = new ColumnC(anno, altName);
-			}
-		}
-	}
-
 	public CLeaf(Column column) {
 		anno = column;
 	}
@@ -43,7 +19,7 @@ public class CLeaf implements IColumn {
 	}
 
 	public String getName() {
-		return anno.name()[0];
+		return anno.name();
 	}
 
 	public String getType() {

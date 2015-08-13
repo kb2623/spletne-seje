@@ -1,14 +1,12 @@
 package org.oosql.tree;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.oosql.ISqlMapping;
-import org.oosql.annotation.TableC;
-import org.oosql.annotation.Column;
-import org.oosql.annotation.Table;
-import org.oosql.exception.ColumnAnnotationException;
+import org.oosql.annotation.*;
 import org.oosql.exception.OosqlException;
-import org.oosql.tree.CField;
-import org.oosql.tree.CFieldArray;
-import org.oosql.tree.CFieldMap;
+import org.oosql.tree.field.CField;
+import org.oosql.tree.field.CFieldArray;
+import org.oosql.tree.field.CFieldMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -28,9 +26,28 @@ public class Util {
 	public static Table getTableAnnotation(Class in) throws NullPointerException {
 		if (in == null) throw new NullPointerException();
 		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
-			Annotation anno = c.getDeclaredAnnotation(Table.class);
-			if (anno != null)
-				return ((Table) anno).name().isEmpty() ? new TableC((Table) anno, c.getSimpleName(), null, null, null, null) : (Table) anno;
+			Table anno = (Table) c.getAnnotation(Table.class);
+			if (anno != null) {
+				if (in.isEnum()) {
+					String tName = null, idCName = null;
+					Boolean pk = null;
+					Columns columns = null;
+					if (anno.name().isEmpty()) tName = in.getSimpleName();
+					if (anno.id().name().isEmpty()) idCName = in.getSimpleName() + "_id";
+					if (!anno.id().pk()) pk = true;
+					if (anno.columns().value()[0].name().isEmpty()) {
+						Column[] array = new Column[anno.columns().value().length];
+						array[0] = new ColumnC(anno.columns().value()[0], in.getSimpleName() + "_value", null, null, null, null, null);
+						for (int i = 1; i < anno.columns().value().length; i++) {
+							array[i] = anno.columns().value()[i];
+						}
+						columns = new ColumnsC(array);
+					}
+					return new TableC(anno, tName, null, new ColumnC(anno.id(), idCName, pk, null, null, null, null), columns);
+				} else {
+					return anno.name().isEmpty() ? new TableC(anno, c.getSimpleName(), null, null, null) : anno;
+				}
+			}
 		}
 		return null;
 	}
@@ -46,7 +63,7 @@ public class Util {
 		List<CField> tab = new LinkedList<>();
 		for (Class c = in; c.getSuperclass() != null; c = c.getSuperclass()) {
 		  for (Field field : c.getDeclaredFields()) {
-			 if (field.isAnnotationPresent(Column.class)) {
+			 if (field.isAnnotationPresent(Column.class) || field.isAnnotationPresent(Columns.class)) {
 				 if (field.getType().isArray()) {
 					 tab.add(new CFieldArray(field));
 				 } else if (Collection.class.isAssignableFrom(field.getType())) {
@@ -69,17 +86,4 @@ public class Util {
 			return null;
 		}
 	}
-	
-	public static boolean hasEmptyNames(Column column) throws ColumnAnnotationException {
-		String[] array = column.name();
-		if (array.length > 0) {
-			for (int i = 0; i < array.length; i++) if (array[i].isEmpty()) {
-				throw new ColumnAnnotationException("has empty name on index [" + i + "]");
-			}
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 }

@@ -6,6 +6,7 @@ import org.oosql.annotation.Column;
 import org.oosql.annotation.MapTable;
 import org.oosql.annotation.Table;
 import org.oosql.exception.OosqlException;
+import org.oosql.tree.field.CField;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class ColumnFieldTest {
 		class TestOne {
 			@Column
 			private int some_one;
-			@Column(name = {"test_some_one"}, pk = true)
+			@Column(name = "test_some_one", pk = true)
 			private double some_two;
 			@Column
 			private String test_text;

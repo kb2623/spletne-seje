@@ -11,35 +11,18 @@ public @interface ArrayTable {
 	 *
 	 * @return
 	 */
-	Table arrayTable() default @Table(id = @Column(name = {"array_id"}, pk = true));
+	Table arrayTable() default @Table(
+			id = @Column(name = "array_id", pk = true)
+	);
 	/**
 	 *
 	 * @return
 	 */
-	Table valueTable() default @Table;
-	/**
-	 *
-	 * @return
-	 */
-	Column arrayid() default @Column;
-	/**
-	 *
-	 * @return
-	 */
-	String dimPrefix() default "";
-	/**
-	 *
-	 * @return
-	 */
-	JDBCType dimType() default JDBCType.INTEGER;
-	/**
-	 *
-	 * @return
-	 */
-	int dimLen() default 0;
-	/**
-	 *
-	 * @return
-	 */
-	Column valueColum() default @Column;
+	Table valueTable() default @Table(
+			id = @Column(pk = true),
+			columns = @Columns({
+					@Column(name = "dim_", pk = true),
+					@Column(name = "vaule")
+			})
+	);
 }

@@ -7,24 +7,21 @@ public class TableC implements Table {
 	private String name;
 	private boolean noRowId;
 	private Column id;
-	private Column enumColumn;
-	private String pkConstraintName;
+	private Columns columns;
 
-	public TableC(String name, boolean noRowId, Column id, Column enumColumn, String pkConstraintName) {
-		this.name 				 = name;
-		this.noRowId			 = noRowId;
-		this.id					 = id;
-		this.enumColumn		 = enumColumn;
-		this.pkConstraintName = pkConstraintName;
+	public TableC(String name, boolean noRowId, Column id, Columns columns) {
+		this.name = name;
+		this.noRowId = noRowId;
+		this.id = id;
+		this.columns = columns;
 	}
 
-	public TableC(Table tab, String name, Boolean noRowId, Column id, Column enumColumn, String pkConstraintName) {
+	public TableC(Table tab, String name, Boolean noRowId, Column id, Columns column) {
 		this(
-				name 				  == null ? tab.name() 				  : name,
-				noRowId 			  == null ? tab.noRowId() 			  : noRowId,
-				id 				  == null ? tab.id() 				  : id,
-				enumColumn		  == null ? tab.enumColumn()		  : enumColumn,
-				pkConstraintName == null ? tab.pkConstraintName() : pkConstraintName
+				name == null ? tab.name() : name,
+				noRowId == null ? tab.noRowId() : noRowId,
+				id  == null ? tab.id() : id,
+				column == null ? tab.columns() : column
 		);
 	}
 
@@ -44,13 +41,8 @@ public class TableC implements Table {
 	}
 
 	@Override
-	public Column enumColumn() {
-		return enumColumn;
-	}
-
-	@Override
-	public String pkConstraintName() {
-		return pkConstraintName;
+	public Columns columns() {
+		return columns;
 	}
 
 	@Override

@@ -28,10 +28,7 @@ public @interface Table {
 	 *
 	 * @return
 	 */
-	Column enumColumn() default @Column(type = JDBCType.VARCHAR, typeLen = 25);
-	/**
-	 *
-	 * @return
-	 */
-	String pkConstraintName() default "";
+	Columns columns() default @Columns({
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
+	});
 }

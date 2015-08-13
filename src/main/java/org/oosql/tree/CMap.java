@@ -1,6 +1,7 @@
 package org.oosql.tree;
 
 import org.oosql.exception.ColumnAnnotationException;
+import org.oosql.tree.field.CFieldMap;
 
 import java.lang.reflect.Field;
 

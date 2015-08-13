@@ -1,14 +1,14 @@
-package org.oosql.tree;
+package org.oosql.tree.field;
 
-import org.oosql.annotation.ArrayTable;
-import org.oosql.annotation.ArrayTableC;
-import org.oosql.annotation.Column;
+import org.oosql.annotation.*;
 import org.oosql.exception.OosqlException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class CFieldArray extends CField {
@@ -30,7 +30,7 @@ public class CFieldArray extends CField {
 	}
 
 	protected CFieldArray(Field field, String name, String typeName) throws ClassNotFoundException, OosqlException {
-		super(field.getAnnotation(Column.class), name);
+		super(field.getAnnotation(Columns.class), name);
 		if (typeName.endsWith("[]")) {
 			type = setArray(field, name, typeName);
 		} else {
@@ -71,7 +71,7 @@ public class CFieldArray extends CField {
 		} else if (Map.class.isAssignableFrom(c)) {
 			innerClass = new CFieldMap(field, name + "_map", builder.toString());
 		} else {
-			innerClass = new CField(field, name + "_field", Class.forName(builder.toString()), arrayAnno.valueColum());
+			innerClass = new CField(field, name + "_field", Class.forName(builder.toString()), getValueColumn());
 		}
 		return c;
 	}
@@ -109,39 +109,50 @@ public class CFieldArray extends CField {
 			} else if (Map.class.isAssignableFrom(c)) {
 				innerClass = new CFieldMap(field, name + "_map", builder.toString());
 			} else {
-				innerClass = new CField(field, name + "_field", c, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", c, getValueColumn());
 			}
 			return Array.newInstance(c, dim).getClass();
 		} catch (ClassNotFoundException e) {
 			switch (builder.toString()) {
 			case "int":
-				innerClass = new CField(field, name + "_field", int.class, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", int.class, getValueColumn());
 				return Array.newInstance(int.class, dim).getClass();
 			case "double":
-				innerClass = new CField(field, name + "_field", double.class, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", double.class, getValueColumn());
 				return Array.newInstance(double.class, dim).getClass();
 			case "byte":
-				innerClass = new CField(field, name + "_field", byte.class, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", byte.class, getValueColumn());
 				return Array.newInstance(byte.class, dim).getClass();
 			case "float":
-				innerClass = new CField(field, name + "_field", float.class, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", float.class, getValueColumn());
 				return Array.newInstance(float.class, dim).getClass();
 			case "char":
-				innerClass = new CField(field, name + "_field", char.class, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", char.class, getValueColumn());
 				return Array.newInstance(char.class, dim).getClass();
 			case "short":
-				innerClass = new CField(field, name + "_field", short.class, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", short.class, getValueColumn());
 				return Array.newInstance(short.class, dim).getClass();
 			case "long":
-				innerClass = new CField(field, name + "_field", long.class, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", long.class, getValueColumn());
 				return Array.newInstance(long.class, dim).getClass();
 			case "boolena":
-				innerClass = new CField(field, name + "_field", boolean.class, arrayAnno.valueColum());
+				innerClass = new CField(field, name + "_field", boolean.class, getValueColumn());
 				return Array.newInstance(boolean.class, dim).getClass();
 			default:
 				throw e;
 			}
 		}
+	}
+
+	private Columns getValueColumn() {
+		List<Column> list = new LinkedList<>();
+		Column[] columns = arrayAnno.valueTable().columns().value();
+		if (columns.length <= dimension) {
+			for (int i = 1; i < columns.length; i++) list.add(columns[i]);
+		} else {
+			for (int i = dimension; i < columns.length; i++) list.add(columns[i]);
+		}
+		return new ColumnsC(list.toArray(new Column[list.size()]));
 	}
 
 	public CField getInnerClass() {

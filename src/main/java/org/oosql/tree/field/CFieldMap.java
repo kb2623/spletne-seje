@@ -1,5 +1,7 @@
-package org.oosql.tree;
+package org.oosql.tree.field;
 
+import org.oosql.annotation.Column;
+import org.oosql.annotation.ColumnsC;
 import org.oosql.annotation.MapTable;
 import org.oosql.annotation.MapTableC;
 import org.oosql.exception.OosqlException;
@@ -50,10 +52,10 @@ public class CFieldMap extends CField {
 			} else if (Map.class.isAssignableFrom(c)) {
 				key = new CFieldMap(field, name + "_key_map", keyType);
 			} else {
-				key = new CField(field, name + "_key", c, mapAnno.keyColumn());
+				key = new CField(field, name + "_key", c, new ColumnsC(new Column[]{mapAnno.keyColumn()}));
 			}
 		} else {
-			key = new CField(field, name + "_key", Class.forName(keyType), mapAnno.keyColumn());
+			key = new CField(field, name + "_key", Class.forName(keyType), new ColumnsC(new Column[]{mapAnno.keyColumn()}));
 		}
 		if (valueType.endsWith("[]")) {
 			value = new CFieldArray(field, name + "_value_array", valueType);
@@ -64,10 +66,10 @@ public class CFieldMap extends CField {
 			} else if (Map.class.isAssignableFrom(c)) {
 				value = new CFieldMap(field, name + "_value_map", keyType);
 			} else {
-				value = new CField(field, name + "_value", c, mapAnno.valueColumn());
+				value = new CField(field, name + "_value", c, new ColumnsC(new Column[]{mapAnno.valueColumn()}));
 			}
 		} else {
-			value = new CField(field, name + "_value", Class.forName(valueType), mapAnno.valueColumn());
+			value = new CField(field, name + "_value", Class.forName(valueType), new ColumnsC(new Column[]{mapAnno.valueColumn()}));
 		}
 	}
 

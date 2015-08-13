@@ -5,29 +5,36 @@ import org.oosql.annotation.ColumnC;
 
 public class CRef implements IColumn {
 
-	private String name;
-	private Column ref;
+	private Column column;
+	private String refColumn;
 
-	public CRef(Column ref, String name) {
-		this.ref  = ref;
-		this.name = name;
+	public CRef(Column refColumn, Column column) {
+		this.refColumn = refColumn.name();
+		if (column.type().equals(refColumn.type()) && column.typeLen() == refColumn.typeLen()) {
+			this.column = column;
+		} else if (column.type().equals(refColumn.type()) && column.typeLen() != refColumn.typeLen()) {
+			this.column = new ColumnC(column, column.name(), null, null, null, null, refColumn.typeLen());
+		} else if (!column.type().equals(refColumn.type()) && column.typeLen() == refColumn.typeLen() ) {
+			this.column = new ColumnC(column, column.name(), null, null, null, refColumn.type(), refColumn.typeLen());
+		} else {
+			this.column = new ColumnC(column, column.name(), null, null, null, refColumn.type(), refColumn.typeLen());
+		}
 	}
 
 	@Override
 	public boolean isPrimaryKey() {
-		return false;
+		return column.pk();
 	}
 
 	public String[] izpis() {
 		return new String[]{
-				name + " " + ref.type() + (ref.typeLen() > 0 ? "(" + ref.typeLen() + ")" : ""),
-				name,
-				ref.name()[0]
+				column.name()+ " " + column.type() + (column.typeLen() > 0 ? "(" + column.typeLen() + ")" : ""),
+				column.name(),
+				refColumn
 		};
 	}
 
-	@Override
 	public Column getColumn() {
-		return new ColumnC(ref, name);
+		return column;
 	}
 }

@@ -5,36 +5,50 @@ import org.oosql.annotation.*;
 import org.oosql.exception.OosqlException;
 import org.oosql.exception.TableAnnotationException;
 import org.oosql.exception.ColumnAnnotationException;
+import org.oosql.tree.field.CField;
+import org.oosql.tree.field.CFieldArray;
+import org.oosql.tree.field.CFieldMap;
 
 import java.util.Map;
 import java.util.List;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.lang.reflect.Field;
 
 public class TTable {
 
-	private String tableName;
-	private List<IColumn> columns;
+	protected String tableName;
+	protected List<IColumn> columns;
 
-	protected TTable(Table table, String altName, List<IColumn> columns) {
-		if (table.name().isEmpty())
-			tableName = altName;
-		else
-			tableName = table.name();
+	protected TTable(List<IColumn> columns, Table table) throws TableAnnotationException {
+		tableName = table.name();
 		this.columns = columns;
-		if (!DefaultValues.isDefault(table.id()))
-			columns.add(new CLeaf(table.id()));
+		if (getReferences().size() == 0)
+			throw new TableAnnotationException("Mising primary key in [" + tableName + "]");
 	}
 
-	protected TTable(Table table) {
+	protected TTable(Table table, List<IColumn> columns) throws TableAnnotationException {
+		tableName = table.name();
+		this.columns = columns;
+		if (!DefaultValues.isDefault(table.id()))
+			this.columns.add(new CLeaf(table.id()));
+		if (getReferences().size() == 0)
+			throw new TableAnnotationException("Mising primary key in [" + tableName + "]");
+	}
+
+	protected TTable(Table table) throws TableAnnotationException {
 		tableName = table.name();
 		this.columns = new LinkedList<>();
 		this.columns.add(new CLeaf(table.id()));
-		this.columns.add(new CLeaf(table.enumColumn()));
+		this.columns.add(new CLeaf(table.columns().value()[0]));
+		if (getReferences().size() == 0)
+			throw new TableAnnotationException("Mising primary key in [" + tableName + "]");
 	}
 
 	public TTable(Class in) throws OosqlException, ClassNotFoundException {
+		this(in, true);
+	}
+
+	private TTable(Class in, boolean firstTable) throws OosqlException, ClassNotFoundException {
 		Table table = Util.getTableAnnotation(in);
 		if (table == null)
 			throw new TableAnnotationException("Missing in [" + in.getTypeName() + "]!!!");
@@ -67,6 +81,8 @@ public class TTable {
 		} catch (ColumnAnnotationException error) {
 			throw new ColumnAnnotationException("Class [" + in.getTypeName() + "]", error);
 		}
+		if (!firstTable && getReferences().size() == 0)
+			throw new TableAnnotationException("Mising primary key in [" + in.getTypeName() + "]");
 	}
 
 	private IColumn procesField(CField field) throws OosqlException, ClassNotFoundException {
@@ -74,12 +90,12 @@ public class TTable {
 			Class fieldType = field.getType();
 			if (fieldType.isPrimitive() || Number.class.isAssignableFrom(fieldType) || Boolean.class.isAssignableFrom(fieldType)
 					|| Character.class.isAssignableFrom(fieldType) || String.class.isAssignableFrom(fieldType)) {
-				return new CLeaf(field.getAnnotation(Column.class), fieldType, field.getName());
+				return new CLeaf(field.getAnnotation(Column.class));
 			} else if (fieldType.isEnum()) {
 				Table table = Util.getTableAnnotation(fieldType);
 				Column column = field.getAnnotation(Column.class);
 				if (table == null) {
-					return new CLeaf(column, fieldType, field.getName());
+					return new CLeaf(column);
 				} else {
 					return new CEnum(column, table, field.getName());
 				}
@@ -100,7 +116,7 @@ public class TTable {
 				// TODO imamo razred, ki implementira plreslikavo
 				return null;
 			} else {
-				return new CNode(field.getAnnotation(Column.class), field.getName(), new TTable(fieldType));
+				return new CNode(field.getAnnotation(Columns.class), new TTable(fieldType, false));
 			}
 		} catch (ColumnAnnotationException e) {
 			throw new ColumnAnnotationException("field [" + field.getName() + "]", e);

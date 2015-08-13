@@ -1,39 +1,43 @@
 package org.oosql.tree;
 
-import org.oosql.annotation.*;
+import org.oosql.annotation.Column;
+import org.oosql.annotation.Columns;
+import org.oosql.annotation.ColumnsC;
 import org.oosql.exception.ColumnAnnotationException;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 public class CNode implements IColumn {
 
-	protected Column anno;
 	protected List<CRef> columns;
 	protected TTable refTable;
 
 	public CNode() {
-		anno 		= null;
-		columns 	= new LinkedList<>();
+		columns = new LinkedList<>();
 		refTable = null;
 	}
 
-	public CNode(Column anno, String altName, TTable table) throws ColumnAnnotationException {
+	protected CNode(Column column, TTable table) throws ColumnAnnotationException {
 		this();
-		if (!Util.hasEmptyNames(anno)) this.anno = anno;
-		else this.anno = new ColumnC(anno, altName);
 		refTable = table;
-		setUpColumns();
+		setUpColumns(new ColumnsC(new Column[]{column}));
 	}
 
-	protected void setUpColumns() throws ColumnAnnotationException {
+	public CNode(Columns columns, TTable table) throws ColumnAnnotationException {
+		this();
+		refTable = table;
+		setUpColumns(columns);
+	}
+
+	protected void setUpColumns(Columns columns) throws ColumnAnnotationException {
 		int index = 0;
 		for (IColumn c : refTable.getReferences()) if (c instanceof CLeaf) {
-			columns.add(new CRef(c.getColumn(), getName(index)));
+			this.columns.add(new CRef(((CLeaf) c).getColumn(), getColumn(columns, index)));
 			index++;
 		} else {
 			for (CRef r : ((CNode) c).getAdditionalColumns()) {
-				columns.add(new CRef(r.getColumn(), getName(index)));
+				this.columns.add(new CRef(r.getColumn(), getColumn(columns, index)));
 				index++;
 			}
 		}
@@ -44,25 +48,19 @@ public class CNode implements IColumn {
 	}
 
 	public boolean isPrimaryKey() {
-		return anno.pk();
+		for (CRef cRef : columns) if (cRef.isPrimaryKey()) {
+			return true;
+		}
+		return false;
 	}
 
-	public String getName(int index) throws ColumnAnnotationException {
+	public Column getColumn(Columns columns, int index) throws ColumnAnnotationException {
 		try {
-			return anno.name()[index];
+			return columns.value()[index];
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new ColumnAnnotationException("missing names for Compound key");
+			throw new ColumnAnnotationException("missing columns for Compound key");
 		}
 	}
-
-	public boolean isNotNull() {
-		return anno.notNull();
-	}
-
-	public boolean isUnique() {
-		return anno.unique();
-	}
-
 
 	public TTable getRefTable() {
 		return refTable;
@@ -82,7 +80,7 @@ public class CNode implements IColumn {
 		};
 		for (IColumn c : this.columns) {
 			String tab[] = c.izpis();
-			columns.append(tab[0] + (isPrimaryKey() ? " NOT NULL" : "") + ",\n\t");
+			columns.append(tab[0] + (c.isPrimaryKey() ? " NOT NULL" : "") + ",\n\t");
 			if (isPrimaryKey()) primaryKey.append(tab[1] + ", ");
 			reference[0].append(tab[1] + ", ");
 			reference[1].append(tab[2] + ", ");
@@ -99,10 +97,5 @@ public class CNode implements IColumn {
 				primaryKey.length() > 0 ? primaryKey.toString() : "",
 				"FOREIGN KEY(" + reference[0].toString() + ") REFERNCES " + refTable.getTableName() + "(" + reference[1].toString() + ")"
 		};
-	}
-
-	@Override
-	public Column getColumn() {
-		return anno;
 	}
 }

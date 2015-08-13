@@ -5,13 +5,12 @@ import java.lang.annotation.Annotation;
 
 public class ColumnC implements Column {
 
-	private String[] name;
-	private boolean  pk;
-	private boolean  notNull;
-	private boolean  unique;
+	private String name;
+	private boolean pk;
+	private boolean notNull;
+	private boolean unique;
 	private JDBCType type;
-	private int 	  typeLen;
-	private String   constaraintName;
+	private int typeLen;
 
 	public ColumnC() {
 		this(
@@ -20,50 +19,45 @@ public class ColumnC implements Column {
 				false,
 				false,
 				JDBCType.INTEGER,
-				0,
-				null
+				0
 		);
 	}
 
 	public ColumnC(String name, JDBCType type, int typeLen) {
 		this(
-				new String[]{name},
+				name,
 				true,
 				false,
 				false,
 				type,
-				typeLen,
-				null
+				typeLen
 		);
 	}
 
-	public ColumnC(String[] name, boolean pk, boolean notNull, boolean unique, JDBCType type, int typeLen, String constaraintName) {
-		this.name				= name;
-		this.pk					= pk;
-		this.notNull			= notNull;
-		this.unique				= unique;
-		this.type				= type;
-		this.typeLen 			= typeLen;
-		this.constaraintName = constaraintName;
+	public ColumnC(String name, boolean pk, boolean notNull, boolean unique, JDBCType type, int typeLen) {
+		this.name = name;
+		this.pk = pk;
+		this.notNull = notNull;
+		this.unique = unique;
+		this.type = type;
+		this.typeLen = typeLen;
 	}
 
-	public ColumnC(Column column, String[] name, Boolean pk, Boolean notNull, Boolean unique, JDBCType type, Integer typeLen, String constraintName) {
+	public ColumnC(Column column, String name, Boolean pk, Boolean notNull, Boolean unique, JDBCType type, Integer typeLen) {
 		this(
-				name 	  			== null ? column.name()					: name,
-				pk 	  			== null ? column.pk()					: pk,
-				notNull 			== null ? column.notNull()				: notNull,
-				unique  			== null ? column.unique()				: unique,
-				type 	  			== null ? column.type()    			: type,
-				typeLen			== null ? column.typeLen() 			: typeLen,
-				constraintName == null ? column.constaraintName()	: constraintName
+				name == null ? column.name() : name,
+				pk == null ? column.pk() : pk,
+				notNull == null ? column.notNull()	: notNull,
+				unique == null ? column.unique() : unique,
+				type == null ? column.type()	: type,
+				typeLen == null ? column.typeLen() : typeLen
 		);
 	}
 
 	public ColumnC(Column column, String name) {
 		this(
 				column,
-				new String[]{name},
-				null,
+				name,
 				null,
 				null,
 				null,
@@ -73,8 +67,8 @@ public class ColumnC implements Column {
 	}
 
 	@Override
-	public String[] name() {
-		return name != null ? name : new String[]{};
+	public String name() {
+		return name != null ? name : "";
 	}
 
 	@Override
@@ -103,11 +97,6 @@ public class ColumnC implements Column {
 	}
 
 	@Override
-	public String constaraintName() {
-		return constaraintName != null ? constaraintName : "";
-	}
-
-	@Override
 	public Class<? extends Annotation> annotationType() {
 		return Column.class;
 	}
@@ -116,14 +105,7 @@ public class ColumnC implements Column {
 	public boolean equals(Object o) {
 		if (o instanceof Column) {
 			Column c = (Column) o;
-			if (name().length == c.name().length) {
-				for (int i = 0; i < name().length; i++) if (!name()[i].equals(c.name()[i])) {
-					return false;
-				}
-				return pk() == c.pk() && notNull() == c.notNull() && type() == c.type() && typeLen() == c.typeLen()
-						&& constaraintName().equals(c.constaraintName());
-			}
-			return false;
+			return name().equals(c.name()) && pk == c.pk() && notNull == c.notNull() && unique == c.unique() && type.equals(c.type()) && typeLen == c.typeLen();
 		} else {
 			return false;
 		}

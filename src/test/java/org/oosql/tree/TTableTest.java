@@ -3,6 +3,7 @@ package org.oosql.tree;
 import org.junit.Test;
 
 import org.oosql.annotation.ArrayTable;
+import org.oosql.annotation.Columns;
 import org.oosql.annotation.Table;
 import org.oosql.annotation.Column;
 import org.oosql.exception.OosqlException;
@@ -33,9 +34,9 @@ public class TTableTest {
 	public void testClassNoTable() throws OosqlException, ClassNotFoundException {
 		class TestOne {
 			private int some_one;
-			@Column(name = {"test_some_one"}, pk = true)
+			@Column(name = "test_some_one", pk = true)
 			private double some_two;
-			@Column
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
 			private String test_text;
 		}
 		@Table
@@ -58,7 +59,7 @@ public class TTableTest {
 	public void testClassNoTableLevelException() throws OosqlException, ClassNotFoundException {
 		class TestOne {
 			private int some_one;
-			@Column(name = {"test_some_one"}, pk = true)
+			@Column(name = "test_some_one", pk = true)
 			private double some_two;
 			@Column
 			private String test_text;
@@ -77,7 +78,7 @@ public class TTableTest {
 		@Table
 		class TestThree {
 			private int test_no_go;
-			@Column(pk = true, name = {"test_three_pk"})
+			@Column(pk = true, name = "test_three_pk")
 			private int test_pk;
 			@Column(type = JDBCType.VARCHAR, typeLen = 25)
 			private String data;
@@ -94,7 +95,7 @@ public class TTableTest {
 		// FIXME
 		class TestOne {
 			private int some_one;
-			@Column(name = {"test_some_one"}, pk = true)
+			@Column(name = "test_some_one", pk = true)
 			private double some_two;
 			@Column
 			private String test_text;
@@ -114,13 +115,14 @@ public class TTableTest {
 		@Table
 		class TestThree {
 			private int test_no_go;
-			@Column(pk = true, name = {"test_three_pk"})
+			@Column(pk = true, name = "test_three_pk")
 			private int test_pk;
 			@Column(type = JDBCType.VARCHAR, typeLen = 25)
 			private String data;
 			@Column
 			private TestOne this_is_ok;
-			@Column(pk = true, name = {"pk_test_two", "pk_test_one"})
+			@Column(pk = true, name = "pk_test_one")
+			@Column(pk = true, name = "pk_test_two")
 			private TestTwo this_is_ok_sec;
 		}
 		TTable table = new TTable(TestThree.class);
@@ -144,7 +146,7 @@ public class TTableTest {
 
 	@Test
 	public void testSimpleClassAutoId() throws OosqlException, ClassNotFoundException {
-		@Table(id = @Column(name = {"id_testOne"}, pk = true))
+		@Table(id = @Column(name = "id_testOne", pk = true))
 		class TestOne {
 			@Column
 			private int number;
@@ -160,7 +162,7 @@ public class TTableTest {
 	@Test
 	public void testSimpleClassAutoIdNoPk() throws OosqlException, ClassNotFoundException {
 		// FIXME Če nimamo pk atributa v tabeli nastavljenega na true potem, se vrstica ne doda v primarni ključ
-		@Table(id = @Column(name = {"id_testOne"}))
+		@Table(id = @Column(name = "id_testOne"))
 		class TestOne {
 			@Column
 			private int number;
@@ -185,11 +187,11 @@ public class TTableTest {
 		}
 		@Table
 		class TestTwo extends TestOne {
-			@Column(name = {"two_number"})
+			@Column(name = "two_number")
 			private int number;
-			@Column(type = JDBCType.VARCHAR, typeLen = 25, name = {"two_text"})
+			@Column(type = JDBCType.VARCHAR, typeLen = 25, name = "two_text")
 			private String text;
-			@Column(type = JDBCType.REAL, name = {"two_realNumber"})
+			@Column(type = JDBCType.REAL, name = "two_realNumber")
 			private float realNumber;
 		}
 		TTable table = new TTable(TestTwo.class);
@@ -208,11 +210,11 @@ public class TTableTest {
 			private float realNumber;
 		}
 		class TestTwo extends TestOne {
-			@Column(name = {"two_number"})
+			@Column(name = "two_number")
 			private int number;
-			@Column(type = JDBCType.VARCHAR, typeLen = 25, name = {"two_text"})
+			@Column(type = JDBCType.VARCHAR, typeLen = 25, name = "two_text")
 			private String text;
-			@Column(type = JDBCType.REAL, name = {"two_realNumber"})
+			@Column(type = JDBCType.REAL, name = "two_realNumber")
 			private float realNumber;
 		}
 		TTable table = new TTable(TestTwo.class);
@@ -232,11 +234,11 @@ public class TTableTest {
 		}
 		@Table(name = "test")
 		class TestTwo extends TestOne {
-			@Column(name = {"two_number"})
+			@Column(name = "two_number")
 			private int number;
-			@Column(type = JDBCType.VARCHAR, typeLen = 25, name = {"two_text"})
+			@Column(type = JDBCType.VARCHAR, typeLen = 25, name = "two_text")
 			private String text;
-			@Column(type = JDBCType.REAL, name = {"two_realNumber"})
+			@Column(type = JDBCType.REAL, name = "two_realNumber")
 			private float realNumber;
 		}
 		TTable table = new TTable(TestTwo.class);
@@ -255,11 +257,11 @@ public class TTableTest {
 			private float realNumber;
 		}
 		class TestTwo extends TestOne {
-			@Column(name = {"two_number"})
+			@Column(name = "two_number")
 			private int number;
-			@Column(type = JDBCType.VARCHAR, typeLen = 25, name = {"two_text"})
+			@Column(type = JDBCType.VARCHAR, typeLen = 25, name = "two_text")
 			private String text;
-			@Column(type = JDBCType.REAL, name = {"two_realNumber"})
+			@Column(type = JDBCType.REAL, name = "two_realNumber")
 			private float realNumber;
 		}
 		TTable table = new TTable(TestTwo.class);
@@ -396,7 +398,7 @@ public class TTableTest {
 		TTable table = new TTable(TestThree.class);
 	}
 
-	@Test(expected = ColumnAnnotationException.class)
+	@Test
 	public void testThreeClassThreeEmptyName() throws OosqlException, ClassNotFoundException {
 		@Table
 		class TestOne {
@@ -428,10 +430,13 @@ public class TTableTest {
 			private float realNumber;
 			@Column(pk = true)
 			private TestOne classOne;
-			@Column(name = {"tt_1id", "tt_2id", ""}, pk = true)
+			@Column(name = "tt_1id", pk = true)
+			@Column(name = "tt_2id", pk = true)
+			@Column(name = "", pk = true)
 			private TestTwo classTwo;
 		}
 		TTable table = new TTable(TestThree.class);
+		table.izpis();
 	}
 
 	@Test
@@ -467,7 +472,8 @@ public class TTableTest {
 			private float realNumber;
 			@Column(pk = true)
 			private TestOne classOne;
-			@Column(name = {"tt_1id", "tt_2id"}, pk = true)
+			@Column(name = "tt_1id", pk = true)
+			@Column(name = "tt_2id", pk = true)
 			private TestTwo classTwo;
 		}
 		TTable table = new TTable(TestThree.class);
@@ -553,7 +559,8 @@ public class TTableTest {
 			private EnumTableTest enumt;
 			@Column
 			private EnumClassTest enumc;
-			@Column(pk = true, name = {"pk_to_number", "pk_enum"})
+			@Column(pk = true, name = "pk_to_number")
+			@Column(pk = true, name = "pk_enum")
 			private TestOne test_one;
 		}
 		TTable table = new TTable(TestTwo.class);
@@ -570,7 +577,7 @@ public class TTableTest {
 			private String text;
 			@Column(type = JDBCType.REAL)
 			private float realNumber;
-			@Column
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
 			private EnumClassTest enumc;
 		}
 		TTable table = new TTable(TestOne.class);
@@ -580,11 +587,11 @@ public class TTableTest {
 	@Test
 	public void testClassWithNoTable() throws OosqlException, ClassNotFoundException {
 		class TestOne {
-			@Column(name = {"number_1"}, pk = true)
+			@Column(name = "number_1", pk = true)
 			private int number;
-			@Column(name = {"text_1"}, type = JDBCType.VARCHAR, typeLen = 25)
+			@Column(name = "text_1", type = JDBCType.VARCHAR, typeLen = 25)
 			private String text;
-			@Column(name = {"realNumber_1"}, type = JDBCType.REAL)
+			@Column(name = "realNumber_1", type = JDBCType.REAL)
 			private float realNumber;
 		}
 		@Table
@@ -654,22 +661,26 @@ public class TTableTest {
 		table.izpis();
 	}
 
-	@Test
+	@Test(expected = TableAnnotationException.class)
 	public void testArrayClassNoTablePk() throws OosqlException, ClassNotFoundException {
 		@Table
 		class TestOne {
-			@Column(pk = true)
+			@Column
 			private int number;
-			@Column(pk = true, type = JDBCType.VARCHAR, typeLen = 25)
+			@Column(type = JDBCType.VARCHAR, typeLen = 25)
 			private String name;
 		}
 		@Table
 		class TestTwo {
 			@Column
-			@ArrayTable(valueColum = @Column(name = {"ref1", "ref2"}))
+			@ArrayTable(valueTable = @Table(columns = @Columns({
+					@Column(name = "l1")
+			})))
 			private List<List<List<TestOne>>> list;
 			@Column
-			@ArrayTable(valueColum = @Column(name = {"ref1", "ref2"}))
+			@ArrayTable(valueTable = @Table(columns = @Columns(
+					@Column(name = "test")
+			)))
 			private TestOne[][][] array;
 		}
 		TTable table = new TTable(TestTwo.class);
@@ -698,7 +709,7 @@ public class TTableTest {
 
 	@Test
 	public void testArrayClassCompundKey() throws OosqlException, ClassNotFoundException {
-		// FIXME pozabimo dodati prefix vrsticam z dimenzijo
+		// FIXME pozabimo dodati prefix vrsticam z dimenzijo in nastavi imena tabelam, ki shranjujejo programske tabele
 		@Table
 		class TestOne {
 			@Column(pk = true)
@@ -709,10 +720,8 @@ public class TTableTest {
 		@Table
 		class TestTwo {
 			@Column
-			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}))
 			private List<List<List<TestOne>>> list;
 			@Column
-			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}))
 			private TestOne[][][] array;
 		}
 		TTable table = new TTable(TestTwo.class);
@@ -731,18 +740,16 @@ public class TTableTest {
 		@Table
 		class TestTwo {
 			@Column(pk = true)
-			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}, pk = true))
 			private List<List<List<TestOne>>> list;
 			@Column(pk = true)
-			@ArrayTable(valueColum = @Column(name = {"pk1", "pk2"}, pk = true), dimPrefix = "cord-")
 			private TestOne[][][] array;
 		}
 		TTable table = new TTable(TestTwo.class);
 		table.izpis();
 	}
 
-	@Test(expected = ColumnAnnotationException.class)
-	public void testArrayExceptionOne() throws OosqlException, ClassNotFoundException {
+	@Test
+	public void testArrayAndList() throws OosqlException, ClassNotFoundException {
 		@Table
 		class TestOne {
 			@Column
@@ -752,8 +759,8 @@ public class TTableTest {
 		table.izpis();
 	}
 
-	@Test(expected = ColumnAnnotationException.class)
-	public void testArrayExceptionTwo() throws OosqlException, ClassNotFoundException {
+	@Test
+	public void testListAndArray() throws OosqlException, ClassNotFoundException {
 		@Table
 		class TestOne {
 			@Column
@@ -763,8 +770,9 @@ public class TTableTest {
 		table.izpis();
 	}
 
-	@Test(expected = ColumnAnnotationException.class)
+	@Test
 	public void testArrayExceptionThree() throws OosqlException, ClassNotFoundException {
+		// TODO implementiraj izdelavo tabel za Slovarje
 		@Table
 		class TestOne {
 			@Column
@@ -774,8 +782,9 @@ public class TTableTest {
 		table.izpis();
 	}
 
-	@Test(expected = ColumnAnnotationException.class)
+	@Test
 	public void testArrayExceptionFour() throws OosqlException, ClassNotFoundException {
+		// TODO implementiraj izdelavo tabel za slovarje
 		@Table
 		class TestOne {
 			@Column
@@ -795,5 +804,4 @@ public class TTableTest {
 		TTable table = new TTable(TestOne.class);
 		table.izpis();
 	}
-
 }
