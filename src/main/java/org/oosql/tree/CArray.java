@@ -23,20 +23,11 @@ public class CArray extends CNode {
 		List<IColumn> list = new LinkedList<>();
 		list.add(new CNode(fieldArray.getArrayAnno().arrayTable().id(), refTable));
 		for (int i = 0; i < fieldArray.getDimension(); i++) {
-			Column dimColumn = getDimColumn(fieldArray, i);
+			Column dimColumn = fieldArray.getArrayAnno().valueTable().columns().value()[i];
 			list.add(new CLeaf(dimColumn));
 		}
 		list.add(innerClass);
 		tabelaVrednost = new TTable(list, fieldArray.getArrayAnno().valueTable());
-	}
-
-	private Column getDimColumn(CFieldArray fieldArray, int index) {
-		if (fieldArray.getArrayAnno().valueTable().columns().value().length <= fieldArray.getDimension()) {
-			Column c = fieldArray.getArrayAnno().valueTable().columns().value()[0];
-			return new ColumnC(c, c.name() + index);
-		} else {
-			return fieldArray.getArrayAnno().valueTable().columns().value()[index];
-		}
 	}
 
 	@Override

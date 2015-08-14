@@ -642,6 +642,40 @@ public class TTableTest {
 		table.izpis();
 	}
 
+	@Test
+	public void testArrayClassTwoPk() throws OosqlException, ClassNotFoundException {
+		@Table
+		class TestOne {
+			@Column(pk = true)
+			private int number;
+			@Column(pk = true, type = JDBCType.VARCHAR, typeLen = 25)
+			private String name;
+		}
+		@Table
+		class TestTwo {
+			@Column
+			@ArrayTable(valueTable = @Table(columns = @Columns({
+					@Column(pk = true, name = "dim_0_pk"),
+					@Column(pk = true, name = "dim_1_pk"),
+					@Column(pk = true, name = "dim_2_pk"),
+					@Column(name = "to_pk1"),
+					@Column(name = "to_pk2")
+			})))
+			private List<List<List<TestOne>>> list;
+			@Column
+			@ArrayTable(valueTable = @Table(columns = @Columns({
+					@Column(pk = true, name = "dim_0_pk"),
+					@Column(pk = true, name = "dim_1_pk"),
+					@Column(pk = true, name = "dim_2_pk"),
+					@Column(name = "to_pk1"),
+					@Column(name = "to_pk2")
+			})))
+			private TestOne[][][] array;
+		}
+		TTable table = new TTable(TestTwo.class);
+		table.izpis();
+	}
+
 	@Test(expected = TableAnnotationException.class)
 	public void testArrayClassNoTable() throws OosqlException, ClassNotFoundException {
 		class TestOne {

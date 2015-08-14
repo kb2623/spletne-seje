@@ -40,12 +40,7 @@ public class CFieldArray extends CField {
 	}
 
 	private Class setCollection(Field field, String name, String typeName) throws ClassNotFoundException, OosqlException {
-		try {
-			arrayAnno = field.getAnnotationsByType(ArrayTable.class)[index];
-			// TODO popravi notacijo če je seveda to potrebno
-		} catch (ArrayIndexOutOfBoundsException e) {
-			arrayAnno = new ArrayTableC(name);
-		}
+
 		StringBuilder builder = new StringBuilder(typeName);
 		int i = indexOfLArrow(builder);
 		Class c = Class.forName(builder.substring(0, builder.indexOf("<")));
@@ -66,6 +61,11 @@ public class CFieldArray extends CField {
 				}
 			}
 		} while (true);
+		try {
+			arrayAnno = fixAnno(field.getAnnotationsByType(ArrayTable.class)[index], name);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			arrayAnno = new ArrayTableC(name, dimension);
+		}
 		if (builder.charAt(builder.length() - 1) == ']') {
 			innerClass = new CFieldArray(field, name + "_array", builder.toString());
 		} else if (Map.class.isAssignableFrom(c)) {
@@ -82,17 +82,16 @@ public class CFieldArray extends CField {
 	}
 
 	private Class setArray(Field field, String name, String typeName) throws ClassNotFoundException, OosqlException {
-		try {
-			arrayAnno = field.getAnnotationsByType(ArrayTable.class)[index];
-			// TODO popravi notacijo če je seveda to potrebno
-		} catch (ArrayIndexOutOfBoundsException e) {
-			arrayAnno = new ArrayTableC(name);
-		}
 		StringBuilder builder = new StringBuilder(typeName);
 		do {
 			dimension++;
 			builder.delete(builder.length() - 2, builder.length());
 		} while (builder.charAt(builder.length() - 1) == ']');
+		try {
+			arrayAnno = fixAnno(field.getAnnotationsByType(ArrayTable.class)[index], name);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			arrayAnno = new ArrayTableC(name, dimension);
+		}
 		int[] dim = new int[dimension];
 		try {
 			Class c;
@@ -147,12 +146,14 @@ public class CFieldArray extends CField {
 	private Columns getValueColumn() {
 		List<Column> list = new LinkedList<>();
 		Column[] columns = arrayAnno.valueTable().columns().value();
-		if (columns.length <= dimension) {
-			for (int i = 1; i < columns.length; i++) list.add(columns[i]);
-		} else {
-			for (int i = dimension; i < columns.length; i++) list.add(columns[i]);
-		}
+		for (int i = dimension; i < columns.length; i++) list.add(columns[i]);
 		return new ColumnsC(list.toArray(new Column[list.size()]));
+	}
+
+	private ArrayTable fixAnno(ArrayTable table, String name) {
+		ArrayTable tableRet = table;
+		// TODO Popravi anotacijo če je seveda to porebno
+		return tableRet;
 	}
 
 	public CField getInnerClass() {

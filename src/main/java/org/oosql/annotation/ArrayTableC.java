@@ -20,53 +20,55 @@ public class ArrayTableC implements ArrayTable {
 		);
 	}
 
-	public ArrayTableC(String name) {
-		this(
-				new TableC(
-						name + "_array",
+	public ArrayTableC(String name, int dimensions) {
+		arrayTable = new TableC(
+				name + "_array",
+				true,
+				new ColumnC(
+						name + "_array_id",
 						true,
-						new ColumnC(
-								name + "_array_id",
-								true,
-								false,
-								false,
-								JDBCType.INTEGER,
-								0
-						),
-						null
+						false,
+						false,
+						JDBCType.INTEGER,
+						0
 				),
-				new TableC(
+				null
+		);
+		Column[] array = new Column[dimensions + 1];
+		for (int i = 0; true; i++) {
+			if (i < dimensions) {
+				array[i] = new ColumnC(
+						"dim_" + i,
+						true,
+						false,
+						false,
+						JDBCType.INTEGER,
+						0
+				);
+			} else {
+				array[i] = new ColumnC(
 						name + "_value",
 						false,
-						new ColumnC(
-								name + "_array_id",
-								true,
-								false,
-								false,
-								JDBCType.INTEGER,
-								0
-						),
-						new ColumnsC(
-								new Column[] {
-										new ColumnC(
-												"dim_",
-												true,
-												false,
-												false,
-												JDBCType.INTEGER,
-												0
-										),
-										new ColumnC(
-												name + "_value",
-												false,
-												false,
-												false,
-												JDBCType.INTEGER,
-												0
-										)
-								}
-						)
-				)
+						false,
+						false,
+						JDBCType.INTEGER,
+						0
+				);
+				break;
+			}
+		}
+		valueTable = new TableC(
+				name + "_value",
+				true,
+				new ColumnC(
+						name + "_array_id",
+						true,
+						false,
+						false,
+						JDBCType.INTEGER,
+						0
+				),
+				new ColumnsC(array)
 		);
 	}
 

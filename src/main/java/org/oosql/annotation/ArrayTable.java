@@ -1,7 +1,6 @@
 package org.oosql.annotation;
 
 import java.lang.annotation.*;
-import java.sql.JDBCType;
 
 @Target(ElementType.FIELD)
 @Repeatable(ArrayTables.class)
