@@ -18,7 +18,9 @@ repositories {
 
 dependencies {
     compile group: 'args4j', name: 'args4j', version: '2.32'
-    compile group: 'org.tmatesoft.sqljet', name: 'sqljet', version: '1.1.10'
-    testCompile group: 'org.tmatesoft.sqljet', name: 'sqljet', version: '1.1.10'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.0.Final'
+    compile group: 'org.hibernate', name: 'hibernate-java8', version: '5.0.0.Final'
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.1'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.188'
 }

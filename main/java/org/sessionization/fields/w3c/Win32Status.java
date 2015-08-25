@@ -1,0 +1,51 @@
+package org.sessionization.fields.w3c;
+
+import org.sessionization.fields.Field;
+import org.sessionization.fields.FieldType;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class Win32Status implements Field {
+
+	@Column(name = "win_32_status")
+	private int status;
+
+	public Win32Status() {
+		status = 0;
+	}
+	
+	public Win32Status(String status) {
+		this.status = Integer.valueOf(status);
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	@Override
+	public String izpis() {
+		return String.valueOf(status);
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(status);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof Win32Status && status == ((Win32Status) o).getStatus();
+	}
+
+	@Override
+	public FieldType getFieldType() {
+		return FieldType.Win32Status;
+	}
+
+}
