@@ -8,12 +8,19 @@ import java.util.Map;
 @Table(name = "url_query")
 public class UriQuery implements Field {
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "query map", joinColumns = @JoinColumn(name = ""), inverseJoinColumns = @JoinColumn(name = ""))
-	@MapKeyJoinColumn(name = "")
-	private HashMap<UriQueryKey, UriQueryValue> map;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Colunm(name = "query_id")
+	private int id;
+
+	@ElementCollection
+	@CollectionTable(name = "query_key_value", joinColumns = @JoinColumn(name = "uri_query_id"))
+	@MapKeyJoinColumn(name = "query_key_id")
+	@Column(name = "value")
+	private HashMap<UriQueryKey, String> map;
 
 	public UriQuery() {
+		id = 0;
 		map = null;
 	}
 
@@ -36,8 +43,20 @@ public class UriQuery implements Field {
 		return tMap;
 	}
 
-	public Map<UriQueryKey, UriQueryValue> getMap() {
+	public Map<UriQueryKey, String> getMap() {
 		return map;
+	}
+
+	public void setMap(Map<UriQueryKey, String> map) {
+		this.map = map;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	@Override

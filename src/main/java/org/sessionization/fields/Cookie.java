@@ -8,11 +8,17 @@ import java.util.Map;
 @Entity
 @Table(name = "cookie")
 public class Cookie implements Field {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "cookie_id")
+	private int id;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "query map", joinColumns = @JoinColumn(name = ""), inverseJoinColumns = @JoinColumn(name = ""))
-	@MapKeyJoinColumn(name = "")
-	private Map<String, String> map;
+	@ElementCollection
+	@CollectionTable(name = "cookie_key_value", joinColumns = @JoinColumn(name = "cookie_id"))
+	@MapKeyJoinColumn(name = "cookie_key_id")
+	@Column(name = "value")
+	private Map<CookieKey, String> map;
 
 	public Cookie(String line, LogType type) throws IllegalArgumentException {
 		if(!line.equals("-")) {
@@ -31,8 +37,20 @@ public class Cookie implements Field {
 		}
 	}
 
-	public Map<String, String> getMap() {
+	public Map<CookieKey, String> getMap() {
 		return map;
+	}
+
+	public void setMap(Map<CookieKey, String> map) {
+		this.map = map;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	@Override
