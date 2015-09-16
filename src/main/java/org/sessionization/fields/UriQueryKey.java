@@ -1,30 +1,27 @@
 package org.sessionization.fields;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-@Table(name = "query_key")
 public class UriQueryKey {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Colunm(name = "query_key_id)
-	private int id;
+	private Integer id;
 
 	private String name;
 
-	public UriQueryKey() {}
+	public UriQueryKey() {
+		id = null;
+		name = null;
+	}
 
 	public UriQueryKey(String name) {
 		this.name = name;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getId() {
-		return id;
+		id = null;
 	}
 
 	public void setName(String name) {
@@ -35,12 +32,33 @@ public class UriQueryKey {
 		return name;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof UriQueryKey) {
-			return getName().equals(((UriQueryKey) o).getName());
-		} else {
-			return false;
-		}
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		UriQueryKey that = (UriQueryKey) o;
+		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+		if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getId() != null ? getId().hashCode() : 0;
+		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }

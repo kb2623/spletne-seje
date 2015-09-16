@@ -1,30 +1,34 @@
 package org.sessionization.fields;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-@Table(name = "cookie_key")
 public class CookieKey {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Colunm(name = "cookie_key_id")
-	private int id;
+	private Integer id;
 
 	private String name;
 
-	public CookieKey() {}
-
-	public CookieKey(String name) {
-		this.name = name;
+	public CookieKey() {
+		id = null;
+		name = null;
 	}
 
-	public void setId(int id) {
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getId() {
-		return id;
+	public CookieKey(String name) {
+		this.name = name;
 	}
 
 	public void setName(String name) {
@@ -37,10 +41,26 @@ public class CookieKey {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof CookieKey) {
-			return getName().equals(((CookieKey) o).getName());
-		} else {
-			return false;
-		}
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		CookieKey cookieKey = (CookieKey) o;
+
+		if (getId() != null ? !getId().equals(cookieKey.getId()) : cookieKey.getId() != null) return false;
+		if (getName() != null ? !getName().equals(cookieKey.getName()) : cookieKey.getName() != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getId() != null ? getId().hashCode() : 0;
+		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }

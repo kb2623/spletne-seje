@@ -1,14 +1,17 @@
 package org.sessionization.fields;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-@Table(name = "remote_user")
 public class RemoteUser implements Field {
 
-	@Column(name = "user_name")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
 	private String user;
 
 	public RemoteUser() {
@@ -17,6 +20,14 @@ public class RemoteUser implements Field {
 
 	public RemoteUser(String user) {
 		if(!user.equalsIgnoreCase("-")) this.user = user;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public void setUser(String user) {
@@ -44,7 +55,19 @@ public class RemoteUser implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof RemoteUser && getUser().equals(((RemoteUser) o).getUser());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		RemoteUser that = (RemoteUser) o;
+		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+		if (getUser() != null ? !getUser().equals(that.getUser()) : that.getUser() != null) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getId() != null ? getId().hashCode() : 0;
+		result = 31 * result + (getUser() != null ? getUser().hashCode() : 0);
+		return result;
 	}
 
 	@Override

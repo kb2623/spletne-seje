@@ -2,7 +2,6 @@ package org.sessionization.fields.ncsa;
 
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
-import org.sessionization.fields.Protocol;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -41,7 +40,16 @@ public class ProcessID implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof ProcessID && pId == ((ProcessID) o).getpId();
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ProcessID processID = (ProcessID) o;
+		if (getpId() != processID.getpId()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getpId();
 	}
 
 	@Override

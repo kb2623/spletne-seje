@@ -40,7 +40,16 @@ public class Win32Status implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Win32Status && status == ((Win32Status) o).getStatus();
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Win32Status that = (Win32Status) o;
+		if (getStatus() != that.getStatus()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getStatus();
 	}
 
 	@Override

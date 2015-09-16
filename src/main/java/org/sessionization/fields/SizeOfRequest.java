@@ -9,6 +9,10 @@ public class SizeOfRequest implements Field {
 	@Column(name = "size_of_request")
 	private int size;
 
+	public SizeOfRequest() {
+		size = 0;
+	}
+
 	public SizeOfRequest(String size) {
 		this.size = Integer.valueOf(size);
 	}
@@ -33,7 +37,16 @@ public class SizeOfRequest implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof SizeOfRequest && size == ((SizeOfRequest) o).getSize();
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		SizeOfRequest that = (SizeOfRequest) o;
+		if (getSize() != that.getSize()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getSize();
 	}
 
 	@Override

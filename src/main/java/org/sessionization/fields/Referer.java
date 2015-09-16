@@ -1,16 +1,15 @@
 package org.sessionization.fields;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.OneToOne;
 import java.net.URL;
 
 @Entity
-@Table(name = "referer")
-public class Referer extends FileQuery implements Field {
+public class Referer extends UriSteamQuery implements Field {
 
-	@Column(name = "host")
-	Host host;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Host host;
 
 	public Referer() {
 		super();
@@ -47,7 +46,17 @@ public class Referer extends FileQuery implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Referer && super.equals(o) && host.equals(((Referer) o).getHost());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		Referer referer = (Referer) o;
+		if (getHost() != null ? !getHost().equals(referer.getHost()) : referer.getHost() != null) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getHost() != null ? getHost().hashCode() : 0;
 	}
 
 	@Override

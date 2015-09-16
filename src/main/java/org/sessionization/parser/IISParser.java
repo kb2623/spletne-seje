@@ -1,6 +1,7 @@
 package org.sessionization.parser;
 
 import org.sessionization.fields.*;
+import org.sessionization.fields.UriSteam;
 import org.sessionization.fields.w3c.*;
 import org.sessionization.fields.w3c.Date;
 import org.sessionization.parser.datastruct.ParsedLine;
@@ -146,7 +147,7 @@ public class IISParser extends AbsParser {
 				lineData[i] = new Address(tokens.get(i), false);
 				break;
 			case UriStem:
-				lineData[i] = new UriStem(tokens.get(i));
+				lineData[i] = new UriSteam(tokens.get(i));
 				break;
 			case UriQuery:
 				lineData[i] = new UriQuery(tokens.get(i));

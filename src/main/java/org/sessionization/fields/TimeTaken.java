@@ -41,7 +41,16 @@ public class TimeTaken implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof TimeTaken && time == ((TimeTaken) o).getTime();
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		TimeTaken timeTaken = (TimeTaken) o;
+		if (getTime() != timeTaken.getTime()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return (int) (getTime() ^ (getTime() >>> 32));
 	}
 
 	@Override

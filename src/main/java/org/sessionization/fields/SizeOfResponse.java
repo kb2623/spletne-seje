@@ -33,7 +33,16 @@ public class SizeOfResponse implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof SizeOfResponse && size == ((SizeOfResponse) o).getSize();
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		SizeOfResponse that = (SizeOfResponse) o;
+		if (getSize() != that.getSize()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getSize();
 	}
 
 	@Override

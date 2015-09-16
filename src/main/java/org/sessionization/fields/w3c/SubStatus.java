@@ -36,7 +36,16 @@ public class SubStatus implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof SubStatus && status == ((SubStatus) o).getStatus();
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		SubStatus subStatus = (SubStatus) o;
+		if (getStatus() != subStatus.getStatus()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getStatus();
 	}
 
 	@Override

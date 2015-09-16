@@ -37,7 +37,16 @@ public class StatusCode implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof StatusCode && status == ((StatusCode) o).getStatus();
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		StatusCode that = (StatusCode) o;
+		if (getStatus() != that.getStatus()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getStatus();
 	}
 
 	@Override

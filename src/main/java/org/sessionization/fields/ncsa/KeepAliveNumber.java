@@ -40,7 +40,16 @@ public class KeepAliveNumber implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof KeepAliveNumber && number == ((KeepAliveNumber) o).getNumber();
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		KeepAliveNumber that = (KeepAliveNumber) o;
+		if (getNumber() != that.getNumber()) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getNumber();
 	}
 
 	@Override

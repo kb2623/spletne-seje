@@ -6,20 +6,29 @@ import javax.persistence.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@Embeddable
+@Entity
 public class RequestLine implements Field {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "method_id")
 	private Method method;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "uri_id")
-	private FileQuery uri;
+	private UriSteamQuery uri;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "protocol_id")
 	private Protocol protocol;
+
+	public RequestLine() {
+		id = null;
+		method = null;
+		uri = null;
+		protocol = null;
+	}
+
 	/**
 	 * Konstruktor
 	 *
@@ -29,20 +38,29 @@ public class RequestLine implements Field {
 	 * @throws MalformedURLException Podan nepravilen URL naslov
 	 */
 	public RequestLine(String method, String uri, String protocol) throws MalformedURLException {
-		this.uri = new FileQuery(new URL(protocol.split("/")[0], null, uri));
+		id = null;
+		this.uri = new UriSteamQuery(new URL(protocol.split("/")[0], null, uri));
 		this.protocol = new Protocol(protocol);
 		this.method = Method.setMethod(method);
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public void setMethod(Method method) {
 		this.method = method;
 	}
 
-	public FileQuery getUri() {
+	public UriSteamQuery getUri() {
 		return uri;
 	}
 
-	public void setUri(FileQuery uri) {
+	public void setUri(UriSteamQuery uri) {
 		this.uri = uri;
 	}
 
@@ -54,9 +72,9 @@ public class RequestLine implements Field {
 	 * Getter za resurs
 	 *
 	 * @return
-	 * @see File
+	 * @see UriSteam
 	 */
-	public FileQuery getFile() {
+	public UriSteamQuery getFile() {
 		return uri;
 	}
 	/**
@@ -94,6 +112,22 @@ public class RequestLine implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof RequestLine && (o == this || method == ((RequestLine) o).getMethod() && protocol.equals(((RequestLine) o).getProtocol()) && uri.equals(((RequestLine) o).getFile()));
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		RequestLine that = (RequestLine) o;
+		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+		if (getMethod() != that.getMethod()) return false;
+		if (getUri() != null ? !getUri().equals(that.getUri()) : that.getUri() != null) return false;
+		if (getProtocol() != null ? !getProtocol().equals(that.getProtocol()) : that.getProtocol() != null) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getId() != null ? getId().hashCode() : 0;
+		result = 31 * result + (getMethod() != null ? getMethod().hashCode() : 0);
+		result = 31 * result + (getUri() != null ? getUri().hashCode() : 0);
+		result = 31 * result + (getProtocol() != null ? getProtocol().hashCode() : 0);
+		return result;
 	}
 }

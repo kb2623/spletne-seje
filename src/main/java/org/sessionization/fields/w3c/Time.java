@@ -3,7 +3,6 @@ package org.sessionization.fields.w3c;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 @Embeddable
 public class Time implements Field {
 
-	@Column(name = "time")
 	private LocalTime time;
 
 	public Time() {
@@ -46,7 +44,16 @@ public class Time implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Time && time.equals(((Time) o).getTime());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Time time1 = (Time) o;
+		if (getTime() != null ? !getTime().equals(time1.getTime()) : time1.getTime() != null) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getTime() != null ? getTime().hashCode() : 0;
 	}
 
 	@Override

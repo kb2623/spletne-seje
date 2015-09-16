@@ -1,24 +1,17 @@
 package org.sessionization.fields;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.Table;
 import java.net.URL;
 
-@Entity
-@Table(name = "file_query")
-public class FileQuery extends File {
+public class UriSteamQuery extends UriSteam {
 
-	@Column(name = "query")
 	private UriQuery query;
 
-	public FileQuery() {
+	public UriSteamQuery() {
 		super();
 		query = null;
 	}
 
-	public FileQuery(URL url) {
+	public UriSteamQuery(URL url) {
 		super(url.getFile());
 		query = new UriQuery(url.getQuery());
 	}
@@ -48,6 +41,18 @@ public class FileQuery extends File {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof FileQuery && super.equals(o) && query.equals(((FileQuery) o).getQuery());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		UriSteamQuery that = (UriSteamQuery) o;
+		if (getQuery() != null ? !getQuery().equals(that.getQuery()) : that.getQuery() != null) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (getQuery() != null ? getQuery().hashCode() : 0);
+		return result;
 	}
 }

@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 @Embeddable
 public class Date implements Field {
 
-	@Column(name = "date")
+	@Column(name = "data")
 	private LocalDate date;
 
 	public Date() {
@@ -42,7 +42,16 @@ public class Date implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Date && getDate().equals(((Date) o).getDate());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Date date1 = (Date) o;
+		if (getDate() != null ? !getDate().equals(date1.getDate()) : date1.getDate() != null) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return getDate() != null ? getDate().hashCode() : 0;
 	}
 
 	@Override

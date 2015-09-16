@@ -1,11 +1,5 @@
 package org.sessionization.fields;
 
-/**
- * Razred sharanjuje podatke o uporabljeni metodi
- * 
- * @author klemen
- */
-// TODO
 public enum Method implements Field {
 	// Vse HTTP metode
 	GET {

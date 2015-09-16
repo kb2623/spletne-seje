@@ -3,27 +3,38 @@ package org.sessionization.fields.ncsa;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "remote_logname")
 public class RemoteLogname implements Field {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	@Column(name = "name")
 	private String logname;
 
 	public RemoteLogname() {
+		id = null;
 		logname = null;
 	}
 
 	public RemoteLogname(String logname) {
+		id = null;
 		if(!logname.equalsIgnoreCase("-")) {
 			this.logname = logname;
 		} else {
 			this.logname = null;
 		}
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public void setLogname(String logname) {
@@ -46,7 +57,19 @@ public class RemoteLogname implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof RemoteLogname && getLogname().equals(((RemoteLogname) o).getLogname());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		RemoteLogname that = (RemoteLogname) o;
+		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+		if (getLogname() != null ? !getLogname().equals(that.getLogname()) : that.getLogname() != null) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getId() != null ? getId().hashCode() : 0;
+		result = 31 * result + (getLogname() != null ? getLogname().hashCode() : 0);
+		return result;
 	}
 
 	@Override

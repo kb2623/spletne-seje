@@ -1,22 +1,33 @@
 package org.sessionization.fields;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "user_agent")
 public class UserAgent implements Field {
 
-	@Column(name = "user_agent_string")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@Column(name = "string")
 	private String userAgentString;
 
 	public UserAgent() {
+		id = null;
 		userAgentString = null;
 	}
 
 	public UserAgent(String info, LogType type) {
+		id = null;
 		userAgentString = type.parseUserAgent(info);
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public void setUserAgentString(String userAgentString) {
@@ -44,7 +55,20 @@ public class UserAgent implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof UserAgent && userAgentString.equals(((UserAgent) o).getUserAgentString());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		UserAgent userAgent = (UserAgent) o;
+		if (getId() != null ? !getId().equals(userAgent.getId()) : userAgent.getId() != null) return false;
+		if (getUserAgentString() != null ? !getUserAgentString().equals(userAgent.getUserAgentString()) : userAgent.getUserAgentString() != null)
+			return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getId() != null ? getId().hashCode() : 0;
+		result = 31 * result + (getUserAgentString() != null ? getUserAgentString().hashCode() : 0);
+		return result;
 	}
 
 	@Override

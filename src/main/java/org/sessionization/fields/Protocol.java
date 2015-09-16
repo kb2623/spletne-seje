@@ -1,25 +1,29 @@
 package org.sessionization.fields;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-@Table(name = "protpcol")
 public class Protocol implements Field {
 
-	@Column(name = "protocol")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
 	private String protocol;
 
-	@Column(name = "version")
 	private float version;
 
 	public Protocol() {
+		id = null;
 		protocol = null;
 		version = 0;
 	}
 
 	public Protocol(String protocolAndVersion) {
+		id = null;
 		String[] tab = protocolAndVersion.split("/");
 		if (tab.length == 1) {
 			if (tab[0].equalsIgnoreCase("http")) {
@@ -33,6 +37,14 @@ public class Protocol implements Field {
 			protocol = tab[0];
 			version = Float.valueOf(tab[1]);
 		}
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public void setProtocol(String protocol) {
@@ -63,16 +75,26 @@ public class Protocol implements Field {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Protocol && version == ((Protocol) o).getVersion() && getProtocol().equals(((Protocol) o).getProtocol());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Protocol protocol1 = (Protocol) o;
+		if (Float.compare(protocol1.getVersion(), getVersion()) != 0) return false;
+		if (getId() != null ? !getId().equals(protocol1.getId()) : protocol1.getId() != null) return false;
+		if (getProtocol() != null ? !getProtocol().equals(protocol1.getProtocol()) : protocol1.getProtocol() != null)
+			return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getId() != null ? getId().hashCode() : 0;
+		result = 31 * result + (getProtocol() != null ? getProtocol().hashCode() : 0);
+		result = 31 * result + (getVersion() != +0.0f ? Float.floatToIntBits(getVersion()) : 0);
+		return result;
 	}
 
 	@Override
 	public FieldType getFieldType() {
 		return FieldType.ProtocolVersion;
-	}
-
-	@Override
-	public String getKey() {
-		return "";
 	}
 }

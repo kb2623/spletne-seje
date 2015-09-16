@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 import org.sessionization.fields.Field;
-import org.sessionization.fields.File;
+import org.sessionization.fields.UriSteam;
 import org.sessionization.fields.Referer;
 
 public class ParsedLine implements Iterable<Field> {
@@ -50,7 +50,7 @@ public class ParsedLine implements Iterable<Field> {
 	 */
 	public boolean isResource() {
 		for (int i = 0; i < array.length; i++) {
-			if (array[i] instanceof File && !(array[i] instanceof Referer)) return ((File) array[i]).isResource();
+			if (array[i] instanceof UriSteam && !(array[i] instanceof Referer)) return ((UriSteam) array[i]).isResource();
 		}
 		return false;
 	}
@@ -63,7 +63,7 @@ public class ParsedLine implements Iterable<Field> {
 	 */
 	public String getExtension() {
 		for (int i = 0; i < array.length; i++) {
-			if (array[i] instanceof File) return ((File) array[i]).getExtension();
+			if (array[i] instanceof UriSteam) return ((UriSteam) array[i]).getExtension();
 		}
 		return null;
 	}
