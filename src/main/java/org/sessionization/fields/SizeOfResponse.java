@@ -44,10 +44,4 @@ public class SizeOfResponse implements Field {
 	public int hashCode() {
 		return getSize();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.SizeOfResponse;
-	}
-
 }

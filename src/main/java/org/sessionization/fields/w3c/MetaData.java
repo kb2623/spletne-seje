@@ -24,10 +24,4 @@ public class MetaData implements Field {
 	public String toString() {
 		return data;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.MetaData;
-	}
-
 }

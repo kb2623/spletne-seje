@@ -91,9 +91,4 @@ public class Protocol implements Field {
 		result = 31 * result + (getVersion() != +0.0f ? Float.floatToIntBits(getVersion()) : 0);
 		return result;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.ProtocolVersion;
-	}
 }

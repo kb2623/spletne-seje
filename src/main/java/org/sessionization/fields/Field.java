@@ -13,11 +13,4 @@ public interface Field {
 	default String getKey() {
 		return "";
 	}
-	/**
-	 *
-	 * @return
-	 */
-	default FieldType getFieldType() {
-		return FieldType.Unknown;
-	}
 }

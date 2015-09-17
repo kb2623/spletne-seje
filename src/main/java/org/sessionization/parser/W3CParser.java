@@ -166,7 +166,7 @@ public class W3CParser extends AbsParser {
 			case ClientIP:
 				lineData[i] = new Address(tokens.get(i), false);
 				break;
-			case UriStem:
+			case UriSteam:
 				lineData[i] = new UriSteam(tokens.get(i));
 				break;
 			case UriQuery:

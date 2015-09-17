@@ -76,10 +76,4 @@ public class RemoteLogname implements Field {
 	public String getKey() {
 		return logname == null ? "-" : logname;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.RemoteLogname;
-	}
-
 }

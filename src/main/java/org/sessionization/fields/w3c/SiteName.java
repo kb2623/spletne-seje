@@ -69,9 +69,4 @@ public class SiteName implements Field {
 		result = 31 * result + getName().hashCode();
 		return result;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.SiteName;
-	}
 }

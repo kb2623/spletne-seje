@@ -35,11 +35,6 @@ public class Referer extends UriSteamQuery implements Field {
 	}
 
 	@Override
-	public FieldType getFieldType() {
-		return FieldType.Referer;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;

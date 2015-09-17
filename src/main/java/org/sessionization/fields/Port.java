@@ -84,9 +84,4 @@ public class Port implements Field {
 		result = 31 * result + (isServer() ? 1 : 0);
 		return result;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return (isServer) ? FieldType.ServerPort : FieldType.ClientPort;
-	}
 }

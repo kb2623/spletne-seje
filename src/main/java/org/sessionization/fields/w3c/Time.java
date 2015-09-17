@@ -55,9 +55,4 @@ public class Time implements Field {
 	public int hashCode() {
 		return getTime().hashCode();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.Time;
-	}
 }

@@ -47,10 +47,4 @@ public class SubStatus implements Field {
 	public int hashCode() {
 		return getStatus();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.SubStatus;
-	}
-
 }

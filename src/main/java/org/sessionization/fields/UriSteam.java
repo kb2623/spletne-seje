@@ -96,9 +96,4 @@ public class UriSteam implements Field {
 	public String toString() {
 		return getFile();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.UriStem;
-	}
 }

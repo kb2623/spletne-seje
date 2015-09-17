@@ -69,9 +69,4 @@ public class RemoteUser implements Field {
 		result = 31 * result + getUser().hashCode();
 		return result;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.RemoteUser;
-	}
 }

@@ -86,9 +86,4 @@ public class Address implements Field {
 		result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
 		return result;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return (serverAddress) ? FieldType.ServerIP : FieldType.ClientIP;
-	}
 }

@@ -40,9 +40,4 @@ public enum ConnectionStatus implements Field {
 	public String toString() {
 		return izpis();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.ConnectionStatus;
-	}
 }

@@ -48,10 +48,4 @@ public class StatusCode implements Field {
 	public int hashCode() {
 		return getStatus();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.StatusCode;
-	}
-
 }

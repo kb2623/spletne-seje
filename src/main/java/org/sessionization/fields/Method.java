@@ -104,9 +104,4 @@ public enum Method implements Field {
 	public String toString() {
 		return getMethod();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.Method;
-	}
 }

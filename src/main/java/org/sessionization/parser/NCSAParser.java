@@ -184,7 +184,7 @@ public class NCSAParser extends AbsParser {
 			case UriQuery:
 				lineData[i] = new UriQuery(tokens[i]);
 				break;
-			case UriStem:
+			case UriSteam:
 				lineData[i] = new UriSteam(tokens[i]);
 				break;
 			case TimeTaken:
@@ -202,7 +202,7 @@ public class NCSAParser extends AbsParser {
 			case ClientPort:
 				lineData[i] = new Port(tokens[i], false);
 				break;
-			case ProcesID:
+			case ProcessID:
 				lineData[i] = new ProcessID(tokens[i]);
 				break;
 			case KeepAliveNumber:

@@ -56,9 +56,4 @@ public class Date implements Field {
 	public int hashCode() {
 		return getDate().hashCode();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.Date;
-	}
 }

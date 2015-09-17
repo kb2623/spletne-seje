@@ -48,9 +48,4 @@ public class SizeOfRequest implements Field {
 	public int hashCode() {
 		return getSize();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.SizeOfRequest;
-	}
 }

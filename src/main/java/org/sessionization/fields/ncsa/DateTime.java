@@ -56,9 +56,4 @@ public class DateTime implements Field {
 	public int hashCode() {
 		return getDateTime().hashCode();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.DateTime;
-	}
 }

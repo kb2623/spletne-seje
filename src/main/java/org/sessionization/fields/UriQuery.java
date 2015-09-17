@@ -93,11 +93,6 @@ public class UriQuery implements Field {
 	}
 
 	@Override
-	public FieldType getFieldType() {
-		return FieldType.UriQuery;
-	}
-
-	@Override
 	public String getKey() {
 		return "";
 	}

@@ -78,9 +78,4 @@ public class RemoteHost implements Field {
 	public String getKey() {
 		return name != null ? name : "-";
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.RemoteHost;
-	}
 }

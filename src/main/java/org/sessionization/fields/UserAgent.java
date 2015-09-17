@@ -69,10 +69,4 @@ public class UserAgent implements Field {
 		result = 31 * result + getUserAgentString().hashCode();
 		return result;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.UserAgent;
-	}
-
 }

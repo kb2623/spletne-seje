@@ -51,10 +51,4 @@ public class Win32Status implements Field {
 	public int hashCode() {
 		return getStatus();
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.Win32Status;
-	}
-
 }

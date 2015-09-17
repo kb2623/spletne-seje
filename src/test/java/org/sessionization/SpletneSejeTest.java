@@ -7,7 +7,6 @@ import org.sessionization.parser.AbsParser;
 import org.sessionization.parser.LogFormats;
 import org.sessionization.parser.NCSAParser;
 import org.sessionization.parser.datastruct.ParsedLine;
-import org.sessionization.parser.datastruct.WebPage;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -34,11 +34,6 @@ public class ProcessID implements Field {
 	}
 
 	@Override
-	public FieldType getFieldType() {
-		return FieldType.ProcesID;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;

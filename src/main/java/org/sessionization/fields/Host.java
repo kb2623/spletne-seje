@@ -70,9 +70,4 @@ public class Host implements Field {
 		result = 31 * result + getHost().hashCode();
 		return result;
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.Host;
-	}
 }

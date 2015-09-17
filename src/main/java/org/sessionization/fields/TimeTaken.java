@@ -52,10 +52,4 @@ public class TimeTaken implements Field {
 	public int hashCode() {
 		return (int) (getTime() ^ (getTime() >>> 32));
 	}
-
-	@Override
-	public FieldType getFieldType() {
-		return FieldType.TimeTaken;
-	}
-
 }

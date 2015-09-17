@@ -99,11 +99,6 @@ public class RequestLine implements Field {
 	}
 
 	@Override
-	public FieldType getFieldType() {
-		return FieldType.RequestLine;
-	}
-
-	@Override
 	public String toString() {
 		return method.toString() + " " + uri.toString() + " " + uri.toString() + " " + protocol.toString();
 	}
