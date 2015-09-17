@@ -59,14 +59,14 @@ public class SiteName implements Field {
 		if (o == null || getClass() != o.getClass()) return false;
 		SiteName siteName = (SiteName) o;
 		if (getId() != null ? !getId().equals(siteName.getId()) : siteName.getId() != null) return false;
-		if (getName() != null ? !getName().equals(siteName.getName()) : siteName.getName() != null) return false;
+		if (!getName().equals(siteName.getName())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+		result = 31 * result + getName().hashCode();
 		return result;
 	}
 

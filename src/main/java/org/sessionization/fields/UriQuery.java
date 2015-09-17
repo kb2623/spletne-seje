@@ -1,10 +1,10 @@
 package org.sessionization.fields;
 
+import org.sessionization.fields.query.UriQueryPair;
+
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 public class UriQuery implements Field {

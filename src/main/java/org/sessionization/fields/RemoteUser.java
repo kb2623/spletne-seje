@@ -59,14 +59,14 @@ public class RemoteUser implements Field {
 		if (o == null || getClass() != o.getClass()) return false;
 		RemoteUser that = (RemoteUser) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-		if (getUser() != null ? !getUser().equals(that.getUser()) : that.getUser() != null) return false;
+		if (!getUser().equals(that.getUser())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getUser() != null ? getUser().hashCode() : 0);
+		result = 31 * result + getUser().hashCode();
 		return result;
 	}
 

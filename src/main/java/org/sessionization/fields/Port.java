@@ -16,11 +16,13 @@ public class Port implements Field {
 	private boolean isServer;
 
 	public Port() {
+		id = null;
 		portNumber = 0;
 		isServer = false;
 	}
 
 	public Port(String number, boolean isServer) {
+		id = null;
 		this.isServer = isServer;
 		portNumber = Integer.valueOf(number);
 	}

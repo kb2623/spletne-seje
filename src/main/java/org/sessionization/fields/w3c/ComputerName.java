@@ -63,14 +63,14 @@ public class ComputerName implements Field {
 		if (o == null || getClass() != o.getClass()) return false;
 		ComputerName that = (ComputerName) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-		if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
+		if (!getName().equals(that.getName())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+		result = 31 * result + getName().hashCode();
 		return result;
 	}
 

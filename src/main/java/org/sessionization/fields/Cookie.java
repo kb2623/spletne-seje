@@ -1,5 +1,7 @@
 package org.sessionization.fields;
 
+import org.sessionization.fields.cookie.CookiePair;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

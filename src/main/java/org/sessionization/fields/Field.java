@@ -11,13 +11,13 @@ public interface Field {
 	 * @return
 	 */
 	default String getKey() {
-		return null;
+		return "";
 	}
 	/**
 	 *
 	 * @return
 	 */
 	default FieldType getFieldType() {
-		return null;
+		return FieldType.Unknown;
 	}
 }

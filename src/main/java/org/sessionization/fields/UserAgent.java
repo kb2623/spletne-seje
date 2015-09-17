@@ -35,7 +35,7 @@ public class UserAgent implements Field {
 	}
 
 	public String getUserAgentString() {
-		return userAgentString;
+		return userAgentString != null ? userAgentString : "";
 	}
 
 	@Override
@@ -59,15 +59,14 @@ public class UserAgent implements Field {
 		if (o == null || getClass() != o.getClass()) return false;
 		UserAgent userAgent = (UserAgent) o;
 		if (getId() != null ? !getId().equals(userAgent.getId()) : userAgent.getId() != null) return false;
-		if (getUserAgentString() != null ? !getUserAgentString().equals(userAgent.getUserAgentString()) : userAgent.getUserAgentString() != null)
-			return false;
+		if (!getUserAgentString().equals(userAgent.getUserAgentString())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getUserAgentString() != null ? getUserAgentString().hashCode() : 0);
+		result = 31 * result + getUserAgentString().hashCode();
 		return result;
 	}
 

@@ -80,15 +80,14 @@ public class Protocol implements Field {
 		Protocol protocol1 = (Protocol) o;
 		if (Float.compare(protocol1.getVersion(), getVersion()) != 0) return false;
 		if (getId() != null ? !getId().equals(protocol1.getId()) : protocol1.getId() != null) return false;
-		if (getProtocol() != null ? !getProtocol().equals(protocol1.getProtocol()) : protocol1.getProtocol() != null)
-			return false;
+		if (!getProtocol().equals(protocol1.getProtocol())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getProtocol() != null ? getProtocol().hashCode() : 0);
+		result = 31 * result + getProtocol().hashCode();
 		result = 31 * result + (getVersion() != +0.0f ? Float.floatToIntBits(getVersion()) : 0);
 		return result;
 	}

@@ -1,9 +1,9 @@
-package org.sessionization.fields;
+package org.sessionization.fields.query;
 
 import javax.persistence.*;
 
 @Entity
-public class CookiePair {
+public class UriQueryPair {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,18 +12,18 @@ public class CookiePair {
 	private String value;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	private CookieKey key;
+	private UriQueryKey key;
 
-	public CookiePair() {
+	public UriQueryPair() {
 		id = null;
 		value = null;
 		key = null;
 	}
 
-	public CookiePair(String value, String key) {
+	public UriQueryPair(String key, String value) {
 		id = null;
 		this.value = value;
-		this.key = new CookieKey(key);
+		this.key = new UriQueryKey(key);
 	}
 
 	public Integer getId() {
@@ -42,11 +42,11 @@ public class CookiePair {
 		this.value = value;
 	}
 
-	public CookieKey getKey() {
+	public UriQueryKey getKey() {
 		return key;
 	}
 
-	public void setKey(CookieKey key) {
+	public void setKey(UriQueryKey key) {
 		this.key = key;
 	}
 
@@ -54,13 +54,10 @@ public class CookiePair {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
-		CookiePair that = (CookiePair) o;
-
+		UriQueryPair that = (UriQueryPair) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getValue() != null ? !getValue().equals(that.getValue()) : that.getValue() != null) return false;
 		if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
-
 		return true;
 	}
 

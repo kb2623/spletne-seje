@@ -60,14 +60,14 @@ public class Host implements Field {
 		if (o == null || getClass() != o.getClass()) return false;
 		Host host1 = (Host) o;
 		if (getId() != null ? !getId().equals(host1.getId()) : host1.getId() != null) return false;
-		if (getHost() != null ? !getHost().equals(host1.getHost()) : host1.getHost() != null) return false;
+		if (!getHost().equals(host1.getHost())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getHost() != null ? getHost().hashCode() : 0);
+		result = 31 * result + getHost().hashCode();
 		return result;
 	}
 

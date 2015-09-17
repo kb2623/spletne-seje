@@ -61,14 +61,14 @@ public class RemoteLogname implements Field {
 		if (o == null || getClass() != o.getClass()) return false;
 		RemoteLogname that = (RemoteLogname) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-		if (getLogname() != null ? !getLogname().equals(that.getLogname()) : that.getLogname() != null) return false;
+		if (!getLogname().equals(that.getLogname())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getLogname() != null ? getLogname().hashCode() : 0);
+		result = 31 * result + getLogname().hashCode();
 		return result;
 	}
 

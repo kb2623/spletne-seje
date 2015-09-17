@@ -23,7 +23,7 @@ public class Date implements Field {
 	}
 
 	public LocalDate getDate() {
-		return date;
+		return date != null ? date : LocalDate.MIN;
 	}
 
 	public void setDate(LocalDate date) {
@@ -44,14 +44,17 @@ public class Date implements Field {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
+
 		Date date1 = (Date) o;
-		if (getDate() != null ? !getDate().equals(date1.getDate()) : date1.getDate() != null) return false;
+
+		if (!getDate().equals(date1.getDate())) return false;
+
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		return getDate() != null ? getDate().hashCode() : 0;
+		return getDate().hashCode();
 	}
 
 	@Override

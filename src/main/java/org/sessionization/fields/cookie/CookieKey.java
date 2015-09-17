@@ -1,4 +1,4 @@
-package org.sessionization.fields;
+package org.sessionization.fields.cookie;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class UriQueryKey {
+public class CookieKey {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,22 +14,9 @@ public class UriQueryKey {
 
 	private String name;
 
-	public UriQueryKey() {
+	public CookieKey() {
 		id = null;
 		name = null;
-	}
-
-	public UriQueryKey(String name) {
-		this.name = name;
-		id = null;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public Integer getId() {
@@ -40,13 +27,28 @@ public class UriQueryKey {
 		this.id = id;
 	}
 
+	public CookieKey(String name) {
+		this.name = name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		UriQueryKey that = (UriQueryKey) o;
-		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-		if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
+
+		CookieKey cookieKey = (CookieKey) o;
+
+		if (getId() != null ? !getId().equals(cookieKey.getId()) : cookieKey.getId() != null) return false;
+		if (getName() != null ? !getName().equals(cookieKey.getName()) : cookieKey.getName() != null) return false;
+
 		return true;
 	}
 

@@ -185,7 +185,7 @@ public class NCSAParser extends AbsParser {
 				lineData[i] = new UriQuery(tokens[i]);
 				break;
 			case UriStem:
-				lineData[i] = new UriStem(tokens[i]);
+				lineData[i] = new UriSteam(tokens[i]);
 				break;
 			case TimeTaken:
 				lineData[i] = new TimeTaken(tokens[i], true);

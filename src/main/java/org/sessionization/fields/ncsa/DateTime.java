@@ -30,7 +30,7 @@ public class DateTime implements Field {
 	}
 
 	public LocalDateTime getDateTime() {
-		return dateTime;
+		return dateTime != null ? dateTime : LocalDateTime.MIN;
 	}
 
 	@Override
@@ -48,14 +48,13 @@ public class DateTime implements Field {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		DateTime dateTime1 = (DateTime) o;
-		if (getDateTime() != null ? !getDateTime().equals(dateTime1.getDateTime()) : dateTime1.getDateTime() != null)
-			return false;
+		if (!getDateTime().equals(dateTime1.getDateTime())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		return getDateTime() != null ? getDateTime().hashCode() : 0;
+		return getDateTime().hashCode();
 	}
 
 	@Override

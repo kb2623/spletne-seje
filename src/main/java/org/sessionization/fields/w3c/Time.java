@@ -29,7 +29,7 @@ public class Time implements Field {
 	}
 
 	public LocalTime getTime() {
-		return time;
+		return time != null ? time : LocalTime.MIN;
 	}
 
 	@Override
@@ -47,13 +47,13 @@ public class Time implements Field {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Time time1 = (Time) o;
-		if (getTime() != null ? !getTime().equals(time1.getTime()) : time1.getTime() != null) return false;
+		if (!getTime().equals(time1.getTime())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		return getTime() != null ? getTime().hashCode() : 0;
+		return getTime().hashCode();
 	}
 
 	@Override

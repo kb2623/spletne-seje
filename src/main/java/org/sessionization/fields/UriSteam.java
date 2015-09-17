@@ -81,14 +81,14 @@ public class UriSteam implements Field {
 		if (o == null || getClass() != o.getClass()) return false;
 		UriSteam uriSteam = (UriSteam) o;
 		if (getId() != null ? !getId().equals(uriSteam.getId()) : uriSteam.getId() != null) return false;
-		if (getFile() != null ? !getFile().equals(uriSteam.getFile()) : uriSteam.getFile() != null) return false;
+		if (!getFile().equals(uriSteam.getFile())) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getFile() != null ? getFile().hashCode() : 0);
+		result = 31 * result + getFile().hashCode();
 		return result;
 	}
 

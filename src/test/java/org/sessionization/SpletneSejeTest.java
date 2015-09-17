@@ -133,35 +133,4 @@ public class SpletneSejeTest {
             fail();
         }
     }
-
-    @Test
-    public void testNCSAParserCommonResWebPage() {
-        Map<String, WebPage> testMap = new HashMap<>();
-        try {
-            //Odpri datoteko
-            parser.openFile(pathNCSACommon);
-            //Nastavi tipe podatkov
-            parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-            //Pridobi podatke
-            for (ParsedLine line : parser) {
-                WebPage page = testMap.get(line.getKey());
-                if (page == null) {
-                    page = new WebPage(line);
-                    testMap.put(line.getKey(), page);
-                } else {
-                    page.add(line);
-                }
-            }
-            //Zapri datoteko
-            parser.closeFile();
-            for (Map.Entry<String, WebPage> entry : testMap.entrySet()) {
-                System.out.println(entry.getKey() + " <> " + entry.getValue().size());
-                entry.getValue().toString();
-                System.out.println();
-            }
-        } catch(NullPointerException | IOException e) {
-            fail();
-        }
-    }
-
 }
