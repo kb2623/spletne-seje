@@ -63,11 +63,7 @@ public class Port implements Field {
 
 	@Override
 	public String getKey() {
-		if(!isServer()) {
-			return String.valueOf(portNumber);
-		} else {
-			return null;
-		}
+		return !isServer ? String.valueOf(portNumber) : "";
 	}
 
 	@Override

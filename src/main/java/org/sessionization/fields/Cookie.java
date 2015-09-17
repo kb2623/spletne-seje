@@ -94,12 +94,9 @@ public class Cookie implements Field {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		Cookie cookie = (Cookie) o;
-
 		if (getId() != null ? !getId().equals(cookie.getId()) : cookie.getId() != null) return false;
 		if (getPairs() != null ? !getPairs().equals(cookie.getPairs()) : cookie.getPairs() != null) return false;
-
 		return true;
 	}
 

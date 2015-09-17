@@ -50,7 +50,7 @@ public class UserAgent implements Field {
 
 	@Override
 	public String getKey() {
-		return userAgentString;
+		return userAgentString != null ? userAgentString : "-";
 	}
 
 	@Override

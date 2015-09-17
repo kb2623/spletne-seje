@@ -74,7 +74,7 @@ public class RemoteLogname implements Field {
 
 	@Override
 	public String getKey() {
-		return logname == null ? "" : logname;
+		return logname == null ? "-" : logname;
 	}
 
 	@Override

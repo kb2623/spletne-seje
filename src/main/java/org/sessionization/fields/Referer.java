@@ -30,11 +30,6 @@ public class Referer extends UriSteamQuery implements Field {
 	}
 
 	@Override
-	public String getKey() {
-		return "";
-	}
-
-	@Override
 	public String izpis() {
 		return host.izpis() + super.izpis();
 	}

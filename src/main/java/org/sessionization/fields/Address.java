@@ -64,7 +64,7 @@ public class Address implements Field {
 
 	@Override
 	public String getKey() {
-		return !serverAddress ? address.getHostAddress() : null;
+		return !serverAddress ? address.getHostAddress() : "";
 	}
 
 	@Override

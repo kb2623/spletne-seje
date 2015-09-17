@@ -76,7 +76,7 @@ public class RemoteHost implements Field {
 
 	@Override
 	public String getKey() {
-		return name != null ? name : "";
+		return name != null ? name : "-";
 	}
 
 	@Override

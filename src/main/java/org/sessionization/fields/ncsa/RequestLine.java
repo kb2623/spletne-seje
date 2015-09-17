@@ -28,7 +28,6 @@ public class RequestLine implements Field {
 		uri = null;
 		protocol = null;
 	}
-
 	/**
 	 * Konstruktor
 	 *
@@ -67,7 +66,6 @@ public class RequestLine implements Field {
 	public void setProtocol(Protocol protocol) {
 		this.protocol = protocol;
 	}
-
 	/**
 	 * Getter za resurs
 	 *

@@ -50,7 +50,7 @@ public class RemoteUser implements Field {
 
 	@Override
 	public String getKey() {
-		return user != null ? user : "";
+		return user != null ? user : "-";
 	}
 
 	@Override
