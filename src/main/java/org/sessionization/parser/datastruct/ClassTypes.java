@@ -1,24 +1,30 @@
 package org.sessionization.parser.datastruct;
 
 import javax.persistence.*;
+import java.util.List;
 
 public class ClassTypes {
 
-	public static String IntegerType = getType(Integer.class.getName());
+	public static String IntegerType = getType(Integer.class);
+	public static String ListType = getType(List.class);
 
-	public static String EntityType = getType(Entity.class.getName());
+	public static String EntityType = getType(Entity.class);
 
-	public static String IdType = getType(Id.class.getName());
-	public static String GeneratedValueType = getType(GeneratedValue.class.getName());
-	public static String GenerationTypeType = getType(GenerationType.class.getName());
+	public static String IdType = getType(Id.class);
+	public static String GeneratedValueType = getType(GeneratedValue.class);
+	public static String GenerationTypeType = getType(GenerationType.class);
 
-	public static String CascadeTypeType = getType(CascadeType.class.getName());
-	public static String OneToOneType = getType(OneToOne.class.getName());
-	public static String OneToManyType = getType(OneToMany.class.getName());
+	public static String CascadeTypeType = getType(CascadeType.class);
+	public static String OneToOneType = getType(OneToOne.class);
+	public static String OneToManyType = getType(OneToMany.class);
+
+	public static String EmbenddedType = getType(Embedded.class);
 
 	public static String WebPageRequestAbsClass = WebPageRequestAbs.class.getName().replaceAll(".", "/");
 
-	public static String getType(String className) {
-		return "L" + className.replaceAll(".", "/") + ";";
+	public static String ListRequestsGType = "L" + List.class.getName().replaceAll(".", "/") + "<L" + RequestDump.getTypeName() + ";>;";
+
+	public static String getType(Class c) {
+		return "L" + c.getName().replaceAll(".", "/") + ";";
 	}
 }

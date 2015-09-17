@@ -48,6 +48,10 @@ public class RequestDump implements Opcodes {
 		return cw.toByteArray();
 	}
 
+	public static String getTypeName() {
+		return CLASSNAME;
+	}
+
 	public static String getFileName() {
 		return FILENAME;
 	}

@@ -3,6 +3,8 @@ package org.sessionization.parser.datastruct;
 import org.objectweb.asm.*;
 import org.sessionization.fields.FieldType;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class WebPageRequestDump implements Opcodes {
 
 	public static byte[] dump(List<FieldType> fieldTypes) {
 		List<FieldType> fieldList = getFields(fieldTypes);
-
+		int lineCount = 0;
 		ClassWriter cw = new ClassWriter(0);
 		FieldVisitor fv;
 		MethodVisitor mv;
@@ -41,9 +43,77 @@ public class WebPageRequestDump implements Opcodes {
 			}
 			fv.visitEnd();
 		}
-
-		// todo
-
+		// Inicializcija ostalih polj, ki so del identifikacije uporabnika
+		for (FieldType f : fieldList) {
+			fv = cw.visitField(ACC_PRIVATE, getFieldName(f), f.getType(), null, null);
+			Class c = f.getClass();
+			if (c.isAnnotationPresent(Entity.class)) {
+				av0 = fv.visitAnnotation(ClassTypes.OneToOneType, true);
+				{
+					AnnotationVisitor av1 = av0.visitArray("cascade");
+					av1.visitEnum(null, ClassTypes.CascadeTypeType, "ALL");
+					av1.visitEnd();
+				}
+				av0.visitEnd();
+			} else if (c.isAnnotationPresent(Embeddable.class)) {
+				av0 = fv.visitAnnotation(ClassTypes.EmbenddedType, true);
+				av0.visitEnd();
+			}
+			fv.visitEnd();
+		}
+		// Inicializacija tabele z zahtevami
+		{
+			fv = cw.visitField(ACC_PRIVATE, "requests", ClassTypes.ListType, ClassTypes.ListRequestsGType, null);
+			{
+				av0 = fv.visitAnnotation(ClassTypes.OneToManyType, true);
+				{
+					AnnotationVisitor av1 = av0.visitArray("cascade");
+					av1.visitEnum(null, ClassTypes.CascadeTypeType, "ALL");
+					av1.visitEnd();
+				}
+				av0.visitEnd();
+			}
+			fv.visitEnd();
+		}
+		// todo dodaj construktorje
+		// getId
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "getId", "()" + ClassTypes.IntegerType + ";", null, null);
+			mv.visitCode();
+			Label l0 = new Label();
+			mv.visitLabel(l0);
+			mv.visitLineNumber(55, l0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, CLASSNAME, "id", ClassTypes.IntegerType);
+			mv.visitInsn(ARETURN);
+			Label l1 = new Label();
+			mv.visitLabel(l1);
+			mv.visitLocalVariable("this", "L" + CLASSNAME + ";", null, l0, l1, 0);
+			mv.visitMaxs(1, 1);
+			mv.visitEnd();
+		}
+		// setId
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "setId", "(" + ClassTypes.IntegerType + ")V", null, null);
+			mv.visitCode();
+			Label l0 = new Label();
+			mv.visitLabel(l0);
+			mv.visitLineNumber(59, l0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(ALOAD, 1);
+			mv.visitFieldInsn(PUTFIELD, CLASSNAME, "id", ClassTypes.IntegerType);
+			Label l1 = new Label();
+			mv.visitLabel(l1);
+			mv.visitLineNumber(lineCount, l1);
+			mv.visitInsn(RETURN);
+			Label l2 = new Label();
+			mv.visitLabel(l2);
+			mv.visitLocalVariable("this", "L" + CLASSNAME + ";", null, l0, l2, 0);
+			mv.visitLocalVariable("id", ClassTypes.IntegerType, null, l0, l2, 1);
+			mv.visitMaxs(2, 2);
+			mv.visitEnd();
+		}
+		// todo ostali setterji, getterji in metode
 		cw.visitEnd();
 		return cw.toByteArray();
 	}
@@ -56,6 +126,11 @@ public class WebPageRequestDump implements Opcodes {
 			}
 		}
 		return retList;
+	}
+
+	private static String getFieldName(FieldType fieldType) {
+		String s = fieldType.getClassType().getTypeName();
+		return Character.toLowerCase(s.charAt(0)) + s.substring(1);
 	}
 
 	public static String getFileName() {

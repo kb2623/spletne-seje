@@ -15,13 +15,16 @@ public class Request {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Embedded
 	private DateTime dateTime;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private RequestLine requestLine;
 
+	@Embedded
 	private StatusCode statusCode;
 
+	@Embedded
 	private SizeOfTransfer sizeOfTransfer;
 
 	public Request() {
