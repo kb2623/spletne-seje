@@ -27,7 +27,7 @@ public enum FieldType {
 
 		@Override
 		public Class getClassType() {
-			return org.sessionization.fields.ncsa.RemoteHost.class;
+			return org.sessionization.fields.ncsa.RemoteLogname.class;
 		}
 	},
 	/** Oseba ki zahteva resurs */
@@ -286,7 +286,7 @@ public enum FieldType {
 	public String getType() {
 		Class c = getClassType();
 		if (c != null) {
-			return "L" + c.getName().replaceAll(".", "/") + ";";
+			return "L" + c.getName().replace(".", "/") + ";";
 		} else {
 			return "";
 		}

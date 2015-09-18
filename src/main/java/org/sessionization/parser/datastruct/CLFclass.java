@@ -93,19 +93,12 @@ public class CLFclass extends WebPageRequestAbs {
 
 	@Override
 	public boolean add(ParsedLine line) {
-		if (line.isResource()) {
-			requests.add(new Request(line));
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	@Override
 	public String getKey() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(address.getKey()).append(remoteLogname.getKey()).append(remoteUser.getKey());
-		return builder.toString();
+		return null;
 	}
 
 	@Override

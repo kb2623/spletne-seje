@@ -12,6 +12,7 @@ import java.util.List;
 public class RequestDump implements Opcodes {
 
 	private static String CLASSNAME = "org/sessionization/fields/Request";
+	private static String CLASSTYPE = "L" + CLASSNAME + ";";
 	private static String FILENAME = "Request.java";
 
 	public static byte[] dump(List<FieldType> list) {
@@ -58,5 +59,9 @@ public class RequestDump implements Opcodes {
 
 	public static String getClassName() {
 		return CLASSNAME.replaceAll("/", ".");
+	}
+
+	public static String getClassType() {
+		return CLASSTYPE;
 	}
 }

@@ -20,11 +20,11 @@ public class ClassTypes {
 
 	public static String EmbenddedType = getType(Embedded.class);
 
-	public static String WebPageRequestAbsClass = WebPageRequestAbs.class.getName().replaceAll(".", "/");
+	public static String WebPageRequestAbsClass = WebPageRequestAbs.class.getName().replace(".", "/");
 
-	public static String ListRequestsGType = "L" + List.class.getName().replaceAll(".", "/") + "<L" + RequestDump.getTypeName() + ";>;";
+	public static String ListRequestsGType = "L" + List.class.getName().replace(".", "/") + "<" + RequestDump.getClassType() + ">;";
 
 	public static String getType(Class c) {
-		return "L" + c.getName().replaceAll(".", "/") + ";";
+		return "L" + c.getName().replace(".", "/") + ";";
 	}
 }
