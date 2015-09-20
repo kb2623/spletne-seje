@@ -80,6 +80,11 @@ public enum FieldType {
 	/** Stran s katere je prišel na našo stran */
 	Referer {
 		@Override
+		public boolean isKey() {
+			return true;
+		}
+
+		@Override
 		public Class getClassType() {
 			return org.sessionization.fields.Referer.class;
 		}
@@ -283,12 +288,29 @@ public enum FieldType {
 		return null;
 	}
 
-	public String getType() {
+	public String getClassClass() {
 		Class c = getClassType();
 		if (c != null) {
-			return "L" + c.getName().replace(".", "/") + ";";
+			return c.getName().replace(".", "/");
 		} else {
 			return "";
 		}
+	}
+
+	public String getType() {
+		return "L" + getClassClass() + ";";
+	}
+
+	public String getFieldName() {
+		String s = getClassType().getSimpleName();
+		return Character.toLowerCase(s.charAt(0)) + s.substring(1);
+	}
+
+	public String getSetterName() {
+		return "set" + getClassType().getSimpleName();
+	}
+
+	public String getGetterName() {
+		return "get" + getClassType().getSimpleName();
 	}
 }

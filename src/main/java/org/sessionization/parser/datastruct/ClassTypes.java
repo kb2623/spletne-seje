@@ -5,8 +5,13 @@ import java.util.List;
 
 public class ClassTypes {
 
+	public static String ObjectClass = Object.class.getName().replace(".", "/");
+	public static String ObjectType = getType(Object.class);
+	public static String ClassType = getType(Class.class);
 	public static String IntegerType = getType(Integer.class);
+	public static String IntegerClass = Integer.class.getName().replace(".", "/");
 	public static String ListType = getType(List.class);
+	public static String ListClass = List.class.getName().replace(".", "/");
 
 	public static String EntityType = getType(Entity.class);
 
