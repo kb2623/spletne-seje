@@ -234,11 +234,11 @@ public class RequestDump implements Opcodes {
 				mv.visitVarInsn(ILOAD, 1);
 				mv.visitInsn(IMUL);
 				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				Label ll2 = new Label();
 				mv.visitJumpInsn(IFNULL, ll2);
 				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				mv.visitMethodInsn(INVOKEVIRTUAL, f.getClassClass(), "hashCode", "()I", false);
 				Label ll3 = new Label();
 				mv.visitJumpInsn(GOTO, ll3);
@@ -340,13 +340,13 @@ public class RequestDump implements Opcodes {
 			mv.visitFrame(F_SAME, 0, null, 0, null);
 			for (FieldType f : fields) {
 				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				Label l8 = new Label();
 				mv.visitJumpInsn(IFNULL, l8);
 				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				mv.visitVarInsn(ALOAD, 2);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				mv.visitMethodInsn(INVOKEVIRTUAL, f.getClassClass(), "equals", "(" + ClassTypes.ObjectType + ")Z", false);
 				Label l9 = new Label();
 				mv.visitJumpInsn(IFNE, l9);
@@ -355,7 +355,7 @@ public class RequestDump implements Opcodes {
 				mv.visitLabel(l8);
 				mv.visitFrame(F_SAME, 0, null, 0, null);
 				mv.visitVarInsn(ALOAD, 2);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				mv.visitJumpInsn(IFNULL, l9);
 				mv.visitLabel(l10);
 				lineCount++;

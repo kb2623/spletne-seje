@@ -134,6 +134,7 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitEnd();
 			lineCount++;
 		}
+		// todo konstruktor, ki sprejme ParsedLine
 		/** getId */
 		{
 			mv = cw.visitMethod(ACC_PUBLIC, "getId", "()" + ClassTypes.IntegerType, null, null);
