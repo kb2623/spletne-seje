@@ -1,6 +1,5 @@
 package org.sessionization.parser.datastruct;
 
-import antlr.collections.AST;
 import org.objectweb.asm.*;
 import org.sessionization.fields.FieldType;
 
@@ -135,7 +134,6 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitEnd();
 			lineCount++;
 		}
-		// todo dodaj ostale konstruktorje
 		/** getId */
 		{
 			mv = cw.visitMethod(ACC_PUBLIC, "getId", "()" + ClassTypes.IntegerType, null, null);
@@ -270,7 +268,6 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitEnd();
 			lineCount++;
 		}
-		// todo spremeni delovanje teh dveh metod
 		/** Metoda add() */
 		{
 			mv = cw.visitMethod(ACC_PUBLIC, "add", "(Lorg/sessionization/parser/datastruct/ParsedLine;)Z", null, null);
@@ -280,14 +277,33 @@ public class WebPageRequestDump implements Opcodes {
 			lineCount++;
 			mv.visitLabel(l0);
 			mv.visitLineNumber(lineCount, l0);
+			mv.visitVarInsn(ALOAD, 1);
+			mv.visitMethodInsn(INVOKEVIRTUAL, ClassTypes.ParsedLineClass, "isResource", "()Z", false);
+			Label l1 = new Label();
+			mv.visitJumpInsn(IFEQ, l1);
+			Label l2 = new Label();
+			lineCount++;
+			mv.visitLabel(l2);
+			mv.visitLineNumber(lineCount, l2);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, CLASSNAME, "requests", ClassTypes.ListType);
+			mv.visitTypeInsn(NEW, RequestDump.getTypeName());
+			mv.visitInsn(DUP);
+			mv.visitVarInsn(ALOAD, 1);
+			mv.visitMethodInsn(INVOKESPECIAL, RequestDump.getTypeName(), "<init>", "(" + RequestDump.getClassType() + ")V", false);
+			mv.visitMethodInsn(INVOKEINTERFACE, ClassTypes.ListClass, "add", "(" + ClassTypes.ObjectType + ")Z", true);
+			mv.visitInsn(IRETURN);
+			mv.visitLabel(l1);
+			lineCount++;
+			mv.visitLineNumber(lineCount, l1);
+			mv.visitFrame(F_SAME, 0, null, 0, null);
 			mv.visitInsn(ICONST_0);
 			mv.visitInsn(IRETURN);
-			Label l1 = new Label();
-			mv.visitLabel(l1);
-			mv.visitLocalVariable("this", CLASSTYPE, null, l0, l1, 0);
-			mv.visitLocalVariable("line", "Lorg/sessionization/parser/datastruct/ParsedLine;", null, l0, l1, 1);
-			mv.visitMaxs(1, 2);
-			mv.visitEnd();
+			Label l3 = new Label();
+			mv.visitLabel(l3);
+			mv.visitLocalVariable("this", CLASSTYPE, null, l0, l3, 0);
+			mv.visitLocalVariable("line", ClassTypes.ParsedLineType, null, l0, l3, 1);
+			mv.visitMaxs(4, 2);
 			lineCount++;
 		}
 		/** Metoda getKey() */
@@ -299,12 +315,21 @@ public class WebPageRequestDump implements Opcodes {
 			lineCount++;
 			mv.visitLabel(l0);
 			mv.visitLineNumber(lineCount, l0);
-			mv.visitInsn(ACONST_NULL);
+			mv.visitTypeInsn(NEW, ClassTypes.StringBuilderClass);
+			mv.visitInsn(DUP);
+			mv.visitMethodInsn(INVOKESPECIAL, ClassTypes.StringBuilderClass, "<init>", "()V", false);
+			for (FieldType f : fields) {
+				mv.visitVarInsn(ALOAD, 0);
+				mv.visitFieldInsn(GETFIELD, CLASSNAME, f.getFieldName(), f.getType());
+				mv.visitMethodInsn(INVOKEVIRTUAL, f.getClassClass(), "getKey", "()" + ClassTypes.StringType, false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, ClassTypes.StringBuilderClass, "append", "(" + ClassTypes.StringType + ")" + ClassTypes.StringBuilderType, false);
+			}
+			mv.visitMethodInsn(INVOKEVIRTUAL, ClassTypes.StringBuilderClass, "toString", "()" + ClassTypes.StringType, false);
 			mv.visitInsn(ARETURN);
 			Label l1 = new Label();
 			mv.visitLabel(l1);
 			mv.visitLocalVariable("this", CLASSTYPE, null, l0, l1, 0);
-			mv.visitMaxs(1, 1);
+			mv.visitMaxs(2, 1);
 			mv.visitEnd();
 			lineCount++;
 		}
@@ -343,11 +368,11 @@ public class WebPageRequestDump implements Opcodes {
 				mv.visitVarInsn(ILOAD, 1);
 				mv.visitInsn(IMUL);
 				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				Label ll2 = new Label();
 				mv.visitJumpInsn(IFNULL, ll2);
 				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				mv.visitMethodInsn(INVOKEVIRTUAL, f.getClassClass(), "hashCode", "()I", false);
 				Label ll3 = new Label();
 				mv.visitJumpInsn(GOTO, ll3);
@@ -378,7 +403,7 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitJumpInsn(IFNULL, l7);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
-			mv.visitMethodInsn(INVOKEVIRTUAL, ClassTypes.ListClass, "hashCode", "()I", true);
+			mv.visitMethodInsn(INVOKEINTERFACE, ClassTypes.ListClass, "hashCode", "()I", true);
 			Label l8 = new Label();
 			mv.visitJumpInsn(GOTO, l8);
 			mv.visitLabel(l7);
@@ -472,13 +497,13 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitFrame(F_SAME, 0, null, 0, null);
 			for (FieldType f : fields) {
 				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				Label l8 = new Label();
 				mv.visitJumpInsn(IFNULL, l8);
 				mv.visitVarInsn(ALOAD, 0);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				mv.visitVarInsn(ALOAD, 2);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				mv.visitMethodInsn(INVOKEVIRTUAL, f.getClassClass(), "equals", "(" + ClassTypes.ObjectType + ")Z", false);
 				Label l9 = new Label();
 				mv.visitJumpInsn(IFNE, l9);
@@ -487,7 +512,7 @@ public class WebPageRequestDump implements Opcodes {
 				mv.visitLabel(l8);
 				mv.visitFrame(F_SAME, 0, null, 0, null);
 				mv.visitVarInsn(ALOAD, 2);
-				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getClassType(), false);
+				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				mv.visitJumpInsn(IFNULL, l9);
 				mv.visitLabel(l10);
 				lineCount++;
@@ -508,7 +533,7 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
 			mv.visitVarInsn(ALOAD, 2);
 			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
-			mv.visitMethodInsn(INVOKEVIRTUAL, ClassTypes.ListClass, "equals", "(" + ClassTypes.ListType + ")Z", true);
+			mv.visitMethodInsn(INVOKEINTERFACE, ClassTypes.ListClass, "equals", "(" + ClassTypes.ListType + ")Z", true);
 			Label l11 = new Label();
 			mv.visitJumpInsn(IFNE, l11);
 			Label l12 = new Label();
@@ -532,7 +557,7 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitInsn(IRETURN);
 			Label l13 = new Label();
 			mv.visitLabel(l13);
-			mv.visitLocalVariable("this", CLASSNAME, null, l0, l13, 0);
+			mv.visitLocalVariable("this", CLASSTYPE, null, l0, l13, 0);
 			mv.visitLocalVariable("o", ClassTypes.ObjectType, null, l0, l13, 1);
 			mv.visitLocalVariable("wpr", CLASSTYPE, null, l4, l13, 2);
 			mv.visitMaxs(2, 3);

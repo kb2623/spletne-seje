@@ -3,6 +3,7 @@ package org.sessionization.parser.datastruct;
 import org.sessionization.fields.Address;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.RemoteUser;
+import org.sessionization.fields.ncsa.RemoteHost;
 import org.sessionization.fields.ncsa.RemoteLogname;
 
 import javax.persistence.*;
@@ -17,7 +18,7 @@ public class CLFclass extends WebPageRequestAbs {
 	private Integer id;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	private Address address;
+	private RemoteHost remoteHost;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private RemoteLogname remoteLogname;
@@ -30,7 +31,7 @@ public class CLFclass extends WebPageRequestAbs {
 
 	public CLFclass() {
 		id = null;
-		address = null;
+		remoteHost = null;
 		remoteLogname = null;
 		remoteUser = null;
 		requests = null;
@@ -39,8 +40,8 @@ public class CLFclass extends WebPageRequestAbs {
 	public CLFclass(ParsedLine line) {
 		id = null;
 		for (Field f : line) {
-			if (f instanceof Address) {
-				address = (Address) f;
+			if (f instanceof RemoteHost) {
+				remoteHost = (RemoteHost) f;
 			} else if (f instanceof RemoteLogname) {
 				remoteLogname = (RemoteLogname) f;
 			} else if (f instanceof RemoteUser) {
@@ -59,12 +60,12 @@ public class CLFclass extends WebPageRequestAbs {
 		this.id = id;
 	}
 
-	public Address getAddress() {
-		return address;
+	public RemoteHost getRemoteHost() {
+		return remoteHost;
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
+	public void setRemoteHost(RemoteHost remoteHost) {
+		this.remoteHost = remoteHost;
 	}
 
 	public RemoteLogname getRemoteLogname() {
@@ -93,12 +94,16 @@ public class CLFclass extends WebPageRequestAbs {
 
 	@Override
 	public boolean add(ParsedLine line) {
-		return false;
+		if (line.isResource()) {
+			return requests.add(new Request(line));
+		} else {
+			return false;
+		}
 	}
 
 	@Override
 	public String getKey() {
-		return null;
+		return remoteHost.getKey() + remoteLogname.getKey() + remoteUser.getKey();
 	}
 
 	@Override
@@ -107,7 +112,7 @@ public class CLFclass extends WebPageRequestAbs {
 		if (o == null || getClass() != o.getClass()) return false;
 		CLFclass clFclass = (CLFclass) o;
 		if (getId() != null ? !getId().equals(clFclass.getId()) : clFclass.getId() != null) return false;
-		if (getAddress() != null ? !getAddress().equals(clFclass.getAddress()) : clFclass.getAddress() != null)
+		if (getRemoteHost() != null ? !getRemoteHost().equals(clFclass.getRemoteHost()) : clFclass.getRemoteHost() != null)
 			return false;
 		if (getRemoteLogname() != null ? !getRemoteLogname().equals(clFclass.getRemoteLogname()) : clFclass.getRemoteLogname() != null)
 			return false;
@@ -121,7 +126,7 @@ public class CLFclass extends WebPageRequestAbs {
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
+		result = 31 * result + (getRemoteHost() != null ? getRemoteHost().hashCode() : 0);
 		result = 31 * result + (getRemoteLogname() != null ? getRemoteLogname().hashCode() : 0);
 		result = 31 * result + (getRemoteUser() != null ? getRemoteUser().hashCode() : 0);
 		result = 31 * result + (getRequests() != null ? getRequests().hashCode() : 0);
