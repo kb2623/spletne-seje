@@ -6,9 +6,8 @@ import static org.junit.Assert.*;
 
 
 public class IISParserTest {
+	@Before
+	public void setUp() throws Exception {
 
-    @Before
-    public void setUp() throws Exception {
-
-    }
+	}
 }
