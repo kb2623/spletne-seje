@@ -1,6 +1,8 @@
 package org.sessionization.fields;
 
 import javax.persistence.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 @Entity
@@ -20,8 +22,9 @@ public class UriSteam implements Field {
 
 	public UriSteam(String file) {
 		id = null;
-		if(!file.equals("-"))  this.file = file;
-		else this.file = null;
+		if(!file.equals("-")) {
+			this.file = file;
+		} else this.file = null;
 	}
 
 	public Integer getId() {
@@ -31,7 +34,6 @@ public class UriSteam implements Field {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 	/**
 	 * Getter metoda za URL
 	 *
@@ -41,7 +43,6 @@ public class UriSteam implements Field {
 	public String getFile() {
 		return file != null ? file : "";
 	}
-
 	/**
 	 * Metoda, ki vrne koncnico zahtevanega resursa.
 	 *

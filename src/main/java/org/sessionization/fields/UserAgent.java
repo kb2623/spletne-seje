@@ -1,6 +1,16 @@
 package org.sessionization.fields;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
+import jdk.nashorn.internal.parser.JSONParser;
+
 import javax.persistence.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @Entity
 public class UserAgent implements Field {
@@ -36,6 +46,11 @@ public class UserAgent implements Field {
 
 	public String getUserAgentString() {
 		return userAgentString != null ? userAgentString : "";
+	}
+
+	public boolean isCrawler() {
+		// todo
+		return false;
 	}
 
 	@Override

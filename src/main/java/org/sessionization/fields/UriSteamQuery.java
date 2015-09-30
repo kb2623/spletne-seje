@@ -1,9 +1,13 @@
 package org.sessionization.fields;
 
-import java.net.URL;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import java.net.URI;
 
+@Entity
 public class UriSteamQuery extends UriSteam {
 
+	@OneToOne
 	private UriQuery query;
 
 	public UriSteamQuery() {
@@ -11,9 +15,9 @@ public class UriSteamQuery extends UriSteam {
 		query = null;
 	}
 
-	public UriSteamQuery(URL url) {
-		super(url.getFile());
-		query = new UriQuery(url.getQuery());
+	public UriSteamQuery(URI uri) {
+		super(uri.getRawPath());
+		query = new UriQuery(uri.getQuery());
 	}
 	/**
 	 * Metoda vrne query
@@ -31,12 +35,12 @@ public class UriSteamQuery extends UriSteam {
 
 	@Override
 	public String izpis() {
-		return super.izpis() + query.izpis();
+		return super.izpis() + (query.getPairs() != null ? query.izpis() : "");
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + query.toString();
+		return super.toString() + (query.getPairs() != null ? query.izpis() : "");
 	}
 
 	@Override

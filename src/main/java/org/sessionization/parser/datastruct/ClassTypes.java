@@ -34,8 +34,6 @@ public class ClassTypes {
 
 	public static String EmbenddedType = getType(Embedded.class);
 
-	public static String WebPageRequestAbsClass = WebPageRequestAbs.class.getName().replace(".", "/");
-
 	public static String ListRequestsGType = "L" + List.class.getName().replace(".", "/") + "<" + RequestDump.getClassType() + ">;";
 
 	public static String ParsedLineType = getType(ParsedLine.class);

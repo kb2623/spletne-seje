@@ -71,6 +71,6 @@ public class UriQueryPair {
 
 	@Override
 	public String toString() {
-		return key.toString() + "=" + value;
+		return key.toString() + " = " + value;
 	}
 }

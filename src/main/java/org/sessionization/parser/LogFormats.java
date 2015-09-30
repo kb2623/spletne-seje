@@ -62,12 +62,12 @@ public enum LogFormats {
 				case "%U": list.add(FieldType.UriSteam);			        break;
 				case "%v": list.add(FieldType.ComputerName);            break;
 				case "%V": list.add(FieldType.ComputerName);            break;
-				case "%X": list.add(null);				                break;
+				case "%X": break;
 				case "%I": list.add(FieldType.SizeOfRequest);	        break;
 				case "%O": list.add(FieldType.SizeOfResponse);          break;
 				case "%S": list.add(FieldType.SizeOfTransfer);          break;
-				case "%^ti": list.add(null);			                break;
-				case "%^to": list.add(null);			                break;
+				case "%^ti": break;
+				case "%^to": break;
 				case "%p":
 				case "%{local}p":
 				case "%{canonical}p": list.add(FieldType.ServerPort);   break;

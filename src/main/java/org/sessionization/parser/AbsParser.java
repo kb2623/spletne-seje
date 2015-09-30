@@ -5,6 +5,7 @@ import org.sessionization.fields.FieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
@@ -72,7 +73,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @param path Pot do datoteke, predstavljena z nizom
 	 * @throws FileNotFoundException Datoteka ne obstaja
 	 */
-	public void openFile(String path) throws FileNotFoundException {
+	public void openFile(File path) throws FileNotFoundException {
 		file = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 	}
 	/**
@@ -119,7 +120,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @see Field
 	 * @see ParsedLine
 	 */
-	public abstract ParsedLine parseLine() throws ParseException, NullPointerException, IOException;
+	public abstract ParsedLine parseLine() throws ParseException, NullPointerException, IOException, URISyntaxException;
 	/**
 	 * Metoda za zapiranje datoteke
 	 *
@@ -161,7 +162,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	public void forEach(Consumer<? super ParsedLine> consumer) {
 		try {
 			for (ParsedLine line = parseLine(); line != null; line = parseLine()) consumer.accept(line);
-		} catch (IOException | NullPointerException | ParseException ignored) {}
+		} catch (IOException | NullPointerException | ParseException | URISyntaxException ignored) {}
 	}
 
 	@Override

@@ -1,9 +1,6 @@
 package org.sessionization.analyzer;
 
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -20,8 +17,8 @@ public class LogAnalyzer {
 	 * @param path
 	 * @throws FileNotFoundException
 	 */
-	public LogAnalyzer(String path) throws IOException {
-		stream = new FileInputStream(path);
+	public LogAnalyzer(File file) throws IOException {
+		stream = new FileInputStream(file);
 		reader = new BufferedReader(new InputStreamReader(stream));
 		if (reader.readLine().charAt(0) == '#') {
 			logFileType = LogFileType.W3C;

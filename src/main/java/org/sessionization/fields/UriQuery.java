@@ -24,8 +24,7 @@ public class UriQuery implements Field {
 	public UriQuery(String niz) {
 		id = null;
 		if (niz != null && niz.charAt(0) != '-') {
-			if (niz.charAt(0) == '?') setupMap(niz.substring(1));
-			else setupMap(niz);
+			setupMap(niz);
 		} else {
 			pairs = null;
 		}
@@ -36,7 +35,7 @@ public class UriQuery implements Field {
 		pairs = new ArrayList<>(tab.length);
 		for (String s : tab) {
 			String[] pair = s.split("=");
-			if (tab.length == 2) pairs.add(new UriQueryPair(pair[0], pair[1]));
+			if (pair.length == 2) pairs.add(new UriQueryPair(pair[0], pair[1]));
 			else pairs.add(new UriQueryPair(pair[0], "-"));
 		}
 	}

@@ -1,6 +1,12 @@
 package org.sessionization.fields;
 
+import org.sessionization.database.InetAddressConverter;
+import org.sessionization.database.MethodConverter;
+import org.sessionization.fields.cookie.CookieKey;
+import org.sessionization.fields.cookie.CookiePair;
 import org.sessionization.fields.ncsa.*;
+import org.sessionization.fields.query.UriQueryKey;
+import org.sessionization.fields.query.UriQueryPair;
 import org.sessionization.fields.w3c.*;
 
 import static org.sessionization.fields.FieldType.ProtocolVersion;
@@ -55,6 +61,18 @@ public enum FieldType {
 		public Class getClassType() {
 			return org.sessionization.fields.ncsa.RequestLine.class;
 		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[] {
+					org.sessionization.fields.UriSteam.class,
+					UriSteamQuery.class,
+					org.sessionization.fields.UriQuery.class,
+					UriQueryPair.class,
+					UriQueryKey.class,
+					Protocol.class
+			};
+		}
 	},
 	/** Status zahteve */
 	StatusCode {
@@ -88,6 +106,18 @@ public enum FieldType {
 		public Class getClassType() {
 			return org.sessionization.fields.Referer.class;
 		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[] {
+					org.sessionization.fields.UriSteam.class,
+					UriSteamQuery.class,
+					org.sessionization.fields.UriQuery.class,
+					UriQueryPair.class,
+					UriQueryKey.class,
+					org.sessionization.fields.Host.class
+			};
+		}
 	},
 	/** Identifikacija brskalnika in botov */
 	UserAgent {
@@ -112,12 +142,27 @@ public enum FieldType {
 		public Class getClassType() {
 			return org.sessionization.fields.Cookie.class;
 		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[] {
+					CookiePair.class,
+					CookieKey.class
+			};
+		}
 	},
 	/** W3C metoda */
 	Method {
 		@Override
 		public Class getClassType() {
 			return org.sessionization.fields.Method.class;
+		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[] {
+					org.sessionization.fields.Method.class
+			};
 		}
 	},
 	/** W3C datum */
@@ -159,6 +204,13 @@ public enum FieldType {
 		public Class getClassType() {
 			return Address.class;
 		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[] {
+					InetAddressConverter.class
+			};
+		}
 	},
 	/** IP klienta */
 	ClientIP {
@@ -170,6 +222,13 @@ public enum FieldType {
 		@Override
 		public Class getClassType() {
 			return Address.class;
+		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[] {
+					InetAddressConverter.class
+			};
 		}
 	},
 	/**	Čas porabljen za obdelavo zahteve (pri W3C v sekundah, pri Apache v milisekunah) */
@@ -227,6 +286,14 @@ public enum FieldType {
 		public Class getClassType() {
 			return org.sessionization.fields.UriQuery.class;
 		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[] {
+					UriQueryPair.class,
+					UriQueryKey.class
+			};
+		}
 	},
 	/** Ime zahtevanega resursa */
 	UriSteam {
@@ -266,6 +333,13 @@ public enum FieldType {
 		@Override
 		public Class getClassType() {
 			return org.sessionization.fields.ncsa.ConnectionStatus.class;
+		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[] {
+					MethodConverter.class
+			};
 		}
 	},
 	/** ID procesa, ki je obdelal zahtevo */
@@ -312,5 +386,9 @@ public enum FieldType {
 
 	public String getGetterName() {
 		return "get" + getClassType().getSimpleName();
+	}
+
+	public Class[] getDependencies() {
+		return new Class[0];
 	}
 }

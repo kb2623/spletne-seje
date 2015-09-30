@@ -1,14 +1,18 @@
 package org.sessionization.parser;
 
-import java.io.*;
-import java.net.URL;
-import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 import org.sessionization.fields.*;
 import org.sessionization.fields.ncsa.*;
 import org.sessionization.parser.datastruct.ParsedLine;
+
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 
 /**
  * Parser za formate: Common Log Format, Combined Log Format in Custom Log Formats
@@ -61,6 +65,15 @@ public class NCSAParser extends AbsParser {
 		setDefaultFields();
 	}
 	/**
+	 *
+	 * @param list
+	 */
+	public NCSAParser(List<FieldType> list) {
+		super();
+		setDefaultFields();
+		setFieldType(list);
+	}
+	/**
 	 * Metoda ki nastavi polja na prevzete vrednosti.
 	 * <p><code>formatter = dd/MMM/yyyy:HH:mm:ss Z</code></p>
 	 * <p><code>locale = Locale.US</code></p>
@@ -91,8 +104,8 @@ public class NCSAParser extends AbsParser {
 		if(logline == null) return null;
 		int i = -1;
 		String[] tokens = new String[size];
-	    StringBuilder buff = new StringBuilder();
-	    boolean inQuotes = false, inBrackets = false;
+		StringBuilder buff = new StringBuilder();
+		boolean inQuotes = false, inBrackets = false;
 		for (char c : logline.toCharArray()) {
 			switch (c) {
 			case '"':
@@ -123,12 +136,12 @@ public class NCSAParser extends AbsParser {
 			default: buff.append(c);
 			}
 		}
-	    if (buff.length() > 0) tokens[++i] = buff.toString();
-	    return tokens;
-    }
+		if (buff.length() > 0) tokens[++i] = buff.toString();
+		return tokens;
+	}
 
 	@Override
-	public ParsedLine parseLine() throws ParseException, NullPointerException, IOException {
+	public ParsedLine parseLine() throws ParseException, NullPointerException, IOException, URISyntaxException {
 		if (super.fieldType == null) throw new NullPointerException("Tipi polji niso specificirani!!!");
 		Field[] lineData = new Field[super.fieldType.size()];
 		String[] tokens;
@@ -143,7 +156,7 @@ public class NCSAParser extends AbsParser {
 				lineData[i] = new RemoteHost(tokens[i]);
 				break;
 			case Referer:
-				lineData[i] = new Referer(new URL(tokens[i]));
+				lineData[i] = new Referer(new URI(tokens[i]));
 				break;
 			case RemoteLogname:
 				lineData[i] = new RemoteLogname(tokens[i]);
@@ -217,10 +230,10 @@ public class NCSAParser extends AbsParser {
 		return new ParsedLine(lineData);
 	}
 
-    @Override
-    public Iterator<ParsedLine> iterator() {
-        try {
-            return new Iterator<ParsedLine>() {
+	@Override
+	public Iterator<ParsedLine> iterator() {
+		try {
+			return new Iterator<ParsedLine>() {
 
 				private ParsedLine next = parseLine();
 
@@ -241,11 +254,15 @@ public class NCSAParser extends AbsParser {
 						return tmp;
 					} catch (ParseException | IOException e) {
 						return null;
+					} catch (URISyntaxException e) {
+						return null;
 					}
 				}
 			};
-        } catch (ParseException | IOException e) {
-            return null;
-        }
-    }
+		} catch (ParseException | IOException e) {
+			return null;
+		} catch (URISyntaxException e) {
+			return null;
+		}
+	}
 }

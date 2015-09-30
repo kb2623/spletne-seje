@@ -4,7 +4,8 @@ import org.sessionization.fields.*;
 
 import javax.persistence.*;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Entity
 public class RequestLine implements Field {
@@ -13,7 +14,6 @@ public class RequestLine implements Field {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@OneToOne(cascade = CascadeType.ALL)
 	private Method method;
 
 	@OneToOne(cascade = CascadeType.ALL)
@@ -36,9 +36,9 @@ public class RequestLine implements Field {
 	 * @param protocol Uporabljen protokol
 	 * @throws MalformedURLException Podan nepravilen URL naslov
 	 */
-	public RequestLine(String method, String uri, String protocol) throws MalformedURLException {
+	public RequestLine(String method, String uri, String protocol) throws URISyntaxException {
 		id = null;
-		this.uri = new UriSteamQuery(new URL(protocol.split("/")[0], null, uri));
+		this.uri = new UriSteamQuery(new URI(uri));
 		this.protocol = new Protocol(protocol);
 		this.method = Method.setMethod(method);
 	}
@@ -72,7 +72,7 @@ public class RequestLine implements Field {
 	 * @return
 	 * @see UriSteam
 	 */
-	public UriSteamQuery getFile() {
+	public UriSteam getFile() {
 		return uri;
 	}
 	/**
@@ -95,12 +95,12 @@ public class RequestLine implements Field {
 
 	@Override
 	public String izpis() {
-		return method.izpis() + " " + uri.izpis() + " " + uri.izpis() + " " + protocol.izpis();
+		return method.izpis() + " " + uri.izpis() + " " + protocol.izpis();
 	}
 
 	@Override
 	public String toString() {
-		return method.toString() + " " + uri.toString() + " " + uri.toString() + " " + protocol.toString();
+		return method.toString() + " " + uri.toString() + " " + protocol.toString();
 	}
 
 	@Override

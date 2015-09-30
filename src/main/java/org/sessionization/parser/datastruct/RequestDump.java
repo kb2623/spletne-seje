@@ -11,7 +11,7 @@ public class RequestDump implements Opcodes {
 
 	private static String CLASSNAME = "org/sessionization/fields/Request";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
-	private static String FILENAME = "Request.java";
+	private static String NAME = "Request.java";
 
 	public static byte[] dump(List<FieldType> list) {
 		List<FieldType> fields = getFields(list);
@@ -23,7 +23,7 @@ public class RequestDump implements Opcodes {
 		/** Inicializcija distopnih pravic, imena in dedovanje razreda */
 		cw.visit(52, ACC_PUBLIC + ACC_SUPER, CLASSNAME, null, ClassTypes.ObjectClass, null);
 		/** Inicializacija datoteke razreda */
-		cw.visitSource(FILENAME, null);
+		cw.visitSource(NAME + ".java", null);
 		/** Dodajanje @Entry */
 		{
 			av0 = cw.visitAnnotation(ClassTypes.EntityType, true);
@@ -396,8 +396,8 @@ public class RequestDump implements Opcodes {
 		return CLASSNAME;
 	}
 
-	public static String getFileName() {
-		return FILENAME;
+	public static String getName() {
+		return NAME;
 	}
 
 	public static String getClassName() {

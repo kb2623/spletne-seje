@@ -3,7 +3,8 @@ package org.sessionization.fields;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Entity
 public class Referer extends UriSteamQuery implements Field {
@@ -16,7 +17,7 @@ public class Referer extends UriSteamQuery implements Field {
 		host = null;
 	}
 
-	public Referer(URL url) {
+	public Referer(URI url) {
 		super(url);
 		host = new Host(url.getAuthority());
 	}

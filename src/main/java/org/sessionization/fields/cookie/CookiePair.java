@@ -20,7 +20,7 @@ public class CookiePair {
 		key = null;
 	}
 
-	public CookiePair(String value, String key) {
+	public CookiePair(String key, String value) {
 		id = null;
 		this.value = value;
 		this.key = new CookieKey(key);
@@ -74,6 +74,6 @@ public class CookiePair {
 
 	@Override
 	public String toString() {
-		return key.toString() + "=" + value;
+		return key.toString() + " = " + value;
 	}
 }

@@ -1,13 +1,13 @@
 package org.sessionization.parser;
 
 import org.sessionization.fields.*;
-import org.sessionization.fields.UriSteam;
 import org.sessionization.fields.w3c.*;
 import org.sessionization.fields.w3c.Date;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -108,7 +108,7 @@ public class IISParser extends AbsParser {
 	}
 
 	@Override
-	public ParsedLine parseLine() throws ParseException, IOException, NullPointerException {
+	public ParsedLine parseLine() throws ParseException, IOException, NullPointerException, URISyntaxException {
 		if (super.fieldType == null) throw new NullPointerException("Tipi polji niso specificirani!!!");
 		Field[] lineData = new Field[super.fieldType.size()];
 		List<String> tokens = parse(super.getLine());
@@ -117,7 +117,7 @@ public class IISParser extends AbsParser {
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			switch (super.fieldType.get(i)) {
 			case Referer:
-				lineData[i] = new Referer(new URL(tokens.get(i)));
+				lineData[i] = new Referer(new URI(tokens.get(i)));
 				break;
 			case Cookie:
 				lineData[i] = new Cookie(tokens.get(i), LogType.W3C);
@@ -191,7 +191,7 @@ public class IISParser extends AbsParser {
 		}
 		return new ParsedLine(lineData);
 	}
-    /**
+	/**
 	 * Nastavljanje formata za parsanje datuma.
 	 *
 	 * @see DateTimeFormatter
@@ -212,10 +212,10 @@ public class IISParser extends AbsParser {
 		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.US : locale);
 	}
 
-    @Override
-    public Iterator<ParsedLine> iterator() {
-        try {
-            return new Iterator<ParsedLine>() {
+	@Override
+	public Iterator<ParsedLine> iterator() {
+		try {
+			return new Iterator<ParsedLine>() {
 
 				private ParsedLine next = parseLine();
 
@@ -236,11 +236,15 @@ public class IISParser extends AbsParser {
 						return tmp;
 					} catch (ParseException | IOException e) {
 						return null;
+					} catch (URISyntaxException e) {
+						return null;
 					}
 				}
 			};
-        } catch (ParseException | IOException e) {
-            return null;
-        }
-    }
+		} catch (ParseException | IOException e) {
+			return null;
+		} catch (URISyntaxException e) {
+			return null;
+		}
+	}
 }

@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.UriSteam;
 import org.sessionization.fields.Referer;
+import org.sessionization.fields.UserAgent;
 
 public class ParsedLine implements Iterable<Field> {
 
@@ -34,11 +35,17 @@ public class ParsedLine implements Iterable<Field> {
 	}
 	/**
 	 * Metoda, ki prevrja ali je zahtevo opravil uporabnik ali spletni robot.
+	 * Robota indentificiramo preko zahteve po resursu robots.txt ali pa po
+	 * <code>user agetn stringu</code>
 	 *
 	 * @return Zahtevo opravil robot ali ne.
 	 */
 	public boolean isCrawler() {
-		//TODO Tukaj moraš preveriti zahtevan resurs in/ali User Agent String
+		for (Field f : array) if (f instanceof UriSteam && !(f instanceof Referer)) {
+			return ((UriSteam) f).getFile().equals("robots.txt");
+		} else if (f instanceof UserAgent) {
+			return ((UserAgent) f).isCrawler();
+		}
 		return false;
 	}
 	/**
@@ -49,8 +56,8 @@ public class ParsedLine implements Iterable<Field> {
 	 * 		<code>false</code> -> Vrstica ne vsebuje resursa li na ne vsebuje polja, ki identificira resurs
 	 */
 	public boolean isResource() {
-		for (int i = 0; i < array.length; i++) {
-			if (array[i] instanceof UriSteam && !(array[i] instanceof Referer)) return ((UriSteam) array[i]).isResource();
+		for (Field f : array) if (f instanceof UriSteam && !(f instanceof Referer)) {
+			return ((UriSteam) f).isResource();
 		}
 		return false;
 	}

@@ -6,9 +6,11 @@ import org.junit.Test;
 import org.sessionization.fields.FieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -31,7 +33,7 @@ public class NCSAParserTest {
     public void testNCSAParserCommon() {
         try {
             //Odpri datoteko
-            parser.openFile(pathNCSACommon);
+            parser.openFile(new File(pathNCSACommon));
             //Nastavi tipe podatkov
             parser.setFieldType(LogFormats.CommonLogFormat.create(null));
             //Pridobi podatke
@@ -55,7 +57,7 @@ public class NCSAParserTest {
     public void testNCSAParserCommonForEach() {
         try {
             //Odpri datoteko
-            parser.openFile(pathNCSACommon);
+            parser.openFile(new File(pathNCSACommon));
             //Nastavi tipe podatkov
             parser.setFieldType(LogFormats.CommonLogFormat.create(null));
             //Pridobi podatke
@@ -71,7 +73,7 @@ public class NCSAParserTest {
     public void testNCSAParserCombinedForEachWithSetFormat() {
         try {
             //Odpri datoteko
-            parser.openFile(pathNCSACombined);
+            parser.openFile(new File(pathNCSACombined));
             //Nastavi tipe podatkov
             parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
             //Pridobi podatke
@@ -87,7 +89,7 @@ public class NCSAParserTest {
     public void testNCSAParserCombinedWithSetFormat() {
         try {
             //Odpri datoteko
-            parser.openFile(pathNCSACombined);
+            parser.openFile(new File(pathNCSACombined));
             //Nastavi tipe podatkov
             parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
             //Nastavi format datuma
@@ -105,7 +107,7 @@ public class NCSAParserTest {
     public void testNCSAParserCombinedForEach() {
         try {
             //Odpri datoteko
-            parser.openFile(pathNCSACombined);
+            parser.openFile(new File(pathNCSACombined));
             //Nastavi tipe podatkov
             parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
             //Pridobi podatke
@@ -121,7 +123,7 @@ public class NCSAParserTest {
     public void testNCSAParserCombined() {
         try {
             //Odpri datoteko
-            parser.openFile(pathNCSACombined);
+            parser.openFile(new File(pathNCSACombined));
             //Nastavi tipe podatkov
             parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
             //Pridobi podatke
@@ -179,6 +181,8 @@ public class NCSAParserTest {
             parser.closeFile();
         } catch(NullPointerException | ParseException | IOException e) {
             assert false;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 }

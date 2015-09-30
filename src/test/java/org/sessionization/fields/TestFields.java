@@ -1,6 +1,8 @@
 package org.sessionization.fields;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
@@ -31,6 +33,12 @@ public class TestFields {
 	}
 
 	@Test
+	public void testUserAgetForCrawlers() {
+		UserAgent agent = new UserAgent("Mozilla/5.0 (Macintosh; U; PPC Mac OS X Mach-O; XH; rv:8.578.498) fr, Gecko/20121021 Camino/8.723+ (Firefox compatible)", LogType.NCSA);
+		assertFalse(agent.isCrawler());
+	}
+
+	@Test
 	public void testCookie() {
 		String testString = "USERID=CustomerA;IMPID=01234";
 		Cookie cookie = new Cookie(testString, LogType.NCSA);
@@ -45,7 +53,7 @@ public class TestFields {
 		assertEquals("[[USERID = CustomerA][IMPID = 01234]]", cookie2.izpis());
 		assertEquals("[-]", cookie3.izpis());
 		assertEquals("[-]", cookie4.izpis());
-		assertEquals("[[referencna = -][__utmz = 237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa][GAMBIT_ID = 89.142.126.214-4231287712.29944903][ASPSESSIONIDASARQBAB = MDLBNDABLMEFLDGCFIFOJIGM][__utmb = 237691092.48.10.1238543004][__utmc = 237691092][__utma = 237691092.2338317182835442000.1214229487.1238435165.1238543004.8][productsForComparison = 712150%21701041%21610119%21403083]]", cookie5.izpis());
+		assertEquals("[[__utma = 237691092.2338317182835442000.1214229487.1238435165.1238543004.8][GAMBIT_ID = 89.142.126.214-4231287712.29944903][referencna = -][__utmz = 237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa][productsForComparison = 712150%21701041%21610119%21403083][ASPSESSIONIDASARQBAB = MDLBNDABLMEFLDGCFIFOJIGM][__utmb = 237691092.48.10.1238543004][__utmc = 237691092]]", cookie5.izpis());
 	}
 
 	@Test
@@ -64,41 +72,40 @@ public class TestFields {
 
 	@Test
 	public void testDateParsing() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
-		LocalDateTime dateTime = LocalDateTime.parse("26/Jul/2002:12:11:52 +0000", formatter);
-		assertEquals(26, dateTime.getDayOfMonth());
 	}
 
 	@Test
-	public void testRequestLine() throws MalformedURLException {
-        RequestLine line = new RequestLine("GET", "/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello", "HTTP/1.1");
-        assertEquals("GET", line.getMethod().toString());
-        assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
-        assertEquals("HTTP/1.1", line.getProtocol().toString());
-        assertEquals("[[test = hello][limit = 18]]", line.getFile().getQuery().toString());
-        assertEquals("/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello[[test = hello][limit = 18]]", line.getFile().toString());
-        assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getFile().getFile());
-        line = new RequestLine("POST", "/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", "HTTP/1.1");
-        assertEquals("POST", line.getMethod().toString());
-        assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
-        assertEquals("HTTP/1.1", line.getProtocol().toString());
-        assertEquals("[[limit = 10]]", line.getFile().getQuery().toString());
-        assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", line.getFile().toString());
-        assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css", line.getFile().getFile());
-        line = new RequestLine("GET", "/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", "HTTP");
-        assertEquals("GET", line.getMethod().toString());
-        assertEquals(0, line.getProtocol().getVersion(), 0.01);
-        assertEquals("HTTP", line.getProtocol().toString());
-        assertEquals("[]", line.getFile().getQuery().toString());
-        assertEquals("/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", line.getFile().toString());
-    }
+	public void testRequestLine() {
+		RequestLine line = null;
+		try {
+			line = new RequestLine("GET", "/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello", "HTTP/1.1");
+			assertEquals("GET", line.getMethod().toString());
+			assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
+			assertEquals("HTTP/1.1", line.getProtocol().toString());
+			assertEquals("[[limit = 18][test = hello]]", ((UriSteamQuery) line.getFile()).getQuery().toString());
+			assertEquals("/jope-puloverji/moski-pulover-b74-red[[limit = 18][test = hello]]", line.getFile().toString());
+			assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getFile().getFile());
+			line = new RequestLine("POST", "/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", "HTTP/1.1");
+			assertEquals("POST", line.getMethod().toString());
+			assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
+			assertEquals("HTTP/1.1", line.getProtocol().toString());
+			assertEquals("[[limit = 10]]", ((UriSteamQuery) line.getFile()).getQuery().toString());
+			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css[[limit = 10]]", line.getFile().toString());
+			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css", line.getFile().getFile());
+			line = new RequestLine("GET", "/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", "HTTP");
+			assertEquals("GET", line.getMethod().toString());
+			assertEquals(0, line.getProtocol().getVersion(), 0.01);
+			assertEquals("HTTP", line.getProtocol().toString());
+			assertEquals("[]", ((UriSteamQuery) line.getFile()).getQuery().toString());
+			assertEquals("/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", line.getFile().toString());
+		} catch (URISyntaxException e) {
+			fail();
+		}
+	}
 
 	@Test
 	public void testReferer() throws MalformedURLException {
-		URL u = new URL("http://sfashion.si/hlace?limit=30");
-		System.out.println(u.getAuthority() + "\n" + u.getFile());
-		u = new URL("http", null, "/hlace?limit=30");
-		System.out.println(u.getProtocol() + "\n" + u.getFile());
+		// todo napisi test
 	}
 
 }

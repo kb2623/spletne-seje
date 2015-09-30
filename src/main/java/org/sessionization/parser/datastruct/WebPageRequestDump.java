@@ -12,7 +12,7 @@ public class WebPageRequestDump implements Opcodes {
 
 	private static String CLASSNAME = "org/sessionization/fields/WebPageRequest";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
-	private static String FILENAME = "WebPageRequest.java";
+	private static String NAME = "WebPageRequest.java";
 
 	public static byte[] dump(List<FieldType> fieldTypes) {
 		List<FieldType> fields = getFields(fieldTypes);
@@ -22,9 +22,9 @@ public class WebPageRequestDump implements Opcodes {
 		MethodVisitor mv;
 		AnnotationVisitor av0;
 		/** Inicializacija dostopnih pravic, imana in dedovanih razredov */
-		cw.visit(52, ACC_PUBLIC + ACC_SUPER, CLASSNAME, null, ClassTypes.WebPageRequestAbsClass, null);
+		cw.visit(52, ACC_PUBLIC + ACC_SUPER, CLASSNAME, null, ClassTypes.ObjectClass, null);
 		/** Inicializacija datoeke razreda */
-		cw.visitSource(FILENAME, null);
+		cw.visitSource(NAME + ".java", null);
 		/** Dodajanje @Entity */
 		{
 			av0 = cw.visitAnnotation(ClassTypes.EntityType, true);
@@ -98,7 +98,7 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitLabel(l0);
 			mv.visitLineNumber(lineCount, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKESPECIAL, ClassTypes.WebPageRequestAbsClass, "<init>", "()V", false);
+			mv.visitMethodInsn(INVOKESPECIAL, ClassTypes.ObjectClass, "<init>", "()V", false);
 			Label l1 = new Label();
 			lineCount++;
 			mv.visitLabel(l1);
@@ -267,44 +267,6 @@ public class WebPageRequestDump implements Opcodes {
 			mv.visitLocalVariable("requests", ClassTypes.ListType, ClassTypes.ListRequestsGType, l0, l2, 1);
 			mv.visitMaxs(2, 2);
 			mv.visitEnd();
-			lineCount++;
-		}
-		/** Metoda add() */
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "add", "(Lorg/sessionization/parser/datastruct/ParsedLine;)Z", null, null);
-			lineCount += 2;
-			mv.visitCode();
-			Label l0 = new Label();
-			lineCount++;
-			mv.visitLabel(l0);
-			mv.visitLineNumber(lineCount, l0);
-			mv.visitVarInsn(ALOAD, 1);
-			mv.visitMethodInsn(INVOKEVIRTUAL, ClassTypes.ParsedLineClass, "isResource", "()Z", false);
-			Label l1 = new Label();
-			mv.visitJumpInsn(IFEQ, l1);
-			Label l2 = new Label();
-			lineCount++;
-			mv.visitLabel(l2);
-			mv.visitLineNumber(lineCount, l2);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, CLASSNAME, "requests", ClassTypes.ListType);
-			mv.visitTypeInsn(NEW, RequestDump.getTypeName());
-			mv.visitInsn(DUP);
-			mv.visitVarInsn(ALOAD, 1);
-			mv.visitMethodInsn(INVOKESPECIAL, RequestDump.getTypeName(), "<init>", "(" + RequestDump.getClassType() + ")V", false);
-			mv.visitMethodInsn(INVOKEINTERFACE, ClassTypes.ListClass, "add", "(" + ClassTypes.ObjectType + ")Z", true);
-			mv.visitInsn(IRETURN);
-			mv.visitLabel(l1);
-			lineCount++;
-			mv.visitLineNumber(lineCount, l1);
-			mv.visitFrame(F_SAME, 0, null, 0, null);
-			mv.visitInsn(ICONST_0);
-			mv.visitInsn(IRETURN);
-			Label l3 = new Label();
-			mv.visitLabel(l3);
-			mv.visitLocalVariable("this", CLASSTYPE, null, l0, l3, 0);
-			mv.visitLocalVariable("line", ClassTypes.ParsedLineType, null, l0, l3, 1);
-			mv.visitMaxs(4, 2);
 			lineCount++;
 		}
 		/** Metoda getKey() */
@@ -578,8 +540,8 @@ public class WebPageRequestDump implements Opcodes {
 		return retList;
 	}
 
-	public static String getFileName() {
-		return FILENAME;
+	public static String getName() {
+		return NAME;
 	}
 
 	public static String getClassTName() {
