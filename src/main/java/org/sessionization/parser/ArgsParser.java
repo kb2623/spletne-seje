@@ -36,6 +36,8 @@ public class ArgsParser {
 
 	private URL driverUrl = null;
 
+	private URL dialect = null;
+
 	private File inputFile;
 
 	private Locale locale = null;
@@ -76,10 +78,32 @@ public class ArgsParser {
 		configFile = file;
 	}
 
-	@Option(name = "-d", usage = "Path to jar file, that is a driver", metaVar = "<path>")
+	@Option(name = "-dbdr", usage = "Path to jar file, that is a driver", metaVar = "<path>")
 	public void setDriverUrl(String path) throws MalformedURLException {
 		File file = new File(path);
 		driverUrl = file.toURI().toURL();
+	}
+
+	@Option(name = "-dbdi", usage = "Path to class file, that is dialect for database", metaVar = "<path>")
+	public void setDialect(String path) throws MalformedURLException {
+		File file = new File(path);
+		dialect = file.toURI().toURL();
+	}
+
+	public boolean isIgnoreCrawlers() {
+		return ignoreCrawlers;
+	}
+
+	public boolean isPrintHelp() {
+		return printHelp;
+	}
+
+	public URL getDialect() {
+		return dialect;
+	}
+
+	public File getInputFile() {
+		return inputFile;
 	}
 
 	public URL getDriverUrl() {

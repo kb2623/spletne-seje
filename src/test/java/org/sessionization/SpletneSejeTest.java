@@ -141,7 +141,7 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testRunTwo() {
-		SpletneSeje.main("-in", "src/test/resources/Logs/Common/logCommon", "-ff", "COMMON", "-cfg", "H2.cfg.xml", "-d", "lib/h2-1.4.188.jar");
+		SpletneSeje.main("-in", "src/test/resources/Logs/Common/logCommon", "-ff", "COMMON", "-cfg", "H2.cfg.xml", "-dbdr", "lib/h2-1.4.188.jar");
 	}
 
 }

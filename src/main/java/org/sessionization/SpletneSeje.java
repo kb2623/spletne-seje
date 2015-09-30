@@ -102,7 +102,17 @@ public class SpletneSeje {
 		/** Ustvari dinamicne razrede */
 		UrlLoader loader;
 		if (argsParser.getDriverUrl() != null) {
-			URL[] url = new URL[1];
+			URL[] url;
+			if (argsParser.getDialect() == null) {
+				url = new URL[] {
+						argsParser.getDriverUrl()
+				};
+			} else {
+				url = new URL[] {
+						argsParser.getDriverUrl(),
+						argsParser.getDialect()
+				};
+			}
 			url[0] = argsParser.getDriverUrl();
 			loader = new UrlLoader(url);
 		} else {
