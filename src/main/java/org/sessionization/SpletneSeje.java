@@ -2,6 +2,7 @@ package org.sessionization;
 
 import org.hibernate.cache.spi.QueryKey;
 import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.fields.*;
 import org.sessionization.fields.cookie.CookieKey;
@@ -15,6 +16,7 @@ import org.sessionization.parser.datastruct.WebPageRequestDump;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
@@ -35,9 +37,11 @@ public class SpletneSeje {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("deprecation")
-	public SpletneSeje(String[] args) throws CmdLineException, NullPointerException, ParseException, IOException, ClassNotFoundException {
+	public SpletneSeje(String[] args) throws CmdLineException, NullPointerException, ParseException, IOException, ClassNotFoundException, URISyntaxException {
 		/** Parsanje vhodnih argumentov */
 		argsParser = new ArgsParser(args);
+
+		// todo nastavi nastavitve za hibernate
 
 		/** Preveri format in nastavi tipe polji v datoteki */
 		switch ((argsParser.getLogFormat() != null) ? argsParser.getLogFormat().get(0) : "") {
@@ -151,7 +155,10 @@ public class SpletneSeje {
 		try {
 			new SpletneSeje(args).run();
 		} catch (CmdLineException e) {
-			System.err.println(e.getMessage());
+			e.getParser().printUsage(System.out);
+			e.printStackTrace();
+			if (e.getCause() != null && e.getCause().getMessage() != null)
+				System.err.println(e.getCause().getMessage());
 			System.exit(1);
 		} catch (ParseException e) {
 			System.err.println(e.getMessage());

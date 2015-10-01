@@ -1,8 +1,8 @@
 package org.sessionization;
 
+import org.datastruct.RadixTree;
 import org.junit.Before;
 import org.junit.Test;
-import org.datastruct.RadixTree;
 import org.sessionization.parser.AbsParser;
 import org.sessionization.parser.LogFormats;
 import org.sessionization.parser.NCSAParser;
@@ -10,12 +10,14 @@ import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class SpletneSejeTest {
 
@@ -135,13 +137,19 @@ public class SpletneSejeTest {
 	}
 
 	@Test
-	public void testRunOne() {
-		SpletneSeje.main("-in", "src/test/resources/Logs/Common/logCommon", "-ff", "COMMON");
+	public void testRunZero() {
+		SpletneSeje.main("-?");
 	}
 
 	@Test
-	public void testRunTwo() {
-		SpletneSeje.main("-in", "src/test/resources/Logs/Common/logCommon", "-ff", "COMMON", "-cfg", "H2.cfg.xml", "-dbdr", "lib/h2-1.4.188.jar");
+	public void testRunOne() {
+		SpletneSeje.main("-in", "src/test/resources/Logs/Common/logCommon", "-fl", "COMMON");
+	}
+
+	@Test
+	public void testRunTwo() throws MalformedURLException {
+		System.out.println(new File("lib/h2-1.4,188.jar").toURI().toURL());
+		SpletneSeje.main("-in", "src/test/resources/Logs/Common/logCommon", "-fl", "COMMON", "-xml", "H2.cfg.xml", "-dbdr", "lib/h2-1.4.188.jar", "-dbdrc", "adfkl;");
 	}
 
 }
