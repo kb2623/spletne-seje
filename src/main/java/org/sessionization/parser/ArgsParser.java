@@ -1,28 +1,19 @@
 package org.sessionization.parser;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.NamedOptionDef;
 import org.kohsuke.args4j.Option;
-import org.kohsuke.args4j.spi.OptionHandler;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.XmlCmdParser;
 import org.kohsuke.args4j.spi.Parameters;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.kohsuke.args4j.CmdLineException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Locale;
+import java.util.ArrayList;
 
 public class ArgsParser {
 
@@ -89,10 +80,7 @@ public class ArgsParser {
 	@Option(name = "-dburl", aliases = "database.url", usage = "URL to database", metaVar = "<URL>")
 	private URI databaseUrl = null;
 
-	@Option(name = "-xml", usage = "Path to configuration file", metaVar = "<path>")
-	private File configFile = null;
-
-	@Option(name = "-dbdic", aliases = "database.dialect.class", usage = "Path to class file, that is dialect for database", metaVar = "<path>")
+	@Option(name = "-dbdic", aliases = "database.dialect.class", usage = "Path to class file, that is dialect for database", metaVar = "<path>", depends = "-dbdi")
 	private URL dialect = null;
 
 	@Option(name = "-in", aliases = "inputfile", usage = "Input log file", metaVar = "<path>")
@@ -107,50 +95,12 @@ public class ArgsParser {
 
 	private Locale locale = null;
 
-	public ArgsParser(String[] args) throws CmdLineException, URISyntaxException {
-		CmdLineParser parser = new CmdLineParser(this);
+	public ArgsParser(String... args) throws CmdLineException, URISyntaxException {
+		CmdLineParser parser = new XmlCmdParser(this);
 		parser.parseArgument(args);
-		if (configFile != null) {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			try {
-				DocumentBuilder builder = factory.newDocumentBuilder();
-				Document document = builder.parse(configFile);
-				if (document.getFirstChild().getNodeName().equals("spletneseje-configuration")) {
-					setFields(parser.getOptions(), document.getFirstChild());
-				} else {
-					throw new CmdLineException(parser, new Exception("Bad xml file!!!"));
-				}
-			} catch (ParserConfigurationException e) {
-				throw new CmdLineException(parser, e);
-			} catch (SAXException e) {
-				throw new CmdLineException(parser, e);
-			} catch (IOException e) {
-				throw new CmdLineException(parser, e);
-			}
-		}
 		if (printHelp) throw new CmdLineException(parser, new Exception());
 		if (inputFile == null) throw new CmdLineException(parser, new Exception("Missing input file!!!"));
 		if (databaseUrl == null) databaseUrl = new URI("jdbc:sqlite:sqliteDB");
-		// todo preveri odvisne argumente, se so nastavljeni
-	}
-
-	private void setFields(List<OptionHandler> options, Node node) throws CmdLineException {
-		NodeList list = node.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) if ("property".equals(list.item(i).getNodeName())) {
-			String value = list.item(i).getAttributes().getNamedItem("name").getNodeValue();
-			OptionHandler handler = findOptionByName(value, options);
-			handler.parseArguments(new Param(list.item(i).getTextContent()));
-		}
-	}
-
-	private OptionHandler findOptionByName(String name, List<OptionHandler> list) {
-		for (OptionHandler h : list) {
-			NamedOptionDef optionDef = (NamedOptionDef) h.option;
-			for (String alisa : optionDef.aliases()) if (name.equals(alisa)) {
-				return h;
-			}
-		}
-		return null;
 	}
 
 	@Option(name = "-flo", aliases = "format.locale", usage = "Locale for time parsing. Check ISO 639 standard for names.", metaVar = "<locale>")
@@ -164,7 +114,7 @@ public class ArgsParser {
 		for (String symbol : format.split(" ")) logFormat.add(symbol);
 	}
 
-	@Option(name = "-dbdr", aliases = "database.driver", usage = "Path to jar file, that is a driver", metaVar = "<path>")
+	@Option(name = "-dbdr", aliases = "database.driver", usage = "Path to jar file, that is a driver", metaVar = "<path>", depends = "-dbdrc")
 	public void setDriverUrl(File file) throws MalformedURLException {
 		driverUrl = file.toURI().toURL();
 	}
@@ -187,10 +137,6 @@ public class ArgsParser {
 
 	public URL getDriverUrl() {
 		return driverUrl;
-	}
-
-	public File getConfigFile() {
-		return configFile;
 	}
 
 	public Locale getLocale() {

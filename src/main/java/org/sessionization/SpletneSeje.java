@@ -41,8 +41,6 @@ public class SpletneSeje {
 		/** Parsanje vhodnih argumentov */
 		argsParser = new ArgsParser(args);
 
-		// todo nastavi nastavitve za hibernate
-
 		/** Preveri format in nastavi tipe polji v datoteki */
 		switch ((argsParser.getLogFormat() != null) ? argsParser.getLogFormat().get(0) : "") {
 		case "":
@@ -103,6 +101,8 @@ public class SpletneSeje {
 
 		// todo ce imamo Extended log format potem moramo drugace pridobiti tipe polji
 
+		// todo nastavi nastavitve za hibernate
+
 		/** Ustvari dinamicne razrede */
 		UrlLoader loader;
 		if (argsParser.getDriverUrl() != null) {
@@ -135,7 +135,7 @@ public class SpletneSeje {
 		classes.add(loader.loadClass(WebPageRequestDump.getClassName()));
 
 		/** Ustvari povezavo do podatkovne baze */
-		db = new HibernateUtil(argsParser.getConfigFile(), loader, classes);
+//		db = new HibernateUtil(argsParser.getConfigFile(), loader, classes);
 	}
 	/**
 	 *
