@@ -50,4 +50,40 @@ public class ArgsParserTest {
 			fail();
 		}
 	}
+
+	@Test
+	public void testArgsParsingThree() {
+		try {
+			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("XML/Test2.xml").toURI().getPath());
+			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
+			assertEquals("org.h2.Driver", parser.getDriverClass());
+			assertEquals("test", parser.getInputFile().getName());
+			assertEquals("jdbc:h2:./h2DB", parser.getDatabaseUrl().toString());
+			assertEquals(ArgsParser.DdlOperation.Create, parser.getOperation());
+		} catch (CmdLineException e) {
+			e.printStackTrace();
+			fail();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	@Test
+	public void testArgsParsingFour() {
+		try {
+			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("XML/Test3.xml").toURI().getPath());
+			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
+			assertEquals("org.h2.Driver", parser.getDriverClass());
+			assertEquals("test", parser.getInputFile().getName());
+			assertEquals("jdbc:h2:./h2DB", parser.getDatabaseUrl().toString());
+			assertEquals(ArgsParser.DdlOperation.Create, parser.getOperation());
+		} catch (CmdLineException e) {
+			e.printStackTrace();
+			fail();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
 }

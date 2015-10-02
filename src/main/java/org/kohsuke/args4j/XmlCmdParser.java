@@ -4,6 +4,7 @@ import org.kohsuke.args4j.spi.Setters;
 import org.kohsuke.args4j.spi.Parameters;
 import org.kohsuke.args4j.spi.OptionHandler;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -109,18 +110,7 @@ public class XmlCmdParser extends CmdLineParser {
 				DocumentBuilder builder = factory.newDocumentBuilder();
 				Document document = builder.parse(xmlFile);
 				if (document.getFirstChild().getNodeName().equals("spletneseje-configuration")) {
-					NodeList list = document.getFirstChild().getChildNodes();
-					for (int i = 0; i < list.getLength(); i++) {
-						if ("property".equals(list.item(i).getNodeName())) {
-							String value = list.item(i).getAttributes().getNamedItem("name").getNodeValue();
-							currentOptionHandler = findOptionByAliasName(value);
-							if (!present.contains(currentOptionHandler)) {
-								CmdLineImpl line = new CmdLineImpl(list.item(i).getTextContent());
-								currentOptionHandler.parseArguments(line);
-								present.add(currentOptionHandler);
-							}
-						}
-					}
+					processNode(present, document.getFirstChild().getChildNodes(), "");
 				} else {
 					throw new CmdLineException(this, "Bad xml file!!!");
 				}
@@ -134,6 +124,30 @@ public class XmlCmdParser extends CmdLineParser {
 			}
 		} else {
 			return present;
+		}
+	}
+
+	private void processNode(Set<OptionHandler> present, NodeList list, String prop) throws CmdLineException {
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			if ("property".equals(node.getNodeName())) {
+				String value = node.getAttributes().getNamedItem("name").getNodeValue();
+				currentOptionHandler = findOptionByAliasName(prop + (prop.isEmpty() ? "" : ".") + value);
+				if (!present.contains(currentOptionHandler)) {
+					CmdLineImpl line = new CmdLineImpl(node.getTextContent());
+					currentOptionHandler.parseArguments(line);
+					present.add(currentOptionHandler);
+				}
+			} else if (node.getChildNodes().getLength() > 1) {
+				processNode(present, node.getChildNodes(), prop + (prop.isEmpty() ? "" : ".") + node.getNodeName());
+			} else if (node.getChildNodes().getLength() == 1) {
+				currentOptionHandler = findOptionByAliasName(prop + (prop.isEmpty() ? "" : ".") + node.getNodeName());
+				if (!present.contains(currentOptionHandler)) {
+					CmdLineImpl line = new CmdLineImpl(node.getTextContent());
+					currentOptionHandler.parseArguments(line);
+					present.add(currentOptionHandler);
+				}
+			}
 		}
 	}
 

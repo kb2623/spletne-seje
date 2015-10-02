@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<spletneseje-configuration>
+	<database>
+		<driver>
+			<class>org.h2.Driver</class>
+		</driver>
+		<url>jdbc:h2:./h2DB</url>
+		<username>sa</username>
+		<password></password>
+		<dialect>org.hibernate.dialect.H2Dialect</dialect>
+		<ddl>create</ddl>
+	</database>
+	<inputfile>test</inputfile>
+</spletneseje-configuration>
