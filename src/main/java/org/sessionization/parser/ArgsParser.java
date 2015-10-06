@@ -17,25 +17,6 @@ import java.util.ArrayList;
 
 public class ArgsParser {
 
-	private class Param implements Parameters {
-
-		private String param;
-
-		public Param(String param) {
-			this.param = param;
-		}
-
-		@Override
-		public String getParameter(int idx) throws CmdLineException {
-			return param;
-		}
-
-		@Override
-		public int size() {
-			return 1;
-		}
-	}
-
 	public enum DdlOperation {
 		Create {
 			@Override
@@ -97,6 +78,9 @@ public class ArgsParser {
 
 	@Option(name = "-dbsqf", aliases = "database.sql.show.format", usage = "Show formated sql querys", metaVar = "<bool>", depends = "-dbsq")
 	private boolean showSqlFormat = false;
+
+	@Option(name = "-cc", aliases = "cache", usage = "Do you want to use second-leve cache", metaVar = "<bool>")
+	private boolean useCache;
 
 	private URL driverUrl = null;
 
@@ -206,5 +190,9 @@ public class ArgsParser {
 
 	public boolean isShowSqlFormat() {
 		return showSqlFormat;
+	}
+
+	public boolean isUseCache() {
+		return useCache;
 	}
 }

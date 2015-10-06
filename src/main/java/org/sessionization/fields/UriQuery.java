@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Cacheable
 public class UriQuery implements Field {
 
 	@Id

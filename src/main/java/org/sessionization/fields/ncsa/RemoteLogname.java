@@ -6,6 +6,7 @@ import org.sessionization.fields.FieldType;
 import javax.persistence.*;
 
 @Entity
+@Cacheable
 public class RemoteLogname implements Field {
 
 	@Id

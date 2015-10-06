@@ -1,9 +1,11 @@
 package org.sessionization.fields;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Cacheable
 public class TimeTaken implements Field {
 
 	@Column(name = "time_taken")

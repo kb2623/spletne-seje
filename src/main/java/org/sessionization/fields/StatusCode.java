@@ -1,9 +1,11 @@
 package org.sessionization.fields;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Cacheable
 public class StatusCode implements Field {
 
 	@Column(name = "status_code")

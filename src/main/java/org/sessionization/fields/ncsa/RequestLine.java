@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Entity
+@Cacheable
 public class RequestLine implements Field {
 
 	@Id

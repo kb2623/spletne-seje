@@ -3,6 +3,7 @@ package org.sessionization.fields.cookie;
 import javax.persistence.*;
 
 @Entity
+@Cacheable
 public class CookiePair {
 
 	@Id

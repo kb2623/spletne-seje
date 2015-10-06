@@ -7,6 +7,7 @@ import java.net.URL;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Cacheable
 public class UriSteam implements Field {
 
 	@Id

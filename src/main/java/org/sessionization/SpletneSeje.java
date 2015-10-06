@@ -1,26 +1,20 @@
 package org.sessionization;
 
-import org.hibernate.cache.spi.QueryKey;
+import org.datastruct.ArraySet;
 import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 import org.sessionization.analyzer.LogAnalyzer;
-import org.sessionization.fields.*;
-import org.sessionization.fields.cookie.CookieKey;
-import org.sessionization.fields.cookie.CookiePair;
-import org.sessionization.fields.ncsa.RequestLine;
-import org.sessionization.fields.query.UriQueryKey;
-import org.sessionization.fields.query.UriQueryPair;
+import org.sessionization.fields.FieldType;
 import org.sessionization.parser.*;
 import org.sessionization.parser.datastruct.RequestDump;
 import org.sessionization.parser.datastruct.WebPageRequestDump;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -102,30 +96,22 @@ public class SpletneSeje {
 
 		// todo ce imamo Extended log format potem moramo drugace pridobiti tipe polji
 
+		/** Dodaj jar datoeke */
+		Set<URL> set = new ArraySet<>();
+		try {
+			set.add(argsParser.getDriverUrl());
+		} catch (NullPointerException ignore) {}
+		try {
+			set.add(argsParser.getDialect());
+		} catch (NullPointerException ignore) {}
+		UrlLoader loader = new UrlLoader(set.toArray(new URL[0]));
+
 		/** Ustvari dinamicne razrede */
-		UrlLoader loader;
-		if (argsParser.getDriverUrl() != null) {
-			URL[] url;
-			if (argsParser.getDialect() == null) {
-				url = new URL[] {
-						argsParser.getDriverUrl()
-				};
-			} else {
-				url = new URL[] {
-						argsParser.getDriverUrl(),
-						argsParser.getDialect()
-				};
-			}
-			url[0] = argsParser.getDriverUrl();
-			loader = new UrlLoader(url);
-		} else {
-			loader = new UrlLoader(new URL[]{});
-		}
 		loader.defineClass(WebPageRequestDump.getClassName(), WebPageRequestDump.dump(logParser.getFieldType()));
 		loader.defineClass(RequestDump.getClassName(), RequestDump.dump(logParser.getFieldType()));
 
 		/** Izdelaj tabeli razredov za podatkovno bazo */
-		Set<Class> classes = new HashSet<>();
+		Set<Class> classes = new ArraySet<>();
 		for (FieldType f : logParser.getFieldType()) {
 			for (Class c : f.getDependencies()) classes.add(c);
 			classes.add(f.getClassType());
@@ -146,6 +132,10 @@ public class SpletneSeje {
 		props.setProperty("hibernate.show_sql", String.valueOf(argsParser.isShowSql()));
 		props.setProperty("hibernate.format_sql", String.valueOf(argsParser.isShowSqlFormat()));
 		props.setProperty("hbm2ddl.auto", argsParser.getOperation().getValue());
+		if (argsParser.isUseCache()) {
+			props.setProperty("hibernate.cache.use_second_level_cache", "true");
+			props.setProperty("hibernate.cache.region.factory_class", null);
+		}
 
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
 		db = new HibernateUtil(props, loader, classes);

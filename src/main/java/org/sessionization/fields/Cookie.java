@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
+@Cacheable
 public class Cookie implements Field {
 
 	@Id

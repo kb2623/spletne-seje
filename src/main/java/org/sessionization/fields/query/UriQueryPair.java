@@ -3,6 +3,7 @@ package org.sessionization.fields.query;
 import javax.persistence.*;
 
 @Entity
+@Cacheable
 public class UriQueryPair {
 
 	@Id

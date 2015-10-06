@@ -3,6 +3,7 @@ package org.sessionization.fields;
 import javax.persistence.*;
 
 @Entity
+@Cacheable
 public class Port implements Field {
 
 	@Id

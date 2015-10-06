@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Entity
+@Cacheable
 public class Address implements Field {
 
 	@Id

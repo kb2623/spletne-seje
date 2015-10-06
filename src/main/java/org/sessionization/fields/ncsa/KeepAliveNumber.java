@@ -1,12 +1,13 @@
 package org.sessionization.fields.ncsa;
 
 import org.sessionization.fields.Field;
-import org.sessionization.fields.FieldType;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Cacheable
 public class KeepAliveNumber implements Field {
 
 	@Column(name = "keep_alive_number")

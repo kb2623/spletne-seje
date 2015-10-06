@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 @Entity
+@Cacheable
 public class UserAgent implements Field {
 
 	@Id

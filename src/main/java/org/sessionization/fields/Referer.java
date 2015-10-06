@@ -1,5 +1,6 @@
 package org.sessionization.fields;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -7,6 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Entity
+@Cacheable
 public class Referer extends UriSteamQuery implements Field {
 
 	@OneToOne(cascade = CascadeType.ALL)

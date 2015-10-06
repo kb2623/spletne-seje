@@ -3,12 +3,14 @@ package org.sessionization.fields.w3c;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Embeddable
+@Cacheable(false)
 public class Date implements Field {
 
 	@Column(name = "data")

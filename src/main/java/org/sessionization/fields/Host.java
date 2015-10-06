@@ -1,11 +1,9 @@
 package org.sessionization.fields;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Cacheable
 public class Host implements Field {
 
 	@Id

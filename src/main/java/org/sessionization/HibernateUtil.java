@@ -2,19 +2,13 @@ package org.sessionization;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.sessionization.database.ConnectionStatusConverter;
-import org.sessionization.database.InetAddressConverter;
-import org.sessionization.database.MethodConverter;
-import org.sessionization.fields.Address;
-import org.sessionization.fields.Method;
-import org.sessionization.fields.ncsa.ConnectionStatus;
 
-import java.io.File;
 import java.util.Properties;
 import java.util.Set;
 
@@ -35,7 +29,14 @@ public class HibernateUtil implements AutoCloseable {
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
 				.applySettings(cfg.getProperties())
 				.build();
-		factory = cfg.buildSessionFactory(registry);
+		try {
+			factory = new MetadataSources(registry)
+					.buildMetadata()
+					.buildSessionFactory();
+		} catch (Exception e) {
+			StandardServiceRegistryBuilder.destroy(registry);
+			throw e;
+		}
 	}
 
 	public ClassLoader getLoader() {

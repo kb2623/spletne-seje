@@ -3,10 +3,12 @@ package org.sessionization.fields.w3c;
 import org.sessionization.fields.Field;
 import org.sessionization.fields.FieldType;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Cacheable
 public class SubStatus implements Field {
 
 	@Column(name = "sub_status")

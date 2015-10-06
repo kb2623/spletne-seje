@@ -1,9 +1,11 @@
 package org.sessionization.fields;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Cacheable
 public class SizeOfResponse implements Field {
 
 	@Column(name = "size_of_response")
