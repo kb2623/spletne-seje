@@ -1,9 +1,5 @@
 package org.sessionization.fields;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
-import jdk.nashorn.internal.parser.JSONParser;
-
 import javax.persistence.*;
 import java.io.BufferedReader;
 import java.io.IOException;

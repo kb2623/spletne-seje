@@ -77,7 +77,7 @@ public enum FieldType {
 			for (Class c : UriQuery.getDependencies()) {
 				list.add(c);
 			}
-			return (Class[]) list.toArray();
+			return list.toArray(new Class[list.size()]);
 		}
 	},
 	/** Status zahteve */
@@ -123,7 +123,7 @@ public enum FieldType {
 				list.add(c);
 			}
 			list.add(org.sessionization.fields.Host.class);
-			return (Class[]) list.toArray();
+			return list.toArray(new Class[list.size()]);
 		}
 	},
 	/** Identifikacija brskalnika in botov */

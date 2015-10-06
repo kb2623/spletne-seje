@@ -149,7 +149,9 @@ public class ArraySet<E> implements Set<E> {
 	@Override
 	public <T> T[] toArray(T[] t) throws NullPointerException, ArrayStoreException {
 		if (t == null) throw new NullPointerException();
-		if (t.length == size) {
+		if (isEmpty()) {
+			return t;
+		} else if (t.length == size) {
 			System.arraycopy(array, 0, t, 0, size);
 			return t;
 		} else {

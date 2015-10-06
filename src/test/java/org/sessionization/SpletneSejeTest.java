@@ -143,13 +143,12 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testRunOne() {
-		SpletneSeje.main("-in", "src/test/resources/Logs/Common/logCommon", "-fl", "COMMON");
+		SpletneSeje.main("-in", pathNCSACommon, "-fl", "COMMON");
 	}
 
 	@Test
 	public void testRunTwo() throws MalformedURLException {
-		System.out.println(new File("lib/h2-1.4,188.jar").toURI().toURL());
-		SpletneSeje.main("-in", "src/test/resources/Logs/Common/logCommon", "-fl", "COMMON", "-xml", "H2.cfg.xml", "-dbdr", "lib/h2-1.4.188.jar", "-dbdrc", "adfkl;");
+		SpletneSeje.main("-in", pathNCSACommon, "-fl", "COMMON", "-xml", "H2.cfg.xml", "-dbdr", "lib/h2-1.4.188.jar", "-dbdrc", "adfkl;");
 	}
 
 }

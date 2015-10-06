@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class SpletneSeje {
 
@@ -97,21 +94,17 @@ public class SpletneSeje {
 		// todo ce imamo Extended log format potem moramo drugace pridobiti tipe polji
 
 		/** Dodaj jar datoeke */
-		Set<URL> set = new ArraySet<>();
-		try {
-			set.add(argsParser.getDriverUrl());
-		} catch (NullPointerException ignore) {}
-		try {
-			set.add(argsParser.getDialect());
-		} catch (NullPointerException ignore) {}
-		UrlLoader loader = new UrlLoader(set.toArray(new URL[0]));
+		Set<URL> set = new HashSet<>();
+		if (argsParser.getDriverUrl() != null) set.add(argsParser.getDriverUrl());
+		if (argsParser.getDialect() != null) set.add(argsParser.getDialect());
+		UrlLoader loader = new UrlLoader(set.toArray(new URL[set.size()]));
 
 		/** Ustvari dinamicne razrede */
 		loader.defineClass(WebPageRequestDump.getClassName(), WebPageRequestDump.dump(logParser.getFieldType()));
 		loader.defineClass(RequestDump.getClassName(), RequestDump.dump(logParser.getFieldType()));
 
 		/** Izdelaj tabeli razredov za podatkovno bazo */
-		Set<Class> classes = new ArraySet<>();
+		Set<Class> classes = new HashSet<>();
 		for (FieldType f : logParser.getFieldType()) {
 			for (Class c : f.getDependencies()) classes.add(c);
 			classes.add(f.getClassType());
@@ -131,11 +124,7 @@ public class SpletneSeje {
 		props.setProperty("hibernate.connection.pool_size", String.valueOf(argsParser.getConnectoinPoolSize()));
 		props.setProperty("hibernate.show_sql", String.valueOf(argsParser.isShowSql()));
 		props.setProperty("hibernate.format_sql", String.valueOf(argsParser.isShowSqlFormat()));
-		props.setProperty("hbm2ddl.auto", argsParser.getOperation().getValue());
-		if (argsParser.isUseCache()) {
-			props.setProperty("hibernate.cache.use_second_level_cache", "true");
-			props.setProperty("hibernate.cache.region.factory_class", null);
-		}
+		props.setProperty("hibernate.hbm2ddl.auto", argsParser.getOperation().getValue());
 
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
 		db = new HibernateUtil(props, loader, classes);
@@ -159,7 +148,6 @@ public class SpletneSeje {
 			new SpletneSeje(args).run();
 		} catch (CmdLineException e) {
 			e.getParser().printUsage(System.out);
-			e.printStackTrace();
 			if (e.getCause() != null && e.getCause().getMessage() != null)
 				System.err.println(e.getCause().getMessage());
 			System.exit(1);

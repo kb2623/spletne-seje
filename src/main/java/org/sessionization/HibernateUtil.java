@@ -23,16 +23,15 @@ public class HibernateUtil implements AutoCloseable {
 
 		Configuration cfg = new Configuration();
 		cfg.addProperties(props);
-		for (Class c : classes) cfg.addAnnotatedClass(c);
 
 		registry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
 				.applySettings(cfg.getProperties())
 				.build();
 		try {
-			factory = new MetadataSources(registry)
-					.buildMetadata()
-					.buildSessionFactory();
+			MetadataSources sources = new MetadataSources(registry);
+			for (Class c : classes) sources.addAnnotatedClass(c);
+			factory = sources.buildMetadata().buildSessionFactory();
 		} catch (Exception e) {
 			StandardServiceRegistryBuilder.destroy(registry);
 			throw e;
