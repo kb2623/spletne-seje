@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
  * @author Jan Materne
  */
 public class Starter {
-	
+
 	/**
 	 * The name of the JavaVM property which stores the class name of
 	 * the business class.
@@ -26,7 +26,7 @@ public class Starter {
 		CmdLineParser parser = null;
 		boolean classHasArgument = false;
 		boolean classHasOptions  = false;
-		
+
 		// Check the requirement: must specify the class to start
 		if (classname == null || "".equals(classname)) {
 			System.err.println("The system property '" 
@@ -34,18 +34,18 @@ public class Starter {
 					+ "' must contain the classname to start.");
 			System.exit(-1);
 		}
-		
+
 		try {
 			Class clazz = Class.forName(classname);
 			Object bean = clazz.newInstance();
 			parser = new CmdLineParser(bean);
-			
+
 			// for help output
 			classHasArgument = hasAnnotation(clazz, Argument.class);
 			classHasOptions  = hasAnnotation(clazz, Option.class);
-			
+
 			parser.parseArgument(args);
-			
+
 			// try starting   run()
 			Method m;
 			boolean couldInvoke = false;
@@ -105,5 +105,5 @@ public class Starter {
 		}
 		return false;
 	}
-	
+
 }

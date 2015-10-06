@@ -22,13 +22,13 @@ public class OptionDef {
 	}
 
 	protected OptionDef(String usage, String metaVar, boolean required,
-            boolean help, boolean hidden, 
-            Class<? extends OptionHandler> handler,
+			boolean help, boolean hidden, 
+			Class<? extends OptionHandler> handler,
 			boolean multiValued) {
 		this.usage = usage;
 		this.metaVar = metaVar;
 		this.required = required;
-        this.help = help;
+		this.help = help;
 		this.hidden = hidden;
 		this.handler = handler;
 		this.multiValued = multiValued;
@@ -45,14 +45,14 @@ public class OptionDef {
 	public boolean required() {
 		return required;
 	}
-    
+
 	public boolean help() {
 		return help;
 	}
 
-    /**
-     * Value from {@link Option#hidden()} or {@link Argument#hidden()}
-     */
+	/**
+	 * Value from {@link Option#hidden()} or {@link Argument#hidden()}
+	 */
 	public boolean hidden() {
 		return hidden;
 	}

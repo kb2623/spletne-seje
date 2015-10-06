@@ -131,7 +131,7 @@ public class CmdLineParser {
 			checkOptionNotInMap(alias);
 		}
 		options.add(OptionHandlerRegistry.getRegistry().createOptionHandler(
-				this, new NamedOptionDef(o), setter));
+					this, new NamedOptionDef(o), setter));
 	}
 
 	/**
@@ -314,7 +314,7 @@ public class CmdLineParser {
 				handler.option.usage().length() == 0 ||
 				!filter.select(handler)) {
 			return;
-		}
+				}
 
 		// What is the width of the two data columns
 		int totalUsageWidth = parserProperties.getUsageWidth();
@@ -334,8 +334,8 @@ public class CmdLineParser {
 			String nameAndMeta = (i >= namesAndMetas.size()) ? "" : namesAndMetas.get(i);
 			String usage       = (i >= usages.size())        ? "" : usages.get(i);
 			String format      = ((nameAndMeta.length() > 0) && (i == 0))
-					? " %1$-" + widthMetadata + "s : %2$-1s"
-					: " %1$-" + widthMetadata + "s   %2$-1s";
+				? " %1$-" + widthMetadata + "s : %2$-1s"
+				: " %1$-" + widthMetadata + "s   %2$-1s";
 			String output = String.format(format, nameAndMeta, usage);
 
 			out.println(output);
@@ -403,7 +403,7 @@ public class CmdLineParser {
 
 		CmdLineImpl(String arg) {
 			args = new String[] {
-					arg
+				arg
 			};
 			pos = 0;
 		}

@@ -14,14 +14,14 @@ public class IllegalAnnotationError extends Error {
 	private static final long serialVersionUID = 2397757838147693218L;
 
 	public IllegalAnnotationError(String message) {
-        super(message);
-    }
+		super(message);
+	}
 
-    public IllegalAnnotationError(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public IllegalAnnotationError(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public IllegalAnnotationError(Throwable cause) {
-        super(cause);
-    }
+	public IllegalAnnotationError(Throwable cause) {
+		super(cause);
+	}
 }
