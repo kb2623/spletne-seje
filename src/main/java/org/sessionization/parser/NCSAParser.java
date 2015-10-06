@@ -56,6 +56,14 @@ public class NCSAParser extends AbsParser {
 	}
 	/**
 	 *
+	 * @param file
+	 * @throws FileNotFoundException
+	 */
+	public NCSAParser(File file) throws FileNotFoundException {
+		super(file);
+	}
+	/**
+	 *
 	 * @param reader
 	 * @see AbsParser#AbsParser(BufferedReader)
 	 * @see IISParser#setDefaultFields()
@@ -68,8 +76,8 @@ public class NCSAParser extends AbsParser {
 	 *
 	 * @param list
 	 */
-	public NCSAParser(List<FieldType> list) {
-		super();
+	public NCSAParser(File file, List<FieldType> list) throws FileNotFoundException {
+		super(file);
 		setDefaultFields();
 		setFieldType(list);
 	}
@@ -235,7 +243,11 @@ public class NCSAParser extends AbsParser {
 		try {
 			return new Iterator<ParsedLine>() {
 
-				private ParsedLine next = parseLine();
+				private ParsedLine next;
+
+				{
+					next = parseLine();
+				}
 
 				@Override
 				public boolean hasNext() {

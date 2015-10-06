@@ -144,10 +144,6 @@ public class ArgsParser {
 		return logFormat;
 	}
 
-	public File getInputFilePath() {
-		return inputFile;
-	}
-
 	public String getDateFormat() {
 		return dateFormat;
 	}

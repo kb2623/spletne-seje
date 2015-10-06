@@ -1,17 +1,19 @@
 package org.sessionization.analyzer;
 
-import java.io.*;
+import org.sessionization.fields.Cookie;
+import org.sessionization.fields.FieldType;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.sessionization.fields.Cookie;
 
 public class LogAnalyzer {
 
 	private FileInputStream stream;
 	private BufferedReader reader;
 	private LogFileType logFileType = LogFileType.UNKNOWN;
+	private List<FieldType> fields;
 	/**
 	 *
 	 * @param path
@@ -25,6 +27,14 @@ public class LogAnalyzer {
 		} else {
 			// TODO preveri kaksna locila uporablja datoteka, ce so ".., .., ....." je to IIS, ce so "... ... ...." je to NCSA, v nasprotnem primeru formata log datoteke ne poznamo
 		}
+		fields = new ArrayList<>();
+	}
+	/**
+	 *
+	 * @return
+	 */
+	public List<FieldType> getFields() {
+		return fields;
 	}
 	/**
 	 * Metoda preveri ali se v combined log frmatu nahaja

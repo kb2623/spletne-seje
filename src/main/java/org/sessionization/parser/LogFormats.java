@@ -37,6 +37,7 @@ public enum LogFormats {
 		public List<FieldType> create(List<String> args) {
 			List<FieldType> list = new ArrayList<>();
 			args.forEach(symbol -> {
+				// TODO Dolocena polja nimajo tipa, kar privede do napake pri obdelavi datoeke
 				switch (symbol) {
 				case "%%": list.add(FieldType.Unknown);	                break;
 				case "%a": list.add(FieldType.ClientIP); 		        break;
@@ -112,6 +113,12 @@ public enum LogFormats {
 				}
 			});
 			return list;
+		}
+	},
+	IISLogFormat {
+		@Override
+		public List<FieldType> create(List<String> args) {
+			return ExtendedLogFormat.create(args);
 		}
 	};
 

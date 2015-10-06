@@ -52,6 +52,14 @@ public class IISParser extends AbsParser {
 	}
 	/**
 	 *
+	 * @param file
+	 * @throws FileNotFoundException
+	 */
+	public IISParser(File file) throws FileNotFoundException {
+		super(file);
+	}
+	/**
+	 *
 	 * @param reader
 	 * @see AbsParser#AbsParser(BufferedReader)
 	 * @see IISParser#setDefaultFields()
@@ -59,6 +67,17 @@ public class IISParser extends AbsParser {
 	public IISParser(BufferedReader reader) {
 		super(reader);
 		setDefaultFields();
+	}
+	/**
+	 *
+	 * @param file
+	 * @param list
+	 * @throws FileNotFoundException
+	 */
+	public IISParser(File file, List<FieldType> list) throws FileNotFoundException {
+		super(file);
+		setDefaultFields();
+		setFieldType(list);
 	}
 	/**
 	 * Metoda nastavi prevzete vrednosti poljem razreda:
@@ -217,7 +236,11 @@ public class IISParser extends AbsParser {
 		try {
 			return new Iterator<ParsedLine>() {
 
-				private ParsedLine next = parseLine();
+				private ParsedLine next;
+
+				{
+					next = parseLine();
+				}
 
 				@Override
 				public boolean hasNext() {

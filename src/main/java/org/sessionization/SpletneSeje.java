@@ -29,45 +29,53 @@ public class SpletneSeje {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("deprecation")
-	public SpletneSeje(String[] args) throws CmdLineException, NullPointerException, ParseException, IOException, ClassNotFoundException, URISyntaxException {
+	public SpletneSeje(String[] args) throws CmdLineException, URISyntaxException, IOException, ParseException, ClassNotFoundException {
 		/** Parsanje vhodnih argumentov */
 		argsParser = new ArgsParser(args);
 
 		/** Preveri format in nastavi tipe polji v datoteki */
 		switch ((argsParser.getLogFormat() != null) ? argsParser.getLogFormat().get(0) : "") {
 		case "":
-			LogAnalyzer analyzer = new LogAnalyzer(argsParser.getInputFilePath());
+			LogAnalyzer analyzer = new LogAnalyzer(argsParser.getInputFile());
 			switch (analyzer.getLogFileType()) {
 			case NCSA:
-				logParser = new NCSAParser();
+				logParser = new NCSAParser(argsParser.getInputFile(), analyzer.getFields());
 				break;
 			case W3C:
-				logParser = new W3CParser();
+				logParser = new W3CParser(argsParser.getInputFile());
 				break;
 			case IIS:
-				logParser = new IISParser();
+				logParser = new IISParser(argsParser.getInputFile(), analyzer.getFields());
 				break;
 			default:
 				throw new ParseException("Unknow format of input log file!!!", 0);
 			}
+			logParser.openFile(argsParser.getInputFile());
 			break;
 		case "COMMON":
-			logParser = new NCSAParser(LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+			logParser = new NCSAParser(argsParser.getInputFile(), LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
 			break;
 		case "COMBINED":
-			logParser = new NCSAParser(LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+			logParser = new NCSAParser(argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+			break;
+		case "CUSTOM":
+			argsParser.getLogFormat().remove(0);
+			if (argsParser.getLogFormat().size() > 0) {
+				logParser = new NCSAParser(argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
+			} else {
+				throw new ExceptionInInitializerError("Need more args!!!");
+			}
 			break;
 		case "EXTENDED":
-			logParser = new W3CParser();
+			logParser = new W3CParser(argsParser.getInputFile());
 			break;
 		case "IIS":
-			logParser = new IISParser();
+			argsParser.getLogFormat().remove(0);
+			logParser = new IISParser(argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
 			break;
 		default:
-			logParser = new NCSAParser();
-			logParser.setFieldType(LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
+			throw new ExceptionInInitializerError("Unknown log format!!!");
 		}
-		logParser.openFile(argsParser.getInputFilePath());
 
 		/** Nastavi format datuma */
 		if(argsParser.getDateFormat() != null) {
@@ -151,20 +159,23 @@ public class SpletneSeje {
 			System.out.println(e.getLocalizedMessage());
 			System.exit(1);
 		} catch (ParseException e) {
-			System.err.println(e.getMessage());
+			System.err.println(e.getLocalizedMessage());
 			System.exit(2);
 		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
+			System.err.println(e.getLocalizedMessage());
 			System.exit(3);
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			System.err.println(e.getLocalizedMessage());
 			System.exit(4);
 		} catch (URISyntaxException e) {
-			System.err.println(e.getMessage());
+			System.err.println(e.getLocalizedMessage());
 			System.exit(5);
 		} catch (ClassNotFoundException e) {
-			System.err.println(e.getMessage());
+			System.err.println(e.getLocalizedMessage());
 			System.exit(6);
+		} catch (ExceptionInInitializerError e) {
+			System.err.println(e.getLocalizedMessage());
+			System.exit(7);
 		}
 	}
 

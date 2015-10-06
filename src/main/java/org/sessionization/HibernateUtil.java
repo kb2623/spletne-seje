@@ -18,7 +18,7 @@ public class HibernateUtil implements AutoCloseable {
 	private ServiceRegistry registry = null;
 	private ClassLoader loader = null;
 
-	public HibernateUtil(Properties props, ClassLoader loader, Set<Class> classes) {
+	public HibernateUtil(Properties props, ClassLoader loader, Set<Class> classes) throws ExceptionInInitializerError {
 		this.loader = loader;
 
 		registry = new StandardServiceRegistryBuilder()
@@ -31,7 +31,7 @@ public class HibernateUtil implements AutoCloseable {
 			factory = sources.buildMetadata().buildSessionFactory();
 		} catch (Exception e) {
 			StandardServiceRegistryBuilder.destroy(registry);
-			throw e;
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 

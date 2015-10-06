@@ -54,6 +54,14 @@ public class W3CParser extends AbsParser {
 	}
 	/**
 	 *
+	 * @param file
+	 * @throws FileNotFoundException
+	 */
+	public W3CParser(File file) throws FileNotFoundException {
+		super(file);
+	}
+	/**
+	 *
 	 * @param reader
 	 * @see AbsParser#AbsParser(BufferedReader)
 	 * @see W3CParser#setDefaultFields()
@@ -217,7 +225,11 @@ public class W3CParser extends AbsParser {
 		try {
 			return new Iterator<ParsedLine>() {
 
-				private ParsedLine next = parseLine();
+				private ParsedLine next;
+
+				{
+					next = parseLine();
+				}
 
 				@Override
 				public boolean hasNext() {

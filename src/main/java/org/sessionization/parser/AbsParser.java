@@ -51,6 +51,14 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 		file = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 	}
 	/**
+	 *
+	 * @param file
+	 * @throws FileNotFoundException
+	 */
+	public AbsParser(File file) throws FileNotFoundException {
+		openFile(file);
+	}
+	/**
 	 * Konstruktor namenjen testiranju
 	 *
 	 * @param input Vhodni tok predstavljen z nizem
