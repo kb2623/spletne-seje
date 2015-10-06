@@ -1,6 +1,5 @@
 package org.sessionization;
 
-import org.datastruct.ArraySet;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.fields.FieldType;

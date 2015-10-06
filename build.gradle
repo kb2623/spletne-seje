@@ -21,8 +21,6 @@ apply plugin: 'com.github.johnrengelman.shadow'
 sourceCompatibility = 1.8
 
 jar {
-    baseName = 'spletneseje'
-    version = '1.0.0'
     manifest {
         attributes 'Main-Class': 'org.sessionization.SpletneSeje'
     }
@@ -33,7 +31,6 @@ repositories {
 }
 
 dependencies {
-    compile group: 'args4j', name: 'args4j', version: '2.32'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.2.Final'
     compile group: 'org.hibernate', name: 'hibernate-java8', version: '5.0.2.Final'
     compile group: 'org.ow2.asm', name: 'asm', version: '5.0.4'
