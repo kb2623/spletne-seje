@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 public class SpletneSeje {
@@ -101,8 +102,6 @@ public class SpletneSeje {
 
 		// todo ce imamo Extended log format potem moramo drugace pridobiti tipe polji
 
-		// todo nastavi nastavitve za hibernate
-
 		/** Ustvari dinamicne razrede */
 		UrlLoader loader;
 		if (argsParser.getDriverUrl() != null) {
@@ -134,8 +133,22 @@ public class SpletneSeje {
 		classes.add(loader.loadClass(RequestDump.getClassName()));
 		classes.add(loader.loadClass(WebPageRequestDump.getClassName()));
 
-		/** Ustvari povezavo do podatkovne baze */
-//		db = new HibernateUtil(argsParser.getConfigFile(), loader, classes);
+		/** Nastavi nastavitve za hibernate */
+		Properties props = new Properties();
+		props.setProperty("hibernate.current_session_context_class", "thread");
+		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCacheProvider");
+		props.setProperty("hibernate.connection.driver_class", argsParser.getDriverClass());
+		props.setProperty("hibernate.dialect", argsParser.getDialectClass());
+		props.setProperty("hibernate.connection.url", argsParser.getDatabaseUrl().toString());
+		if (argsParser.getUserName() != null) props.setProperty("hibernate.connection.username", argsParser.getUserName());
+		if (argsParser.getPassWord() != null) props.setProperty("hibernate.connection.password", argsParser.getPassWord());
+		props.setProperty("hibernate.connection.pool_size", String.valueOf(argsParser.getConnectoinPoolSize()));
+		props.setProperty("hibernate.show_sql", String.valueOf(argsParser.isShowSql()));
+		props.setProperty("hibernate.format_sql", String.valueOf(argsParser.isShowSqlFormat()));
+		props.setProperty("hbm2ddl.auto", argsParser.getOperation().getValue());
+
+		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
+		db = new HibernateUtil(props, loader, classes);
 	}
 	/**
 	 *

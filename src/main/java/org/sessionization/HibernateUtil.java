@@ -15,6 +15,7 @@ import org.sessionization.fields.Method;
 import org.sessionization.fields.ncsa.ConnectionStatus;
 
 import java.io.File;
+import java.util.Properties;
 import java.util.Set;
 
 public class HibernateUtil implements AutoCloseable {
@@ -23,16 +24,11 @@ public class HibernateUtil implements AutoCloseable {
 	private ServiceRegistry registry = null;
 	private ClassLoader loader = null;
 
-	public HibernateUtil(File file, ClassLoader loader, Set<Class> classes) {
+	public HibernateUtil(Properties props, ClassLoader loader, Set<Class> classes) {
 		this.loader = loader;
 
-		Configuration cfg;
-		if (file != null && file.isFile()) {
-			cfg = new Configuration().configure(file);
-		} else {
-			cfg = new Configuration().configure("SQLite.cfg.xml");
-		}
-
+		Configuration cfg = new Configuration();
+		cfg.addProperties(props);
 		for (Class c : classes) cfg.addAnnotatedClass(c);
 
 		registry = new StandardServiceRegistryBuilder()

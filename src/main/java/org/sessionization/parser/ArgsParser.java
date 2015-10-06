@@ -89,11 +89,20 @@ public class ArgsParser {
 	@Option(name = "-dbddl", aliases = "database.ddl", usage = "Create new tables or update exsisting ones", metaVar = "<create|update>")
 	private DdlOperation operation = DdlOperation.Create;
 
+	@Option(name = "-dbcp", aliases = "database.connection.pool_size", usage = "Number of connetions alowed for connecting to database", metaVar = "<int>")
+	private int connectoinPoolSize = 1;
+
+	@Option(name = "-dbsq", aliases = "database.sql.show", usage = "Show sql querys", metaVar = "<bool>")
+	private boolean showSql = false;
+
+	@Option(name = "-dbsqf", aliases = "database.sql.show.format", usage = "Show formated sql querys", metaVar = "<bool>", depends = "-dbsq")
+	private boolean showSqlFormat = false;
+
 	private URL driverUrl = null;
 
 	private List<String> logFormat = null;
 
-	private Locale locale = null;
+	private Locale locale = Locale.US;
 
 	public ArgsParser(String... args) throws CmdLineException, URISyntaxException {
 		CmdLineParser parser = new XmlCmdParser(this);
@@ -185,5 +194,17 @@ public class ArgsParser {
 
 	public String getDriverClass() {
 		return driverClass;
+	}
+
+	public int getConnectoinPoolSize() {
+		return connectoinPoolSize;
+	}
+
+	public boolean isShowSql() {
+		return showSql;
+	}
+
+	public boolean isShowSqlFormat() {
+		return showSqlFormat;
 	}
 }
