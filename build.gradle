@@ -2,7 +2,7 @@ group 'org.spletneseje'
 version '1.0'
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.4'
+  gradleVersion = '2.7'
   distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 
@@ -11,6 +11,20 @@ apply plugin: 'jacoco'
 apply plugin: 'pmd'
 
 sourceCompatibility = 1.8
+
+jar {
+    baseName = 'spletneseje'
+    version = '1.0.0'
+    manifest {
+        attributes 'Main-Class': 'org.sessionization.SpletneSeje'
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    with jar
+}
 
 repositories {
     mavenCentral()
