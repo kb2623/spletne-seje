@@ -252,7 +252,7 @@ public class XmlCmdParser extends CmdLineParser {
 	 * @throws CmdLineException
 	 */
 	private String[] expandAtFiles(String args[]) throws CmdLineException {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		for (String arg : args) {
 			if (arg.startsWith("@")) {
 				File file = new File(arg.substring(1));

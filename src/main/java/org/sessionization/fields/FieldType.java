@@ -1,5 +1,6 @@
 package org.sessionization.fields;
 
+import org.sessionization.database.ConnectionStatusConverter;
 import org.sessionization.database.InetAddressConverter;
 import org.sessionization.database.MethodConverter;
 import org.sessionization.fields.cookie.CookieKey;
@@ -8,6 +9,9 @@ import org.sessionization.fields.ncsa.*;
 import org.sessionization.fields.query.UriQueryKey;
 import org.sessionization.fields.query.UriQueryPair;
 import org.sessionization.fields.w3c.*;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.sessionization.fields.FieldType.ProtocolVersion;
 
@@ -64,14 +68,16 @@ public enum FieldType {
 
 		@Override
 		public Class[] getDependencies() {
-			return new Class[] {
-					org.sessionization.fields.UriSteam.class,
-					UriSteamQuery.class,
-					org.sessionization.fields.UriQuery.class,
-					UriQueryPair.class,
-					UriQueryKey.class,
-					Protocol.class
-			};
+			List<Class> list = new LinkedList<>();
+			list.add(org.sessionization.fields.Method.class);
+			list.add(Protocol.class);
+			list.add(org.sessionization.fields.UriSteam.class);
+			list.add(UriSteamQuery.class);
+			list.add(org.sessionization.fields.UriQuery.class);
+			for (Class c : UriQuery.getDependencies()) {
+				list.add(c);
+			}
+			return (Class[]) list.toArray();
 		}
 	},
 	/** Status zahteve */
@@ -109,14 +115,15 @@ public enum FieldType {
 
 		@Override
 		public Class[] getDependencies() {
-			return new Class[] {
-					org.sessionization.fields.UriSteam.class,
-					UriSteamQuery.class,
-					org.sessionization.fields.UriQuery.class,
-					UriQueryPair.class,
-					UriQueryKey.class,
-					org.sessionization.fields.Host.class
-			};
+			List<Class> list = new LinkedList<>();
+			list.add(org.sessionization.fields.UriSteam.class);
+			list.add(UriSteamQuery.class);
+			list.add(org.sessionization.fields.UriQuery.class);
+			for (Class c : UriQuery.getDependencies()) {
+				list.add(c);
+			}
+			list.add(org.sessionization.fields.Host.class);
+			return (Class[]) list.toArray();
 		}
 	},
 	/** Identifikacija brskalnika in botov */
@@ -161,7 +168,7 @@ public enum FieldType {
 		@Override
 		public Class[] getDependencies() {
 			return new Class[] {
-					org.sessionization.fields.Method.class
+					MethodConverter.class
 			};
 		}
 	},
@@ -338,7 +345,7 @@ public enum FieldType {
 		@Override
 		public Class[] getDependencies() {
 			return new Class[] {
-					MethodConverter.class
+					ConnectionStatusConverter.class
 			};
 		}
 	},
