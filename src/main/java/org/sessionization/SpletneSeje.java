@@ -148,8 +148,7 @@ public class SpletneSeje {
 			new SpletneSeje(args).run();
 		} catch (CmdLineException e) {
 			e.getParser().printUsage(System.out);
-			if (e.getCause() != null && e.getCause().getMessage() != null)
-				System.err.println(e.getCause().getMessage());
+			System.out.println(e.getLocalizedMessage());
 			System.exit(1);
 		} catch (ParseException e) {
 			System.err.println(e.getMessage());

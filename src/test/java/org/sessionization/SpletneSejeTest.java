@@ -143,7 +143,7 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testRunOne() {
-		SpletneSeje.main("-in", pathNCSACommon, "-fl", "COMMON");
+		SpletneSeje.main("-in", pathNCSACommon, "-fl", "COMMON", "-dbsqf", "-dbsq");
 	}
 
 	@Test

@@ -89,13 +89,6 @@ public class SQLiteDialect extends Dialect {
 		uniqueDelegate = new SQLiteUniqueDelegate(this);
 	}
 
-	// database type mapping support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-	@Override
-	public String getCastTypeName(int code) {
-		return super.getCastTypeName(code); // FIXME
-	}
-
 	// IDENTITY support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	@Override
@@ -118,7 +111,15 @@ public class SQLiteDialect extends Dialect {
 		return "select last_insert_rowid()";
 	}
 
+	// GUID support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	@Override
+	public String getSelectGUIDString() {
+		return "select hex(randomblob(16))";
+	}
+
 	// limit/offset support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 	private static final AbstractLimitHandler LIMIT_HANDLER = new AbstractLimitHandler() {
 		@Override
 		public String processSql(String sql, RowSelection selection) {
@@ -143,6 +144,7 @@ public class SQLiteDialect extends Dialect {
 	}
 
 	// lock acquisition support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 	@Override
 	public boolean supportsLockTimeouts() {
 		return false;
@@ -229,15 +231,17 @@ public class SQLiteDialect extends Dialect {
 		return true;
 	}
 
+	// miscellaneous suppoer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	@Override
+	public String getNoColumnsInsertString() {
+		return "default values";
+	}
+
 	// DDL support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	@Override
 	public boolean canCreateSchema() {
-		return false;
-	}
-
-	@Override
-	public boolean hasAlterTable() {
 		return false;
 	}
 
@@ -251,6 +255,7 @@ public class SQLiteDialect extends Dialect {
 		return false;
 	}
 
+	@Override
 	public String getAddColumnString() {
 		return "add column";
 	}
@@ -276,13 +281,23 @@ public class SQLiteDialect extends Dialect {
 	}
 
 	@Override
+	public String getTableComment(String comment) {
+		return comment;
+	}
+
+	@Override
+	public String getColumnComment(String comment) {
+		return comment;
+	}
+
+	@Override
 	public boolean supportsIfExistsBeforeTableName() {
 		return true;
 	}
 
 	@Override
 	public boolean doesReadCommittedCauseWritersToBlockReaders() {
-		return true; // TODO Validate (WAL mode...)
+		return true;
 	}
 
 	public boolean doesRepeatableReadCauseReadersToBlockWriters() {
@@ -312,15 +327,7 @@ public class SQLiteDialect extends Dialect {
 		}
 	}
 
-	@Override
-	public String getSelectGUIDString() {
-		return "select hex(randomblob(16))";
-	}
 
-	@Override
-	public String getNoColumnsInsertString() {
-		return "default values";
-	}
 
 	@Override
 	public ScrollMode defaultScrollMode() {

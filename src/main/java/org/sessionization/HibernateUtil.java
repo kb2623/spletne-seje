@@ -21,12 +21,9 @@ public class HibernateUtil implements AutoCloseable {
 	public HibernateUtil(Properties props, ClassLoader loader, Set<Class> classes) {
 		this.loader = loader;
 
-		Configuration cfg = new Configuration();
-		cfg.addProperties(props);
-
 		registry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
-				.applySettings(cfg.getProperties())
+				.applySettings(props)
 				.build();
 		try {
 			MetadataSources sources = new MetadataSources(registry);
