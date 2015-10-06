@@ -256,6 +256,11 @@ public class SQLiteDialect extends Dialect {
 	}
 
 	@Override
+	public boolean hasAlterTable() {
+		return false;
+	}
+
+	@Override
 	public String getAddColumnString() {
 		return "add column";
 	}
