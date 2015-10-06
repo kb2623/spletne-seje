@@ -28,7 +28,7 @@ public class W3CParser extends AbsParser {
 	 */
 	public W3CParser() {
 		super();
-		setDefaultFields();
+		setDefaultFields(Locale.US);
 	}
 	/**
 	 *
@@ -37,9 +37,9 @@ public class W3CParser extends AbsParser {
 	 * @see AbsParser#AbsParser(String)
 	 * @see W3CParser#setDefaultFields()
 	 */
-	public W3CParser(String path) throws FileNotFoundException {
+	public W3CParser(Locale locale, String path) throws FileNotFoundException {
 		super(path);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 *
@@ -48,17 +48,18 @@ public class W3CParser extends AbsParser {
 	 * @see W3CParser#setDefaultFields()
 	 */
 	@Deprecated
-	public W3CParser(StringReader input) {
+	public W3CParser(Locale locale, StringReader input) {
 		super(input);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public W3CParser(File file) throws FileNotFoundException {
+	public W3CParser(Locale locale, File file) throws FileNotFoundException {
 		super(file);
+		setDefaultFields(locale);
 	}
 	/**
 	 *
@@ -66,9 +67,9 @@ public class W3CParser extends AbsParser {
 	 * @see AbsParser#AbsParser(BufferedReader)
 	 * @see W3CParser#setDefaultFields()
 	 */
-	public W3CParser(BufferedReader reader) {
+	public W3CParser(Locale locale, BufferedReader reader) {
 		super(reader);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 * Metoda nastavi prevzete vrednosti poljem razreda:
@@ -77,9 +78,9 @@ public class W3CParser extends AbsParser {
 	 * <p><code>timeFormat = HH:mm:ss</code></p>
 	 * <p><code>locale = Locale.US</code></p>
 	 */
-	private void setDefaultFields() {
-		dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.US);
-		timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.US);
+	private void setDefaultFields(Locale locale) {
+		dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(locale);
+		timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(locale);
 	}
 	/**
 	 * Nastavljanje formata za parsanje datuma

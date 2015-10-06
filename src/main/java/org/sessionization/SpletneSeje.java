@@ -5,6 +5,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.fields.FieldType;
 import org.sessionization.parser.*;
+import org.sessionization.parser.datastruct.ParsedLine;
 import org.sessionization.parser.datastruct.RequestDump;
 import org.sessionization.parser.datastruct.WebPageRequestDump;
 
@@ -24,9 +25,10 @@ public class SpletneSeje {
 	 *
 	 * @param args
 	 * @throws CmdLineException
-	 * @throws NullPointerException
-	 * @throws ParseException
+	 * @throws URISyntaxException
 	 * @throws IOException
+	 * @throws ParseException
+	 * @throws ClassNotFoundException
 	 */
 	@SuppressWarnings("deprecation")
 	public SpletneSeje(String[] args) throws CmdLineException, URISyntaxException, IOException, ParseException, ClassNotFoundException {
@@ -39,13 +41,13 @@ public class SpletneSeje {
 			LogAnalyzer analyzer = new LogAnalyzer(argsParser.getInputFile());
 			switch (analyzer.getLogFileType()) {
 			case NCSA:
-				logParser = new NCSAParser(argsParser.getInputFile(), analyzer.getFields());
+				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
 				break;
 			case W3C:
-				logParser = new W3CParser(argsParser.getInputFile());
+				logParser = new W3CParser(argsParser.getLocale(), argsParser.getInputFile());
 				break;
 			case IIS:
-				logParser = new IISParser(argsParser.getInputFile(), analyzer.getFields());
+				logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
 				break;
 			default:
 				throw new ParseException("Unknow format of input log file!!!", 0);
@@ -53,25 +55,25 @@ public class SpletneSeje {
 			logParser.openFile(argsParser.getInputFile());
 			break;
 		case "COMMON":
-			logParser = new NCSAParser(argsParser.getInputFile(), LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+			logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
 			break;
 		case "COMBINED":
-			logParser = new NCSAParser(argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+			logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
 			break;
 		case "CUSTOM":
 			argsParser.getLogFormat().remove(0);
 			if (argsParser.getLogFormat().size() > 0) {
-				logParser = new NCSAParser(argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
+				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
 			} else {
 				throw new ExceptionInInitializerError("Need more args!!!");
 			}
 			break;
 		case "EXTENDED":
-			logParser = new W3CParser(argsParser.getInputFile());
+			logParser = new W3CParser(argsParser.getLocale(), argsParser.getInputFile());
 			break;
 		case "IIS":
 			argsParser.getLogFormat().remove(0);
-			logParser = new IISParser(argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
+			logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
 			break;
 		default:
 			throw new ExceptionInInitializerError("Unknown log format!!!");
@@ -99,7 +101,11 @@ public class SpletneSeje {
 			}
 		}
 
-		// todo ce imamo Extended log format potem moramo drugace pridobiti tipe polji
+		if (logParser instanceof W3CParser) {
+			for (ParsedLine l : logParser) {
+				if (logParser.getFieldType() != null) break;
+			}
+		}
 
 		/** Dodaj jar datoeke */
 		Set<URL> set = new HashSet<>();
@@ -137,14 +143,8 @@ public class SpletneSeje {
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
 		db = new HibernateUtil(props, loader, classes);
 	}
-	/**
-	 *
-	 * @throws ParseException
-	 * @throws NullPointerException
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 */
-	public void run() throws ParseException, NullPointerException, IOException, URISyntaxException {
+
+	public void run() {
 		// todo glavna logika programa
 	}
 	/**

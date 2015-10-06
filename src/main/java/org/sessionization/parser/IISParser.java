@@ -25,7 +25,7 @@ public class IISParser extends AbsParser {
 	 */
 	public IISParser() {
 		super();
-		setDefaultFields();
+		setDefaultFields(Locale.US);
 	}
 	/**
 	 * Konstruktor ki tudi odpre datoteko
@@ -35,9 +35,9 @@ public class IISParser extends AbsParser {
 	 * @see AbsParser#AbsParser(String)
 	 * @see IISParser#setDefaultFields()
 	 */
-	public IISParser(String path) throws FileNotFoundException {
+	public IISParser(Locale locale, String path) throws FileNotFoundException {
 		super(path);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 *
@@ -46,17 +46,18 @@ public class IISParser extends AbsParser {
 	 * @see IISParser#setDefaultFields()
 	 */
 	@Deprecated
-	public IISParser(StringReader input) {
+	public IISParser(Locale locale, StringReader input) {
 		super(input);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(File file) throws FileNotFoundException {
+	public IISParser(Locale locale, File file) throws FileNotFoundException {
 		super(file);
+		setDefaultFields(locale);
 	}
 	/**
 	 *
@@ -64,9 +65,9 @@ public class IISParser extends AbsParser {
 	 * @see AbsParser#AbsParser(BufferedReader)
 	 * @see IISParser#setDefaultFields()
 	 */
-	public IISParser(BufferedReader reader) {
+	public IISParser(Locale locale, BufferedReader reader) {
 		super(reader);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 *
@@ -74,9 +75,9 @@ public class IISParser extends AbsParser {
 	 * @param list
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(File file, List<FieldType> list) throws FileNotFoundException {
+	public IISParser(Locale locale, File file, List<FieldType> list) throws FileNotFoundException {
 		super(file);
-		setDefaultFields();
+		setDefaultFields(locale);
 		setFieldType(list);
 	}
 	/**
@@ -85,9 +86,9 @@ public class IISParser extends AbsParser {
 	 * <p><code>timeFormat = HH:mm:ss</code></p>
 	 * <p><code>locale = Locale.US</code></p>
 	 */
-	private void setDefaultFields() {
-		dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy").withLocale(Locale.US);
-		timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(Locale.US);
+	private void setDefaultFields(Locale locale) {
+		dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy").withLocale(locale);
+		timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(locale);
 	}
 	/**
 	 * Metoda, ki zarcleni polja v vrstici log datoteke.

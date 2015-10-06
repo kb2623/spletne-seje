@@ -47,7 +47,7 @@ public class NCSAParserTest {
 
 	@Test
 	public void testNCSAParserCommonTryResource() throws NullPointerException, IOException {
-		try (NCSAParser parser1 = new NCSAParser(pathNCSACommon)) {
+		try (NCSAParser parser1 = new NCSAParser(Locale.US, pathNCSACommon)) {
 			parser1.setFieldType(LogFormats.CommonLogFormat.create(null));
 			for (ParsedLine list : parser1) list.forEach(Assert::assertNotNull);
 		}
@@ -137,7 +137,7 @@ public class NCSAParserTest {
 
 	@Test
 	public void testNCSAParserCombinedTryResource() {
-		try (NCSAParser parser1 = new NCSAParser(pathNCSACombined)) {
+		try (NCSAParser parser1 = new NCSAParser(Locale.US, pathNCSACombined)) {
 			parser1.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			parser1.forEach(Assert::assertNotNull);
 		} catch (FileNotFoundException e) {
@@ -148,7 +148,7 @@ public class NCSAParserTest {
 	@Test
 	public void testNCSAParserCombinedCookieTryResource() {
 		String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
-		try (NCSAParser parser1 = new NCSAParser(new StringReader(testNiz))) {
+		try (NCSAParser parser1 = new NCSAParser(Locale.US, new StringReader(testNiz))) {
 			List<String> cookie = new ArrayList<>();
 			cookie.add("%C");
 			parser1.setFieldType(LogFormats.CombinedLogFormat.create(cookie));

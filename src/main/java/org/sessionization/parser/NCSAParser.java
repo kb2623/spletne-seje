@@ -29,7 +29,7 @@ public class NCSAParser extends AbsParser {
 	 */
 	public NCSAParser() {
 		super();
-		setDefaultFields();
+		setDefaultFields(Locale.US);
 	}
 	/**
 	 * Konstruktor ki odpre tudi datoteko
@@ -39,9 +39,9 @@ public class NCSAParser extends AbsParser {
 	 * @see AbsParser#AbsParser(String)
 	 * @see NCSAParser#setDefaultFields()
 	 */
-	public NCSAParser(String path) throws FileNotFoundException {
+	public NCSAParser(Locale locale, String path) throws FileNotFoundException {
 		super(path);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 *
@@ -50,17 +50,18 @@ public class NCSAParser extends AbsParser {
 	 * @see IISParser#setDefaultFields()
 	 */
 	@Deprecated
-	public NCSAParser(StringReader input) {
+	public NCSAParser(Locale locale, StringReader input) {
 		super(input);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public NCSAParser(File file) throws FileNotFoundException {
+	public NCSAParser(Locale locale, File file) throws FileNotFoundException {
 		super(file);
+		setDefaultFields(locale);
 	}
 	/**
 	 *
@@ -68,17 +69,17 @@ public class NCSAParser extends AbsParser {
 	 * @see AbsParser#AbsParser(BufferedReader)
 	 * @see IISParser#setDefaultFields()
 	 */
-	public NCSAParser(BufferedReader reader) {
+	public NCSAParser(Locale locale, BufferedReader reader) {
 		super(reader);
-		setDefaultFields();
+		setDefaultFields(locale);
 	}
 	/**
 	 *
 	 * @param list
 	 */
-	public NCSAParser(File file, List<FieldType> list) throws FileNotFoundException {
+	public NCSAParser(Locale locale, File file, List<FieldType> list) throws FileNotFoundException {
 		super(file);
-		setDefaultFields();
+		setDefaultFields(locale);
 		setFieldType(list);
 	}
 	/**
@@ -86,8 +87,8 @@ public class NCSAParser extends AbsParser {
 	 * <p><code>formatter = dd/MMM/yyyy:HH:mm:ss Z</code></p>
 	 * <p><code>locale = Locale.US</code></p>
 	 */
-	private void setDefaultFields() {
-		formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(Locale.US);
+	private void setDefaultFields(Locale locale) {
+		formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(locale);
 	}
 	/**
 	 * Nastavljanje formata za parsanje datuma.
