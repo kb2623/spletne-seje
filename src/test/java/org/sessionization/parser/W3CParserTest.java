@@ -128,7 +128,7 @@ public class W3CParserTest {
 	@Test
 	public void testParseLineFileOne() {
 		try {
-			parser.openFile(new File(ClassLoader.getSystemResource(pathW3C + "ex080814.log").getFile()));
+			parser.openFile(new File[]{new File(ClassLoader.getSystemResource(pathW3C + "ex080814.log").getFile())});
 			parser.forEach(System.out::println);
 			parser.closeFile();
 		} catch (IOException e) {

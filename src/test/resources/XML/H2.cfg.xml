@@ -6,6 +6,5 @@
 	<property name="database.password"></property>
 	<property name="database.dialect">org.hibernate.dialect.H2Dialect</property>
 	<property name="database.ddl">create</property>
-	<property name="inputfile">test</property>
 </spletneseje-configuration>
 

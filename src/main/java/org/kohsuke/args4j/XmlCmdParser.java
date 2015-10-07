@@ -40,7 +40,7 @@ public class XmlCmdParser extends CmdLineParser {
 
 	@Override
 	public void parseArgument(String... args) throws CmdLineException {
-		Set<OptionHandler> present = parseArgumentXml(parseArgumentCmd(args));
+		Set<OptionHandler> present = parseArgumentCmd(args);
 		boolean helpSet = false;
 		for (OptionHandler handler : getOptions()) {
 			if(handler.option.help() && present.contains(handler)) {
@@ -141,6 +141,7 @@ public class XmlCmdParser extends CmdLineParser {
 			cmdLine.proceed(diff);
 			present.add(currentOptionHandler);
 		}
+		parseArgumentXml(present);
 		return present;
 	}
 

@@ -57,7 +57,7 @@ public class W3CParser extends AbsParser {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public W3CParser(Locale locale, File file) throws FileNotFoundException {
+	public W3CParser(Locale locale, File[] file) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 	}

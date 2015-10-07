@@ -38,7 +38,7 @@ public class SpletneSejeTest {
 		Map<String, List<ParsedLine>> testMap = new HashMap<>();
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACommon));
+			parser.openFile(new File[]{new File(pathNCSACommon)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
 			//Pridobi podatke
@@ -71,7 +71,7 @@ public class SpletneSejeTest {
 		Map<String, List<ParsedLine>> testMap = new RadixTree<>();
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACommon));
+			parser.openFile(new File[]{new File(pathNCSACommon)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
 			//Pridobi podatke
@@ -105,7 +105,7 @@ public class SpletneSejeTest {
 		Map<String, List<ParsedLine>> hashMap = new HashMap<>();
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACommon));
+			parser.openFile(new File[]{new File(pathNCSACommon)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
 			//Pridobi podatke

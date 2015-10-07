@@ -55,7 +55,7 @@ public class IISParser extends AbsParser {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(Locale locale, File file) throws FileNotFoundException {
+	public IISParser(Locale locale, File[] file) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 	}
@@ -75,7 +75,7 @@ public class IISParser extends AbsParser {
 	 * @param list
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(Locale locale, File file, List<FieldType> list) throws FileNotFoundException {
+	public IISParser(Locale locale, File[] file, List<FieldType> list) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 		setFieldType(list);

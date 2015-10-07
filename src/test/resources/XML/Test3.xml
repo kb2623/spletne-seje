@@ -10,5 +10,4 @@
 		<dialect>org.hibernate.dialect.H2Dialect</dialect>
 		<property name="ddl">create</property>
 	</database>
-	<property2 name="inputfile">test</property2>
 </spletneseje-configuration>

@@ -59,7 +59,7 @@ public class NCSAParser extends AbsParser {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public NCSAParser(Locale locale, File file) throws FileNotFoundException {
+	public NCSAParser(Locale locale, File[] file) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 	}
@@ -77,7 +77,7 @@ public class NCSAParser extends AbsParser {
 	 *
 	 * @param list
 	 */
-	public NCSAParser(Locale locale, File file, List<FieldType> list) throws FileNotFoundException {
+	public NCSAParser(Locale locale, File[] file, List<FieldType> list) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 		setFieldType(list);

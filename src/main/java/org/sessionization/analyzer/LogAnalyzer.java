@@ -19,8 +19,9 @@ public class LogAnalyzer {
 	 * @param path
 	 * @throws FileNotFoundException
 	 */
-	public LogAnalyzer(File file) throws IOException {
-		stream = new FileInputStream(file);
+	public LogAnalyzer(File[] file) throws IOException {
+		// TODO dobimo lahko vec datotek, sedaj upostavamo samo eno
+		stream = new FileInputStream(file[0]);
 		reader = new BufferedReader(new InputStreamReader(stream));
 		if (reader.readLine().charAt(0) == '#') {
 			logFileType = LogFileType.W3C;

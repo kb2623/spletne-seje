@@ -1,12 +1,10 @@
 package org.sessionization.parser;
 
-import org.kohsuke.args4j.Option;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.XmlCmdParser;
+import org.kohsuke.args4j.*;
 import org.kohsuke.args4j.spi.Parameters;
-import org.kohsuke.args4j.CmdLineException;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URISyntaxException;
@@ -34,10 +32,12 @@ public class ArgsParser {
 		public abstract String getValue();
 	}
 
+	private CmdLineParser parser;
+
 	@Option(name = "-c", aliases = "crawlers", usage = "Ignore web crawlers", metaVar = "<bool>")
 	private boolean ignoreCrawlers = false;
 
-	@Option(name = "-h", aliases = {"--help", "-?"}, usage = "Prints this message", hidden = true)
+	@Option(name = "-h", aliases = {"--help", "-?"}, usage = "Prints this message", hidden = true, help = true)
 	private boolean printHelp = false;
 
 	@Option(name = "-fd", aliases = "format.date", usage = "Date format", metaVar = "<date format>")
@@ -64,8 +64,8 @@ public class ArgsParser {
 	@Option(name = "-dbdic", aliases = "database.dialect.class", usage = "Path to class file, that is dialect for database", metaVar = "<path>", depends = "-dbdi")
 	private URL dialect = null;
 
-	@Option(name = "-in", aliases = "inputfile", usage = "Input log file", metaVar = "<path>")
-	private File inputFile = null;
+	@Argument(usage = "Input log files", metaVar = "<path>", required = true, multiValued = true)
+	private File[] inputFile = null;
 
 	@Option(name = "-dbddl", aliases = "database.ddl", usage = "Create new tables or update exsisting ones", metaVar = "<create|update>")
 	private DdlOperation operation = DdlOperation.Create;
@@ -89,10 +89,8 @@ public class ArgsParser {
 	private Locale locale = Locale.US;
 
 	public ArgsParser(String... args) throws CmdLineException, URISyntaxException {
-		CmdLineParser parser = new XmlCmdParser(this);
+		parser = new XmlCmdParser(this);
 		parser.parseArgument(args);
-		if (printHelp) throw new CmdLineException(parser, new Exception());
-		if (inputFile == null) throw new CmdLineException(parser, new Exception("Missing input file!!!"));
 		if (databaseUrl == null) databaseUrl = new URI("jdbc:sqlite:sqliteDB");
 	}
 
@@ -112,6 +110,10 @@ public class ArgsParser {
 		driverUrl = file.toURI().toURL();
 	}
 
+	public void printHelp(OutputStream out) {
+		parser.printUsage(out);
+	}
+
 	public boolean isIgnoreCrawlers() {
 		return ignoreCrawlers;
 	}
@@ -124,7 +126,7 @@ public class ArgsParser {
 		return dialect;
 	}
 
-	public File getInputFile() {
+	public File[] getInputFile() {
 		return inputFile;
 	}
 

@@ -18,15 +18,15 @@ import java.util.function.Consumer;
  */
 public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	/**
-	 * Vrstica v datoteki
+	 * Vrstica v datotekah
 	 */
 	private int pos = 0;
 	/**
-	 * Datoteka za branje
+	 * Datoteke za branje
 	 *
 	 * @see BufferedReader
 	 */
-	private BufferedReader file;
+	private BufferedReader[] readers;
 	/**
 	 * Tabela, ki vsebuje vrste polji v log datoteki
 	 *
@@ -39,7 +39,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * datoteka = null
 	 */
 	public AbsParser() {
-		file = null;
+		readers = null;
 	}
 	/**
 	 * Konstruktor ki tudi opre datoteko
@@ -48,14 +48,16 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws FileNotFoundException Datoteka ne obstaja
 	 */
 	public AbsParser(String path) throws FileNotFoundException {
-		file = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+		readers = new BufferedReader[] {
+				new BufferedReader(new InputStreamReader(new FileInputStream(path)))
+		};
 	}
 	/**
 	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public AbsParser(File file) throws FileNotFoundException {
+	public AbsParser(File[] file) throws FileNotFoundException {
 		openFile(file);
 	}
 	/**
@@ -65,7 +67,9 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 */
 	@Deprecated
 	public AbsParser(StringReader input) {
-		file = new BufferedReader(input);
+		readers = new BufferedReader[] {
+				new BufferedReader(input)
+		};
 	}
 	/**
 	 * konstruktor ki uporabe že odprt tok
@@ -73,16 +77,20 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @param file Datoteka predstavljena z vhodnim tokom
 	 */
 	public AbsParser(BufferedReader file) {
-		this.file = file;
+		readers = new BufferedReader[] {
+				file
+		};
 	}
 	/**
-	 * Metoda za odpiranje datoteke
 	 *
-	 * @param path Pot do datoteke, predstavljena z nizom
-	 * @throws FileNotFoundException Datoteka ne obstaja
+	 * @param path
+	 * @throws FileNotFoundException
 	 */
-	public void openFile(File path) throws FileNotFoundException {
-		file = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+	public void openFile(File[] files) throws FileNotFoundException {
+		readers = new BufferedReader[files.length];
+		for (int i = 0; i < files.length; i++) {
+			readers[i] = new BufferedReader(new InputStreamReader(new FileInputStream(files[i])));
+		}
 	}
 	/**
 	 * Metoda za nstavljanje že odprte datoteke
@@ -90,7 +98,9 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @param reader Vhodni tok
 	 */
 	public void openFile(BufferedReader reader) {
-		file = reader;
+		readers = new BufferedReader[] {
+				reader
+		};
 	}
 	/**
 	 * Metoda namenjena testiranju, ki spremeni niz
@@ -101,7 +111,9 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 */
 	@Deprecated
 	public void openFile(StringReader input) {
-		file = new BufferedReader(input);
+		readers = new BufferedReader[] {
+				new BufferedReader(input)
+		};
 		if (pos > 0) pos = 0;
 	}
 	/**
@@ -113,10 +125,17 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @see String
 	 */
 	public String getLine() throws IOException {
-		String line = file.readLine();
-		if (line == null) throw new EOFException();
+		StringBuilder builder = new StringBuilder();
+		for (BufferedReader br : readers) {
+			String tmp = br.readLine();
+			if (tmp != null) {
+				builder.append(br.readLine());
+			} else {
+				throw new EOFException();
+			}
+		}
 		pos++;
-		return line;
+		return builder.toString();
 	}
 	/**
 	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
@@ -135,7 +154,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws IOException Napaka pri zapiranju datoteke
 	 */
 	public void closeFile() throws IOException {
-		file.close();
+		for (BufferedReader br : readers) br.close();
 		pos = 0;
 	}
 	/**
@@ -179,7 +198,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	@Override
 	public void close() {
 		try {
-			file.close();
+			closeFile();
 		} catch (IOException ignore) {}
 		pos = 0;
 	}

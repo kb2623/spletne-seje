@@ -33,7 +33,7 @@ public class NCSAParserTest {
 	public void testNCSAParserCommon() {
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACommon));
+			parser.openFile(new File[]{new File(pathNCSACommon)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
 			//Pridobi podatke
@@ -57,7 +57,7 @@ public class NCSAParserTest {
 	public void testNCSAParserCommonForEach() {
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACommon));
+			parser.openFile(new File[]{new File(pathNCSACommon)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
 			//Pridobi podatke
@@ -73,7 +73,7 @@ public class NCSAParserTest {
 	public void testNCSAParserCombinedForEachWithSetFormat() {
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACombined));
+			parser.openFile(new File[]{new File(pathNCSACombined)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			//Pridobi podatke
@@ -89,7 +89,7 @@ public class NCSAParserTest {
 	public void testNCSAParserCombinedWithSetFormat() {
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACombined));
+			parser.openFile(new File[]{new File(pathNCSACombined)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			//Nastavi format datuma
@@ -107,7 +107,7 @@ public class NCSAParserTest {
 	public void testNCSAParserCombinedForEach() {
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACombined));
+			parser.openFile(new File[]{new File(pathNCSACombined)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			//Pridobi podatke
@@ -123,7 +123,7 @@ public class NCSAParserTest {
 	public void testNCSAParserCombined() {
 		try {
 			//Odpri datoteko
-			parser.openFile(new File(pathNCSACombined));
+			parser.openFile(new File[]{new File(pathNCSACombined)});
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			//Pridobi podatke
