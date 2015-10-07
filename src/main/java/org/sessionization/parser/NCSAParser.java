@@ -71,7 +71,7 @@ public class NCSAParser extends AbsParser {
 	}
 
 	@Override
-	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
+	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException, ParseException {
 		int i = -1;
 		String logline = super.getLine();
 		String[] tokens = new String[super.fieldType.size()];
@@ -105,23 +105,29 @@ public class NCSAParser extends AbsParser {
 					buff.append(c);
 				}
 				break;
-			default: buff.append(c);
+			default:
+				buff.append(c);
 			}
 		}
-		if (buff.length() > 0) tokens[++i] = buff.toString();
+		if (buff.length() > 0) {
+			tokens[++i] = buff.toString();
+		}
+		if (tokens.length != i + 1) {
+			throw new ParseException("Bad line!!!", super.getPos());
+		}
 		return tokens;
 	}
 
 	@Override
 	public ParsedLine parseLine() throws ParseException, NullPointerException, IOException, URISyntaxException {
 		if (super.fieldType == null) throw new NullPointerException("Tipi polji niso specificirani!!!");
-		Field[] lineData = new Field[super.fieldType.size()];
 		String[] tokens;
 		try {
 			tokens = parse();
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new ParseException("Napaka pri obdelavi vrstice!!!", super.getPos());
 		}
+		Field[] lineData = new Field[super.fieldType.size()];
 		for(int i = 0; i < super.fieldType.size(); i++) {
 			switch(super.fieldType.get(i)) {
 			case RemoteHost:

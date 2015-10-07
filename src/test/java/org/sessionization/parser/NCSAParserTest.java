@@ -10,12 +10,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @SuppressWarnings("deprecation")
@@ -23,7 +25,6 @@ public class NCSAParserTest {
 
 	private String pathNCSACombined;
 	private String pathNCSACommon;
-
 	private NCSAParser parser;
 
 	@Before
@@ -104,6 +105,7 @@ public class NCSAParserTest {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -132,10 +134,13 @@ public class NCSAParserTest {
 			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			//Pridobi podatke
-			for (ParsedLine list : parser) list.forEach(Assert::assertNotNull);
+			for (ParsedLine list : parser) {
+				list.forEach(Assert::assertNotNull);
+			}
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -156,9 +161,9 @@ public class NCSAParserTest {
 		String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
 		try (NCSAParser parser1 = new NCSAParser()) {
 			parser1.openFile(new StringReader(testNiz));
-			String[] cookie = "%h %l %u %t %r %>s %b %C".split(" ");
+			String[] cookie = "%h %l %u %t %r %>s %b %{Referer}i %{User-agent}i %C".split(" ");
 			parser1.setFieldType(LogFormats.CustomLogFormat.create(cookie));
-			parser1.forEach(Assert::assertNotNull);
+			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", parser1.parseLine().toString());
 		} catch (Exception e) {
 			fail();
 		}
@@ -171,22 +176,17 @@ public class NCSAParserTest {
 			//Odpri datoteko
 			parser.openFile(new StringReader(testNiz));
 			//Nastavi tipe podatkov
-			String[] cookie = "%h %l %u %t %r %>s %b %C".split(" ");
+			String[] cookie = "%h %l %u %t %r %>s %b %{Referer}i %{User-agent}i %C".split(" ");
 			List<FieldType> listType = LogFormats.CustomLogFormat.create(cookie);
 			//Dodatni atribut
 			parser.setFieldType(listType);
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
-			list.forEach(f -> {
-				if (f == null) {
-					fail();
-				} else {
-					System.out.print(f.izpis() + " || ");
-				}
-			});
+			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", list.toString());
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
+			e.printStackTrace();
 			fail();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();

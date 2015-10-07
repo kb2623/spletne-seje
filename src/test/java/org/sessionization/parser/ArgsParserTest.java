@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 
 import java.net.URISyntaxException;
+import java.util.ResourceBundle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -33,7 +34,7 @@ public class ArgsParserTest {
 	@Test
 	public void testArgsParsingOne() {
 		try {
-			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("XML/H2.cfg.xml").toURI().getPath(), "test");
+			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("H2.cfg.xml").toURI().getPath(), "test");
 			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
 			assertEquals("org.h2.Driver", parser.getDriverClass());
 			assertEquals("test", parser.getInputFile()[0].getName());
@@ -51,7 +52,7 @@ public class ArgsParserTest {
 	@Test
 	public void testArgsParsingTwo() {
 		try {
-			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("XML/H2.cfg.xml").toURI().getPath(), "testtwo");
+			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("Test2.xml").toURI().getPath(), "testtwo");
 			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
 			assertEquals("org.h2.Driver", parser.getDriverClass());
 			assertEquals("testtwo", parser.getInputFile()[0].getName());
@@ -69,7 +70,7 @@ public class ArgsParserTest {
 	@Test
 	public void testArgsParsingThree() {
 		try {
-			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("XML/Test2.xml").toURI().getPath(), "test");
+			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("Test2.xml").toURI().getPath(), "test");
 			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
 			assertEquals("org.h2.Driver", parser.getDriverClass());
 			assertEquals("test", parser.getInputFile()[0].getName());
@@ -87,7 +88,7 @@ public class ArgsParserTest {
 	@Test
 	public void testArgsParsingFour() {
 		try {
-			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("XML/Test3.xml").toURI().getPath(), "test");
+			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("Test3.xml").toURI().getPath(), "test");
 			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
 			assertEquals("org.h2.Driver", parser.getDriverClass());
 			assertEquals("test", parser.getInputFile()[0].getName());
@@ -105,9 +106,9 @@ public class ArgsParserTest {
 	@Test
 	public void testArgsParsingFive() {
 		try {
-			String file1 = ClassLoader.getSystemResource("Logs/Extended/ex051222.log").toURI().getPath();
-			String file2 = ClassLoader.getSystemResource("Logs/Extended/ex061023.log").toURI().getPath();
-			String file3 = ClassLoader.getSystemResource("Logs/Extended/ex071130.log").toURI().getPath();
+			String file1 = ClassLoader.getSystemResource("ex051222.log").toURI().getPath();
+			String file2 = ClassLoader.getSystemResource("ex061023.log").toURI().getPath();
+			String file3 = ClassLoader.getSystemResource("ex071130.log").toURI().getPath();
 			parser = new ArgsParser(file1);
 			assertEquals("ex051222.log", parser.getInputFile()[0].getName());
 			assertEquals(1, parser.getInputFile().length);

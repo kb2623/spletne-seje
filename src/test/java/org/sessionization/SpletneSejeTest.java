@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -28,8 +29,8 @@ public class SpletneSejeTest {
 
 	@Before
 	public void setUp() {
-		pathNCSACombined = ClassLoader.getSystemResource("Logs/Combined/access_log").getFile();
-		pathNCSACommon = ClassLoader.getSystemResource("Logs/Common/logCommon").getFile();
+		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
+		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
 		parser = new NCSAParser();
 	}
 
@@ -37,11 +38,8 @@ public class SpletneSejeTest {
 	public void testNCSAParserCommonResHashMap() {
 		Map<String, List<ParsedLine>> testMap = new HashMap<>();
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACommon)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-			//Pridobi podatke
 			for (ParsedLine line : parser) {
 				List<ParsedLine> list = testMap.get(line.getKey());
 				if (list == null) {
@@ -52,15 +50,15 @@ public class SpletneSejeTest {
 					list.add(line);
 				}
 			}
-			//Zapri datoteko
 			parser.closeFile();
 			for (Map.Entry<String, List<ParsedLine>> entry : testMap.entrySet()) {
 				System.out.println(entry.getKey() + " <> " + entry.getValue().size());
-				entry.getValue().stream().forEach((f1) -> {
-					if (!f1.isResource()) System.out.print("\t" + f1.izpis() + "\n");
-				});
+//				entry.getValue().stream().forEach((f1) -> {
+//					if (!f1.isResource()) System.out.print("\t" + f1.izpis() + "\n");
+//				});
 				System.out.println();
 			}
+			assertEquals(269, testMap.size());
 		} catch(NullPointerException | IOException e) {
 			fail();
 		}
@@ -70,11 +68,8 @@ public class SpletneSejeTest {
 	public void testNCSAParserCommonResRadixTree() {
 		Map<String, List<ParsedLine>> testMap = new RadixTree<>();
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACommon)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-			//Pridobi podatke
 			for (ParsedLine line : parser) {
 				List<ParsedLine> list = testMap.get(line.getKey());
 				if (list == null) {
@@ -85,15 +80,15 @@ public class SpletneSejeTest {
 					list.add(line);
 				}
 			}
-			//Zapri datoteko
 			parser.closeFile();
 			for (Map.Entry<String, List<ParsedLine>> entry : testMap.entrySet()) {
 				System.out.println(entry.getKey() + " <> " + entry.getValue().size());
-				entry.getValue().stream().forEach((f1) -> {
-					if (!f1.isResource()) System.out.print("\t" + f1.izpis() + "\n");
-				});
+//				entry.getValue().stream().forEach((f1) -> {
+//					if (!f1.isResource()) System.out.print("\t" + f1.izpis() + "\n");
+//				});
 				System.out.println();
 			}
+			assertEquals(269, testMap.size());
 		} catch(NullPointerException | IOException e) {
 			fail();
 		}
@@ -104,11 +99,8 @@ public class SpletneSejeTest {
 		Map<String, List<ParsedLine>> radixMap = new RadixTree<>();
 		Map<String, List<ParsedLine>> hashMap = new HashMap<>();
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACommon)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-			//Pridobi podatke
 			for (ParsedLine line : parser) {
 				List<ParsedLine> list = radixMap.get(line.getKey());
 				if (list == null) {
@@ -127,8 +119,11 @@ public class SpletneSejeTest {
 					list.add(line);
 				}
 			}
-			//Zapri datoteko
 			parser.closeFile();
+			assertEquals(hashMap.size(), radixMap.size());
+			for (Map.Entry<String, List<ParsedLine>> entry : hashMap.entrySet()) {
+				assertEquals(entry.getValue().size(), radixMap.get(entry.getKey()).size());
+			}
 			radixMap.keySet().forEach(e -> hashMap.remove(e));
 			assertTrue(hashMap.isEmpty());
 		} catch(NullPointerException | IOException e) {

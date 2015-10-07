@@ -8,11 +8,11 @@ import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebPageRequestDump implements Opcodes {
+public class PageViewDump implements Opcodes {
 
-	private static String CLASSNAME = "org/sessionization/fields/WebPageRequest";
+	private static String CLASSNAME = "org/sessionization/fields/PageView";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
-	private static String NAME = "WebPageRequest.java";
+	private static String NAME = "PageView.java";
 
 	public static byte[] dump(List<FieldType> fieldTypes) {
 		List<FieldType> fields = getFields(fieldTypes);

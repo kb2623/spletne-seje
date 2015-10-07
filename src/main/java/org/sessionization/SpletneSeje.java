@@ -1,12 +1,13 @@
 package org.sessionization;
 
+import org.datastruct.RadixTree;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.fields.FieldType;
 import org.sessionization.parser.*;
 import org.sessionization.parser.datastruct.ParsedLine;
 import org.sessionization.parser.datastruct.RequestDump;
-import org.sessionization.parser.datastruct.WebPageRequestDump;
+import org.sessionization.parser.datastruct.PageViewDump;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -117,7 +118,7 @@ public class SpletneSeje {
 		UrlLoader loader = new UrlLoader(set.toArray(new URL[set.size()]));
 
 		/** Ustvari dinamicne razrede */
-		loader.defineClass(WebPageRequestDump.getClassName(), WebPageRequestDump.dump(logParser.getFieldType()));
+		loader.defineClass(PageViewDump.getClassName(), PageViewDump.dump(logParser.getFieldType()));
 		loader.defineClass(RequestDump.getClassName(), RequestDump.dump(logParser.getFieldType()));
 
 		/** Izdelaj tabeli razredov za podatkovno bazo */
@@ -129,7 +130,7 @@ public class SpletneSeje {
 			classes.add(f.getClassType());
 		}
 		classes.add(loader.loadClass(RequestDump.getClassName()));
-		classes.add(loader.loadClass(WebPageRequestDump.getClassName()));
+		classes.add(loader.loadClass(PageViewDump.getClassName()));
 
 		/** Nastavi nastavitve za hibernate */
 		Properties props = new Properties();
@@ -154,7 +155,7 @@ public class SpletneSeje {
 	}
 
 	public void run() {
-		// todo glavna logika programa
+		// FIXME gavno procesiranje
 	}
 	/**
 	 *

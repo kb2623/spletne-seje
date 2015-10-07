@@ -35,6 +35,7 @@ public class TestFields {
 	@Test
 	public void testUserAgetForCrawlers() {
 		UserAgent agent = new UserAgent("Mozilla/5.0 (Macintosh; U; PPC Mac OS X Mach-O; XH; rv:8.578.498) fr, Gecko/20121021 Camino/8.723+ (Firefox compatible)", LogType.NCSA);
+		// FIXME popravi delovanje metode isCrawler
 		assertFalse(agent.isCrawler());
 	}
 
@@ -71,10 +72,6 @@ public class TestFields {
 	}
 
 	@Test
-	public void testDateParsing() {
-	}
-
-	@Test
 	public void testRequestLine() {
 		RequestLine line = null;
 		try {
@@ -102,10 +99,4 @@ public class TestFields {
 			fail();
 		}
 	}
-
-	@Test
-	public void testReferer() throws MalformedURLException {
-		// todo napisi test
-	}
-
 }

@@ -58,7 +58,7 @@ public class IISParser extends W3CParser {
 	}
 
 	@Override
-	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
+	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException, ParseException {
 		int i = -1;
 		String logline = super.getLine();
 		String[] tokens = new String[super.fieldType.size()];
@@ -79,6 +79,9 @@ public class IISParser extends W3CParser {
 		}
 		if (buff.length() > 0) {
 			tokens[++i] = buff.toString();
+		}
+		if (tokens.length != i + 1) {
+			throw new ParseException("Bad line!!!", super.getPos());
 		}
 		return tokens;
 	}

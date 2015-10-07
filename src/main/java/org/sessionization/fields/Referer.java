@@ -21,7 +21,11 @@ public class Referer extends UriSteamQuery implements Field {
 
 	public Referer(URI url) {
 		super(url);
-		host = new Host(url.getAuthority());
+		if (url.getRawAuthority() != null) {
+			host = new Host(url.getAuthority());
+		} else {
+			host = new Host("-");
+		}
 	}
 
 	public void setHost(Host host) {

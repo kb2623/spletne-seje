@@ -107,7 +107,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 		for (BufferedReader br : readers) {
 			String tmp = br.readLine();
 			if (tmp != null) {
-				builder.append(br.readLine());
+				builder.append(tmp);
 			} else {
 				throw new EOFException();
 			}
@@ -121,7 +121,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 * @throws IOException
 	 */
-	protected abstract String[] parse() throws ArrayIndexOutOfBoundsException, IOException;
+	protected abstract String[] parse() throws ArrayIndexOutOfBoundsException, IOException, ParseException;
 	/**
 	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
 	 *

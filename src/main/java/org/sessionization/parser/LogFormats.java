@@ -70,8 +70,10 @@ public enum LogFormats {
 				case "%^to": list.add(FieldType.Unknown); break;
 				case "%p":
 				case "%{local}p":
-				case "%{canonical}p": list.add(FieldType.ServerPort);   break;
-				case "%{remote}p": list.add(FieldType.ClientPort);      break;
+				case "%{canonical}p": list.add(FieldType.ServerPort); break;
+				case "%{remote}p": list.add(FieldType.ClientPort); break;
+				case "%{Referer}i": list.add(FieldType.Referer); break;
+				case "%{User-agent}i": list.add(FieldType.UserAgent); break;
 				case "CUSTOM": break;
 				default: list.add(FieldType.Unknown);
 				}

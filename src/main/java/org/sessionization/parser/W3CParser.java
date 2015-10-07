@@ -71,7 +71,7 @@ public class W3CParser extends AbsParser {
 	}
 
 	@Override
-	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
+	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException, ParseException {
 		String logline = super.getLine();
 		List<String> tokens = new ArrayList<>();
 		StringBuffer buff = new StringBuffer();
@@ -105,8 +105,9 @@ public class W3CParser extends AbsParser {
 				metaData[i] = new MetaData(tokens[i]);
 			}
 			return new ParsedLine(metaData);
+		} else {
+			return new ParsedLine(process(tokens));
 		}
-		return new ParsedLine(process(tokens));
 	}
 
 	protected Field[] process(String[] tokens) throws ParseException, URISyntaxException, UnknownHostException {

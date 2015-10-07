@@ -160,7 +160,9 @@ public class ParsedLine implements Iterable<Field> {
 
 	@Override
 	public void forEach(Consumer<? super Field> consumer) {
-		for (int i = 0; i < array.length; i++) consumer.accept(array[i]);
+		for (int i = 0; i < array.length; i++) {
+			consumer.accept(array[i]);
+		}
 	}
 
 	@Override
