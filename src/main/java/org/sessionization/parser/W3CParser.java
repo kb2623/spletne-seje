@@ -7,6 +7,7 @@ import org.sessionization.parser.datastruct.ParsedLine;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -32,43 +33,11 @@ public class W3CParser extends AbsParser {
 	}
 	/**
 	 *
-	 * @param path Pot datoteko predstavljena z nizom
-	 * @throws FileNotFoundException Datoteko ne obstaja
-	 * @see AbsParser#AbsParser(String)
-	 * @see W3CParser#setDefaultFields()
-	 */
-	public W3CParser(Locale locale, String path) throws FileNotFoundException {
-		super(path);
-		setDefaultFields(locale);
-	}
-	/**
-	 *
-	 * @param input
-	 * @see AbsParser#AbsParser(StringReader)
-	 * @see W3CParser#setDefaultFields()
-	 */
-	@Deprecated
-	public W3CParser(Locale locale, StringReader input) {
-		super(input);
-		setDefaultFields(locale);
-	}
-	/**
-	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
 	public W3CParser(Locale locale, File[] file) throws FileNotFoundException {
 		super(file);
-		setDefaultFields(locale);
-	}
-	/**
-	 *
-	 * @param reader
-	 * @see AbsParser#AbsParser(BufferedReader)
-	 * @see W3CParser#setDefaultFields()
-	 */
-	public W3CParser(Locale locale, BufferedReader reader) {
-		super(reader);
 		setDefaultFields(locale);
 	}
 	/**
@@ -100,16 +69,10 @@ public class W3CParser extends AbsParser {
 	public void setTimeFormat(String format, Locale locale) {
 		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
-	/**
-	 *
-	 * @param logline
-	 * @return
-	 * @see String
-	 */
-	private List<String> parse(String logline) {
-		if(logline == null) {
-			return null;
-		}
+
+	@Override
+	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
+		String logline = super.getLine();
 		List<String> tokens = new ArrayList<>();
 		StringBuffer buff = new StringBuffer();
 		for (char c : logline.toCharArray()) {
@@ -127,98 +90,105 @@ public class W3CParser extends AbsParser {
 		if(buff.length() > 0) {
 			tokens.add(buff.toString());
 		}
-		return tokens;
+		return tokens.toArray(new String[tokens.size()]);
 	}
 
 	@Override
 	public ParsedLine parseLine() throws ParseException, IOException, URISyntaxException {
-		List<String> tokens = parse(getLine());
-		if(tokens == null) return null;
-		if(tokens.get(0).charAt(0) == '#') {
-			Field[] metaData = new Field[tokens.size()];
-			if(tokens.get(0).equals("#Fields:")) super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens));
-			for (int i = 0; i < tokens.size(); i++) metaData[i] = new MetaData(tokens.get(i));
+		String[] tokens = parse();
+		if(tokens[0].charAt(0) == '#') {
+			Field[] metaData = new Field[tokens.length];
+			if(tokens[0].equals("#Fields:")) {
+				super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens));
+			}
+			for (int i = 0; i < tokens.length; i++) {
+				metaData[i] = new MetaData(tokens[i]);
+			}
 			return new ParsedLine(metaData);
 		}
-		Field[] lineData = new Field[super.fieldType.size()];
+		return new ParsedLine(process(tokens));
+	}
+
+	protected Field[] process(String[] tokens) throws ParseException, URISyntaxException, UnknownHostException {
 		if(super.fieldType == null) throw new ParseException("Bad log format", super.getPos());
-		if(super.fieldType.size() != tokens.size()) throw new ParseException("Can't parse a line", super.getPos());
+		if(super.fieldType.size() != tokens.length) throw new ParseException("Can't parse a line", super.getPos());
+		Field[] lineData = new Field[super.fieldType.size()];
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			switch (super.fieldType.get(i)) {
 			case Referer:
-				lineData[i] = new Referer(new URI(tokens.get(i)));
+				lineData[i] = new Referer(new URI(tokens[i]));
 				break;
 			case Cookie:
-				lineData[i] = new Cookie(tokens.get(i), LogType.W3C);
+				lineData[i] = new Cookie(tokens[i], LogType.W3C);
 				break;
 			case UserAgent:
-				lineData[i] = new UserAgent(tokens.get(i), LogType.W3C);
+				lineData[i] = new UserAgent(tokens[i], LogType.W3C);
 				break;
 			case Method:
-				lineData[i] = Method.setMethod(tokens.get(i));
+				lineData[i] = Method.setMethod(tokens[i]);
 				break;
 			case Date:
-				lineData[i] = new org.sessionization.fields.w3c.Date(tokens.get(i), dateFormat);
+				lineData[i] = new org.sessionization.fields.w3c.Date(tokens[i], dateFormat);
 				break;
 			case Time:
-				lineData[i] = new Time(tokens.get(i), timeFormat);
+				lineData[i] = new Time(tokens[i], timeFormat);
 				break;
 			case SiteName:
-				lineData[i] = new SiteName(tokens.get(i));
+				lineData[i] = new SiteName(tokens[i]);
 				break;
 			case ComputerName:
-				lineData[i] = new ComputerName(tokens.get(i));
+				lineData[i] = new ComputerName(tokens[i]);
 				break;
 			case ServerIP:
-				lineData[i] = new Address(tokens.get(i), true);
+				lineData[i] = new Address(tokens[i], true);
 				break;
 			case ClientIP:
-				lineData[i] = new Address(tokens.get(i), false);
+				lineData[i] = new Address(tokens[i], false);
 				break;
 			case UriSteam:
-				lineData[i] = new UriSteam(tokens.get(i));
+				lineData[i] = new UriSteam(tokens[i]);
 				break;
 			case UriQuery:
-				lineData[i] = new UriQuery(tokens.get(i));
+				lineData[i] = new UriQuery(tokens[i]);
 				break;
 			case ServerPort:
-				lineData[i] = new Port(tokens.get(i), true);
+				lineData[i] = new Port(tokens[i], true);
 				break;
 			case ClientPort:
-				lineData[i] = new Port(tokens.get(i), false);
+				lineData[i] = new Port(tokens[i], false);
 				break;
 			case RemoteUser:
-				lineData[i] = new RemoteUser(tokens.get(i));
+				lineData[i] = new RemoteUser(tokens[i]);
 				break;
 			case ProtocolVersion:
-				lineData[i] = new Protocol(tokens.get(i));
+				lineData[i] = new Protocol(tokens[i]);
 				break;
 			case Host:
-				lineData[i] = new Host(tokens.get(i));
+				lineData[i] = new Host(tokens[i]);
 				break;
 			case StatusCode:
-				lineData[i] = new StatusCode(tokens.get(i));
+				lineData[i] = new StatusCode(tokens[i]);
 				break;
 			case SubStatus:
-				lineData[i] = new SubStatus(tokens.get(i));
+				lineData[i] = new SubStatus(tokens[i]);
 				break;
 			case Win32Status:
-				lineData[i] = new Win32Status(tokens.get(i));
+				lineData[i] = new Win32Status(tokens[i]);
 				break;
 			case SizeOfRequest:
-				lineData[i] = new SizeOfRequest(tokens.get(i));
+				lineData[i] = new SizeOfRequest(tokens[i]);
 				break;
 			case SizeOfResponse:
-				lineData[i] = new SizeOfResponse(tokens.get(i));
+				lineData[i] = new SizeOfResponse(tokens[i]);
 				break;
 			case TimeTaken:
-				lineData[i] = new TimeTaken(tokens.get(i), false);
+				lineData[i] = new TimeTaken(tokens[i], false);
 				break;
 			default:
 				throw new ParseException("Unknown field", super.getPos());
 			}
 		}
-		return new ParsedLine(lineData);
+		return lineData;
 	}
 
 	@Override

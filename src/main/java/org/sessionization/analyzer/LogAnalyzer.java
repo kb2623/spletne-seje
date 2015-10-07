@@ -43,7 +43,7 @@ public class LogAnalyzer {
 	 *
 	 * @return Ali je prisotno polje s piskotkom
 	 */
-	public static List<String> hasCombinedCookie() {
+	public static String[] hasCombinedCookie() {
 		// FIXME metoda mora uporabiti metodo isCookie(), kjer preverimo ali ima Combine format na koncu podatke o piskotku
 		// Zacasna implementacija
 		return null;

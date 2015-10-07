@@ -9,7 +9,7 @@ public enum LogFormats {
 
 	CommonLogFormat {
 		@Override
-		public List<FieldType> create(List<String> args) {
+		public List<FieldType> create(String[] args) {
 			List<FieldType> list = new ArrayList<>();
 			list.add(FieldType.RemoteHost);
 			list.add(FieldType.RemoteLogname);
@@ -18,26 +18,24 @@ public enum LogFormats {
 			list.add(FieldType.RequestLine);
 			list.add(FieldType.StatusCode);
 			list.add(FieldType.SizeOfResponse);
-			if (args != null && args.contains("%C")) list.add(FieldType.Cookie);
 			return list;
 		}
 	},
 	CombinedLogFormat {
 		@Override
-		public List<FieldType> create(List<String> args) {
+		public List<FieldType> create(String[] args) {
 			List<FieldType> list = LogFormats.CommonLogFormat.create(null);
 			list.add(FieldType.Referer);
 			list.add(FieldType.UserAgent);
-			if (args != null && args.contains("%C")) list.add(FieldType.Cookie);
 			return list;
 		}
 	},
 	CustomLogFormat {
 		@Override
-		public List<FieldType> create(List<String> args) {
+		public List<FieldType> create(String[] args) {
 			List<FieldType> list = new ArrayList<>();
-			args.forEach(symbol -> {
-				// TODO Dolocena polja nimajo tipa, kar privede do napake pri obdelavi datoeke
+			for (String symbol : args) {
+				// Fixme: Dolocena polja nimajo tipa, kar privede do napake pri obdelavi datoeke
 				switch (symbol) {
 				case "%%": list.add(FieldType.Unknown); break;
 				case "%a": list.add(FieldType.ClientIP); break;
@@ -56,7 +54,8 @@ public enum LogFormats {
 				case "%P": list.add(FieldType.ProcessID); break;
 				case "%q": list.add(FieldType.UriQuery); break;
 				case "%r": list.add(FieldType.RequestLine); break;
-				case "%s": list.add(FieldType.StatusCode); break;
+				case "%s":
+				case "%>s": list.add(FieldType.StatusCode); break;
 				case "%t": list.add(FieldType.DateTime); break;
 				case "%T": list.add(FieldType.TimeTaken); break;
 				case "%u": list.add(FieldType.RemoteUser); break;
@@ -73,17 +72,18 @@ public enum LogFormats {
 				case "%{local}p":
 				case "%{canonical}p": list.add(FieldType.ServerPort);   break;
 				case "%{remote}p": list.add(FieldType.ClientPort);      break;
+				case "CUSTOM": break;
 				default: list.add(FieldType.Unknown);
 				}
-			});
+			}
 			return list;
 		}
 	},
 	ExtendedLogFormat {
 		@Override
-		public List<FieldType> create(List<String> args) {
+		public List<FieldType> create(String[] args) {
 			List<FieldType> list = new ArrayList<>();
-			args.forEach(fieldName -> {
+			for (String fieldName : args) {
 				switch (fieldName) {
 				case "cs(Referer)": list.add(FieldType.Referer); break;
 				case "cs(Cookie)": list.add(FieldType.Cookie); break;
@@ -109,19 +109,20 @@ public enum LogFormats {
 				case "cs-bytes": list.add(FieldType.SizeOfRequest); break;
 				case "time-taken": list.add(FieldType.TimeTaken); break;
 				case "#Fields:": break;
+				case "IIS": break;
 				default: list.add(FieldType.Unknown); break;
 				}
-			});
+			}
 			return list;
 		}
 	},
 	IISLogFormat {
 		@Override
-		public List<FieldType> create(List<String> args) {
+		public List<FieldType> create(String[] args) {
 			return ExtendedLogFormat.create(args);
 		}
 	};
 
-	public abstract List<FieldType> create(List<String> args);
+	public abstract List<FieldType> create(String[] args);
 
 }

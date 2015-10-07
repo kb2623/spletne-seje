@@ -12,7 +12,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.fail;
 
 @SuppressWarnings("deprecation")
 public class NCSAParserTest {
@@ -41,14 +45,15 @@ public class NCSAParserTest {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
-			assert false;
+			fail();
 		}
 	}
 
 	@Test
 	public void testNCSAParserCommonTryResource() throws NullPointerException, IOException {
-		try (NCSAParser parser1 = new NCSAParser(Locale.US, pathNCSACommon)) {
-			parser1.setFieldType(LogFormats.CommonLogFormat.create(null));
+		try (NCSAParser parser1 = new NCSAParser()) {
+			parser1.openFile(new File[]{new File(pathNCSACommon)});
+					parser1.setFieldType(LogFormats.CommonLogFormat.create(null));
 			for (ParsedLine list : parser1) list.forEach(Assert::assertNotNull);
 		}
 	}
@@ -65,7 +70,7 @@ public class NCSAParserTest {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
-			assert false;
+			fail();
 		}
 	}
 
@@ -81,7 +86,7 @@ public class NCSAParserTest {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
-			assert false;
+			fail();
 		}
 	}
 
@@ -99,7 +104,7 @@ public class NCSAParserTest {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
-			assert false;
+			fail();
 		}
 	}
 
@@ -115,7 +120,7 @@ public class NCSAParserTest {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
-			assert false;
+			fail();
 		}
 	}
 
@@ -131,28 +136,31 @@ public class NCSAParserTest {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
-			assert false;
+			fail();
 		}
 	}
 
 	@Test
 	public void testNCSAParserCombinedTryResource() {
-		try (NCSAParser parser1 = new NCSAParser(Locale.US, pathNCSACombined)) {
+		try (NCSAParser parser1 = new NCSAParser()) {
+			parser1.openFile(new File[]{new File(pathNCSACombined)});
 			parser1.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			parser1.forEach(Assert::assertNotNull);
 		} catch (FileNotFoundException e) {
-			assert false;
+			fail();
 		}
 	}
 
 	@Test
 	public void testNCSAParserCombinedCookieTryResource() {
 		String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
-		try (NCSAParser parser1 = new NCSAParser(Locale.US, new StringReader(testNiz))) {
-			List<String> cookie = new ArrayList<>();
-			cookie.add("%C");
-			parser1.setFieldType(LogFormats.CombinedLogFormat.create(cookie));
+		try (NCSAParser parser1 = new NCSAParser()) {
+			parser1.openFile(new StringReader(testNiz));
+			String[] cookie = "%h %l %u %t %r %>s %b %C".split(" ");
+			parser1.setFieldType(LogFormats.CustomLogFormat.create(cookie));
 			parser1.forEach(Assert::assertNotNull);
+		} catch (Exception e) {
+			fail();
 		}
 	}
 
@@ -163,16 +171,15 @@ public class NCSAParserTest {
 			//Odpri datoteko
 			parser.openFile(new StringReader(testNiz));
 			//Nastavi tipe podatkov
-			List<String> cookie = new ArrayList<>();
-			cookie.add("%C");
-			List<FieldType> listType = LogFormats.CombinedLogFormat.create(cookie);
+			String[] cookie = "%h %l %u %t %r %>s %b %C".split(" ");
+			List<FieldType> listType = LogFormats.CustomLogFormat.create(cookie);
 			//Dodatni atribut
 			parser.setFieldType(listType);
 			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
 			list.forEach(f -> {
 				if (f == null) {
-					assert false;
+					fail();
 				} else {
 					System.out.print(f.izpis() + " || ");
 				}
@@ -180,7 +187,7 @@ public class NCSAParserTest {
 			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
-			assert false;
+			fail();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

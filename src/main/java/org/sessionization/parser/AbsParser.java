@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
 import java.util.function.Consumer;
 
 /**
@@ -20,7 +21,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	/**
 	 * Vrstica v datotekah
 	 */
-	private int pos = 0;
+	private int pos;
 	/**
 	 * Datoteke za branje
 	 *
@@ -32,7 +33,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 *
 	 * @see FieldType
 	 */
-	protected List<FieldType> fieldType = null;
+	protected List<FieldType> fieldType;
 	/**
 	 * Osnovni konstruktor, za prevzete nastavitve:<p>
 	 * pozicija = 0<p>
@@ -40,17 +41,8 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 */
 	public AbsParser() {
 		readers = null;
-	}
-	/**
-	 * Konstruktor ki tudi opre datoteko
-	 *
-	 * @param path Pot do datoteke, predstavljena z nizom
-	 * @throws FileNotFoundException Datoteka ne obstaja
-	 */
-	public AbsParser(String path) throws FileNotFoundException {
-		readers = new BufferedReader[] {
-				new BufferedReader(new InputStreamReader(new FileInputStream(path)))
-		};
+		fieldType = null;
+		pos = 0;
 	}
 	/**
 	 *
@@ -58,28 +50,8 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws FileNotFoundException
 	 */
 	public AbsParser(File[] file) throws FileNotFoundException {
+		this();
 		openFile(file);
-	}
-	/**
-	 * Konstruktor namenjen testiranju
-	 *
-	 * @param input Vhodni tok predstavljen z nizem
-	 */
-	@Deprecated
-	public AbsParser(StringReader input) {
-		readers = new BufferedReader[] {
-				new BufferedReader(input)
-		};
-	}
-	/**
-	 * konstruktor ki uporabe že odprt tok
-	 *
-	 * @param file Datoteka predstavljena z vhodnim tokom
-	 */
-	public AbsParser(BufferedReader file) {
-		readers = new BufferedReader[] {
-				file
-		};
 	}
 	/**
 	 *
@@ -89,7 +61,11 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	public void openFile(File[] files) throws FileNotFoundException {
 		readers = new BufferedReader[files.length];
 		for (int i = 0; i < files.length; i++) {
-			readers[i] = new BufferedReader(new InputStreamReader(new FileInputStream(files[i])));
+			if (files[i].isFile()) {
+				readers[i] = new BufferedReader(new InputStreamReader(new FileInputStream(files[i])));
+			} else {
+				throw new FileNotFoundException("Error processing \"" + files[i].getAbsolutePath() + "\"");
+			}
 		}
 	}
 	/**
@@ -114,7 +90,9 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 		readers = new BufferedReader[] {
 				new BufferedReader(input)
 		};
-		if (pos > 0) pos = 0;
+		if (pos > 0) {
+			pos = 0;
+		}
 	}
 	/**
 	 * Metoda ki vrne celotno vrstico, ki jo je potrebno še parsati
@@ -138,6 +116,13 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 		return builder.toString();
 	}
 	/**
+	 *
+	 * @return
+	 * @throws ArrayIndexOutOfBoundsException
+	 * @throws IOException
+	 */
+	protected abstract String[] parse() throws ArrayIndexOutOfBoundsException, IOException;
+	/**
 	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
 	 *
 	 * @return Obdelano vrstico
@@ -154,7 +139,9 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws IOException Napaka pri zapiranju datoteke
 	 */
 	public void closeFile() throws IOException {
-		for (BufferedReader br : readers) br.close();
+		for (BufferedReader br : readers) {
+			br.close();
+		}
 		pos = 0;
 	}
 	/**
@@ -188,12 +175,19 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	@Override
 	public void forEach(Consumer<? super ParsedLine> consumer) {
 		try {
-			for (ParsedLine line = parseLine(); line != null; line = parseLine()) consumer.accept(line);
+			for (ParsedLine line = parseLine(); line != null; line = parseLine()) {
+				consumer.accept(line);
+			}
 		} catch (IOException | NullPointerException | ParseException | URISyntaxException ignored) {}
 	}
 
 	@Override
 	public abstract Iterator<ParsedLine> iterator();
+
+	@Override
+	public Spliterator<ParsedLine> spliterator() {
+		throw new UnsupportedOperationException("Unsupported operation!!!");
+	}
 
 	@Override
 	public void close() {

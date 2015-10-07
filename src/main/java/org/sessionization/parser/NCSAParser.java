@@ -32,45 +32,12 @@ public class NCSAParser extends AbsParser {
 		setDefaultFields(Locale.US);
 	}
 	/**
-	 * Konstruktor ki odpre tudi datoteko
-	 *
-	 * @param path Pot do datoteke predstavljena z nizom
-	 * @throws FileNotFoundException Datoteka ne obstaja
-	 * @see AbsParser#AbsParser(String)
-	 * @see NCSAParser#setDefaultFields()
-	 */
-	public NCSAParser(Locale locale, String path) throws FileNotFoundException {
-		super(path);
-		setDefaultFields(locale);
-	}
-	/**
-	 *
-	 * @param input
-	 * @see AbsParser#AbsParser(StringReader)
-	 * @see IISParser#setDefaultFields()
-	 */
-	@Deprecated
-	public NCSAParser(Locale locale, StringReader input) {
-		super(input);
-		setDefaultFields(locale);
-	}
-	/**
 	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
 	public NCSAParser(Locale locale, File[] file) throws FileNotFoundException {
 		super(file);
-		setDefaultFields(locale);
-	}
-	/**
-	 *
-	 * @param reader
-	 * @see AbsParser#AbsParser(BufferedReader)
-	 * @see IISParser#setDefaultFields()
-	 */
-	public NCSAParser(Locale locale, BufferedReader reader) {
-		super(reader);
 		setDefaultFields(locale);
 	}
 	/**
@@ -102,19 +69,15 @@ public class NCSAParser extends AbsParser {
 	public void setDateFormat(String format, Locale locale) {
 		this.formatter = DateTimeFormatter.ofPattern(format == null ? "dd/MMM/yyyy:HH:mm:ss Z" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
-	/**
-	 * Metoda razcleni vhodni niz na vec delov in jih shrani v seznam.
-	 *
-	 * @param logline Vrstica v log datoteki
-	 * @return Seznam razclenjenih nizov.
-	 * @see String
-	 */
-	private String[] parse(String logline, int size) throws ArrayIndexOutOfBoundsException {
-		if(logline == null) return null;
+
+	@Override
+	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
 		int i = -1;
-		String[] tokens = new String[size];
+		String logline = super.getLine();
+		String[] tokens = new String[super.fieldType.size()];
 		StringBuilder buff = new StringBuilder();
-		boolean inQuotes = false, inBrackets = false;
+		boolean inQuotes = false;
+		boolean inBrackets = false;
 		for (char c : logline.toCharArray()) {
 			switch (c) {
 			case '"':
@@ -155,7 +118,7 @@ public class NCSAParser extends AbsParser {
 		Field[] lineData = new Field[super.fieldType.size()];
 		String[] tokens;
 		try {
-			tokens = parse(super.getLine(), super.fieldType.size());
+			tokens = parse();
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new ParseException("Napaka pri obdelavi vrstice!!!", super.getPos());
 		}

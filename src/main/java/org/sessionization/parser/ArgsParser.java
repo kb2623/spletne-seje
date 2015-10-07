@@ -84,7 +84,7 @@ public class ArgsParser {
 
 	private URL driverUrl = null;
 
-	private List<String> logFormat = null;
+	private String[] logFormat = null;
 
 	private Locale locale = Locale.US;
 
@@ -101,8 +101,11 @@ public class ArgsParser {
 
 	@Option(name = "-fl", aliases = "format.log", usage = "Log file format. Check NCSA or W3C log formats.", metaVar = "<log format>")
 	public void setLogFormat(String format) {
-		logFormat = new ArrayList<>();
-		for (String symbol : format.split(" ")) logFormat.add(symbol);
+		List<String> tmp = new ArrayList<>();
+		for (String symbol : format.split(" ")) {
+			tmp.add(symbol);
+		}
+		logFormat = tmp.toArray(new String[tmp.size()]);
 	}
 
 	@Option(name = "-dbdr", aliases = "database.driver", usage = "Path to jar file, that is a driver", metaVar = "<path>", depends = "-dbdrc")
@@ -142,7 +145,7 @@ public class ArgsParser {
 		return ignoreCrawlers;
 	}
 
-	public List<String> getLogFormat() {
+	public String[] getLogFormat() {
 		return logFormat;
 	}
 

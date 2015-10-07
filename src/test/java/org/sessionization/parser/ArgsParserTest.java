@@ -2,15 +2,12 @@ package org.sessionization.parser;
 
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-/**
- * Created by klemen on 2.10.2015.
- */
 public class ArgsParserTest {
 
 	private ArgsParser parser;

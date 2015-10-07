@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 public class SpletneSeje {
 
@@ -35,7 +37,7 @@ public class SpletneSeje {
 		argsParser = new ArgsParser(args);
 
 		/** Preveri format in nastavi tipe polji v datoteki */
-		switch ((argsParser.getLogFormat() != null) ? argsParser.getLogFormat().get(0) : "") {
+		switch ((argsParser.getLogFormat() != null) ? argsParser.getLogFormat()[0] : "") {
 		case "":
 			LogAnalyzer analyzer = new LogAnalyzer(argsParser.getInputFile());
 			switch (analyzer.getLogFileType()) {
@@ -60,8 +62,7 @@ public class SpletneSeje {
 			logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
 			break;
 		case "CUSTOM":
-			argsParser.getLogFormat().remove(0);
-			if (argsParser.getLogFormat().size() > 0) {
+			if (argsParser.getLogFormat().length > 1) {
 				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
 			} else {
 				throw new ExceptionInInitializerError("Need more args!!!");
@@ -71,7 +72,6 @@ public class SpletneSeje {
 			logParser = new W3CParser(argsParser.getLocale(), argsParser.getInputFile());
 			break;
 		case "IIS":
-			argsParser.getLogFormat().remove(0);
 			logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
 			break;
 		default:
@@ -108,8 +108,12 @@ public class SpletneSeje {
 
 		/** Dodaj jar datoeke */
 		Set<URL> set = new HashSet<>();
-		if (argsParser.getDriverUrl() != null) set.add(argsParser.getDriverUrl());
-		if (argsParser.getDialect() != null) set.add(argsParser.getDialect());
+		if (argsParser.getDriverUrl() != null) {
+			set.add(argsParser.getDriverUrl());
+		}
+		if (argsParser.getDialect() != null) {
+			set.add(argsParser.getDialect());
+		}
 		UrlLoader loader = new UrlLoader(set.toArray(new URL[set.size()]));
 
 		/** Ustvari dinamicne razrede */
@@ -119,7 +123,9 @@ public class SpletneSeje {
 		/** Izdelaj tabeli razredov za podatkovno bazo */
 		Set<Class> classes = new HashSet<>();
 		for (FieldType f : logParser.getFieldType()) {
-			for (Class c : f.getDependencies()) classes.add(c);
+			for (Class c : f.getDependencies()) {
+				classes.add(c);
+			}
 			classes.add(f.getClassType());
 		}
 		classes.add(loader.loadClass(RequestDump.getClassName()));
@@ -132,8 +138,12 @@ public class SpletneSeje {
 		props.setProperty("hibernate.connection.driver_class", argsParser.getDriverClass());
 		props.setProperty("hibernate.dialect", argsParser.getDialectClass());
 		props.setProperty("hibernate.connection.url", argsParser.getDatabaseUrl().toString());
-		if (argsParser.getUserName() != null) props.setProperty("hibernate.connection.username", argsParser.getUserName());
-		if (argsParser.getPassWord() != null) props.setProperty("hibernate.connection.password", argsParser.getPassWord());
+		if (argsParser.getUserName() != null) {
+			props.setProperty("hibernate.connection.username", argsParser.getUserName());
+		}
+		if (argsParser.getPassWord() != null) {
+			props.setProperty("hibernate.connection.password", argsParser.getPassWord());
+		}
 		props.setProperty("hibernate.connection.pool_size", String.valueOf(argsParser.getConnectoinPoolSize()));
 		props.setProperty("hibernate.show_sql", String.valueOf(argsParser.isShowSql()));
 		props.setProperty("hibernate.format_sql", String.valueOf(argsParser.isShowSqlFormat()));
