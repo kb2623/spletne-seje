@@ -1,7 +1,5 @@
 package org.sessionization.fields;
 
-import org.sessionization.fields.query.UriQueryPair;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.sessionization.fields.cookie;
+package org.sessionization.fields;
 
 import javax.persistence.*;
 

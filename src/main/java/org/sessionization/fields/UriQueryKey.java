@@ -1,10 +1,10 @@
-package org.sessionization.fields.cookie;
+package org.sessionization.fields;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class CookieKey {
+public class UriQueryKey {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,21 +12,14 @@ public class CookieKey {
 
 	private String name;
 
-	public CookieKey() {
+	public UriQueryKey() {
 		id = null;
 		name = null;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public CookieKey(String name) {
+	public UriQueryKey(String name) {
 		this.name = name;
+		id = null;
 	}
 
 	public void setName(String name) {
@@ -37,16 +30,21 @@ public class CookieKey {
 		return name;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
-		CookieKey cookieKey = (CookieKey) o;
-
-		if (getId() != null ? !getId().equals(cookieKey.getId()) : cookieKey.getId() != null) return false;
-		if (getName() != null ? !getName().equals(cookieKey.getName()) : cookieKey.getName() != null) return false;
-
+		UriQueryKey that = (UriQueryKey) o;
+		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+		if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
 		return true;
 	}
 

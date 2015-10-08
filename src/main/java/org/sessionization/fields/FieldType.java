@@ -3,17 +3,10 @@ package org.sessionization.fields;
 import org.sessionization.database.ConnectionStatusConverter;
 import org.sessionization.database.InetAddressConverter;
 import org.sessionization.database.MethodConverter;
-import org.sessionization.fields.cookie.CookieKey;
-import org.sessionization.fields.cookie.CookiePair;
 import org.sessionization.fields.ncsa.*;
-import org.sessionization.fields.query.UriQueryKey;
-import org.sessionization.fields.query.UriQueryPair;
-import org.sessionization.fields.w3c.*;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.sessionization.fields.FieldType.ProtocolVersion;
 
 public enum FieldType {
 	/** Apache atribut, lahko je IP ali pa niz */
