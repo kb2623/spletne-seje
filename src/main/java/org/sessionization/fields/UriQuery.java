@@ -89,9 +89,4 @@ public class UriQuery implements Field {
 		result = 31 * result + (getPairs() != null ? getPairs().hashCode() : 0);
 		return result;
 	}
-
-	@Override
-	public String getKey() {
-		return "";
-	}
 }

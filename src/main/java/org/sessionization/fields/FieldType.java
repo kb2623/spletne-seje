@@ -97,11 +97,6 @@ public enum FieldType {
 	/** Stran s katere je prišel na našo stran */
 	Referer {
 		@Override
-		public boolean isKey() {
-			return true;
-		}
-
-		@Override
 		public Class getClassType() {
 			return org.sessionization.fields.Referer.class;
 		}
@@ -188,11 +183,6 @@ public enum FieldType {
 	},
 	/** �tevilka port na klientu */
 	ClientPort {
-		@Override
-		public boolean isKey() {
-			return true;
-		}
-
 		@Override
 		public Class getClassType() {
 			return Port.class;
