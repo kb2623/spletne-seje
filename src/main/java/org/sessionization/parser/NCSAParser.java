@@ -1,5 +1,7 @@
 package org.sessionization.parser;
 
+import org.datastruct.ClassPool;
+import org.kohsuke.args4j.ClassParser;
 import org.sessionization.fields.*;
 import org.sessionization.fields.ncsa.*;
 import org.sessionization.parser.datastruct.ParsedLine;
@@ -131,73 +133,73 @@ public class NCSAParser extends AbsParser {
 		for(int i = 0; i < super.fieldType.size(); i++) {
 			switch(super.fieldType.get(i)) {
 			case RemoteHost:
-				lineData[i] = new RemoteHost(tokens[i]);
+				lineData[i] = ClassPool.getObject(RemoteHost.class, tokens[i]);
 				break;
 			case Referer:
-				lineData[i] = new Referer(new URI(tokens[i]));
+				lineData[i] = ClassPool.getObject(Referer.class, new URI(tokens[i]));
 				break;
 			case RemoteLogname:
-				lineData[i] = new RemoteLogname(tokens[i]);
+				lineData[i] = ClassPool.getObject(RemoteLogname.class, tokens[i]);
 				break;
 			case RemoteUser:
-				lineData[i] = new RemoteUser(tokens[i]);
+				lineData[i] = ClassPool.getObject(RemoteUser.class, tokens[i]);
 				break;
 			case RequestLine:
 				String[] tab = tokens[i].split(" ");
-				lineData[i] = new RequestLine(tab[0], tab[1], tab[2]);
+				lineData[i] = ClassPool.getObject(RequestLine.class, tab[0], tab[1], tab[2]);
 				break;
 			case SizeOfResponse:
-				lineData[i] = new SizeOfResponse(tokens[i]);
+				lineData[i] = ClassPool.getObject(SizeOfResponse.class, tokens[i]);
 				break;
 			case SizeOfRequest:
-				lineData[i] = new SizeOfRequest(tokens[i]);
+				lineData[i] = ClassPool.getObject(SizeOfRequest.class, tokens[i]);
 				break;
 			case SizeOfTransfer:
-				lineData[i] = new SizeOfTransfer(tokens[i]);
+				lineData[i] = ClassPool.getObject(SizeOfTransfer.class, tokens[i]);
 				break;
 			case StatusCode:
-				lineData[i] = new StatusCode(tokens[i]);
+				lineData[i] = ClassPool.getObject(StatusCode.class, tokens[i]);
 				break;
 			case Method:
 				lineData[i] = Method.setMethod(tokens[i]);
 			case ProtocolVersion:
-				lineData[i] = new Protocol(tokens[i]);
+				lineData[i] = ClassPool.getObject(Protocol.class, tokens[i]);
 				break;
 			case DateTime:
-				lineData[i] = new DateTime(tokens[i], formatter);
+				lineData[i] = ClassPool.getObject(DateTime.class, tokens[i], formatter);
 				break;
 			case UserAgent:
-				lineData[i] = new UserAgent(tokens[i], LogType.NCSA);
+				lineData[i] = ClassPool.getObject(UserAgent.class, tokens[i], LogType.NCSA);
 				break;
 			case Cookie:
-				lineData[i] = new Cookie(tokens[i], LogType.NCSA);
+				lineData[i] = ClassPool.getObject(Cookie.class, tokens[i], LogType.NCSA);
 				break;
 			case UriQuery:
-				lineData[i] = new UriQuery(tokens[i]);
+				lineData[i] = ClassPool.getObject(UriQuery.class, tokens[i]);
 				break;
 			case UriSteam:
-				lineData[i] = new UriSteam(tokens[i]);
+				lineData[i] = ClassPool.getObject(UriSteam.class, tokens[i]);
 				break;
 			case TimeTaken:
-				lineData[i] = new TimeTaken(tokens[i], true);
+				lineData[i] = ClassPool.getObject(TimeTaken.class, tokens[i], true);
 				break;
 			case ClientIP:
-				lineData[i] = new Address(tokens[i], false);
+				lineData[i] = ClassPool.getObject(Address.class, tokens[i], false);
 				break;
 			case ServerIP:
-				lineData[i] = new Address(tokens[i], true);
+				lineData[i] = ClassPool.getObject(Address.class, tokens[i], true);
 				break;
 			case ServerPort:
-				lineData[i] = new Port(tokens[i], true);
+				lineData[i] = ClassPool.getObject(Port.class, tokens[i], true);
 				break;
 			case ClientPort:
-				lineData[i] = new Port(tokens[i], false);
+				lineData[i] = ClassPool.getObject(Port.class, tokens[i], false);
 				break;
 			case ProcessID:
-				lineData[i] = new ProcessID(tokens[i]);
+				lineData[i] = ClassPool.getObject(ProcessID.class, tokens[i]);
 				break;
 			case KeepAliveNumber:
-				lineData[i] = new KeepAliveNumber(tokens[i]);
+				lineData[i] = ClassPool.getObject(KeepAliveNumber.class, tokens[i]);
 				break;
 			case ConnectionStatus:
 				lineData[i] = ConnectionStatus.getConnectionStatus(tokens[i]);

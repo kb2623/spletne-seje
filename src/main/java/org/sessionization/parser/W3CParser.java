@@ -1,7 +1,9 @@
 package org.sessionization.parser;
 
+import org.datastruct.ClassPool;
 import org.sessionization.fields.*;
 import org.sessionization.fields.w3c.*;
+import org.sessionization.fields.w3c.Date;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;
@@ -117,73 +119,73 @@ public class W3CParser extends AbsParser {
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			switch (super.fieldType.get(i)) {
 			case Referer:
-				lineData[i] = new Referer(new URI(tokens[i]));
+				lineData[i] = ClassPool.getObject(Referer.class, new URI(tokens[i]));
 				break;
 			case Cookie:
-				lineData[i] = new Cookie(tokens[i], LogType.W3C);
+				lineData[i] = ClassPool.getObject(Cookie.class, tokens[i], LogType.W3C);
 				break;
 			case UserAgent:
-				lineData[i] = new UserAgent(tokens[i], LogType.W3C);
+				lineData[i] = ClassPool.getObject(UserAgent.class, tokens[i], LogType.W3C);
 				break;
 			case Method:
 				lineData[i] = Method.setMethod(tokens[i]);
 				break;
 			case Date:
-				lineData[i] = new org.sessionization.fields.w3c.Date(tokens[i], dateFormat);
+				lineData[i] = ClassPool.getObject(Date.class, tokens[i], dateFormat);
 				break;
 			case Time:
-				lineData[i] = new Time(tokens[i], timeFormat);
+				lineData[i] = ClassPool.getObject(Time.class, tokens[i], timeFormat);
 				break;
 			case SiteName:
-				lineData[i] = new SiteName(tokens[i]);
+				lineData[i] = ClassPool.getObject(SiteName.class, tokens[i]);
 				break;
 			case ComputerName:
-				lineData[i] = new ComputerName(tokens[i]);
+				lineData[i] = ClassPool.getObject(ComputerName.class, tokens[i]);
 				break;
 			case ServerIP:
-				lineData[i] = new Address(tokens[i], true);
+				lineData[i] = ClassPool.getObject(Address.class, tokens[i], true);
 				break;
 			case ClientIP:
-				lineData[i] = new Address(tokens[i], false);
+				lineData[i] = ClassPool.getObject(Address.class, tokens[i], false);
 				break;
 			case UriSteam:
-				lineData[i] = new UriSteam(tokens[i]);
+				lineData[i] = ClassPool.getObject(UriSteam.class, tokens[i]);
 				break;
 			case UriQuery:
-				lineData[i] = new UriQuery(tokens[i]);
+				lineData[i] = ClassPool.getObject(UriQuery.class, tokens[i]);
 				break;
 			case ServerPort:
-				lineData[i] = new Port(tokens[i], true);
+				lineData[i] = ClassPool.getObject(Port.class, tokens[i], true);
 				break;
 			case ClientPort:
-				lineData[i] = new Port(tokens[i], false);
+				lineData[i] = ClassPool.getObject(Port.class, tokens[i], false);
 				break;
 			case RemoteUser:
-				lineData[i] = new RemoteUser(tokens[i]);
+				lineData[i] = ClassPool.getObject(RemoteUser.class, tokens[i]);
 				break;
 			case ProtocolVersion:
-				lineData[i] = new Protocol(tokens[i]);
+				lineData[i] = ClassPool.getObject(Protocol.class, tokens[i]);
 				break;
 			case Host:
-				lineData[i] = new Host(tokens[i]);
+				lineData[i] = ClassPool.getObject(Host.class, tokens[i]);
 				break;
 			case StatusCode:
-				lineData[i] = new StatusCode(tokens[i]);
+				lineData[i] = ClassPool.getObject(StatusCode.class, tokens[i]);
 				break;
 			case SubStatus:
-				lineData[i] = new SubStatus(tokens[i]);
+				lineData[i] = ClassPool.getObject(SubStatus.class, tokens[i]);
 				break;
 			case Win32Status:
-				lineData[i] = new Win32Status(tokens[i]);
+				lineData[i] = ClassPool.getObject(Win32Status.class, tokens[i]);
 				break;
 			case SizeOfRequest:
-				lineData[i] = new SizeOfRequest(tokens[i]);
+				lineData[i] = ClassPool.getObject(SizeOfRequest.class, tokens[i]);
 				break;
 			case SizeOfResponse:
-				lineData[i] = new SizeOfResponse(tokens[i]);
+				lineData[i] = ClassPool.getObject(SizeOfResponse.class, tokens[i]);
 				break;
 			case TimeTaken:
-				lineData[i] = new TimeTaken(tokens[i], false);
+				lineData[i] = ClassPool.getObject(TimeTaken.class, tokens[i], false);
 				break;
 			default:
 				throw new ParseException("Unknown field", super.getPos());
