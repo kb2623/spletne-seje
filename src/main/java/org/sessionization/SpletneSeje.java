@@ -1,12 +1,11 @@
 package org.sessionization;
 
-import org.datastruct.RadixTree;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.fields.FieldType;
 import org.sessionization.parser.*;
 import org.sessionization.parser.datastruct.ParsedLine;
-import org.sessionization.parser.datastruct.RequestDump;
+import org.sessionization.parser.datastruct.ResoucesDump;
 import org.sessionization.parser.datastruct.PageViewDump;
 
 import java.io.FileNotFoundException;
@@ -119,7 +118,7 @@ public class SpletneSeje {
 
 		/** Ustvari dinamicne razrede */
 		loader.defineClass(PageViewDump.getClassName(), PageViewDump.dump(logParser.getFieldType()));
-		loader.defineClass(RequestDump.getClassName(), RequestDump.dump(logParser.getFieldType()));
+		loader.defineClass(ResoucesDump.getClassName(), ResoucesDump.dump(logParser.getFieldType()));
 
 		/** Izdelaj tabeli razredov za podatkovno bazo */
 		Set<Class> classes = new HashSet<>();
@@ -129,7 +128,7 @@ public class SpletneSeje {
 			}
 			classes.add(f.getClassType());
 		}
-		classes.add(loader.loadClass(RequestDump.getClassName()));
+		classes.add(loader.loadClass(ResoucesDump.getClassName()));
 		classes.add(loader.loadClass(PageViewDump.getClassName()));
 
 		/** Nastavi nastavitve za hibernate */

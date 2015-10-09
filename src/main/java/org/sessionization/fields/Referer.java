@@ -44,7 +44,7 @@ public class Referer extends UriSteamQuery implements Field {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof Referer)) return false;
 		if (!super.equals(o)) return false;
 		Referer referer = (Referer) o;
 		if (getHost() != null ? !getHost().equals(referer.getHost()) : referer.getHost() != null) return false;
@@ -53,7 +53,9 @@ public class Referer extends UriSteamQuery implements Field {
 
 	@Override
 	public int hashCode() {
-		return getHost() != null ? getHost().hashCode() : 0;
+		int result = super.hashCode();
+		result = 31 * result + (getHost() != null ? getHost().hashCode() : 0);
+		return result;
 	}
 
 	@Override

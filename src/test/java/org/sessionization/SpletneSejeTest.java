@@ -138,12 +138,12 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testRunOne() {
-		SpletneSeje.main("-in", pathNCSACommon, "-fl", "COMMON", "-dbsqf", "-dbsq");
+		SpletneSeje.main("-fl", "COMMON", "-dbsqf", "-dbsq", pathNCSACommon);
 	}
 
 	@Test
 	public void testRunTwo() throws MalformedURLException {
-		SpletneSeje.main("-in", pathNCSACommon, "-fl", "COMMON", "-xml", "H2.cfg.xml", "-dbdr", "lib/h2-1.4.188.jar", "-dbdrc", "adfkl;");
+		SpletneSeje.main("-fl", "COMMON", "-xml", "H2.cfg.xml", "-dbdr", "lib/h2-1.4.188.jar", "-dbdrc", "adfkl;", pathNCSACommon);
 	}
 
 }

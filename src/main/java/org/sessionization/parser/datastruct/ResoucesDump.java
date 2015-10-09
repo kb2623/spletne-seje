@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RequestDump implements Opcodes {
+public class ResoucesDump implements Opcodes {
 
 	private static String CLASSNAME = "org/sessionization/fields/Request";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";

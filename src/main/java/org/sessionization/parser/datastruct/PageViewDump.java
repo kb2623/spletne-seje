@@ -22,7 +22,7 @@ public class PageViewDump implements Opcodes {
 		MethodVisitor mv;
 		AnnotationVisitor av0;
 		/** Inicializacija dostopnih pravic, imana in dedovanih razredov */
-		cw.visit(52, ACC_PUBLIC + ACC_SUPER, CLASSNAME, null, ClassTypes.ObjectClass, null);
+		cw.visit(52, ACC_PUBLIC + ACC_SUPER, CLASSNAME, null, ClassTypes.PageViewAbsType, null);
 		/** Inicializacija datoeke razreda */
 		cw.visitSource(NAME + ".java", null);
 		/** Dodajanje @Entity */
@@ -74,7 +74,7 @@ public class PageViewDump implements Opcodes {
 		}
 		/** Inicializacija tabele z zahtevami */
 		{
-			fv = cw.visitField(ACC_PRIVATE, "requests", ClassTypes.ListType, ClassTypes.ListRequestsGType, null);
+			fv = cw.visitField(ACC_PRIVATE, "requests", ClassTypes.ListType, ClassTypes.ListResoucesGType, null);
 			{
 				av0 = fv.visitAnnotation(ClassTypes.OneToManyType, true);
 				{
@@ -98,7 +98,7 @@ public class PageViewDump implements Opcodes {
 			mv.visitLabel(l0);
 			mv.visitLineNumber(lineCount, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKESPECIAL, ClassTypes.ObjectClass, "<init>", "()V", false);
+			mv.visitMethodInsn(INVOKESPECIAL, ClassTypes.PageViewAbsType, "<init>", "()V", false);
 			Label l1 = new Label();
 			lineCount++;
 			mv.visitLabel(l1);
@@ -228,7 +228,7 @@ public class PageViewDump implements Opcodes {
 		}
 		/** Getter za tabelo */
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "getRequests", "()" + ClassTypes.ListType, "()" + ClassTypes.ListRequestsGType, null);
+			mv = cw.visitMethod(ACC_PUBLIC, "getRequests", "()" + ClassTypes.ListType, "()" + ClassTypes.ListResoucesGType, null);
 			lineCount++;
 			mv.visitCode();
 			Label l0 = new Label();
@@ -246,7 +246,7 @@ public class PageViewDump implements Opcodes {
 		}
 		/** Setter za tabelo */
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "setRequests", "(" + ClassTypes.ListType + ")V", "(" + ClassTypes.ListRequestsGType + ")V", null);
+			mv = cw.visitMethod(ACC_PUBLIC, "setRequests", "(" + ClassTypes.ListType + ")V", "(" + ClassTypes.ListResoucesGType + ")V", null);
 			lineCount++;
 			mv.visitCode();
 			Label l0 = new Label();
@@ -264,14 +264,14 @@ public class PageViewDump implements Opcodes {
 			Label l2 = new Label();
 			mv.visitLabel(l2);
 			mv.visitLocalVariable("this", CLASSTYPE, null, l0, l2, 0);
-			mv.visitLocalVariable("requests", ClassTypes.ListType, ClassTypes.ListRequestsGType, l0, l2, 1);
+			mv.visitLocalVariable("requests", ClassTypes.ListType, ClassTypes.ListResoucesGType, l0, l2, 1);
 			mv.visitMaxs(2, 2);
 			mv.visitEnd();
 			lineCount++;
 		}
 		/** Metoda getKey() */
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "getKey", "()Ljava/lang/String;", null, null);
+			mv = cw.visitMethod(ACC_PUBLIC, "getKey", "()" + ClassTypes.StringType, null, null);
 			lineCount += 2;
 			mv.visitCode();
 			Label l0 = new Label();

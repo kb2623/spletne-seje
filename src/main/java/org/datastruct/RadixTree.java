@@ -345,11 +345,11 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public Set<String> keySet() {
-		return keysAsSet(rootNode, rootNode.key, new ArraySet<>());
+		return keysAsSet(rootNode, rootNode.key, new HashSet<>());
 	}
 
 	private Set<String> keysAsSet(RadixNode node, String key, Set<String> set) {
-		node.children.forEach(children -> set.addAll(keysAsSet(children, key + children.key, new ArraySet<>())));
+		node.children.forEach(children -> set.addAll(keysAsSet(children, key + children.key, new HashSet<>())));
 		if (node.data != null) set.add(key);
 		return set;
 	}
@@ -361,12 +361,12 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public Set<Map.Entry<String, V>> entrySet() {
-		return entryAsSet(rootNode, rootNode.key, new ArraySet<>());
+		return entryAsSet(rootNode, rootNode.key, new HashSet<>());
 	}
 
 	private Set<Map.Entry<String, V>> entryAsSet(RadixNode node, String key, Set<Map.Entry<String, V>> set) {
 		if (node.data != null) set.add(new RadixTreeEntry<>(key + node.key, node.data));
-		node.children.forEach(children -> set.addAll(entryAsSet(children, key + node.key, new ArraySet<>())));
+		node.children.forEach(children -> set.addAll(entryAsSet(children, key + node.key, new HashSet<>())));
 		return set;
 	}
 
