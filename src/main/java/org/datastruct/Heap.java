@@ -46,8 +46,9 @@ public class Heap<T extends Comparable<T>> implements Queue<T> {
 		}
 	}
 
-	public boolean add(T e) {
+	public boolean add(T e) throws NullPointerException {
 		// FIXME popravi return
+		if (e == null) throw new NullPointerException();
 		if(this.heap.length <= this.end) {
 			Object newHeap[] = new Object[this.heap.length * Heap.ADD_SIZE];
 			System.arraycopy(this.heap, 0, newHeap, 0, this.heap.length);
@@ -210,7 +211,7 @@ public class Heap<T extends Comparable<T>> implements Queue<T> {
 
 	@Override
 	public Iterator<T> iterator() {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

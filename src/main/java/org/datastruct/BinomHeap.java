@@ -6,11 +6,13 @@ import java.util.*;
 public class BinomHeap<Element extends Comparable<Element>> implements Queue<Element> {
 
 	public class BinHeapaNode<T> {
+
 		public T data;
 		public BinHeapaNode<T> parent;
 		public BinHeapaNode<T> sibling;
 		public BinHeapaNode<T> child;
 		public int depth;
+
 		public BinHeapaNode(T data, BinHeapaNode<T> parent, BinHeapaNode<T> sibling, BinHeapaNode<T> child, int depth) {
 			this.data = data;
 			this.parent = parent;
@@ -37,13 +39,13 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 		List<Element> list = this.asList();
 		this.cmp = comparator;
 		this.topNode = null;
-		for(Element t: list) {
+		for (Element t: list) {
 			this.add(t);
 		}
 	}
 
 	private int compare(Element o1, Element o2) {
-		if(this.cmp != null) {
+		if (this.cmp != null) {
 			return this.cmp.compare(o1, o2);
 		} else {
 			return o1.compareTo(o2);
@@ -51,13 +53,14 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	@Override
-	public boolean add(Element e) {
+	public boolean add(Element e) throws NullPointerException {
 		// FIXME poravi reutrn vrednost
-		if(this.isEmpty()) {
+		if (e == null) throw new NullPointerException();
+		if (this.isEmpty()) {
 			this.topNode = new BinHeapaNode<>(e, null, null, null, 0);
 		} else {
 			this.topNode = new BinHeapaNode<>(e, null, this.topNode, null, 0);
-			while(this.topNode.sibling != null && this.topNode.depth == this.topNode.sibling.depth) {
+			while (this.topNode.sibling != null && this.topNode.depth == this.topNode.sibling.depth) {
 				this.topNode = this.merge(this.topNode, this.topNode.sibling);
 			}
 		}
@@ -91,7 +94,7 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 
 	@Override
 	public void clear() {
-
+		this.topNode = null;
 	}
 
 	@Override
@@ -132,7 +135,7 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	private BinHeapaNode<Element> merge(BinHeapaNode<Element> prevNode, BinHeapaNode<Element> nextNode) {
-		if(this.compare(prevNode.data, nextNode.data) < 0) {
+		if (this.compare(prevNode.data, nextNode.data) < 0) {
 			prevNode.parent = nextNode;
 			prevNode.sibling = nextNode.child;
 			nextNode.child = prevNode;
@@ -150,19 +153,19 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 
 	@SuppressWarnings("all")
 	public Element removeFirst() throws NoSuchElementException {
-		if(this.isEmpty()) {
+		if (this.isEmpty()) {
 			throw new NoSuchElementException();
 		} else {
 			BinHeapaNode<Element> prevMax = null, currMax = this.topNode;
 			BinHeapaNode<Element> curr = this.topNode;
-			while(curr.sibling != null) {
-				if(this.compare(curr.sibling.data, currMax.data) > 0) 	{
+			while (curr.sibling != null) {
+				if (this.compare(curr.sibling.data, currMax.data) > 0) 	{
 					currMax = curr.sibling;
 					prevMax = curr;
 				}
 				curr = curr.sibling;
 			}
-			if(prevMax != null) {
+			if (prevMax != null) {
 				prevMax.sibling = currMax.sibling;
 			} else {
 				this.topNode = this.topNode.sibling;
@@ -173,10 +176,10 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	private BinHeapaNode<Element> fixAll(BinHeapaNode<Element> node) {
-		if(node.sibling == null) {
+		if (node.sibling == null) {
 			return node;
-		} else if(node.depth == node.sibling.depth) {
-			while(node.sibling != null && node.depth == node.sibling.depth) {
+		} else if (node.depth == node.sibling.depth) {
+			while (node.sibling != null && node.depth == node.sibling.depth) {
 				node = this.merge(node, node.sibling);
 			}
 			return node;
@@ -187,13 +190,13 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	public Element getFirst() throws NoSuchElementException {
-		if(this.isEmpty()) {
+		if (this.isEmpty()) {
 			throw new NoSuchElementException();
 		} else {
 			Element max = this.topNode.data;
 			BinHeapaNode<Element> curr = this.topNode;
-			while(curr != null) {
-				if(this.compare(max, curr.data) < 0) {
+			while (curr != null) {
+				if (this.compare(max, curr.data) < 0) {
 					max = curr.data;
 				}
 				curr = curr.sibling;
@@ -202,8 +205,9 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 		}
 	}
 
+	@Override
 	public int size() {
-		if(this.isEmpty()) {
+		if (this.isEmpty()) {
 			return 0;
 		} else {
 			return this.size(this.topNode);
@@ -211,7 +215,7 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	private int size(BinHeapaNode<Element> node) {
-		if(node == null) {
+		if (node == null) {
 			return 0;
 		} else {
 			return 1 + this.size(node.child) + this.size(node.sibling);
@@ -219,29 +223,25 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	public int depth() {
-		if(this.isEmpty()) {
+		if (this.isEmpty()) {
 			return 0;
 		} else {
 			BinHeapaNode<Element> tmp = this.topNode;
-			while(tmp.sibling != null) {
+			while (tmp.sibling != null) {
 				tmp = tmp.sibling;
 			}
 			return tmp.depth;
 		}
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return (this.topNode == null);
 	}
 
 	@Override
 	public boolean contains(Object o) {
-		return false;
-	}
-
-	@Override
-	public Iterator<Element> iterator() {
-		return null;
+		return exists((Element) o);
 	}
 
 	@Override
@@ -259,23 +259,23 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	public Element remove(Element e) {
-		if(this.isEmpty()) {
+		if (this.isEmpty()) {
 			throw new java.util.NoSuchElementException();
 		}
 		BinHeapaNode<Element> node, prev;
-		if(null == (node = this.findNode(e))) {
+		if (null == (node = this.findNode(e))) {
 			throw new java.util.NoSuchElementException();
 		}
 		Element ret = node.data;
-		while(node.parent != null) {
+		while (node.parent != null) {
 			node.data = node.parent.data;
 			node = node.parent;
 		}
-		if(node == this.topNode) {
+		if (node == this.topNode) {
 			this.topNode = this.topNode.sibling;
 		} else {
 			prev = this.topNode;
-			while(prev.sibling != node) {
+			while (prev.sibling != node) {
 				prev = prev.sibling;
 			}
 			prev.sibling = node.sibling;
@@ -287,12 +287,12 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	private BinHeapaNode<Element> findNode(Element e) {
 		BinHeapaNode<Element> curr = this.topNode;
 		Stack<BinHeapaNode<Element>> stack = new Stack<>();
-		while(curr != null || !stack.isEmpty()) {
-			if(curr == null) {
+		while (curr != null || !stack.isEmpty()) {
+			if (curr == null) {
 				curr = stack.pop().sibling;
-			} else if(this.compare(curr.data, e) == 0) {
+			} else if (this.compare(curr.data, e) == 0) {
 				break;
-			} else if(this.compare(curr.data, e) > 0) {
+			} else if (this.compare(curr.data, e) > 0) {
 				stack.push(curr);
 				curr = curr.child;
 			} else {
@@ -303,21 +303,21 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	private void removeNode(BinHeapaNode<Element> node) {
-		if(null != node.child) {
+		if (null != node.child) {
 			node.sibling = null;
 			BinHeapaNode<Element> curr, prev;
 			Stack<BinHeapaNode<Element>> stack = new Stack<>();
 			curr = node.child;
-			while(curr != null) {
+			while (curr != null) {
 				curr.parent = null;
 				stack.push(curr);
 				curr = curr.sibling;
 			}
 			curr = this.topNode;
 			prev = null;
-			while(curr != null && !stack.isEmpty()) {
-				if(curr.depth == stack.peek().depth) {
-					if(prev != null) {
+			while (curr != null && !stack.isEmpty()) {
+				if (curr.depth == stack.peek().depth) {
+					if (prev != null) {
 						prev.sibling = this.merge(stack.pop(), curr);
 						curr = prev.sibling.sibling;
 						prev = prev.sibling;
@@ -327,7 +327,7 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 						curr = this.topNode.sibling;
 					}
 				} else {
-					if(prev != null) {
+					if (prev != null) {
 						prev.sibling = stack.pop();
 						prev.sibling.sibling = curr;
 						prev = prev.sibling;
@@ -338,8 +338,8 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 					}
 				}
 			}
-			while(!stack.isEmpty()) {
-				if(prev != null) {
+			while (!stack.isEmpty()) {
+				if (prev != null) {
 					prev.sibling = stack.pop();
 					prev.sibling.sibling = null;
 					prev = prev.sibling;
@@ -354,18 +354,18 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	}
 
 	public List<Element> asList() {
-		if(this.isEmpty()) {
+		if (this.isEmpty()) {
 			return null;
 		}
 		List<Element> list = new ArrayList<>(this.size());
 		Stack<BinHeapaNode<Element>> stack = new Stack<>();
 		BinHeapaNode<Element> curr = this.topNode;
-		while(curr != null || !stack.isEmpty()) {
-			if(curr == null) {
+		while (curr != null || !stack.isEmpty()) {
+			if (curr == null) {
 				curr = stack.pop();
 				list.add(curr.data);
 				curr = curr.sibling;
-			} else if(curr.child != null) {
+			} else if (curr.child != null) {
 				stack.push(curr);
 				curr = curr.child;
 			} else {
@@ -401,26 +401,31 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 		return builder.toString();
 	}
 
+	@Override
+	public Iterator<Element> iterator() {
+		throw new UnsupportedOperationException();
+	}
+
 	public void save(OutputStream outputStream) throws IOException {
 		ObjectOutputStream out = new ObjectOutputStream(outputStream);
 		out.writeByte(3);
 		out.writeInt(this.size());
 		Stack<BinHeapaNode<Element>> stack = new Stack<>();
 		BinHeapaNode<Element> node = this.topNode;
-		while(node != null) {
+		while (node != null) {
 			stack.push(node);
 			node = node.sibling;
 		}
-		while(!stack.isEmpty()) {
+		while (!stack.isEmpty()) {
 			this.save(out, stack.pop());
 		}
 	}
 
 	private void save(ObjectOutputStream out, BinHeapaNode<Element> node) throws IOException {
-		if(node.child != null) {
+		if (node.child != null) {
 			this.save(out, node.child);
 			out.writeObject(node.data);
-			if(node.sibling != null) {
+			if (node.sibling != null) {
 				this.save(out, node.sibling);
 			}
 		} else {
@@ -431,14 +436,14 @@ public class BinomHeap<Element extends Comparable<Element>> implements Queue<Ele
 	@SuppressWarnings("unchecked")
 	public void restore(InputStream inputStream) throws IOException, ClassNotFoundException {
 		ObjectInputStream in = new ObjectInputStream(inputStream);
-		if(in.readByte() == 3) {
+		if (in.readByte() == 3) {
 			this.topNode = null;
-			for(int size = in.readInt(); size > 0; size--) {
+			for (int size = in.readInt(); size > 0; size--) {
 				this.add((Element) in.readObject());
 			}
 		} else {
 			this.topNode = null;
-			for(int size = in.readInt(); size > 0; size--) {
+			for (int size = in.readInt(); size > 0; size--) {
 				this.add((Element) in.readObject());
 			}
 		}
