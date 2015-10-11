@@ -50,7 +50,9 @@ public class BinomskaKopica<Element extends Comparable<Element>> implements Queu
 		}
 	}
 
-	public void add(Element e) {
+	@Override
+	public boolean add(Element e) {
+		// FIXME poravi reutrn vrednost
 		if(this.isEmpty()) {
 			this.topNode = new BinHeapaNode<>(e, null, null, null, 0);
 		} else {
@@ -59,11 +61,12 @@ public class BinomskaKopica<Element extends Comparable<Element>> implements Queu
 				this.topNode = this.merge(this.topNode, this.topNode.sibling);
 			}
 		}
+		return true;
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		return false;
+		return (remove((Element) o) != null) ? true : false;
 	}
 
 	@Override
@@ -93,27 +96,39 @@ public class BinomskaKopica<Element extends Comparable<Element>> implements Queu
 
 	@Override
 	public boolean offer(Element element) {
-		return false;
+		try {
+			return this.add(element);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@Override
-	public Element remove() {
-		return null;
+	public Element remove() throws NoSuchElementException {
+		return this.removeFirst();
 	}
 
 	@Override
 	public Element poll() {
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		} else {
+			return this.removeFirst();
+		}
 	}
 
 	@Override
-	public Element element() {
-		return null;
+	public Element element() throws NoSuchElementException {
+		return this.getFirst();
 	}
 
 	@Override
 	public Element peek() {
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		} else {
+			return this.getFirst();
+		}
 	}
 
 	private BinHeapaNode<Element> merge(BinHeapaNode<Element> prevNode, BinHeapaNode<Element> nextNode) {
@@ -134,9 +149,9 @@ public class BinomskaKopica<Element extends Comparable<Element>> implements Queu
 	}
 
 	@SuppressWarnings("all")
-	public Element removeFirst(){
+	public Element removeFirst() throws NoSuchElementException {
 		if(this.isEmpty()) {
-			throw new java.util.NoSuchElementException();
+			throw new NoSuchElementException();
 		} else {
 			BinHeapaNode<Element> prevMax = null, currMax = this.topNode;
 			BinHeapaNode<Element> curr = this.topNode;
@@ -171,9 +186,9 @@ public class BinomskaKopica<Element extends Comparable<Element>> implements Queu
 		}
 	}
 
-	public Element getFirst() {
+	public Element getFirst() throws NoSuchElementException {
 		if(this.isEmpty()) {
-			throw new java.util.NoSuchElementException();
+			throw new NoSuchElementException();
 		} else {
 			Element max = this.topNode.data;
 			BinHeapaNode<Element> curr = this.topNode;

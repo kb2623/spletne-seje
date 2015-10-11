@@ -46,7 +46,8 @@ public class PrioritetnaVrsta<T extends Comparable<T>> implements Queue<T> {
 		}
 	}
 
-	public void add(T e) {
+	public boolean add(T e) {
+		// FIXME popravi return
 		if(this.heap.length <= this.end) {
 			Object newHeap[] = new Object[this.heap.length * PrioritetnaVrsta.ADD_SIZE];
 			System.arraycopy(this.heap, 0, newHeap, 0, this.heap.length);
@@ -54,11 +55,12 @@ public class PrioritetnaVrsta<T extends Comparable<T>> implements Queue<T> {
 		}
 		this.heap[this.end++] = e;
 		this.bubbleUp();
+		return true;
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		return false;
+		return (remove((T) o) != null) ? true : false;
 	}
 
 	@Override
@@ -83,32 +85,44 @@ public class PrioritetnaVrsta<T extends Comparable<T>> implements Queue<T> {
 
 	@Override
 	public void clear() {
-
+		this.end = 0;
 	}
 
 	@Override
 	public boolean offer(T t) {
-		return false;
+		try {
+			return add(t);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@Override
-	public T remove() {
-		return null;
+	public T remove() throws NoSuchElementException {
+		return removeFirst();
 	}
 
 	@Override
 	public T poll() {
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		} else {
+			return removeFirst();
+		}
 	}
 
 	@Override
-	public T element() {
-		return null;
+	public T element() throws NoSuchElementException {
+		return getFirst();
 	}
 
 	@Override
 	public T peek() {
-		return null;
+		if (this.isEmpty()) {
+			return null;
+		} else {
+			return getFirst();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -136,7 +150,7 @@ public class PrioritetnaVrsta<T extends Comparable<T>> implements Queue<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T removeFirst() {
+	public T removeFirst() throws NoSuchElementException {
 		if(this.isEmpty()) {
 			throw new NoSuchElementException();
 		} else {
@@ -166,9 +180,9 @@ public class PrioritetnaVrsta<T extends Comparable<T>> implements Queue<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T getFirst() {
+	public T getFirst() throws NoSuchElementException {
 		if (this.isEmpty()) {
-			throw new java.util.NoSuchElementException();
+			throw new NoSuchElementException();
 		} else {
 			return (T) this.heap[0];
 		}
