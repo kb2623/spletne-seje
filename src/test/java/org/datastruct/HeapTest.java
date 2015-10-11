@@ -8,19 +8,19 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class PrioritetnaVrstaTest {
+public class HeapTest {
 
-	private PrioritetnaVrsta<String> pv;
-	private PrioritetnaVrsta<Integer> instance;
+	private Heap<String> pv;
+	private Heap<Integer> instance;
 
 	private void setUpComparable() {
-		this.pv = new PrioritetnaVrsta<>(10);
-		this.instance = new PrioritetnaVrsta<>();
+		this.pv = new Heap<>(10);
+		this.instance = new Heap<>();
 	}
 	
 	private void setUpComparator() {
-		this.pv = new PrioritetnaVrsta<>(10, new CompareString());
-		this.instance = new PrioritetnaVrsta<>(new CompareInteger());
+		this.pv = new Heap<>(10, new CompareString());
+		this.instance = new Heap<>(new CompareInteger());
 	}
 	
 	@Test
@@ -141,9 +141,9 @@ public class PrioritetnaVrstaTest {
 
 	private void testAdd_Overflow(boolean cmp) {
 		if(cmp) {
-			pv = new PrioritetnaVrsta<>(2);
+			pv = new Heap<>(2);
 		} else  {
-			pv = new PrioritetnaVrsta<>(2, new CompareString());
+			pv = new Heap<>(2, new CompareString());
 		}
 		pv.add("Test1");
 		pv.add("Test2");

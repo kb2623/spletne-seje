@@ -3,28 +3,28 @@ package org.datastruct;
 import java.io.*;
 import java.util.*;
 
-public class PrioritetnaVrsta<T extends Comparable<T>> implements Queue<T> {
+public class Heap<T extends Comparable<T>> implements Queue<T> {
 
 	private Object[] heap;
 	private int end;
 	private Comparator<T> cmp;
 	private static final byte ADD_SIZE = 2;
 
-	public PrioritetnaVrsta(int maxSize, Comparator<T> comparator) {
+	public Heap(int maxSize, Comparator<T> comparator) {
 		this.heap = new Object[maxSize];
 		this.end = 0;
 		this.cmp = comparator;
 	}
 
-	public PrioritetnaVrsta(int maxSize) {
+	public Heap(int maxSize) {
 		this(maxSize, null);
 	}
 
-	public PrioritetnaVrsta(Comparator<T> comparator) {
+	public Heap(Comparator<T> comparator) {
 		this(100, comparator);
 	}
 
-	public PrioritetnaVrsta() {
+	public Heap() {
 		this(100, null);
 	}
 
@@ -49,7 +49,7 @@ public class PrioritetnaVrsta<T extends Comparable<T>> implements Queue<T> {
 	public boolean add(T e) {
 		// FIXME popravi return
 		if(this.heap.length <= this.end) {
-			Object newHeap[] = new Object[this.heap.length * PrioritetnaVrsta.ADD_SIZE];
+			Object newHeap[] = new Object[this.heap.length * Heap.ADD_SIZE];
 			System.arraycopy(this.heap, 0, newHeap, 0, this.heap.length);
 			this.heap = newHeap;
 		}

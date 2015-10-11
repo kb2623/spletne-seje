@@ -3,7 +3,7 @@ package org.datastruct;
 import java.io.*;
 import java.util.*;
 
-public class BinomskaKopica<Element extends Comparable<Element>> implements Queue<Element> {
+public class BinomHeap<Element extends Comparable<Element>> implements Queue<Element> {
 
 	public class BinHeapaNode<T> {
 		public T data;
@@ -23,12 +23,12 @@ public class BinomskaKopica<Element extends Comparable<Element>> implements Queu
 	private BinHeapaNode<Element> topNode;
 	private Comparator<Element> cmp;
 
-	public BinomskaKopica() {
+	public BinomHeap() {
 		this.topNode = null;
 		this.cmp = null;
 	}
 
-	public BinomskaKopica(Comparator<Element> comparator) {
+	public BinomHeap(Comparator<Element> comparator) {
 		this.topNode = null;
 		this.cmp = comparator;
 	}

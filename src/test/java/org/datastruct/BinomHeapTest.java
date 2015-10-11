@@ -7,16 +7,16 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class BinomskaKopicaTest {
+public class BinomHeapTest {
 
-	private BinomskaKopica<Integer> instance;
+	private BinomHeap<Integer> instance;
 
 	private void setUpComparable() {
-		this.instance = new BinomskaKopica<>();
+		this.instance = new BinomHeap<>();
 	}
 	
 	private void setUpComparator() {
-		this.instance = new BinomskaKopica<>(new CompareInteger());
+		this.instance = new BinomHeap<>(new CompareInteger());
 	}
 	
 	@Test
