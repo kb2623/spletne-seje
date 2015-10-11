@@ -6,7 +6,10 @@ import org.sessionization.fields.w3c.*;
 import org.sessionization.fields.w3c.Date;
 import org.sessionization.parser.datastruct.ParsedLine;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
