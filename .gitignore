@@ -16,3 +16,6 @@ hs_err_pid*
 
 #ignore gradle build directory
 build/
+
+#ignore gradle directory
+.gradle/
