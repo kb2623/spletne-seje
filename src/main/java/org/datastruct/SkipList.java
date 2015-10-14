@@ -33,6 +33,28 @@ public class SkipList<Element> implements Collection<Element> {
 				}
 			}
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == this) {
+				return true;
+			} else if (o == null) {
+				return false;
+			} else if (o instanceof ListNode) {
+				ListNode ln = (ListNode) o;
+				return next.equals(ln.next) && data.equals(ln.data);
+			} else {
+				return false;
+			}
+		}
+
+		@Override
+		public int hashCode() {
+			int hash = 0;
+			hash = next.hashCode();
+			hash += 31 * data.hashCode();
+			return hash;
+		}
 	}
 
 	private int maxCone;
@@ -203,25 +225,21 @@ public class SkipList<Element> implements Collection<Element> {
 		if (cmp == null) throw new NullPointerException();
 		Element e = (Element) o;
 		Stack<ListNode<Element>> stack = new Stack<>();
-		boolean found = false;
 		ListNode<Element> curr = sentinel;
-		for (int i = maxCone - 1; i >= 0 && !found; i--) {
+		ListNode<Element> found = null;
+		for (int i = maxCone - 1; i >= 0; i--) {
 			ListNode<Element> tmp = curr.next.get(i);
 			if (tmp != null) {
 				int iCmp = cmp.compare(tmp.data, e);
 				if (iCmp == 0) {
-					found = true;
-					curr = tmp;
-					break;
+					found = tmp;
 				} else if (iCmp < 0) {
 					curr = tmp;
 					while (curr.next.get(i) != null) {
 						tmp = curr.next.get(i);
 						iCmp = cmp.compare(tmp.data, e);
 						if (iCmp == 0) {
-							stack.offer(curr);
-							curr = tmp;
-							found = true;
+							found = tmp;
 							break;
 						} else if (iCmp > 0) {
 							break;
@@ -231,15 +249,13 @@ public class SkipList<Element> implements Collection<Element> {
 					}
 				}
 			}
-			if (!found) {
-				stack.offer(curr);
-			}
+			stack.offer(curr);
 		}
-		for (int i = 0; i < curr.next.size() && found; i++) {
-			ListNode<Element> tmp = stack.poll();
-			tmp.next.set(i, curr.next.get(i));
+		for (int i = 0; i < curr.next.size() && found != null; i++) {
+			curr = stack.poll();
+			curr.next.set(i, found.next.get(i));
 		}
-		return found;
+		return found != null;
 	}
 
 	@Override

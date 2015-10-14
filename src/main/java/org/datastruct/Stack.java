@@ -119,8 +119,11 @@ public class Stack<T> implements Queue<T> {
 
 	@Override
 	public int size() {
-		// TODO
-		return 0;
+		int size = 0;
+		for (StackNode node = top; node != null; node = node.prev) {
+			size++;
+		}
+		return size;
 	}
 
 	@Override

@@ -84,13 +84,16 @@ public class SkipListTest {
 	public void testRemove() {
 		testAddOne();
 		assertFalse(list.remove(35));
-		System.out.println(list.izpis() + "\n");
+		assertEquals(6, list.size());
 		assertTrue(list.remove(34));
-		System.out.println(list.izpis() + "\n");
+		assertEquals(5, list.size());
 		assertFalse(list.remove(34));
+		assertEquals(5, list.size());
 		assertTrue(list.add(34));
-		System.out.println(list.izpis() + "\n");
+		assertEquals(6, list.size());
 		assertTrue(list.remove(34));
-		System.out.println(list.izpis() + "\n");
+		assertEquals(5, list.size());
+		assertFalse(list.remove(34));
+		assertEquals(5, list.size());
 	}
 }
