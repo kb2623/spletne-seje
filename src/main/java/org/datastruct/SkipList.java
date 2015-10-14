@@ -200,9 +200,46 @@ public class SkipList<Element> implements Collection<Element> {
 	@Override
 	public boolean remove(Object o) throws ClassCastException, NullPointerException {
 		if (o == null) throw new NullPointerException();
+		if (cmp == null) throw new NullPointerException();
 		Element e = (Element) o;
-		// TODO
-		return false;
+		Stack<ListNode<Element>> stack = new Stack<>();
+		boolean found = false;
+		ListNode<Element> curr = sentinel;
+		for (int i = maxCone - 1; i >= 0 && !found; i--) {
+			ListNode<Element> tmp = curr.next.get(i);
+			if (tmp != null) {
+				int iCmp = cmp.compare(tmp.data, e);
+				if (iCmp == 0) {
+					found = true;
+					curr = tmp;
+					break;
+				} else if (iCmp < 0) {
+					curr = tmp;
+					while (curr.next.get(i) != null) {
+						tmp = curr.next.get(i);
+						iCmp = cmp.compare(tmp.data, e);
+						if (iCmp == 0) {
+							stack.offer(curr);
+							curr = tmp;
+							found = true;
+							break;
+						} else if (iCmp > 0) {
+							break;
+						} else {
+							curr = tmp;
+						}
+					}
+				}
+			}
+			if (!found) {
+				stack.offer(curr);
+			}
+		}
+		for (int i = 0; i < curr.next.size() && found; i++) {
+			ListNode<Element> tmp = stack.poll();
+			tmp.next.set(i, curr.next.get(i));
+		}
+		return found;
 	}
 
 	@Override

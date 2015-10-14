@@ -61,21 +61,15 @@ public class SkipListTest {
 	public void testContains() {
 		assertFalse(list.contains(new Integer(1)));
 		testAddOne();
-		System.out.println(list.izpis() + "\n");
 		assertTrue(list.contains(new Integer(1)));
 		assertTrue(list.contains(new Integer(23)));
 		assertTrue(list.add(100));
-		System.out.println(list.izpis() + "\n");
 		assertFalse(list.add(100));
-		System.out.println(list.izpis() + "\n");
 		assertTrue(list.add(35));
-		System.out.println(list.izpis() + "\n");
 		assertTrue(list.contains(new Integer(100)));
 		assertTrue(list.add(66));
-		System.out.println(list.izpis() + "\n");
 		assertTrue(list.add(33));
 		assertTrue(list.add(111));
-		System.out.println(list.izpis() + "\n");
 	}
 
 	@Test
@@ -84,5 +78,19 @@ public class SkipListTest {
 
 	@Test
 	public void testAddAll() {
+	}
+
+	@Test
+	public void testRemove() {
+		testAddOne();
+		assertFalse(list.remove(35));
+		System.out.println(list.izpis() + "\n");
+		assertTrue(list.remove(34));
+		System.out.println(list.izpis() + "\n");
+		assertFalse(list.remove(34));
+		assertTrue(list.add(34));
+		System.out.println(list.izpis() + "\n");
+		assertTrue(list.remove(34));
+		System.out.println(list.izpis() + "\n");
 	}
 }
