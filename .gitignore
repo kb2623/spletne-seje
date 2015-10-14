@@ -8,14 +8,21 @@
 *.war
 *.ear
 
-#needed warpper for Gradle
+# Needed warpper for Gradle
 !gradle/wrapper/gradle-wrapper.jar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-#ignore gradle build directory
+# Ignore gradle build directory
 build/
 
-#ignore gradle directory
+# Ignore gradle directory
 .gradle/
+
+# Ignore tags files
+*.tags
+
+# Ignore swap files
+.*.swp
+.*.swo
