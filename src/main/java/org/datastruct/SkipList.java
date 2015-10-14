@@ -251,9 +251,13 @@ public class SkipList<Element> implements Collection<Element> {
 			}
 			stack.offer(curr);
 		}
-		for (int i = 0; i < curr.next.size() && found != null; i++) {
+		for (int i = 0; i < maxCone && found != null; i++) {
 			curr = stack.poll();
-			curr.next.set(i, found.next.get(i));
+			if (found.next.size() > i) {
+				curr.next.set(i, found.next.get(i));
+			} else {
+				break;
+			}
 		}
 		return found != null;
 	}
