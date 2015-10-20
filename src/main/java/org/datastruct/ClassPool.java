@@ -10,22 +10,100 @@ import java.util.Map;
 
 public class ClassPool {
 
-	private static Map<Class, Map<Long, Object>> map = null;
+	private class PoolObject {
+
+		private PoolObject prev;
+		protected Object data;
+		protected int hash;
+		private PoolObject next;
+
+		private PoolObject(PoolObject prev, Object data, int hash, PoolObject next) {
+			this.prev = prev;
+			this.data = data;
+			this.hash = hash;
+			this.next = next;
+		}
+
+		protected void lowerPriority() {
+			if (prev != null) {
+				PoolObject pO = prev;
+				pO.next = next;
+				prev = pO.prev;
+				next = pO;
+				pO.prev = this;
+			}
+		}
+
+		protected PoolObject add(Object data, int hash, PoolObject last) {
+			if (last != null && last.prev != null) {
+				while (last.prev != null) {
+					last = last.prev;
+				}
+			}
+			PoolObject nPo = new PoolObject(null, data, hash, last);
+			last.prev = nPo;
+			return nPo;
+		}
+
+		protected PoolObject removeFirst(PoolObject last, PoolObject first) {
+			PoolObject ret = null;
+			if (first == null && last == null) {
+				return ret;
+			} else if (first == null && last != null) {
+				first = last;
+				while (first.next != null) {
+					first = first.next;
+				}
+				ret = first.prev;
+				ret.next = null;
+				first.prev = null;
+				return ret;
+			} else if (first.next == null) {
+				if (first.prev != null) {
+					first.prev.next = null;
+					ret = first.prev;
+				}
+				first.prev = null;
+				return ret;
+			} else {
+				while (first.next != null) {
+					first = first.next;
+				}
+				ret = first.prev;
+				ret.next = null;
+				first.prev = null;
+				return ret;
+			}
+		}
+	}
+
+	private PoolObject last;
+	private PoolObject first;
+	private static Map<Class, Map<Integer, Object>> map = null;
+	private static int maxSize = 50;
 
 	private ClassPool() {
+		first = null;
+		last = null;
 		map = new HashMap<>();
+	}
+
+	public static void setMaxSize(int newMaxSize) {
+		if (map == null) {
+			maxSize = newMaxSize;
+		}
 	}
 
 	public static <T> T getObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
 		T ret = null;
-		long hash = 0;
+		int hash = 0;
 		for (Object o : args) {
 			hash += o.hashCode();
 		}
 		if (ClassPool.map == null) {
 			new ClassPool();
 			ret = makeObject(c, args);
-			Map map = new HashMap<>();
+			Map map = new HashMap<>(maxSize, 0f);
 			map.put(hash, ret);
 			ClassPool.map.put(c, map);
 		} else {
@@ -33,7 +111,7 @@ public class ClassPool {
 				ret = getObject(c, hash);
 			} catch (MapDoesNotExist mapDoesNotExist) {
 				ret = makeObject(c, args);
-				Map map = new HashMap<>();
+				Map map = new HashMap<>(maxSize, 0f);
 				map.put(hash, ret);
 				ClassPool.map.put(c, map);
 			} catch (ObjectDoesNotExist objectDoesNotExist) {
@@ -45,7 +123,7 @@ public class ClassPool {
 		return ret;
 	}
 
-	private static <T> T getObject(Class<T> c, Long hash) throws MapDoesNotExist, ObjectDoesNotExist {
+	private static <T> T getObject(Class<T> c, int hash) throws MapDoesNotExist, ObjectDoesNotExist {
 		Map map = ClassPool.map.get(c);
 		if (map == null) {
 			throw new MapDoesNotExist();
