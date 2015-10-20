@@ -11,6 +11,11 @@ public class ArrayMap<K, V> implements Map<K, V> {
 		private K key;
 		private V value;
 
+		public Entry(K key, V value) {
+			this.key = key;
+			this.value = value;
+		}
+
 		@Override
 		public K getKey() {
 			return key;
@@ -41,9 +46,10 @@ public class ArrayMap<K, V> implements Map<K, V> {
 
 	public ArrayMap(int size, float loadFactor) throws IllegalArgumentException {
 		if (size < 0) throw new IllegalArgumentException();
-		if (loadFactor < 0) throw new IllegalArgumentException();
+		if (loadFactor < 0 && loadFactor <= 1f) throw new IllegalArgumentException();
 		store = new Entry[size];
 		this.loadFactor = loadFactor;
+		this.size = 0;
 	}
 
 	@Override
@@ -73,6 +79,8 @@ public class ArrayMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K k, V v) {
+		Entry<K, V> entry = new Entry<>(k, v);
+		// TODO izracunati moras index v tabeli za vnos, in vrni vresnost ce ze obstaja
 		return null;
 	}
 
@@ -88,7 +96,8 @@ public class ArrayMap<K, V> implements Map<K, V> {
 
 	@Override
 	public void clear() {
-
+		store = new Entry[0];
+		size = 0;
 	}
 
 	@Override
