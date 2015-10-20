@@ -30,21 +30,30 @@ public class ArrayMap<K, V> implements Map<K, V> {
 	}
 
 	private Entry[] store;
+	private int size;
 	private float loadFactor;
 
 	public ArrayMap() {
 		store = new Entry[10];
 		loadFactor = .75f;
+		size = 0;
+	}
+
+	public ArrayMap(int size, float loadFactor) throws IllegalArgumentException {
+		if (size < 0) throw new IllegalArgumentException();
+		if (loadFactor < 0) throw new IllegalArgumentException();
+		store = new Entry[size];
+		this.loadFactor = loadFactor;
 	}
 
 	@Override
 	public int size() {
-		return store.length;
+		return size;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return store.length <= 0;
+		return size == 0;
 	}
 
 	@Override
