@@ -85,7 +85,7 @@ public class ClassPool {
 	private ClassPool() {
 		first = null;
 		last = null;
-		map = new HashMap<>();
+		map = new ArrayMap<>();
 	}
 
 	public static void setMaxSize(int newMaxSize) {
@@ -103,7 +103,7 @@ public class ClassPool {
 		if (ClassPool.map == null) {
 			new ClassPool();
 			ret = makeObject(c, args);
-			Map map = new HashMap<>(maxSize, 0f);
+			Map map = new ArrayMap<>(maxSize, 0f);
 			map.put(hash, ret);
 			ClassPool.map.put(c, map);
 		} else {
@@ -111,7 +111,7 @@ public class ClassPool {
 				ret = getObject(c, hash);
 			} catch (MapDoesNotExist mapDoesNotExist) {
 				ret = makeObject(c, args);
-				Map map = new HashMap<>(maxSize, 0f);
+				Map map = new ArrayMap<>(maxSize, 0f);
 				map.put(hash, ret);
 				ClassPool.map.put(c, map);
 			} catch (ObjectDoesNotExist objectDoesNotExist) {
