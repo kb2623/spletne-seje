@@ -9,9 +9,11 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 		private Key key;
 		private Value value;
 
-		public Entry(Key key, Value value) {
-			if (key == null) throw new NullPointerException("Can't create [" + Entry.class + "] with null key!!!");
-			if (value == null) throw new NullPointerException("Can't create [" + Entry.class + "] with null value!!!");
+		public Entry(Key key, Value value) throws NullPointerException {
+			if (key == null)
+				throw new NullPointerException("Can't create [" + Entry.class.getName() + "] with null key!!!");
+			if (value == null)
+				throw new NullPointerException("Can't create [" + Entry.class.getName() + "] with null value!!!");
 			this.key = key;
 			this.value = value;
 		}
@@ -28,55 +30,33 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 
 		@Override
 		public Value setValue(Value v) {
-			if (v == null) throw new NullPointerException("Can't set null value in [" + Entry.class + "]!!!");
+			if (v == null) throw new NullPointerException("Can't set null value in [" + Entry.class.getName() + "]!!!");
 			Value ret = value;
 			value = v;
 			return ret;
 		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (!(o instanceof Entry)) return false;
-			Entry<?, ?> entry = (Entry<?, ?>) o;
-			if (!getKey().equals(entry.getKey())) return false;
-			return true;
-		}
-
-		@Override
-		public int hashCode() {
-			int result = getKey().hashCode();
-			result = 31 * result + getValue().hashCode();
-			return result;
-		}
 	}
 
-	private Entry[] store;
-	private int size;
-	private int maxSize;
-	private float loadFactor;
+	private Entry<Key, Value>[] store;
+	private int size = 0;
+	private int maxSize = 50;
+	private float loadFactor = .75f;
 
 	public ArrayMap() {
-		store = new Entry[10];
-		loadFactor = .75f;
-		size = 0;
-		maxSize = 0;
+		store = new Entry[maxSize];
 	}
 
 	public ArrayMap(int size, float loadFactor) throws IllegalArgumentException {
 		if (size < 0) throw new IllegalArgumentException();
-		if (loadFactor <= 0 && loadFactor <= 1f) throw new IllegalArgumentException();
+		if (loadFactor <= 0 && loadFactor > 1f) throw new IllegalArgumentException();
 		store = new Entry[size];
 		this.loadFactor = loadFactor;
-		this.size = 0;
-		maxSize = 0;
 	}
 
 	public ArrayMap(int maxSize) throws IllegalArgumentException {
 		if (maxSize <= 0) throw new IllegalArgumentException();
 		store = new Entry[maxSize];
 		this.maxSize = maxSize;
-		size = 0;
 		loadFactor = 0;
 	}
 
@@ -91,40 +71,115 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 	}
 
 	@Override
-	public boolean containsKey(Object o) {
+	public boolean containsKey(Object o) throws ClassCastException, NullPointerException {
+		if (o == null) throw new NullPointerException();
+		if (isEmpty()) return false;
+		Key key = (Key) o;
+		int index = indexOf(key);
+		if (store[index] == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	@Override
+	public boolean containsValue(Object o) throws ClassCastException, NullPointerException {
+		if (o == null) throw new NullPointerException();
+		if (isEmpty()) return false;
+		Value value = (Value) o;
+		for (Entry<Key, Value> e : store) {
+			if (e != null && e.getValue().equals(value)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
-	public boolean containsValue(Object o) {
-		return false;
+	public Value get(Object o) throws ClassCastException, NullPointerException {
+		if (o == null) throw new NullPointerException();
+		if (isEmpty()) return null;
+		Key key = (Key) o;
+		int index = indexOf(key);
+		if (store[index] != null) {
+			return store[index].getValue();
+		} else {
+			return null;
+		}
 	}
 
 	@Override
-	public Value get(Object o) {
-		return null;
+	public Value put(Key key, Value value) throws NullPointerException {
+		if (key == null) throw new NullPointerException("Null keys not allowed in [" + ArrayMap.class.getName() + "]!!!");
+		if (size + 1 > store.length) {
+			if (loadFactor == 0) {
+				// TODO javi napako
+			} else {
+				resizeAndCopy(entrySet());
+			}
+		}
+		int index = indexOf(key);
+		Value ret = null;
+		if (store[index] != null) {
+			ret = store[index].setValue(value);
+		} else {
+			store[index] = new Entry(key, value);
+			size++;
+		}
+		return ret;
+	}
+
+	private void resizeAndCopy(Set<Map.Entry<Key, Value>> set) {
+		size = 0;
+		store = new Entry[(int) (store.length * loadFactor)];
+		for (Map.Entry<Key, Value> e : set) {
+			put(e.getKey(), e.getValue());
+		}
+	}
+
+	private int indexOf(Key key) {
+		int index = key.hashCode() % store.length;
+		for (int i = 0; i < store.length; i++) {
+			index += i;
+			if (index >= store.length) {
+				index -= store.length;
+			}
+			if (store[index] == null) {
+				break;
+			} else if (store[index].getKey().equals(key)) {
+				break;
+			}
+		}
+		return index;
 	}
 
 	@Override
-	public Value put(Key key, Value value) {
-		Entry<Key, Value> entry = new Entry<>(key, value);
-		// TODO izracunati moras index v tabeli za vnos, in vrni vresnost ce ze obstaja
-		return null;
-	}
-
-	@Override
-	public Value remove(Object o) {
-		return null;
+	public Value remove(Object o) throws ClassCastException, NullPointerException {
+		if (o == null) throw new NullPointerException();
+		if (isEmpty()) return null;
+		Key key = (Key) o;
+		int index = indexOf(key);
+		if (store[index] != null) {
+			Value ret = store[index].getValue();
+			store[index] = null;
+			size--;
+			return ret;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public void putAll(Map<? extends Key, ? extends Value> map) {
-
+		for (Map.Entry<? extends Key, ? extends Value> e : map.entrySet()) {
+			put(e.getKey(), e.getValue());
+		}
 	}
 
 	@Override
 	public void clear() {
-		store = new Entry[0];
+		store = new Entry[maxSize];
 		size = 0;
 	}
 
