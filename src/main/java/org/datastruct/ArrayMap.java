@@ -79,7 +79,11 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 		if (store[index] == null) {
 			return false;
 		} else {
-			return true;
+			if (store[index].getKey().equals(key)) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
@@ -103,7 +107,11 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 		Key key = (Key) o;
 		int index = indexOf(key);
 		if (store[index] != null) {
-			return store[index].getValue();
+			if (store[index].getKey().equals(key)) {
+				return store[index].getValue();
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}
@@ -161,17 +169,21 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 		Key key = (Key) o;
 		int index = indexOf(key);
 		if (store[index] != null) {
-			Value ret = store[index].getValue();
-			store[index] = null;
-			size--;
-			return ret;
+			if (store[index].getKey().equals(key)) {
+				Value ret = store[index].getValue();
+				store[index] = null;
+				size--;
+				return ret;
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}
 	}
 
 	@Override
-	public void putAll(Map<? extends Key, ? extends Value> map) {
+	public void putAll(Map<? extends Key, ? extends Value> map) throws NullPointerException {
 		for (Map.Entry<? extends Key, ? extends Value> e : map.entrySet()) {
 			put(e.getKey(), e.getValue());
 		}
