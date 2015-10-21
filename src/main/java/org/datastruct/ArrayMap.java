@@ -47,8 +47,8 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 	}
 
 	public ArrayMap(int size, float loadFactor) throws IllegalArgumentException {
-		if (size < 0) throw new IllegalArgumentException();
-		if (loadFactor <= 0 && loadFactor > 1f) throw new IllegalArgumentException();
+		if (size <= 0) throw new IllegalArgumentException();
+		if (loadFactor <= 0f || loadFactor > 1f) throw new IllegalArgumentException();
 		store = new Entry[size];
 		this.loadFactor = loadFactor;
 	}
@@ -132,7 +132,7 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 
 	private void resizeAndCopy(Set<Map.Entry<Key, Value>> set) {
 		size = 0;
-		store = new Entry[(int) (store.length * loadFactor)];
+		store = new Entry[store.length + (int) (store.length * loadFactor)];
 		for (Map.Entry<Key, Value> e : set) {
 			put(e.getKey(), e.getValue());
 		}
