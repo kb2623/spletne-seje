@@ -110,11 +110,11 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 	}
 
 	@Override
-	public Value put(Key key, Value value) throws NullPointerException {
+	public Value put(Key key, Value value) throws NullPointerException, UnsupportedOperationException {
 		if (key == null) throw new NullPointerException("Null keys not allowed in [" + ArrayMap.class.getName() + "]!!!");
 		if (size + 1 > store.length) {
 			if (loadFactor == 0) {
-				// TODO javi napako
+				throw new UnsupportedOperationException("Map is full, befor continuing remove some elements!!!");
 			} else {
 				resizeAndCopy(entrySet());
 			}
