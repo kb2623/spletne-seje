@@ -1,55 +1,83 @@
 package org.datastruct;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class ArrayMap<K, V> implements Map<K, V> {
+public class ArrayMap<Key, Value> implements Map<Key, Value> {
 
-	private class Entry<K, V> implements Map.Entry<K, V> {
+	private class Entry<Key, Value> implements Map.Entry<Key, Value> {
 
-		private K key;
-		private V value;
+		private Key key;
+		private Value value;
 
-		public Entry(K key, V value) {
+		public Entry(Key key, Value value) {
+			if (key == null) throw new NullPointerException("Can't create [" + Entry.class + "] with null key!!!");
+			if (value == null) throw new NullPointerException("Can't create [" + Entry.class + "] with null value!!!");
 			this.key = key;
 			this.value = value;
 		}
 
 		@Override
-		public K getKey() {
+		public Key getKey() {
 			return key;
 		}
 
 		@Override
-		public V getValue() {
+		public Value getValue() {
 			return value;
 		}
 
 		@Override
-		public V setValue(V v) {
-			V ret = value;
+		public Value setValue(Value v) {
+			if (v == null) throw new NullPointerException("Can't set null value in [" + Entry.class + "]!!!");
+			Value ret = value;
 			value = v;
 			return ret;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof Entry)) return false;
+			Entry<?, ?> entry = (Entry<?, ?>) o;
+			if (!getKey().equals(entry.getKey())) return false;
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = getKey().hashCode();
+			result = 31 * result + getValue().hashCode();
+			return result;
 		}
 	}
 
 	private Entry[] store;
 	private int size;
+	private int maxSize;
 	private float loadFactor;
 
 	public ArrayMap() {
 		store = new Entry[10];
 		loadFactor = .75f;
 		size = 0;
+		maxSize = 0;
 	}
 
 	public ArrayMap(int size, float loadFactor) throws IllegalArgumentException {
 		if (size < 0) throw new IllegalArgumentException();
-		if (loadFactor < 0 && loadFactor <= 1f) throw new IllegalArgumentException();
+		if (loadFactor <= 0 && loadFactor <= 1f) throw new IllegalArgumentException();
 		store = new Entry[size];
 		this.loadFactor = loadFactor;
 		this.size = 0;
+		maxSize = 0;
+	}
+
+	public ArrayMap(int maxSize) throws IllegalArgumentException {
+		if (maxSize <= 0) throw new IllegalArgumentException();
+		store = new Entry[maxSize];
+		this.maxSize = maxSize;
+		size = 0;
+		loadFactor = 0;
 	}
 
 	@Override
@@ -73,24 +101,24 @@ public class ArrayMap<K, V> implements Map<K, V> {
 	}
 
 	@Override
-	public V get(Object o) {
+	public Value get(Object o) {
 		return null;
 	}
 
 	@Override
-	public V put(K k, V v) {
-		Entry<K, V> entry = new Entry<>(k, v);
+	public Value put(Key key, Value value) {
+		Entry<Key, Value> entry = new Entry<>(key, value);
 		// TODO izracunati moras index v tabeli za vnos, in vrni vresnost ce ze obstaja
 		return null;
 	}
 
 	@Override
-	public V remove(Object o) {
+	public Value remove(Object o) {
 		return null;
 	}
 
 	@Override
-	public void putAll(Map<? extends K, ? extends V> map) {
+	public void putAll(Map<? extends Key, ? extends Value> map) {
 
 	}
 
@@ -101,17 +129,41 @@ public class ArrayMap<K, V> implements Map<K, V> {
 	}
 
 	@Override
-	public Set<K> keySet() {
-		return null;
+	public Set<Key> keySet() {
+		Set<Key> set = new HashSet<>(size);
+		if (!isEmpty()) {
+			for (Entry<Key, Value> e : store) {
+				if (e != null) {
+					set.add(e.getKey());
+				}
+			}
+		}
+		return set;
 	}
 
 	@Override
-	public Collection<V> values() {
-		return null;
+	public Collection<Value> values() {
+		Collection<Value> values = new ArrayList<>(size);
+		if (!isEmpty()) {
+			for (Entry<Key, Value> e : store) {
+				if (e != null) {
+					values.add(e.getValue());
+				}
+			}
+		}
+		return values;
 	}
 
 	@Override
-	public Set<Map.Entry<K, V>> entrySet() {
-		return null;
+	public Set<Map.Entry<Key, Value>> entrySet() {
+		Set<Map.Entry<Key, Value>> set = new HashSet<>();
+		if (!isEmpty()) {
+			for (Entry<Key, Value> e : store) {
+				if (e != null) {
+					set.add(e);
+				}
+			}
+		}
+		return set;
 	}
 }
