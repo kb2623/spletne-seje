@@ -1,6 +1,10 @@
 package org.datastruct;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -28,9 +32,16 @@ public class ClassPoolTest {
 		}
 	}
 
+	private Map<Integer, TestObject> map;
+
+	@Before
+	public void setUp() {
+	}
+
 	@Test
 	public void testSetMaxSize() throws Exception {
-
+		Properties properties = null;
+		Integer.valueOf(properties.getProperty("size"));
 	}
 
 	@Test

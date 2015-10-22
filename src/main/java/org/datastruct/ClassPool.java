@@ -4,25 +4,41 @@ import org.datastruct.exception.MapDoesNotExist;
 import org.datastruct.exception.MapFullException;
 import org.datastruct.exception.ObjectDoesNotExist;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClassPool {
 
 	private static Map<Class, Map<Integer, Object>> mapObject = null;
-	private static int maxSize = 50;
+	private static Properties properties = null;
 
 	private ClassPool() {
 		mapObject = new ArrayMap<>();
 	}
 
-	public static void setMaxSize(int newMaxSize) {
-		if (mapObject == null) {
-			maxSize = newMaxSize;
+	public static void setPropreties(Properties propreties) {
+		ClassPool.properties = propreties;
+	}
+
+	private static int getSize(Class c) {
+		if (properties == null) {
+			return 50;
+		} else {
+			try {
+				return Integer.valueOf(properties.getProperty("size." + c.getClass().getSimpleName()));
+			} catch (NumberFormatException e) {
+				return 50;
+			}
+		}
+	}
+
+	private static String getMapType(Class c) {
+		if (properties == null) {
+			return "";
+		} else {
+			return properties.getProperty("map." + c.getClass().getSimpleName());
 		}
 	}
 
@@ -34,14 +50,14 @@ public class ClassPool {
 		}
 		if (ClassPool.mapObject == null) {
 			new ClassPool();
-			Map<Integer, Object> map = new MapLRU<>(5, maxSize);
+			Map<Integer, Object> map = new MapLRU<>(5, getSize(c));
 			ret = makeObject(c, args);
 			map.put(hash, ret);
 		} else {
 			try {
 				ret = getObject(c, hash);
 			} catch (MapDoesNotExist mapDoesNotExist) {
-				Map<Integer, Object> map = new MapLRU<>(5, maxSize);
+				Map<Integer, Object> map = new MapLRU<>(5, getSize(c));
 				ret = makeObject(c, args);
 				map.put(hash, ret);
 			} catch (ObjectDoesNotExist objectDoesNotExist) {
