@@ -81,7 +81,6 @@ public class MapLRU<K, V> implements Map<K, V> {
 							stack.offer(tmp);
 						}
 						curr = tmp;
-						break;
 					}
 				} else if (cmp < 0) {
 					curr = tmp;
@@ -117,7 +116,16 @@ public class MapLRU<K, V> implements Map<K, V> {
 			e.conns[level] = curr.conns[level];
 			curr.conns[level] = e;
 		}
-		// TODO dodaj povezave za prioritetno vrsto
+		/**
+		 * Dodaj na konec prioritetne vrste, ter poprvi povezave v sentinelu
+		 */
+		if (this.sentinel.next == null) {
+			this.sentinel.prev = this.sentinel.next = e;
+		} else {
+			e.next = this.sentinel.prev;
+			this.sentinel.prev.prev = e;
+			this.sentinel.prev = e;
+		}
 		return null;
 	}
 
@@ -126,6 +134,7 @@ public class MapLRU<K, V> implements Map<K, V> {
 		for (int level = 0; level < maxCone; level++) {
 			sentinel.conns[level] = null;
 		}
+		this.sentinel.prev = this.sentinel.next = null;
 	}
 
 	@Override
@@ -226,7 +235,7 @@ public class MapLRU<K, V> implements Map<K, V> {
 				int cmp = tmp.key.hashCode() - hash;
 				if (cmp == 0) {
 					if (tmp.key.equals(key)) {
-						// TODO zmanjsaj prioriteto za brisanje
+						lowerPriority(tmp);
 						return tmp.value;
 					} else {
 						curr = tmp;
@@ -238,7 +247,7 @@ public class MapLRU<K, V> implements Map<K, V> {
 						cmp = tmp.key.hashCode() - hash;
 						if (cmp == 0) {
 							if (tmp.key.equals(key)) {
-								// TODO zmanjsaj prioriteto za brisanje
+								lowerPriority(tmp);
 								return tmp.value;
 							} else {
 								curr = tmp;
@@ -253,6 +262,26 @@ public class MapLRU<K, V> implements Map<K, V> {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Metoda ki zmanjsa prioriteto za brisanje elementa
+	 *
+	 * @param e elemnt ki mu zmanjsujemp prioriteto
+	 */
+	private void lowerPriority(Entry e) {
+		if (e.prev != null) {
+			Entry tmp = e.prev;
+			tmp.next = e.next;
+			e.next = tmp;
+			e.prev = tmp.prev;
+			tmp.prev = e;
+			if (e == this.sentinel.next && e != this.sentinel.prev) {
+				this.sentinel.next = e;
+			} else if (tmp == this.sentinel.prev) {
+				this.sentinel.prev = e;
+			}
+		}
 	}
 
 	@Override
@@ -303,7 +332,21 @@ public class MapLRU<K, V> implements Map<K, V> {
 				break;
 			}
 		}
-		// TODO pobrisi povezave za prioritetno vrsto
+		/**
+		 * Popravljanje strukture vrste
+		 */
+		if (found.next != null) {
+			found.next.prev = found.prev;
+			if (found == this.sentinel.next) {
+				this.sentinel.next = found.prev;
+			}
+		}
+		if (found.prev != null) {
+			found.prev.next = found.next;
+			if (found == this.sentinel.prev) {
+				this.sentinel.prev = found.next;
+			}
+		}
 		return found.value;
 	}
 

@@ -13,8 +13,6 @@ import java.util.Map;
 
 public class ClassPool {
 
-	// TODO motranja mapa bo MapLRU
-
 	private static Map<Class, Map<Integer, Object>> mapObject = null;
 	private static int maxSize = 50;
 
@@ -36,14 +34,20 @@ public class ClassPool {
 		}
 		if (ClassPool.mapObject == null) {
 			new ClassPool();
+			Map<Integer, Object> map = new MapLRU<>(5, maxSize);
 			ret = makeObject(c, args);
+			map.put(hash, ret);
 		} else {
 			try {
 				ret = getObject(c, hash);
 			} catch (MapDoesNotExist mapDoesNotExist) {
+				Map<Integer, Object> map = new MapLRU<>(5, maxSize);
 				ret = makeObject(c, args);
+				map.put(hash, ret);
 			} catch (ObjectDoesNotExist objectDoesNotExist) {
+				Map<Integer, Object> map = ClassPool.mapObject.get(c);
 				ret = makeObject(c, args);
+				map.put(hash, ret);
 			}
 		}
 		return ret;
@@ -54,7 +58,11 @@ public class ClassPool {
 		if (map == null) {
 			throw new MapDoesNotExist();
 		} else {
-			throw new ObjectDoesNotExist();
+			T ret = c.cast(map.get(hash));
+			if (ret == null) {
+				throw new ObjectDoesNotExist();
+			}
+			return ret;
 		}
 	}
 
