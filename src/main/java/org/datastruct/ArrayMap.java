@@ -1,5 +1,7 @@
 package org.datastruct;
 
+import org.datastruct.exception.MapFullException;
+
 import java.util.*;
 
 public class ArrayMap<Key, Value> implements Map<Key, Value> {
@@ -118,11 +120,11 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 	}
 
 	@Override
-	public Value put(Key key, Value value) throws NullPointerException, UnsupportedOperationException {
+	public Value put(Key key, Value value) throws NullPointerException, MapFullException {
 		if (key == null) throw new NullPointerException("Null keys not allowed in [" + ArrayMap.class.getName() + "]!!!");
 		if (size + 1 > store.length) {
 			if (loadFactor == 0) {
-				throw new UnsupportedOperationException("Map is full, befor continuing remove some elements!!!");
+				throw new MapFullException("Map is full, befor continuing remove some elements!!!");
 			} else {
 				resizeAndCopy(entrySet());
 			}
