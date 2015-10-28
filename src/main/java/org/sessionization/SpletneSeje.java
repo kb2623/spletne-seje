@@ -106,51 +106,8 @@ public class SpletneSeje {
 			}
 		}
 
-		/** Dodaj jar datoeke */
-		Set<URL> set = new HashSet<>();
-		if (argsParser.getDriverUrl() != null) {
-			set.add(argsParser.getDriverUrl());
-		}
-		if (argsParser.getDialect() != null) {
-			set.add(argsParser.getDialect());
-		}
-		UrlLoader loader = new UrlLoader(set.toArray(new URL[set.size()]));
-
-		/** Ustvari dinamicne razrede */
-		loader.defineClass(PageViewDump.getClassName(), PageViewDump.dump(logParser.getFieldType()));
-		loader.defineClass(ResoucesDump.getClassName(), ResoucesDump.dump(logParser.getFieldType()));
-
-		/** Izdelaj tabeli razredov za podatkovno bazo */
-		Set<Class> classes = new HashSet<>();
-		for (FieldType f : logParser.getFieldType()) {
-			for (Class c : f.getDependencies()) {
-				classes.add(c);
-			}
-			classes.add(f.getClassType());
-		}
-		classes.add(loader.loadClass(ResoucesDump.getClassName()));
-		classes.add(loader.loadClass(PageViewDump.getClassName()));
-
-		/** Nastavi nastavitve za hibernate */
-		Properties props = new Properties();
-		props.setProperty("hibernate.current_session_context_class", "thread");
-		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCacheProvider");
-		props.setProperty("hibernate.connection.driver_class", argsParser.getDriverClass());
-		props.setProperty("hibernate.dialect", argsParser.getDialectClass());
-		props.setProperty("hibernate.connection.url", argsParser.getDatabaseUrl().toString());
-		if (argsParser.getUserName() != null) {
-			props.setProperty("hibernate.connection.username", argsParser.getUserName());
-		}
-		if (argsParser.getPassWord() != null) {
-			props.setProperty("hibernate.connection.password", argsParser.getPassWord());
-		}
-		props.setProperty("hibernate.connection.pool_size", String.valueOf(argsParser.getConnectoinPoolSize()));
-		props.setProperty("hibernate.show_sql", String.valueOf(argsParser.isShowSql()));
-		props.setProperty("hibernate.format_sql", String.valueOf(argsParser.isShowSqlFormat()));
-		props.setProperty("hibernate.hbm2ddl.auto", argsParser.getOperation().getValue());
-
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
-		db = new HibernateUtil(props, loader, classes);
+		db = new HibernateUtil(argsParser, logParser);
 	}
 
 	public void run() {
