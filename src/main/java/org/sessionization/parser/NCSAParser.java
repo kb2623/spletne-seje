@@ -1,7 +1,6 @@
 package org.sessionization.parser;
 
 import org.datastruct.ClassPool;
-import org.kohsuke.args4j.ClassParser;
 import org.sessionization.fields.*;
 import org.sessionization.fields.ncsa.*;
 import org.sessionization.parser.datastruct.ParsedLine;
@@ -129,7 +128,7 @@ public class NCSAParser extends AbsParser {
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new ParseException("Napaka pri obdelavi vrstice!!!", super.getPos());
 		}
-		Field[] lineData = new Field[super.fieldType.size()];
+		LogField[] lineData = new LogField[super.fieldType.size()];
 		for(int i = 0; i < super.fieldType.size(); i++) {
 			switch(super.fieldType.get(i)) {
 			case RemoteHost:

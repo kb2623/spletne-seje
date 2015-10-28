@@ -1,6 +1,6 @@
 package org.sessionization.fields;
 
-public interface Field {
+public interface LogField {
 	/**
 	 *
 	 * @return

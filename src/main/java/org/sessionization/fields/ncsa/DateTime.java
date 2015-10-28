@@ -1,7 +1,6 @@
 package org.sessionization.fields.ncsa;
 
-import org.sessionization.fields.Field;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -11,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 @Embeddable
 @Cacheable(false)
-public class DateTime implements Field {
+public class DateTime implements LogField {
 
 	@Column(name = "date")
 	private LocalDateTime dateTime;

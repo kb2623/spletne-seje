@@ -1,13 +1,12 @@
 package org.sessionization.fields.ncsa;
 
-import org.sessionization.fields.Field;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class RemoteLogname implements Field {
+public class RemoteLogname implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class Host implements Field {
+public class Host implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

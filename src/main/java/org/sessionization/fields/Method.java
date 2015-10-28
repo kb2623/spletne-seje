@@ -1,6 +1,6 @@
 package org.sessionization.fields;
 
-public enum Method implements Field {
+public enum Method implements LogField {
 	// Vse HTTP metode
 	GET {
         @Override

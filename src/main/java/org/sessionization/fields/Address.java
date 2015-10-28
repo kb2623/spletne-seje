@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 
 @Entity
 @Cacheable
-public class Address implements Field {
+public class Address implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

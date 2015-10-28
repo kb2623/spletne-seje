@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 @Cacheable
-public class StatusCode implements Field {
+public class StatusCode implements LogField {
 
 	@Column(name = "status_code")
 	private int status;

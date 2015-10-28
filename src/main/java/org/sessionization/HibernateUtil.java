@@ -11,6 +11,7 @@ import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
 import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
 import org.sessionization.parser.AbsParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.datastruct.PageViewDump;
@@ -121,7 +122,7 @@ public class HibernateUtil implements AutoCloseable {
 		return factory.openSession();
 	}
 
-	public <T> Serializable save(T o) {
+	public <T extends LogField> Serializable save(T o) {
 		Serializable ret = null;
 		synchronized (factory) {
 			Session s = getSession();
@@ -140,7 +141,7 @@ public class HibernateUtil implements AutoCloseable {
 		return ret;
 	}
 
-	public <T> T getObject(T t) {
+	public <T extends LogField> T getObject(T t) {
 		T ret = null;
 		synchronized (factory) {
 			// TODO

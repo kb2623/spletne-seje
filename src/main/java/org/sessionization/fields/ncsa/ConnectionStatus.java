@@ -1,9 +1,8 @@
 package org.sessionization.fields.ncsa;
 
-import org.sessionization.fields.Field;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
 
-public enum ConnectionStatus implements Field {
+public enum ConnectionStatus implements LogField {
 
 	KeepAliveResponse {
 		@Override

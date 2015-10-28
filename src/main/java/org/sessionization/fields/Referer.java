@@ -5,11 +5,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 @Entity
 @Cacheable
-public class Referer extends UriSteamQuery implements Field {
+public class Referer extends UriSteamQuery implements LogField {
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Host host;

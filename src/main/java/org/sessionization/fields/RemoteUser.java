@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class RemoteUser implements Field {
+public class RemoteUser implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

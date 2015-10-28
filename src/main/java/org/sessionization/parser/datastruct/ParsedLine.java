@@ -4,20 +4,20 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
-import org.sessionization.fields.Field;
+import org.sessionization.fields.LogField;
 import org.sessionization.fields.UriSteam;
 import org.sessionization.fields.Referer;
 import org.sessionization.fields.UserAgent;
 
-public class ParsedLine implements Iterable<Field> {
+public class ParsedLine implements Iterable<LogField> {
 
-	private Field[] array;
+	private LogField[] array;
 	/**
 	 * Konstruktor, ki kot parameter prejeme ze ustvarjeno tabelo. V primeru, ko uporabimo ta konstruktor je metoda add neuporabna, razen v primeru ko obstajajo v tabeli <code>null</code> vrednosti.
 	 *
 	 * @param array Seznam, ki vsebuje podatke o obdelani vrstici.
 	 */
-	public ParsedLine(Field[] array) {
+	public ParsedLine(LogField[] array) {
 		this.array = array;
 	}
 	/**
@@ -28,8 +28,8 @@ public class ParsedLine implements Iterable<Field> {
 	 * @return Stara vrednost na <code>array[index]</code>
 	 * @throws ArrayIndexOutOfBoundsException Ko je <code>index >= array.length</code>
 	 */
-	public Field add(int index, Field newValue) throws ArrayIndexOutOfBoundsException {
-		Field ret = array[index];
+	public LogField add(int index, LogField newValue) throws ArrayIndexOutOfBoundsException {
+		LogField ret = array[index];
 		array[index] = newValue;
 		return ret;
 	}
@@ -41,7 +41,8 @@ public class ParsedLine implements Iterable<Field> {
 	 * @return Zahtevo opravil robot ali ne.
 	 */
 	public boolean isCrawler() {
-		for (Field f : array) if (f instanceof UriSteam && !(f instanceof Referer)) {
+		for (LogField f : array)
+			if (f instanceof UriSteam && !(f instanceof Referer)) {
 			return ((UriSteam) f).getFile().equals("robots.txt");
 		} else if (f instanceof UserAgent) {
 			return ((UserAgent) f).isCrawler();
@@ -56,7 +57,8 @@ public class ParsedLine implements Iterable<Field> {
 	 * 		<code>false</code> -> Vrstica ne vsebuje resursa li na ne vsebuje polja, ki identificira resurs
 	 */
 	public boolean isResource() {
-		for (Field f : array) if (f instanceof UriSteam && !(f instanceof Referer)) {
+		for (LogField f : array)
+			if (f instanceof UriSteam && !(f instanceof Referer)) {
 			return ((UriSteam) f).isResource();
 		}
 		return false;
@@ -100,7 +102,7 @@ public class ParsedLine implements Iterable<Field> {
 	 * @param i Indeks v tabeli
 	 * @return Vrednost indeksa v tabeli. Lahko dobimo tudi <code>null</code> vrednosti v primeru, ko vnesemo indeks, ki presega velikost tabele ali pa je tudi vrednost tabele na iskanem indeksu <code>null</code>.
 	 */
-	public Field get(int i) {
+	public LogField get(int i) {
 		try {
 			return array[i];
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -112,7 +114,7 @@ public class ParsedLine implements Iterable<Field> {
 	 *
 	 * @return Tabela, ki vsebuje obdelano vrstico
 	 */
-	public Field[] getArray() {
+	public LogField[] getArray() {
 		return array;
 	}
 	/**
@@ -131,14 +133,14 @@ public class ParsedLine implements Iterable<Field> {
 	public String getKey() {
 		StringBuilder builder = new StringBuilder();
 		for (Object f : array) {
-			if (f instanceof  Field && ((Field) f).getKey() != null) builder.append(((Field) f).getKey());
+			if (f instanceof LogField && ((LogField) f).getKey() != null) builder.append(((LogField) f).getKey());
 		}
 		return builder.toString();
 	}
 
 	@Override
-	public Iterator<Field> iterator() {
-		return new Iterator<Field>() {
+	public Iterator<LogField> iterator() {
+		return new Iterator<LogField>() {
 
 			private int i = 0;
 
@@ -148,7 +150,7 @@ public class ParsedLine implements Iterable<Field> {
 			}
 
 			@Override
-			public Field next() throws NoSuchElementException {
+			public LogField next() throws NoSuchElementException {
 				try {
 					return array[i++];
 				} catch (ArrayIndexOutOfBoundsException e) {
@@ -159,7 +161,7 @@ public class ParsedLine implements Iterable<Field> {
 	}
 
 	@Override
-	public void forEach(Consumer<? super Field> consumer) {
+	public void forEach(Consumer<? super LogField> consumer) {
 		for (int i = 0; i < array.length; i++) {
 			consumer.accept(array[i]);
 		}

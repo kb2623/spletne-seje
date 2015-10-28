@@ -1,9 +1,8 @@
 package org.sessionization.fields.w3c;
 
-import org.sessionization.fields.Field;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
 
-public class MetaData implements Field {
+public class MetaData implements LogField {
 	
 	private String data;
 	

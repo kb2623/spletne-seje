@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Cacheable
-public class UriQuery implements Field {
+public class UriQuery implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

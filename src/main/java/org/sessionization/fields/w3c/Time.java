@@ -1,7 +1,6 @@
 package org.sessionization.fields.w3c;
 
-import org.sessionization.fields.Field;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Embeddable;
@@ -10,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 @Embeddable
 @Cacheable(false)
-public class Time implements Field {
+public class Time implements LogField {
 
 	private LocalTime time;
 

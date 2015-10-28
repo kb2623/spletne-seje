@@ -1,7 +1,6 @@
 package org.sessionization.fields.w3c;
 
-import org.sessionization.fields.Field;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -9,7 +8,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 @Cacheable
-public class SubStatus implements Field {
+public class SubStatus implements LogField {
 
 	@Column(name = "sub_status")
 	private int status;

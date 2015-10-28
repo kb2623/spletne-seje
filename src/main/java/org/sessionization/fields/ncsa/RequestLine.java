@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 
 @Entity
 @Cacheable
-public class RequestLine implements Field {
+public class RequestLine implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

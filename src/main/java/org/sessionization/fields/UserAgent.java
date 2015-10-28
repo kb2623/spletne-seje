@@ -1,16 +1,10 @@
 package org.sessionization.fields;
 
 import javax.persistence.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 @Entity
 @Cacheable
-public class UserAgent implements Field {
+public class UserAgent implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

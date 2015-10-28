@@ -1,13 +1,12 @@
 package org.sessionization.fields.w3c;
 
-import org.sessionization.fields.Field;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class SiteName implements Field {
+public class SiteName implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

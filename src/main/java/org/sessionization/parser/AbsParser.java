@@ -1,6 +1,6 @@
 package org.sessionization.parser;
 
-import org.sessionization.fields.Field;
+import org.sessionization.fields.LogField;
 import org.sessionization.fields.FieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
@@ -129,7 +129,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws ParseException Napaka pri obdelavi datoteke
 	 * @throws IOException Napaka pri branju datoeke
 	 * @throws NullPointerException Lastnosti niso pravilno nstavljene
-	 * @see Field
+	 * @see LogField
 	 * @see ParsedLine
 	 */
 	public abstract ParsedLine parseLine() throws ParseException, NullPointerException, IOException, URISyntaxException;

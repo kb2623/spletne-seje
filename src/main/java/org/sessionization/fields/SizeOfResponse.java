@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 @Cacheable
-public class SizeOfResponse implements Field {
+public class SizeOfResponse implements LogField {
 
 	@Column(name = "size_of_response")
 	private int size;

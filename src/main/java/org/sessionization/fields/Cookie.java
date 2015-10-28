@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Cacheable
-public class Cookie implements Field {
+public class Cookie implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

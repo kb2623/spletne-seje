@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 @Cacheable
-public class TimeTaken implements Field {
+public class TimeTaken implements LogField {
 
 	@Column(name = "time_taken")
 	private long time;

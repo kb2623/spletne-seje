@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class Port implements Field {
+public class Port implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

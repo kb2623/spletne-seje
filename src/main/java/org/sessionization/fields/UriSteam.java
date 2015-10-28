@@ -1,14 +1,12 @@
 package org.sessionization.fields;
 
 import javax.persistence.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Cacheable
-public class UriSteam implements Field {
+public class UriSteam implements LogField {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +21,11 @@ public class UriSteam implements Field {
 
 	public UriSteam(String file) {
 		id = null;
-		if(!file.equals("-")) {
+		if (!file.equals("-")) {
 			this.file = file;
-		} else this.file = null;
+		} else {
+			this.file = null;
+		}
 	}
 
 	public Integer getId() {
@@ -62,10 +62,19 @@ public class UriSteam implements Field {
 	public boolean isResource() {
 		String extension = getExtension();
 		switch ((extension != null) ? extension : "") {
-		case "php": case "png": case "css": case "js": case "jpg": case "txt": case "gif": case "ico": case "xml": case "csv":
-			return true;
-		default:
-			return false;
+			case "php":
+			case "png":
+			case "css":
+			case "js":
+			case "jpg":
+			case "txt":
+			case "gif":
+			case "ico":
+			case "xml":
+			case "csv":
+				return true;
+			default:
+				return false;
 		}
 	}
 

@@ -102,7 +102,7 @@ public class W3CParser extends AbsParser {
 	public ParsedLine parseLine() throws ParseException, IOException, URISyntaxException {
 		String[] tokens = parse();
 		if(tokens[0].charAt(0) == '#') {
-			Field[] metaData = new Field[tokens.length];
+			LogField[] metaData = new LogField[tokens.length];
 			if(tokens[0].equals("#Fields:")) {
 				super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens));
 			}
@@ -115,10 +115,10 @@ public class W3CParser extends AbsParser {
 		}
 	}
 
-	protected Field[] process(String[] tokens) throws ParseException, URISyntaxException, UnknownHostException {
+	protected LogField[] process(String[] tokens) throws ParseException, URISyntaxException, UnknownHostException {
 		if(super.fieldType == null) throw new ParseException("Bad log format", super.getPos());
 		if(super.fieldType.size() != tokens.length) throw new ParseException("Can't parse a line", super.getPos());
-		Field[] lineData = new Field[super.fieldType.size()];
+		LogField[] lineData = new LogField[super.fieldType.size()];
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			switch (super.fieldType.get(i)) {
 			case Referer:
