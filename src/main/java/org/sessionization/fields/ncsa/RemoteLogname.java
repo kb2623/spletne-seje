@@ -22,7 +22,7 @@ public class RemoteLogname implements LogField {
 
 	public RemoteLogname(String logname) {
 		id = null;
-		if(!logname.equalsIgnoreCase("-")) {
+		if (!logname.equalsIgnoreCase("-")) {
 			this.logname = logname;
 		} else {
 			this.logname = null;

@@ -21,7 +21,7 @@ public class ComputerName implements LogField {
 
 	public ComputerName(String name) {
 		id = null;
-		if(!name.equalsIgnoreCase("-")) {
+		if (!name.equalsIgnoreCase("-")) {
 			this.name = name;
 		} else {
 			this.name = null;

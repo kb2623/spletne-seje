@@ -17,12 +17,12 @@ public class Cookie implements LogField {
 
 	public Cookie(String line, LogType type) throws IllegalArgumentException {
 		id = null;
-		if(!line.equals("-")) {
+		if (!line.equals("-")) {
 			String[] tab = type.parseCooki(line).split(" ");
 			pairs = new ArrayList<>(tab.length);
-			for(String s : tab) {
+			for (String s : tab) {
 				int indexOf = s.indexOf('=');
-				if(indexOf == s.length() - 1) {
+				if (indexOf == s.length() - 1) {
 					pairs.add(new CookiePair(s.substring(0, indexOf), "-"));
 				} else {
 					pairs.add(new CookiePair(s.substring(0, indexOf), s.substring(indexOf + 1)));
@@ -53,7 +53,7 @@ public class Cookie implements LogField {
 	public String izpis() {
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
-		if(pairs == null) {
+		if (pairs == null) {
 			builder.append('-');
 		} else {
 			pairs.forEach(e -> builder.append('[').append(e.toString()).append(']'));
@@ -65,7 +65,7 @@ public class Cookie implements LogField {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
-		if(pairs == null) {
+		if (pairs == null) {
 			builder.append('-');
 		} else {
 			pairs.forEach(e -> builder.append('[').append(e.toString()).append(']'));

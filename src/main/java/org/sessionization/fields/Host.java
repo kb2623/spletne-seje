@@ -16,7 +16,7 @@ public class Host implements LogField {
 		id = null;
 		host = null;
 	}
-	
+
 	public Host(String hostName) {
 		id = null;
 		if (!hostName.equals("-")) {

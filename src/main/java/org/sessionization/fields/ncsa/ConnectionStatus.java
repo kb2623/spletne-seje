@@ -25,10 +25,14 @@ public enum ConnectionStatus implements LogField {
 
 	public static ConnectionStatus getConnectionStatus(String niz) {
 		switch (niz != null ? niz : "") {
-		case "X": return Aborted;
-		case "+": return KeepAliveResponse;
-		case "-": return CloseResponse;
-		default: return null;
+			case "X":
+				return Aborted;
+			case "+":
+				return KeepAliveResponse;
+			case "-":
+				return CloseResponse;
+			default:
+				return null;
 		}
 	}
 

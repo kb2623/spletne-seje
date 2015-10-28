@@ -3,43 +3,43 @@ package org.sessionization.fields;
 public enum Method implements LogField {
 	// Vse HTTP metode
 	GET {
-        @Override
+		@Override
 		public String getMethod() {
 			return "GET";
 		}
 	},
 	HEAD() {
-        @Override
+		@Override
 		public String getMethod() {
 			return "HEAD";
 		}
 	},
 	POST() {
-        @Override
+		@Override
 		public String getMethod() {
 			return "POST";
 		}
 	},
 	PUT() {
-        @Override
+		@Override
 		public String getMethod() {
 			return "PUT";
 		}
 	},
 	DELETE() {
-        @Override
+		@Override
 		public String getMethod() {
 			return "DELETE";
 		}
 	},
 	TRACE() {
-        @Override
+		@Override
 		public String getMethod() {
 			return "TRACE";
 		}
 	},
 	OPTIONS() {
-        @Override
+		@Override
 		public String getMethod() {
 			return "OPTIONS";
 		}
@@ -51,7 +51,7 @@ public enum Method implements LogField {
 		}
 	},
 	PATCH() {
-        @Override
+		@Override
 		public String getMethod() {
 			return "PATCH";
 		}
@@ -68,16 +68,26 @@ public enum Method implements LogField {
 	 */
 	public static Method setMethod(String method) throws IllegalArgumentException {
 		switch (method.toUpperCase()) {
-		case "GET":		return GET;
-		case "HEAD":	return HEAD;
-		case "POST":	return POST;
-		case "PUT": 	return PUT;
-		case "DELETE":	return DELETE;
-		case "TRACE": 	return TRACE;
-		case "OPTIONS": return OPTIONS;
-		case "CONNECT": return CONNECT;
-		case "PATCH": 	return PATCH;
-		default: 		throw new IllegalArgumentException("Neznana metoda");
+			case "GET":
+				return GET;
+			case "HEAD":
+				return HEAD;
+			case "POST":
+				return POST;
+			case "PUT":
+				return PUT;
+			case "DELETE":
+				return DELETE;
+			case "TRACE":
+				return TRACE;
+			case "OPTIONS":
+				return OPTIONS;
+			case "CONNECT":
+				return CONNECT;
+			case "PATCH":
+				return PATCH;
+			default:
+				throw new IllegalArgumentException("Neznana metoda");
 		}
 	}
 	/**
@@ -94,7 +104,7 @@ public enum Method implements LogField {
 	public String getProtocol() {
 		return "HTTP";
 	}
-	
+
 	@Override
 	public String izpis() {
 		return getMethod();
