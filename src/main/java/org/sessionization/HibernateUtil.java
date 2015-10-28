@@ -1,6 +1,5 @@
 package org.sessionization;
 
-import javassist.convert.TransformAccessArrayField;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,12 +9,12 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogFieldType;
 import org.sessionization.fields.LogField;
 import org.sessionization.parser.AbsParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.datastruct.PageViewDump;
-import org.sessionization.parser.datastruct.ResoucesDump;
+import org.sessionization.parser.datastruct.ResourceDump;
 
 import java.io.Serializable;
 import java.net.URL;
@@ -80,16 +79,16 @@ public class HibernateUtil implements AutoCloseable {
 		return props;
 	}
 
-	private Set<Class> initClasses(List<FieldType> list) throws ExceptionInInitializerError {
+	private Set<Class> initClasses(List<LogFieldType> list) throws ExceptionInInitializerError {
 		Set<Class> classes = new HashSet<>();
-		for (FieldType f : list) {
+		for (LogFieldType f : list) {
 			for (Class c : f.getDependencies()) {
 				classes.add(c);
 			}
 			classes.add(f.getClassType());
 		}
 		try {
-			classes.add(loader.loadClass(ResoucesDump.getClassName()));
+			classes.add(loader.loadClass(ResourceDump.getClassName()));
 			classes.add(loader.loadClass(PageViewDump.getClassName()));
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionInInitializerError(e);
@@ -110,7 +109,7 @@ public class HibernateUtil implements AutoCloseable {
 
 		/** Ustvari dinamicne razrede */
 		loader.defineClass(PageViewDump.getClassName(), PageViewDump.dump(logParser.getFieldType()));
-		loader.defineClass(ResoucesDump.getClassName(), ResoucesDump.dump(logParser.getFieldType()));
+		loader.defineClass(ResourceDump.getClassName(), ResourceDump.dump(logParser.getFieldType()));
 		return loader;
 	}
 

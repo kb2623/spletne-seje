@@ -52,7 +52,7 @@ public class UriSteam implements LogField {
 	public String getExtension() {
 		int indexOfExtension = file.lastIndexOf('.');
 		int indexOfLastSeparator = file.lastIndexOf('/');
-		return (indexOfExtension < indexOfLastSeparator) ? null : file.substring(indexOfExtension+1);
+		return (indexOfExtension < indexOfLastSeparator) ? null : file.substring(indexOfExtension + 1);
 	}
 	/**
 	 * Metoda, ki preverja ali je zahteva po spletni strani ali po resursu za spletno stran.

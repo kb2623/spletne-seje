@@ -33,7 +33,7 @@ public class ClassTypes {
 
 	public static String EmbenddedType = getType(Embedded.class);
 
-	public static String ListResoucesGType = "L" + List.class.getName().replace(".", "/") + "<" + ResoucesDump.getClassType() + ">;";
+	public static String ListResoucesGType = "L" + List.class.getName().replace(".", "/") + "<" + ResourceDump.getClassType() + ">;";
 
 	public static String PageViewAbsType = PageViewAbs.class.getName().replace(".", "/");
 	public static String ResourceAbsClass = ResourceAbs.class.getName().replace(".", "/");

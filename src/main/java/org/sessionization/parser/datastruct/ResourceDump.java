@@ -1,7 +1,11 @@
 package org.sessionization.parser.datastruct;
 
+import javassist.*;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.annotation.Annotation;
 import org.objectweb.asm.*;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogField;
+import org.sessionization.fields.LogFieldType;
 
 import javax.persistence.*;
 import java.lang.reflect.InvocationTargetException;
@@ -9,14 +13,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResoucesDump implements Opcodes {
+public class ResourceDump implements Opcodes {
 
-	private static String CLASSNAME = "org/sessionization/parser/datastruct/Request";
+	private static String CLASSNAME = "org/sessionization/parser/datastruct/Resource";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
-	private static String NAME = "Request.java";
+	private static String NAME = "Resource.java";
 
-	public static byte[] dump(List<FieldType> list) {
-		List<FieldType> fields = getFields(list);
+	public static byte[] dump(List<LogFieldType> list) {
+		List<LogFieldType> fields = getFields(list);
 		int lineCount = 20;
 		ClassWriter cw = new ClassWriter(0);
 		FieldVisitor fv;
@@ -46,7 +50,7 @@ public class ResoucesDump implements Opcodes {
 			fv.visitEnd();
 		}
 		/** Inicializcija ostalih polj, ki so del identifikacije uporabnika */
-		for (FieldType f : fields) {
+		for (LogFieldType f : fields) {
 			fv = cw.visitField(ACC_PRIVATE, f.getFieldName(), f.getType(), null, null);
 			Class c = f.getClassType();
 			if (c.isAnnotationPresent(Entity.class)) {
@@ -88,7 +92,7 @@ public class ResoucesDump implements Opcodes {
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitInsn(ACONST_NULL);
 			mv.visitFieldInsn(PUTFIELD, CLASSNAME, "id", ClassTypes.IntegerType);
-			for (FieldType f : fields) {
+			for (LogFieldType f : fields) {
 				Label l2 = new Label();
 				lineCount++;
 				mv.visitLabel(l2);
@@ -109,7 +113,6 @@ public class ResoucesDump implements Opcodes {
 			mv.visitEnd();
 			lineCount++;
 		}
-		// todo dodaj ostale konstruktorje
 		/** getId */
 		{
 			mv = cw.visitMethod(ACC_PUBLIC, "getId", "()" + ClassTypes.IntegerType, null, null);
@@ -155,7 +158,7 @@ public class ResoucesDump implements Opcodes {
 			lineCount++;
 		}
 		/** Setterji in Getterji */
-		for (FieldType f : fields) {
+		for (LogFieldType f : fields) {
 			/** Getter */
 			{
 				mv = cw.visitMethod(ACC_PUBLIC, f.getGetterName(), "()" + f.getType(), null, null);
@@ -227,7 +230,7 @@ public class ResoucesDump implements Opcodes {
 			mv.visitVarInsn(ISTORE, 1);
 			Label l3 = null;
 			boolean first = true;
-			for (FieldType f : fields) {
+			for (LogFieldType f : fields) {
 				Label ll1 = new Label();
 				lineCount++;
 				mv.visitLabel(ll1);
@@ -340,7 +343,7 @@ public class ResoucesDump implements Opcodes {
 			lineCount++;
 			mv.visitLineNumber(lineCount, l6);
 			mv.visitFrame(F_SAME, 0, null, 0, null);
-			for (FieldType f : fields) {
+			for (LogFieldType f : fields) {
 				mv.visitVarInsn(ALOAD, 0);
 				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				Label l8 = new Label();
@@ -384,9 +387,9 @@ public class ResoucesDump implements Opcodes {
 		return cw.toByteArray();
 	}
 
-	private static List<FieldType> getFields(List<FieldType> types) {
-		List<FieldType> list = new ArrayList<>((int) (types.size() / 2));
-		for (FieldType f : types) {
+	private static List<LogFieldType> getFields(List<LogFieldType> types) {
+		List<LogFieldType> list = new ArrayList<>((int) (types.size() / 2));
+		for (LogFieldType f : types) {
 			if (!f.isKey()) {
 				list.add(f);
 			}
@@ -394,7 +397,7 @@ public class ResoucesDump implements Opcodes {
 		return list;
 	}
 
-	public static ResourceAbs makeObject(List<FieldType> fieldTypes, ParsedLine line, ClassLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+	public static ResourceAbs makeObject(List<LogFieldType> fieldTypes, ParsedLine line, ClassLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 		Class c = loader.loadClass(getClassName());
 		Object o = c.newInstance();
 		int i;

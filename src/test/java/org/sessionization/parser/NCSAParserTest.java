@@ -3,17 +3,15 @@ package org.sessionization.parser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -177,7 +175,7 @@ public class NCSAParserTest {
 			parser.openFile(new StringReader(testNiz));
 			//Nastavi tipe podatkov
 			String[] cookie = "%h %l %u %t %r %>s %b %{Referer}i %{User-agent}i %C".split(" ");
-			List<FieldType> listType = LogFormats.CustomLogFormat.create(cookie);
+			List<LogFieldType> listType = LogFormats.CustomLogFormat.create(cookie);
 			//Dodatni atribut
 			parser.setFieldType(listType);
 			//Pridobi podatke

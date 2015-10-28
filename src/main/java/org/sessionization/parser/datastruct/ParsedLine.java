@@ -57,9 +57,10 @@ public class ParsedLine implements Iterable<LogField> {
 	 * 		<code>false</code> -> Vrstica ne vsebuje resursa li na ne vsebuje polja, ki identificira resurs
 	 */
 	public boolean isResource() {
-		for (LogField f : array)
+		for (LogField f : array) {
 			if (f instanceof UriSteam && !(f instanceof Referer)) {
-			return ((UriSteam) f).isResource();
+				return ((UriSteam) f).isResource();
+			}
 		}
 		return false;
 	}

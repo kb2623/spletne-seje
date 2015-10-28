@@ -8,7 +8,7 @@ import org.sessionization.fields.ncsa.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public enum FieldType {
+public enum LogFieldType {
 	/** Apache atribut, lahko je IP ali pa niz */
 	RemoteHost {
 		@Override

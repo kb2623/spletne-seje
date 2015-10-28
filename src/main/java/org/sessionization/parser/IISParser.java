@@ -1,15 +1,11 @@
 package org.sessionization.parser;
 
 import org.sessionization.fields.*;
-import org.sessionization.fields.w3c.*;
-import org.sessionization.fields.w3c.Date;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 @SuppressWarnings("deprecation")
 public class IISParser extends W3CParser {
@@ -40,7 +36,7 @@ public class IISParser extends W3CParser {
 	 * @param list
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(Locale locale, File[] file, List<FieldType> list) throws FileNotFoundException {
+	public IISParser(Locale locale, File[] file, List<LogFieldType> list) throws FileNotFoundException {
 		super();
 		setDefaultFields(locale);
 		super.openFile(file);

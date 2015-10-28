@@ -1,7 +1,7 @@
 package org.sessionization.parser;
 
 import org.sessionization.fields.LogField;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;
@@ -31,9 +31,9 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	/**
 	 * Tabela, ki vsebuje vrste polji v log datoteki
 	 *
-	 * @see FieldType
+	 * @see LogFieldType
 	 */
-	protected List<FieldType> fieldType;
+	protected List<LogFieldType> fieldType;
 	/**
 	 * Osnovni konstruktor, za prevzete nastavitve:<p>
 	 * pozicija = 0<p>
@@ -147,11 +147,11 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	/**
 	 * Metoda za nastavljanje tipov polji v log datoteki.
 	 *
-	 * @see FieldType
+	 * @see LogFieldType
 	 * @param fields Tipi polji v log datoteki
 	 * @throws NullPointerException Ko je parameter <code>fields</code> enak null
 	 */
-	public void setFieldType(List<FieldType> fields) throws NullPointerException {
+	public void setFieldType(List<LogFieldType> fields) throws NullPointerException {
 		if(fields == null) throw new NullPointerException();
 		this.fieldType = fields;
 	}
@@ -160,7 +160,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 *
 	 * @return Seznam tipov polji v datoteki
 	 */
-	public List<FieldType> getFieldType() {
+	public List<LogFieldType> getFieldType() {
 		return fieldType;
 	}
 	/**

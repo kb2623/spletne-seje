@@ -1,13 +1,15 @@
 package org.sessionization.parser.datastruct;
 
 import org.objectweb.asm.*;
-import org.sessionization.fields.FieldType;
+import org.sessionization.fields.LogFieldType;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PageViewDump implements Opcodes {
@@ -16,8 +18,8 @@ public class PageViewDump implements Opcodes {
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
 	private static String NAME = "PageView.java";
 
-	public static byte[] dump(List<FieldType> fieldTypes) {
-		List<FieldType> fields = getFields(fieldTypes);
+	public static byte[] dump(List<LogFieldType> fieldTypes) {
+		List<LogFieldType> fields = getFields(fieldTypes);
 		int lineCount = 20;
 		ClassWriter cw = new ClassWriter(0);
 		FieldVisitor fv;
@@ -50,7 +52,7 @@ public class PageViewDump implements Opcodes {
 			lineCount++;
 		}
 		/** Inicializcija ostalih polj, ki so del identifikacije uporabnika */
-		for (FieldType f : fields) {
+		for (LogFieldType f : fields) {
 			fv = cw.visitField(ACC_PRIVATE, f.getFieldName(), f.getType(), null, null);
 			Class c = f.getClassType();
 			if (c.isAnnotationPresent(Entity.class)) {
@@ -76,7 +78,7 @@ public class PageViewDump implements Opcodes {
 		}
 		/** Inicializacija tabele z zahtevami */
 		{
-			fv = cw.visitField(ACC_PRIVATE, "resouces", ClassTypes.ListType, ClassTypes.ListResoucesGType, null);
+			fv = cw.visitField(ACC_PRIVATE, "resources", ClassTypes.ListType, ClassTypes.ListResoucesGType, null);
 			{
 				av0 = fv.visitAnnotation(ClassTypes.OneToManyType, true);
 				{
@@ -108,7 +110,7 @@ public class PageViewDump implements Opcodes {
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitInsn(ACONST_NULL);
 			mv.visitFieldInsn(PUTFIELD, CLASSNAME, "id", ClassTypes.IntegerType);
-			for (FieldType f : fields) {
+			for (LogFieldType f : fields) {
 				Label l2 = new Label();
 				lineCount++;
 				mv.visitLabel(l2);
@@ -123,7 +125,7 @@ public class PageViewDump implements Opcodes {
 			mv.visitLineNumber(lineCount, l3);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitInsn(ACONST_NULL);
-			mv.visitFieldInsn(PUTFIELD, CLASSNAME, "requests", ClassTypes.ListType);
+			mv.visitFieldInsn(PUTFIELD, CLASSNAME, "resources", ClassTypes.ListType);
 			Label l4 = new Label();
 			lineCount++;
 			mv.visitLabel(l4);
@@ -181,7 +183,7 @@ public class PageViewDump implements Opcodes {
 			lineCount++;
 		}
 		/** Setterji in Getterji */
-		for (FieldType f : fields) {
+		for (LogFieldType f : fields) {
 			/** Getter */
 			{
 				mv = cw.visitMethod(ACC_PUBLIC, f.getGetterName(), "()" + f.getType(), null, null);
@@ -236,7 +238,7 @@ public class PageViewDump implements Opcodes {
 			lineCount++;
 			mv.visitLineNumber(lineCount, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, CLASSNAME, "requests", ClassTypes.ListType);
+			mv.visitFieldInsn(GETFIELD, CLASSNAME, "resources", ClassTypes.ListType);
 			mv.visitInsn(ARETURN);
 			Label l1 = new Label();
 			mv.visitLabel(l1);
@@ -247,7 +249,7 @@ public class PageViewDump implements Opcodes {
 		}
 		/** Setter za tabelo */
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "setResouces", "(" + ClassTypes.ListType + ")V", "(" + ClassTypes.ListResoucesGType + ")V", null);
+			mv = cw.visitMethod(ACC_PUBLIC, "setResources", "(" + ClassTypes.ListType + ")V", "(" + ClassTypes.ListResoucesGType + ")V", null);
 			lineCount++;
 			mv.visitCode();
 			Label l0 = new Label();
@@ -256,7 +258,7 @@ public class PageViewDump implements Opcodes {
 			mv.visitLineNumber(lineCount, l0);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 1);
-			mv.visitFieldInsn(PUTFIELD, CLASSNAME, "requests", ClassTypes.ListType);
+			mv.visitFieldInsn(PUTFIELD, CLASSNAME, "resources", ClassTypes.ListType);
 			Label l1 = new Label();
 			lineCount++;
 			mv.visitLabel(l1);
@@ -282,7 +284,7 @@ public class PageViewDump implements Opcodes {
 			mv.visitTypeInsn(NEW, ClassTypes.StringBuilderClass);
 			mv.visitInsn(DUP);
 			mv.visitMethodInsn(INVOKESPECIAL, ClassTypes.StringBuilderClass, "<init>", "()V", false);
-			for (FieldType f : fields) {
+			for (LogFieldType f : fields) {
 				mv.visitVarInsn(ALOAD, 0);
 				mv.visitFieldInsn(GETFIELD, CLASSNAME, f.getFieldName(), f.getType());
 				mv.visitMethodInsn(INVOKEVIRTUAL, f.getClassClass(), "getKey", "()" + ClassTypes.StringType, false);
@@ -323,7 +325,7 @@ public class PageViewDump implements Opcodes {
 			mv.visitVarInsn(ISTORE, 1);
 			Label l3 = null;
 			boolean first = true;
-			for (FieldType f : fields) {
+			for (LogFieldType f : fields) {
 				Label ll1 = new Label();
 				lineCount++;
 				mv.visitLabel(ll1);
@@ -362,11 +364,11 @@ public class PageViewDump implements Opcodes {
 			mv.visitVarInsn(ILOAD, 1);
 			mv.visitInsn(IMUL);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getResources", "()" + ClassTypes.ListType, false);
 			Label l7 = new Label();
 			mv.visitJumpInsn(IFNULL, l7);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getResources", "()" + ClassTypes.ListType, false);
 			mv.visitMethodInsn(INVOKEINTERFACE, ClassTypes.ListClass, "hashCode", "()I", true);
 			Label l8 = new Label();
 			mv.visitJumpInsn(GOTO, l8);
@@ -459,7 +461,7 @@ public class PageViewDump implements Opcodes {
 			lineCount++;
 			mv.visitLineNumber(lineCount, l6);
 			mv.visitFrame(F_SAME, 0, null, 0, null);
-			for (FieldType f : fields) {
+			for (LogFieldType f : fields) {
 				mv.visitVarInsn(ALOAD, 0);
 				mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, f.getGetterName(), "()" + f.getType(), false);
 				Label l8 = new Label();
@@ -490,13 +492,13 @@ public class PageViewDump implements Opcodes {
 				mv.visitFrame(F_SAME, 0, null, 0, null);
 			}
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getResources", "()" + ClassTypes.ListType, false);
 			Label l10 = new Label();
 			mv.visitJumpInsn(IFNULL, l10);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getResources", "()" + ClassTypes.ListType, false);
 			mv.visitVarInsn(ALOAD, 2);
-			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getResources", "()" + ClassTypes.ListType, false);
 			mv.visitMethodInsn(INVOKEINTERFACE, ClassTypes.ListClass, "equals", "(" + ClassTypes.ListType + ")Z", true);
 			Label l11 = new Label();
 			mv.visitJumpInsn(IFNE, l11);
@@ -505,7 +507,7 @@ public class PageViewDump implements Opcodes {
 			mv.visitLabel(l10);
 			mv.visitFrame(F_SAME, 0, null, 0, null);
 			mv.visitVarInsn(ALOAD, 2);
-			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getRequests", "()" + ClassTypes.ListType, false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, CLASSNAME, "getResources", "()" + ClassTypes.ListType, false);
 			mv.visitJumpInsn(IFNULL, l11);
 			mv.visitLabel(l12);
 			lineCount++;
@@ -531,9 +533,9 @@ public class PageViewDump implements Opcodes {
 		return cw.toByteArray();
 	}
 
-	private static List<FieldType> getFields(List<FieldType> fieldTypes) {
-		List<FieldType> retList = new ArrayList<>((int) (fieldTypes.size() / 2));
-		for (FieldType type : fieldTypes) {
+	private static List<LogFieldType> getFields(List<LogFieldType> fieldTypes) {
+		List<LogFieldType> retList = new ArrayList<>((int) (fieldTypes.size() / 2));
+		for (LogFieldType type : fieldTypes) {
 			if (type.isKey()) {
 				retList.add(type);
 			}
@@ -541,7 +543,7 @@ public class PageViewDump implements Opcodes {
 		return retList;
 	}
 
-	public static PageViewAbs makeObject(List<FieldType> fieldTypes, ParsedLine line, ClassLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+	public static PageViewAbs makeObject(List<LogFieldType> fieldTypes, ParsedLine line, ClassLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 		Class c = loader.loadClass(getClassName());
 		Object o = c.newInstance();
 		boolean hasRequests = false;
@@ -555,9 +557,11 @@ public class PageViewDump implements Opcodes {
 			}
 		}
 		if (hasRequests) {
-			ResourceAbs req = ResoucesDump.makeObject(fieldTypes, line, loader);
-			Method m = c.getMethod("setResouces", List.class);
-			m.invoke(o, line);
+			ResourceAbs req = ResourceDump.makeObject(fieldTypes, line, loader);
+			Method m = c.getMethod("setResources", List.class);
+			List<ResourceAbs> list = new LinkedList<>();
+			list.add(req);
+			m.invoke(o, list);
 		}
 		return (PageViewAbs) o;
 	}

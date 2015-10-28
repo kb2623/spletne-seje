@@ -109,7 +109,7 @@ public class SpletneSeje {
 
 	public void run() throws InterruptedException {
 		BlockingQueue<Map<String, PageViewAbs>> qParserLearner = new LinkedBlockingQueue<>();
-		Thread parseThread = new ParserThread(qParserLearner, logParser);
+		Thread parseThread = new ParserThread(qParserLearner, logParser, db.getLoader());
 		Thread learnThread = new LearnThread(qParserLearner);
 		parseThread.start();
 		learnThread.start();
