@@ -1,7 +1,10 @@
 package org.sessionization;
 
+import javassist.convert.TransformAccessArrayField;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
@@ -13,6 +16,7 @@ import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.datastruct.PageViewDump;
 import org.sessionization.parser.datastruct.ResoucesDump;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
@@ -27,16 +31,8 @@ public class HibernateUtil implements AutoCloseable {
 
 	public HibernateUtil(ArgsParser argsParser, AbsParser logParser) throws ExceptionInInitializerError {
 		this.loader = initClassLoader(argsParser, logParser);
-
 		Properties props = initProperties(argsParser);
-
-		Set<Class> classes = null;
-		try {
-			classes = initClasses(logParser.getFieldType());
-		} catch (ClassNotFoundException e) {
-			throw new ExceptionInInitializerError(e);
-		}
-
+		Set<Class> classes = initClasses(logParser.getFieldType());
 		registry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
 				.applySettings(props)
@@ -71,7 +67,7 @@ public class HibernateUtil implements AutoCloseable {
 		return props;
 	}
 
-	private Set<Class> initClasses(List<FieldType> list) throws ClassNotFoundException {
+	private Set<Class> initClasses(List<FieldType> list) throws ExceptionInInitializerError {
 		Set<Class> classes = new HashSet<>();
 		for (FieldType f : list) {
 			for (Class c : f.getDependencies()) {
@@ -79,8 +75,12 @@ public class HibernateUtil implements AutoCloseable {
 			}
 			classes.add(f.getClassType());
 		}
-		classes.add(loader.loadClass(ResoucesDump.getClassName()));
-		classes.add(loader.loadClass(PageViewDump.getClassName()));
+		try {
+			classes.add(loader.loadClass(ResoucesDump.getClassName()));
+			classes.add(loader.loadClass(PageViewDump.getClassName()));
+		} catch (ClassNotFoundException e) {
+			throw new ExceptionInInitializerError(e);
+		}
 		return classes;
 	}
 
@@ -105,8 +105,35 @@ public class HibernateUtil implements AutoCloseable {
 		return loader;
 	}
 
-	public Session getSession() {
+	private Session getSession() {
 		return factory.openSession();
+	}
+
+	public <T> Serializable save(T o) {
+		Serializable ret = null;
+		synchronized (factory) {
+			Session s = getSession();
+			Transaction t = s.getTransaction();
+			try {
+				t.begin();
+				ret = s.save(o);
+				t.commit();
+			} catch (HibernateException e) {
+				if (t != null) {
+					t.rollback();
+				}
+			}
+			s.close();
+		}
+		return ret;
+	}
+
+	public <T> T getObject(T t) {
+		T ret = null;
+		synchronized (factory) {
+			// TODO
+		}
+		return ret;
 	}
 
 	@Override
