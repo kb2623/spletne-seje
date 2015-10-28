@@ -18,12 +18,23 @@ import org.sessionization.parser.datastruct.ResoucesDump;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 public class HibernateUtil implements AutoCloseable {
+
+	public class UrlLoader extends URLClassLoader {
+		public UrlLoader(URL[] urls) {
+			super(urls);
+		}
+
+		public synchronized void defineClass(String name, byte[] bytes) {
+			super.defineClass(name, bytes, 0, bytes.length);
+		}
+	}
 
 	private SessionFactory factory = null;
 	private ServiceRegistry registry = null;
