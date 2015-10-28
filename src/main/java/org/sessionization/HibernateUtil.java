@@ -27,11 +27,12 @@ import java.util.Set;
 public class HibernateUtil implements AutoCloseable {
 
 	public class UrlLoader extends URLClassLoader {
+
 		public UrlLoader(URL[] urls) {
 			super(urls);
 		}
 
-		public synchronized void defineClass(String name, byte[] bytes) {
+		public void defineClass(String name, byte[] bytes) {
 			super.defineClass(name, bytes, 0, bytes.length);
 		}
 	}
