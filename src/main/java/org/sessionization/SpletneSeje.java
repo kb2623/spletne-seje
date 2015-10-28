@@ -2,20 +2,17 @@ package org.sessionization;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
-import org.sessionization.fields.FieldType;
+import org.sessionization.parser.datastruct.PageViewAbs;
 import org.sessionization.parser.*;
 import org.sessionization.parser.datastruct.ParsedLine;
-import org.sessionization.parser.datastruct.ResoucesDump;
-import org.sessionization.parser.datastruct.PageViewDump;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.ParseException;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SpletneSeje {
 
@@ -110,8 +107,23 @@ public class SpletneSeje {
 		db = new HibernateUtil(argsParser, logParser);
 	}
 
-	public void run() {
-		// FIXME gavno procesiranje
+	public void run() throws InterruptedException {
+		BlockingQueue<Map<String, PageViewAbs>> qParserLearner = new LinkedBlockingQueue<>();
+		Thread parseThread = new ParserThread(qParserLearner, logParser);
+		Thread learnThread = new LearnThread(qParserLearner);
+		parseThread.start();
+		learnThread.start();
+		// TODO dodaj se druge niti
+		try {
+			parseThread.join();
+		} catch (InterruptedException e) {
+			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in parsing!!!");
+		}
+		try {
+			learnThread.join();
+		} catch (InterruptedException e) {
+			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in learning!!!");
+		}
 	}
 	/**
 	 *
@@ -142,6 +154,9 @@ public class SpletneSeje {
 		} catch (ExceptionInInitializerError e) {
 			System.err.println(e.getLocalizedMessage());
 			System.exit(7);
+		} catch (InterruptedException e) {
+			System.err.println(e.getLocalizedMessage());
+			System.exit(8);
 		}
 	}
 

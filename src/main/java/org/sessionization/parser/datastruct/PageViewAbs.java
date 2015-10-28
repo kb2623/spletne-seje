@@ -1,4 +1,4 @@
-package org.sessionization.fields;
+package org.sessionization.parser.datastruct;
 
 public abstract class PageViewAbs {
 	/**

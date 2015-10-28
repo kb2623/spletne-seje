@@ -5,12 +5,14 @@ import org.sessionization.fields.FieldType;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PageViewDump implements Opcodes {
 
-	private static String CLASSNAME = "org/sessionization/fields/PageView";
+	private static String CLASSNAME = "org/sessionization/parser/datastuct/PageView";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
 	private static String NAME = "PageView.java";
 
@@ -74,7 +76,7 @@ public class PageViewDump implements Opcodes {
 		}
 		/** Inicializacija tabele z zahtevami */
 		{
-			fv = cw.visitField(ACC_PRIVATE, "requests", ClassTypes.ListType, ClassTypes.ListResoucesGType, null);
+			fv = cw.visitField(ACC_PRIVATE, "resouces", ClassTypes.ListType, ClassTypes.ListResoucesGType, null);
 			{
 				av0 = fv.visitAnnotation(ClassTypes.OneToManyType, true);
 				{
@@ -134,7 +136,6 @@ public class PageViewDump implements Opcodes {
 			mv.visitEnd();
 			lineCount++;
 		}
-		// todo konstruktor, ki sprejme ParsedLine
 		/** getId */
 		{
 			mv = cw.visitMethod(ACC_PUBLIC, "getId", "()" + ClassTypes.IntegerType, null, null);
@@ -228,7 +229,7 @@ public class PageViewDump implements Opcodes {
 		}
 		/** Getter za tabelo */
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "getRequests", "()" + ClassTypes.ListType, "()" + ClassTypes.ListResoucesGType, null);
+			mv = cw.visitMethod(ACC_PUBLIC, "getResources", "()" + ClassTypes.ListType, "()" + ClassTypes.ListResoucesGType, null);
 			lineCount++;
 			mv.visitCode();
 			Label l0 = new Label();
@@ -246,7 +247,7 @@ public class PageViewDump implements Opcodes {
 		}
 		/** Setter za tabelo */
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "setRequests", "(" + ClassTypes.ListType + ")V", "(" + ClassTypes.ListResoucesGType + ")V", null);
+			mv = cw.visitMethod(ACC_PUBLIC, "setResouces", "(" + ClassTypes.ListType + ")V", "(" + ClassTypes.ListResoucesGType + ")V", null);
 			lineCount++;
 			mv.visitCode();
 			Label l0 = new Label();
@@ -538,6 +539,27 @@ public class PageViewDump implements Opcodes {
 			}
 		}
 		return retList;
+	}
+
+	public static PageViewAbs makeObject(List<FieldType> fieldTypes, ParsedLine line, ClassLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+		Class c = loader.loadClass(getClassName());
+		Object o = c.newInstance();
+		boolean hasRequests = false;
+		int i;
+		for (i = 0; i < fieldTypes.size(); i++) {
+			if (fieldTypes.get(i).isKey()) {
+				Method m = c.getMethod(fieldTypes.get(i).getSetterName(), line.get(i).getClass());
+				m.invoke(o, line.get(i));
+			} else {
+				hasRequests = true;
+			}
+		}
+		if (hasRequests) {
+			ResourceAbs req = ResoucesDump.makeObject(fieldTypes, line, loader);
+			Method m = c.getMethod("setResouces", List.class);
+			m.invoke(o, line);
+		}
+		return (PageViewAbs) o;
 	}
 
 	public static String getName() {

@@ -332,8 +332,6 @@ public class SQLiteDialect extends Dialect {
 		}
 	}
 
-
-
 	@Override
 	public ScrollMode defaultScrollMode() {
 		return ScrollMode.FORWARD_ONLY;

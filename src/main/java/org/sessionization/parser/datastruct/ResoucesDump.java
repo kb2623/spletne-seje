@@ -4,12 +4,14 @@ import org.objectweb.asm.*;
 import org.sessionization.fields.FieldType;
 
 import javax.persistence.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ResoucesDump implements Opcodes {
 
-	private static String CLASSNAME = "org/sessionization/fields/Request";
+	private static String CLASSNAME = "org/sessionization/parser/datastruct/Request";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
 	private static String NAME = "Request.java";
 
@@ -21,7 +23,7 @@ public class ResoucesDump implements Opcodes {
 		MethodVisitor mv;
 		AnnotationVisitor av0;
 		/** Inicializcija distopnih pravic, imena in dedovanje razreda */
-		cw.visit(52, ACC_PUBLIC + ACC_SUPER, CLASSNAME, null, ClassTypes.ObjectClass, null);
+		cw.visit(52, ACC_PUBLIC + ACC_SUPER, CLASSNAME, null, ClassTypes.ResourceAbsClass, null);
 		/** Inicializacija datoteke razreda */
 		cw.visitSource(NAME + ".java", null);
 		/** Dodajanje @Entry */
@@ -78,7 +80,7 @@ public class ResoucesDump implements Opcodes {
 			mv.visitLabel(l0);
 			mv.visitLineNumber(lineCount, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKESPECIAL, ClassTypes.ObjectClass, "<init>", "()V", false);
+			mv.visitMethodInsn(INVOKESPECIAL, ClassTypes.ResourceAbsClass, "<init>", "()V", false);
 			Label l1 = new Label();
 			lineCount++;
 			mv.visitLabel(l1);
@@ -390,6 +392,19 @@ public class ResoucesDump implements Opcodes {
 			}
 		}
 		return list;
+	}
+
+	public static ResourceAbs makeObject(List<FieldType> fieldTypes, ParsedLine line, ClassLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+		Class c = loader.loadClass(getClassName());
+		Object o = c.newInstance();
+		int i;
+		for (i = 0; i < fieldTypes.size(); i++) {
+			if (!fieldTypes.get(i).isKey()) {
+				Method m = c.getMethod(fieldTypes.get(i).getSetterName(), line.get(i).getClass());
+				m.invoke(o, line.get(i));
+			}
+		}
+		return (ResourceAbs) o;
 	}
 
 	public static String getTypeName() {

@@ -18,7 +18,7 @@ public class ClassPool {
 		mapObject = new ArrayMap<>();
 	}
 
-	public static void setPropreties(Properties propreties) {
+	public synchronized static void setPropreties(Properties propreties) {
 		ClassPool.properties = propreties;
 	}
 
@@ -34,7 +34,7 @@ public class ClassPool {
 		}
 	}
 
-	private static String getMapType(Class c) {
+	private synchronized static String getMapType(Class c) {
 		if (properties == null) {
 			return "";
 		} else {
@@ -42,7 +42,7 @@ public class ClassPool {
 		}
 	}
 
-	public static <T> T getObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
+	public synchronized static <T> T getObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
 		T ret = null;
 		int hash = 0;
 		for (Object o : args) {

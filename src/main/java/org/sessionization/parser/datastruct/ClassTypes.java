@@ -1,7 +1,6 @@
 package org.sessionization.parser.datastruct;
 
 import org.sessionization.fields.LogField;
-import org.sessionization.fields.PageViewAbs;
 
 import javax.persistence.*;
 import java.util.Iterator;
@@ -37,6 +36,7 @@ public class ClassTypes {
 	public static String ListResoucesGType = "L" + List.class.getName().replace(".", "/") + "<" + ResoucesDump.getClassType() + ">;";
 
 	public static String PageViewAbsType = PageViewAbs.class.getName().replace(".", "/");
+	public static String ResourceAbsClass = ResourceAbs.class.getName().replace(".", "/");
 
 	public static String ParsedLineType = getType(ParsedLine.class);
 	public static String ParsedLineClass = ParsedLine.class.getName().replace(".", "/");
