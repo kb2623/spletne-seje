@@ -1,14 +1,14 @@
 package org.sessionization.parser.datastruct;
 
+import org.sessionization.fields.LogField;
+import org.sessionization.fields.Referer;
+import org.sessionization.fields.UriSteam;
+import org.sessionization.fields.UserAgent;
+import org.sessionization.fields.ncsa.RequestLine;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
-
-import org.sessionization.fields.LogField;
-import org.sessionization.fields.UriSteam;
-import org.sessionization.fields.Referer;
-import org.sessionization.fields.UserAgent;
-import org.sessionization.fields.ncsa.RequestLine;
 
 public class ParsedLine implements Iterable<LogField> {
 
@@ -20,19 +20,6 @@ public class ParsedLine implements Iterable<LogField> {
 	 */
 	public ParsedLine(LogField[] array) {
 		this.array = array;
-	}
-	/**
-	 * Setter za tabelo. Metoda nastavi <code>array[index] = newValue</code> in vrne staro vrednost <code>array[index]</code>.
-	 *
-	 * @param index Indeks v tabeli
-	 * @param newValue Nova vrednost
-	 * @return Stara vrednost na <code>array[index]</code>
-	 * @throws ArrayIndexOutOfBoundsException Ko je <code>index >= array.length</code>
-	 */
-	public LogField add(int index, LogField newValue) throws ArrayIndexOutOfBoundsException {
-		LogField ret = array[index];
-		array[index] = newValue;
-		return ret;
 	}
 	/**
 	 * Metoda, ki prevrja ali je zahtevo opravil uporabnik ali spletni robot.

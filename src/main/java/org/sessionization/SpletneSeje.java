@@ -2,8 +2,8 @@ package org.sessionization;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
-import org.sessionization.parser.datastruct.PageViewAbs;
 import org.sessionization.parser.*;
+import org.sessionization.parser.datastruct.PageViewAbs;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.FileNotFoundException;
@@ -107,34 +107,20 @@ public class SpletneSeje {
 		db = new HibernateUtil(argsParser, logParser);
 	}
 
-	public void run() throws InterruptedException {
-		BlockingQueue<Map<String, PageViewAbs>> qParserLearner = new LinkedBlockingQueue<>();
-		Thread parseThread = new ParserThread(qParserLearner, logParser, db.getLoader());
-		Thread learnThread = new LearnThread(qParserLearner);
-		parseThread.start();
-		learnThread.start();
-		// TODO dodaj se druge niti
-		try {
-			parseThread.join();
-		} catch (InterruptedException e) {
-			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in parsing!!!");
-		}
-		try {
-			learnThread.join();
-		} catch (InterruptedException e) {
-			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in learning!!!");
-		}
-	}
 	/**
-	 *
 	 * @param args
 	 */
 	public static void main(String... args) {
 		try {
 			new SpletneSeje(args).run();
 		} catch (CmdLineException e) {
-			e.getParser().printUsage(System.out);
-			System.out.println(e.getLocalizedMessage());
+			if (!e.getLocalizedMessage().equals("Print help")) {
+				System.err.println(e.getLocalizedMessage());
+			} else {
+				e.getParser().printUsage(System.out);
+				System.out.print("\nUsage:\nProgName");
+				e.getParser().printSingleLineUsage(System.out);
+			}
 			System.exit(1);
 		} catch (ParseException e) {
 			System.err.println(e.getLocalizedMessage());
@@ -157,6 +143,25 @@ public class SpletneSeje {
 		} catch (InterruptedException e) {
 			System.err.println(e.getLocalizedMessage());
 			System.exit(8);
+		}
+	}
+
+	public void run() throws InterruptedException {
+		BlockingQueue<Map<String, PageViewAbs>> qParserLearner = new LinkedBlockingQueue<>();
+		Thread parseThread = new ParserThread(qParserLearner, logParser, db.getLoader());
+		Thread learnThread = new LearnThread(qParserLearner);
+		parseThread.start();
+		learnThread.start();
+		// TODO dodaj se druge niti
+		try {
+			parseThread.join();
+		} catch (InterruptedException e) {
+			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in parsing!!!");
+		}
+		try {
+			learnThread.join();
+		} catch (InterruptedException e) {
+			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in learning!!!");
 		}
 	}
 
