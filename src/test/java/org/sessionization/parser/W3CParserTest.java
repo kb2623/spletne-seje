@@ -21,8 +21,6 @@ import static org.junit.Assert.*;
 @SuppressWarnings("deprecation")
 public class W3CParserTest {
 
-	private String pathW3C = "Logs/Extended/";
-
 	private W3CParser parser;
 
 	@Before
@@ -119,7 +117,7 @@ public class W3CParserTest {
 
 	@Test
 	public void testParseLineFileTryResource() {
-		try (AbsParser parser1 = new W3CParser(Locale.US, new File[]{new File(ClassLoader.getSystemResource(pathW3C + "ex100614.log").getFile())})) {
+		try (AbsParser parser1 = new W3CParser(Locale.US, new File[] {new File(ClassLoader.getSystemResource("ex100614.log").getFile())})) {
 			parser1.forEach(System.out::println);
 		} catch (IOException e) {
 			fail();
@@ -129,7 +127,7 @@ public class W3CParserTest {
 	@Test
 	public void testParseLineFileOne() {
 		try {
-			parser.openFile(new File[]{new File(ClassLoader.getSystemResource(pathW3C + "ex080814.log").getFile())});
+			parser.openFile(new File[] {new File(ClassLoader.getSystemResource("ex080814.log").getFile())});
 			parser.forEach(System.out::println);
 			parser.closeFile();
 		} catch (IOException e) {

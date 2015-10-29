@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @SuppressWarnings("deprecation")
-public class TestFields {
+public class TestLogField {
 
 	@Test
 	public void testUserAgent() {
@@ -82,21 +82,45 @@ public class TestFields {
 			assertEquals("[[limit = 18][test = hello]]", ((UriSteamQuery) line.getFile()).getQuery().toString());
 			assertEquals("/jope-puloverji/moski-pulover-b74-red[[limit = 18][test = hello]]", line.getFile().toString());
 			assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getFile().getFile());
+			assertFalse(line.getUri().isResource());
 			line = new RequestLine("POST", "/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", "HTTP/1.1");
 			assertEquals("POST", line.getMethod().toString());
 			assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
 			assertEquals("HTTP/1.1", line.getProtocol().toString());
 			assertEquals("[[limit = 10]]", ((UriSteamQuery) line.getFile()).getQuery().toString());
-			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css[[limit = 10]]", line.getFile().toString());
-			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css", line.getFile().getFile());
-			line = new RequestLine("GET", "/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", "HTTP");
+			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/" +
+					"supermenu.css[[limit = 10]]", line.getFile().toString());
+			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/" +
+					"supermenu.css", line.getFile().getFile());
+			assertTrue(line.getUri().isResource());
+			line = new RequestLine("GET", "/image/cache/data/" +
+					"bigbananaPACK%20copy-cr-214x293.png", "HTTP");
 			assertEquals("GET", line.getMethod().toString());
 			assertEquals(0, line.getProtocol().getVersion(), 0.01);
 			assertEquals("HTTP", line.getProtocol().toString());
 			assertEquals("[]", ((UriSteamQuery) line.getFile()).getQuery().toString());
+			assertTrue(line.getUri().isResource());
 			assertEquals("/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", line.getFile().toString());
 		} catch (URISyntaxException e) {
 			fail();
 		}
+	}
+
+	@Test
+	public void testUriSteam() {
+		UriSteam uriSteam = new UriSteam("/image/cache/data/topbananaBLU-cr-214x293.png");
+		assertTrue(uriSteam.isResource());
+		uriSteam = new UriSteam("/image/cache/data/topbananaBLU-cr-214x293");
+		assertFalse(uriSteam.isResource());
+	}
+
+	@Test
+	public void testUriSteamQuery() throws URISyntaxException {
+		UriSteamQuery uriSteam = new UriSteamQuery(new URI("/srajce/srajce-kratek-rokav/srajca-s-kratkimi-rokavi-carisma-black-9024bl?sort=p.model&order=ASC"));
+		assertFalse(uriSteam.isResource());
+		uriSteam = new UriSteamQuery(new URI("/srajce/srajce-kratek-rokav/srajca-s-kratkimi-rokavi-carisma-black-9024bl.jpg?sort=p.model&order=ASC"));
+		assertTrue(uriSteam.isResource());
+		uriSteam = new UriSteamQuery(new URI("/image/cache/data/topbananaBLU-cr-214x293.png"));
+		assertTrue(uriSteam.isResource());
 	}
 }

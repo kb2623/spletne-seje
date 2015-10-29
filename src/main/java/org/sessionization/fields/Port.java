@@ -22,7 +22,7 @@ public class Port implements LogField {
 		isServer = false;
 	}
 
-	public Port(String number, boolean isServer) {
+	public Port(String number, Boolean isServer) {
 		id = null;
 		this.isServer = isServer;
 		portNumber = Integer.valueOf(number);

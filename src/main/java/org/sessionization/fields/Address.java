@@ -22,8 +22,8 @@ public class Address implements LogField {
 		serverAddress = false;
 		address = null;
 	}
-	
-	public Address(String address, boolean isServerAdderess) throws UnknownHostException {
+
+	public Address(String address, Boolean isServerAdderess) throws UnknownHostException {
 		id = null;
 		this.serverAddress = isServerAdderess;
 		this.address = InetAddress.getByName(address);

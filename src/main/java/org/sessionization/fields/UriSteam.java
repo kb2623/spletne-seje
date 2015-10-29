@@ -62,7 +62,6 @@ public class UriSteam implements LogField {
 	public boolean isResource() {
 		String extension = getExtension();
 		switch ((extension != null) ? extension : "") {
-			case "php":
 			case "png":
 			case "css":
 			case "js":

@@ -14,8 +14,8 @@ public class TimeTaken implements LogField {
 	private TimeTaken() {
 		time = 0;
 	}
-	
-	public TimeTaken(String time, boolean milliseconds) {
+
+	public TimeTaken(String time, Boolean milliseconds) {
 		if(milliseconds) {
 			this.time = Long.valueOf(time);
 		} else {

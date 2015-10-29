@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 @SuppressWarnings("deprecation")
@@ -28,20 +29,16 @@ public class NCSAParserTest {
 	@Before
 	public void setUp() throws Exception {
 		parser = new NCSAParser();
-		pathNCSACombined = ClassLoader.getSystemResource("Logs/Combined/access_log").getFile();
-		pathNCSACommon = ClassLoader.getSystemResource("Logs/Common/logCommon").getFile();
+		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
+		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
 	}
 
 	@Test
 	public void testNCSAParserCommon() {
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACommon)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-			//Pridobi podatke
 			for (ParsedLine list : parser) list.forEach(Assert::assertNotNull);
-			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
 			fail();
@@ -60,13 +57,9 @@ public class NCSAParserTest {
 	@Test
 	public void testNCSAParserCommonForEach() {
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACommon)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-			//Pridobi podatke
 			parser.forEach(line -> line.forEach(Assert::assertNotNull));
-			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
 			fail();
@@ -76,13 +69,9 @@ public class NCSAParserTest {
 	@Test
 	public void testNCSAParserCombinedForEachWithSetFormat() {
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACombined)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
-			//Pridobi podatke
 			parser.forEach(line -> line.forEach(Assert::assertNotNull));
-			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
 			fail();
@@ -92,15 +81,10 @@ public class NCSAParserTest {
 	@Test
 	public void testNCSAParserCombinedWithSetFormat() {
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACombined)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
-			//Nastavi format datuma
 			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
-			//Pridobi podatke
 			for (ParsedLine list : parser) list.forEach(Assert::assertNotNull);
-			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
 			e.printStackTrace();
@@ -111,13 +95,9 @@ public class NCSAParserTest {
 	@Test
 	public void testNCSAParserCombinedForEach() {
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACombined)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
-			//Pridobi podatke
 			parser.forEach(line -> line.forEach(Assert::assertNotNull));
-			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
 			fail();
@@ -127,15 +107,11 @@ public class NCSAParserTest {
 	@Test
 	public void testNCSAParserCombined() {
 		try {
-			//Odpri datoteko
 			parser.openFile(new File[]{new File(pathNCSACombined)});
-			//Nastavi tipe podatkov
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
-			//Pridobi podatke
 			for (ParsedLine list : parser) {
 				list.forEach(Assert::assertNotNull);
 			}
-			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | IOException e) {
 			e.printStackTrace();
@@ -161,7 +137,10 @@ public class NCSAParserTest {
 			parser1.openFile(new StringReader(testNiz));
 			String[] cookie = "%h %l %u %t %r %>s %b %{Referer}i %{User-agent}i %C".split(" ");
 			parser1.setFieldType(LogFormats.CustomLogFormat.create(cookie));
-			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", parser1.parseLine().toString());
+			ParsedLine line = parser1.parseLine();
+			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", line.toString());
+			assertFalse(line.isResource());
+
 		} catch (Exception e) {
 			fail();
 		}
@@ -171,17 +150,12 @@ public class NCSAParserTest {
 	public void testNCSAParserCombinedWithCookie() {
 		String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
 		try {
-			//Odpri datoteko
 			parser.openFile(new StringReader(testNiz));
-			//Nastavi tipe podatkov
 			String[] cookie = "%h %l %u %t %r %>s %b %{Referer}i %{User-agent}i %C".split(" ");
 			List<LogFieldType> listType = LogFormats.CustomLogFormat.create(cookie);
-			//Dodatni atribut
 			parser.setFieldType(listType);
-			//Pridobi podatke
 			ParsedLine list = parser.parseLine();
 			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", list.toString());
-			//Zapri datoteko
 			parser.closeFile();
 		} catch(NullPointerException | ParseException | IOException e) {
 			e.printStackTrace();

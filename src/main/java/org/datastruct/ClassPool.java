@@ -3,6 +3,7 @@ package org.datastruct;
 import org.datastruct.exception.MapDoesNotExist;
 import org.datastruct.exception.MapFullException;
 import org.datastruct.exception.ObjectDoesNotExist;
+import org.sessionization.fields.LogType;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -85,7 +86,12 @@ public class ClassPool {
 	private static <T> T makeObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
 		Class[] initArgsType = new Class[args.length];
 		for (int i = 0; i < initArgsType.length; i++) {
-			initArgsType[i] = args[i].getClass();
+			if (args[i] instanceof Enum) {
+				/** za enume moramo pridobiti super razred, ki pa je razred, ki se nahaja v kostruktorju */
+				initArgsType[i] = args[i].getClass().getSuperclass();
+			} else {
+				initArgsType[i] = args[i].getClass();
+			}
 		}
 		try {
 			Constructor init = c.getConstructor(initArgsType);

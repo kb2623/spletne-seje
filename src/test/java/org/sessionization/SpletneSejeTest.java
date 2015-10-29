@@ -30,7 +30,7 @@ public class SpletneSejeTest {
 	@Before
 	public void setUp() {
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
-		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
+		pathNCSACommon = ClassLoader.getSystemResource("testLog").getFile();
 		parser = new NCSAParser();
 	}
 
@@ -51,13 +51,6 @@ public class SpletneSejeTest {
 				}
 			}
 			parser.closeFile();
-			for (Map.Entry<String, List<ParsedLine>> entry : testMap.entrySet()) {
-				System.out.println(entry.getKey() + " <> " + entry.getValue().size());
-//				entry.getValue().stream().forEach((f1) -> {
-//					if (!f1.isResource()) System.out.print("\t" + f1.izpis() + "\n");
-//				});
-				System.out.println();
-			}
 			assertEquals(269, testMap.size());
 		} catch(NullPointerException | IOException e) {
 			fail();
@@ -81,13 +74,6 @@ public class SpletneSejeTest {
 				}
 			}
 			parser.closeFile();
-			for (Map.Entry<String, List<ParsedLine>> entry : testMap.entrySet()) {
-				System.out.println(entry.getKey() + " <> " + entry.getValue().size());
-//				entry.getValue().stream().forEach((f1) -> {
-//					if (!f1.isResource()) System.out.print("\t" + f1.izpis() + "\n");
-//				});
-				System.out.println();
-			}
 			assertEquals(269, testMap.size());
 		} catch(NullPointerException | IOException e) {
 			fail();
@@ -133,7 +119,7 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testRunZero() {
-		SpletneSeje.main("-?");
+		SpletneSeje.main("-h");
 	}
 
 	@Test

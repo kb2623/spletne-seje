@@ -14,13 +14,11 @@ public class ParserThread extends Thread {
 
 	private BlockingQueue<Map<String, PageViewAbs>> queue;
 	private AbsParser parser;
-	private HibernateUtil util;
 
 	public ParserThread(BlockingQueue queue, AbsParser parser, ClassLoader loader) {
 		super();
 		this.queue = queue;
 		this.parser = parser;
-		this.setContextClassLoader(loader);
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import org.sessionization.fields.LogField;
 import org.sessionization.fields.UriSteam;
 import org.sessionization.fields.Referer;
 import org.sessionization.fields.UserAgent;
+import org.sessionization.fields.ncsa.RequestLine;
 
 public class ParsedLine implements Iterable<LogField> {
 
@@ -60,6 +61,8 @@ public class ParsedLine implements Iterable<LogField> {
 		for (LogField f : array) {
 			if (f instanceof UriSteam && !(f instanceof Referer)) {
 				return ((UriSteam) f).isResource();
+			} else if (f instanceof RequestLine) {
+				return ((RequestLine) f).getUri().isResource();
 			}
 		}
 		return false;
