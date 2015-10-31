@@ -230,12 +230,27 @@ public class LinkedArrayList<E> implements List<E> {
 	}
 
 	private void shiftRight(int oIndex, int iIndex) {
-		int start = (int) (this.size / ((Object[]) this.matrix[0]).length);
-		for (int i = start; start >= 0; i++) {
-			if (i == 0) {
-
+		Object[] array = (Object[]) this.matrix[this.matrix.length - 1];
+		int start = (int) (this.size / array.length);
+		for (int i = start; i >= 0; i--) {
+			if (i == iIndex && this.matrix.length - 1 == oIndex) {
+				return;
+			} else if (i - 1 == -1 && this.matrix.length - 2 >= 0) {
+				array[i] = ((Objects[]) this.matrix[this.matrix.length - 2])[array.length - 1];
 			} else {
-
+				array[i] = array[i - 1];
+			}
+		}
+		for (int i = this.matrix.length - 2; i >= 0; i--) {
+			array = (Object[]) this.matrix[i];
+			for (int j = array.length - 1; j >= 0; j--) {
+				if (j == iIndex && i == oIndex) {
+					return;
+				} else if (j - 1 == -1 && j - 1 >= 0) {
+					array[j] = ((Object[]) this.matrix[i])[array.length - 1];
+				} else {
+					array[j] = array[j - 1];
+				}
 			}
 		}
 	}
