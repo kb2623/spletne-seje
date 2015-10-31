@@ -1,26 +1,37 @@
 package org.datastruct;
 
 import org.datastruct.exception.MapDoesNotExist;
-import org.datastruct.exception.MapFullException;
 import org.datastruct.exception.ObjectDoesNotExist;
-import org.sessionization.fields.LogType;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Map;
+import java.util.Properties;
 
 public class ClassPool {
 
 	private static Map<Class, Map<Integer, Object>> mapObject = null;
 	private static Properties properties = null;
 
-	private ClassPool() {
+	private ClassPool() throws IOException {
 		mapObject = new ArrayMap<>();
+		properties = new Properties();
+		properties.load(getClass().getResourceAsStream("ClassPool.properties"));
 	}
 
-	public synchronized static void setPropreties(Properties propreties) {
-		ClassPool.properties = propreties;
+	private ClassPool(Properties props) {
+		mapObject = new ArrayMap<>();
+		properties = props;
+	}
+
+	public static void initClassPool(int size, Properties properties) throws IOException {
+		if (size == 0) {
+			mapObject = new ArrayMap<>();
+		} else {
+			mapObject = new ArrayMap<>(size);
+		}
+		// TODO za propretije
 	}
 
 	private static int getSize(Class c) {
@@ -43,14 +54,16 @@ public class ClassPool {
 		}
 	}
 
-	public synchronized static <T> T getObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
+	public synchronized static <T> T getObject(Class<T> c, Object... args) throws ExceptionInInitializerError, NullPointerException {
+		if (mapObject == null || properties == null) {
+			throw new NullPointerException("Have to init first!!!");
+		}
 		T ret = null;
 		int hash = 0;
 		for (Object o : args) {
 			hash += o.hashCode();
 		}
 		if (ClassPool.mapObject == null) {
-			new ClassPool();
 			Map<Integer, Object> map = new MapLRU<>(5, getSize(c));
 			ret = makeObject(c, args);
 			map.put(hash, ret);
