@@ -41,7 +41,7 @@ public class LinkedArrayList<E> implements List<E> {
 
 			@Override
 			public boolean hasNext() {
-				return curr != size;
+				return curr < size;
 			}
 
 			@Override
@@ -316,7 +316,67 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public ListIterator<E> listIterator() {
-		return null;
+		return new ListIterator<E>() {
+
+			private int curr = -1;
+			private int prev = -1;
+
+			@Override
+			public boolean hasNext() {
+				return this.curr < size;
+			}
+
+			@Override
+			public E next() throws NoSuchElementException {
+				if (this.curr >= size) {
+					throw new NoSuchElementException();
+				}
+				this.curr++;
+				this.prev = this.curr;
+				return get(prev);
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return curr - 1 > -1;
+			}
+
+			@Override
+			public E previous() {
+				if (curr <= -1) {
+
+				}
+			}
+
+			@Override
+			public int nextIndex() {
+				return 0;
+			}
+
+			@Override
+			public int previousIndex() {
+				return 0;
+			}
+
+			@Override
+			public void remove() throws IllegalStateException {
+				if (this.prev == -1) {
+					throw new IllegalStateException();
+				}
+				delete(this.prev);
+				this.prev = -1;
+			}
+
+			@Override
+			public void set(E e) {
+
+			}
+
+			@Override
+			public void add(E e) {
+
+			}
+		};
 	}
 
 	@Override
