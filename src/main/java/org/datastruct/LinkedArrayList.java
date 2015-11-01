@@ -34,35 +34,7 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return new Iterator<E>() {
-
-			private int next = 0;
-			private boolean canDel = false;
-
-			@Override
-			public boolean hasNext() {
-				return next < size;
-			}
-
-			@Override
-			public E next() throws NoSuchElementException {
-				if (this.next == size) {
-					throw new NoSuchElementException();
-				}
-				this.next++;
-				return get(this.next - 1);
-			}
-
-			@Override
-			public void remove() {
-				if (!canDel) {
-					throw new IllegalStateException();
-				} else {
-					delete(this.next - 1);
-					this.canDel = false;
-				}
-			}
-		};
+		return new LinkedArrayListIterator();
 	}
 
 	private E delete(int i) {
@@ -127,12 +99,7 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public boolean addAll(Collection<? extends E> collection) throws NullPointerException {
-		for (Object o : collection) {
-			if (!add((E) o)) {
-				return false;
-			}
-		}
-		return true;
+		return insertAll(this.size, collection);
 	}
 
 	@Override
@@ -140,7 +107,11 @@ public class LinkedArrayList<E> implements List<E> {
 		if (i < 0 || i >= this.size) {
 			throw new IndexOutOfBoundsException("Bad index!!!");
 		}
-		return false;
+		return insertAll(i, collection);
+	}
+
+	private boolean insertAll(int i, Collection<? extends E> collection) {
+		// FIXME
 	}
 
 	@Override
@@ -214,7 +185,7 @@ public class LinkedArrayList<E> implements List<E> {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
 		int iIndex = i % array.length;
-		this.shiftRight(oIndex, iIndex);
+		this.shiftRight(oIndex, iIndex, 1);
 		if (oIndex > 0) {
 			array = (Object[]) this.matrix[oIndex];
 		}
@@ -226,7 +197,7 @@ public class LinkedArrayList<E> implements List<E> {
 		array[iIndex] = e;
 	}
 
-	private void shiftRight(int oIndex, int iIndex) {
+	private void shiftRight(int oIndex, int iIndex, int size) {
 		Object[] array = (Object[]) this.matrix[this.matrix.length - 1];
 		int start = (int) (this.size / array.length);
 		for (int i = start; i >= 0; i--) {
@@ -326,7 +297,42 @@ public class LinkedArrayList<E> implements List<E> {
 		return null;
 	}
 
-	public class IterateLAL implements ListIterator<E> {
+	class LinkedArrayListIterator implements Iterator<E> {
+
+		private int next;
+		private boolean canDel;
+
+		LinkedArrayListIterator() {
+			this.next = 0;
+			this.canDel = false;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return next < size;
+		}
+
+		@Override
+		public E next() throws NoSuchElementException {
+			if (this.next == size) {
+				throw new NoSuchElementException();
+			}
+			this.next++;
+			return get(this.next - 1);
+		}
+
+		@Override
+		public void remove() {
+			if (!canDel) {
+				throw new IllegalStateException();
+			} else {
+				delete(this.next - 1);
+				this.canDel = false;
+			}
+		}
+	}
+
+	class IterateLAL implements ListIterator<E> {
 
 		private int next;
 		private boolean canDel;
