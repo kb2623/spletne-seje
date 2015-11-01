@@ -36,31 +36,30 @@ public class LinkedArrayList<E> implements List<E> {
 	public Iterator<E> iterator() {
 		return new Iterator<E>() {
 
-			private int curr = 0;
-			private int prev = -1;
+			private int next = 0;
+			private boolean canDel = false;
 
 			@Override
 			public boolean hasNext() {
-				return curr < size;
+				return next < size;
 			}
 
 			@Override
 			public E next() throws NoSuchElementException {
-				if (this.curr == size) {
+				if (this.next == size) {
 					throw new NoSuchElementException();
 				}
-				this.prev = this.curr;
-				this.curr++;
-				return get(this.prev);
+				this.next++;
+				return get(this.next - 1);
 			}
 
 			@Override
 			public void remove() {
-				if (this.prev == -1) {
+				if (!canDel) {
 					throw new IllegalStateException();
 				} else {
-					delete(this.prev);
-					this.prev = -1;
+					delete(this.next - 1);
+					this.canDel = false;
 				}
 			}
 		};
@@ -94,17 +93,7 @@ public class LinkedArrayList<E> implements List<E> {
 		if (e == null) {
 			throw new NullPointerException("Can not insert null elements into " + getClass().getName());
 		}
-		Object[] array = (Object[]) this.matrix[0];
-		int oIndex = (int) (this.size / array.length);
-		int iIndex = this.size % array.length;
-		if (oIndex > 0) {
-			if (oIndex == this.matrix.length) {
-				this.resizeMatrix();
-			}
-			array = (Object[]) this.matrix[oIndex];
-		}
-		array[iIndex] = e;
-		this.size++;
+		this.insert(this.size, e);
 		return true;
 	}
 
@@ -195,6 +184,10 @@ public class LinkedArrayList<E> implements List<E> {
 		if (e == null) {
 			throw new NullPointerException("Can not insert null elements in " + getClass());
 		}
+		return update(i, e);
+	}
+
+	private E update(int i, E e) {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
 		int iIndex = i % array.length;
@@ -214,6 +207,10 @@ public class LinkedArrayList<E> implements List<E> {
 		if (e == null) {
 			throw new NullPointerException("Can not insert null elements into " + getClass().getName());
 		}
+		this.insert(i, e);
+	}
+
+	private void insert(int i, E e) {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
 		int iIndex = i % array.length;
@@ -316,76 +313,107 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public ListIterator<E> listIterator() {
-		return new ListIterator<E>() {
-
-			private int curr = -1;
-			private int prev = -1;
-
-			@Override
-			public boolean hasNext() {
-				return this.curr < size;
-			}
-
-			@Override
-			public E next() throws NoSuchElementException {
-				if (this.curr >= size) {
-					throw new NoSuchElementException();
-				}
-				this.curr++;
-				this.prev = this.curr;
-				return get(prev);
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return curr - 1 > -1;
-			}
-
-			@Override
-			public E previous() {
-				if (curr <= -1) {
-
-				}
-			}
-
-			@Override
-			public int nextIndex() {
-				return 0;
-			}
-
-			@Override
-			public int previousIndex() {
-				return 0;
-			}
-
-			@Override
-			public void remove() throws IllegalStateException {
-				if (this.prev == -1) {
-					throw new IllegalStateException();
-				}
-				delete(this.prev);
-				this.prev = -1;
-			}
-
-			@Override
-			public void set(E e) {
-
-			}
-
-			@Override
-			public void add(E e) {
-
-			}
-		};
+		return new IterateLAL();
 	}
 
 	@Override
-	public ListIterator<E> listIterator(int i) {
-		return null;
+	public ListIterator<E> listIterator(int i) throws ArrayIndexOutOfBoundsException {
+		return new IterateLAL(i);
 	}
 
 	@Override
 	public List<E> subList(int i, int i1) {
 		return null;
+	}
+
+	public class IterateLAL implements ListIterator<E> {
+
+		private int next;
+		private boolean canDel;
+		private boolean canSet;
+
+		IterateLAL(int start) throws ArrayIndexOutOfBoundsException {
+			this();
+			if (start < 0 || start >= size) {
+				throw new ArrayIndexOutOfBoundsException("Bad index!!!");
+			}
+			this.next = start - 1;
+		}
+
+		IterateLAL() {
+			this.next = 0;
+			this.canDel = false;
+			this.canSet = false;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.next < size;
+		}
+
+		@Override
+		public E next() throws NoSuchElementException {
+			if (this.next + 1 > size) {
+				throw new NoSuchElementException();
+			}
+			this.canDel = true;
+			this.canSet = true;
+			this.next++;
+			return get(this.next - 1);
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.next - 2 > -1;
+		}
+
+		@Override
+		public E previous() throws NoSuchElementException {
+			if (this.next - 1 == 0) {
+				throw new NoSuchElementException();
+			}
+			this.next--;
+			return get(this.next - 1);
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.next;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.next - 2;
+		}
+
+		@Override
+		public void remove() throws IllegalStateException {
+			if (this.canDel) {
+				throw new IllegalStateException();
+			}
+			delete(this.next - 1);
+			this.canDel = false;
+		}
+
+		@Override
+		public void set(E e) throws IllegalArgumentException, IllegalStateException {
+			if (!canSet) {
+				throw new IllegalStateException();
+			}
+			if (e == null) {
+				throw new IllegalArgumentException("Can not insert null elements!!!");
+			}
+			update(this.next - 1, (E) e);
+		}
+
+		@Override
+		public void add(E e) {
+			this.canSet = false;
+			this.canDel = false;
+			if (e == null) {
+				throw new IllegalArgumentException("Can not add null elemts");
+			}
+			insert(this.next - 1, (E) e);
+		}
 	}
 }
