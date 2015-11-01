@@ -78,7 +78,7 @@ public class LinkedArrayList<E> implements List<E> {
 		if (e == null) {
 			throw new NullPointerException("Can not insert null elements into " + getClass().getName());
 		}
-		this.insertOne(this.size, e);
+		this.insert(this.size, e);
 		return true;
 	}
 
@@ -218,7 +218,7 @@ public class LinkedArrayList<E> implements List<E> {
 		if (e == null) {
 			throw new NullPointerException("Can not insert null elements into " + getClass().getName());
 		}
-		this.insertOne(i, e);
+		this.insert(i, e);
 	}
 
 	/**
@@ -226,19 +226,21 @@ public class LinkedArrayList<E> implements List<E> {
 	 * @param i Mesto v tabeli
 	 * @param e Nov element
 	 */
-	private void insertOne(int i, E e) {
+	private void insert(int i, E... e) {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
 		int iIndex = i % array.length;
 		if (oIndex >= this.matrix.length) {
 			this.resizeMatrix();
 		}
-		this.shiftRight(oIndex, iIndex, 1);
+		this.shiftRight(oIndex, iIndex, e.length);
 		if (oIndex > 0) {
 			array = (Object[]) this.matrix[oIndex];
 		}
-		this.size++;
-		array[iIndex] = e;
+		this.size += e.length;
+		for (int j = 0; j < e.length; j++) {
+			array[iIndex + j] = e[j];
+		}
 	}
 
 	/**
@@ -252,12 +254,10 @@ public class LinkedArrayList<E> implements List<E> {
 		int start = this.size % array.length;
 		for (int i = start; i >= 0; i--) {
 			if (i == iIndex && this.matrix.length - 1 == oIndex) {
-				System.out.println("\t" + i + " " + (this.matrix.length - 1));
 				return;
 			} else if (i - 1 == -1 && this.matrix.length - 2 >= 0) {
 				array[i] = ((Objects[]) this.matrix[this.matrix.length - 2])[array.length - 1];
 			} else {
-				System.out.println("\t\t" + i + " " + (this.matrix.length - 1));
 				array[i] = array[i - 1];
 			}
 		}
@@ -477,7 +477,7 @@ public class LinkedArrayList<E> implements List<E> {
 			if (e == null) {
 				throw new IllegalArgumentException("Can not add null elemts");
 			}
-			insertOne(this.next - 1, (E) e);
+			insert(this.next - 1, (E) e);
 		}
 	}
 }
