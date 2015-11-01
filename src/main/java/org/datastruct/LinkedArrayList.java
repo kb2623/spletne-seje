@@ -58,7 +58,14 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public Object[] toArray() {
-		return new Object[0];
+		Object[] array = new Object[this.size];
+		for (int i = 0; i < this.matrix.length; i++) {
+			Object[] tmp = (Object[]) this.matrix[i];
+			for (int j = 0; j < tmp.length; j++) {
+				array[i * tmp.length + j] = tmp[j];
+			}
+		}
+		return array;
 	}
 
 	@Override
@@ -126,7 +133,18 @@ public class LinkedArrayList<E> implements List<E> {
 	 * @return <code>true</code> ce so se dodali vsi elementi, <code>false</code> ce se niso dodali vsi elementi
 	 */
 	private boolean insertAll(int i, Collection<? extends E> collection) {
+		int nEle = 0;
+		for (Object o : collection) {
+			if (o != null) {
+				nEle++;
+			}
+		}
 		// FIXME
+		if (nEle == collection.size()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -211,15 +229,16 @@ public class LinkedArrayList<E> implements List<E> {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
 		int iIndex = i % array.length;
-		this.shiftRight(oIndex, iIndex, 1);
+		if ((int) (this.size / array.length) == this.matrix.length) {
+			this.resizeMatrix();
+		}
+		if (i != this.size) {
+			this.shiftRight(oIndex, iIndex, 1);
+		}
 		if (oIndex > 0) {
 			array = (Object[]) this.matrix[oIndex];
 		}
 		this.size++;
-		if ((int) (this.size / array.length) == this.matrix.length) {
-			this.resizeMatrix();
-		}
-		this.shiftLeft(oIndex, iIndex);
 		array[iIndex] = e;
 	}
 

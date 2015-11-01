@@ -1,17 +1,36 @@
 package org.datastruct;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class LinkedArrayListTest {
 
-	@Test
-	public void testSize() throws Exception {
+	private List<Double> myList;
+	private List<Double> list;
 
+	@Before
+	public void setUp() {
+		myList = new LinkedArrayList<>(25);
+		list = new ArrayList<>();
 	}
 
 	@Test
-	public void testIsEmpty() throws Exception {
+	public void testSize() {
+		assertEquals(0, myList.size());
+		testAdd();
+		assertEquals(100, myList.size());
+	}
 
+	@Test
+	public void testIsEmpty() {
+		assertTrue(myList.isEmpty());
+		testAdd();
+		assertFalse(myList.isEmpty());
 	}
 
 	@Test
@@ -35,8 +54,15 @@ public class LinkedArrayListTest {
 	}
 
 	@Test
-	public void testAdd() throws Exception {
-
+	public void testAdd() {
+		for (int i = 0; i < 100; i++) {
+			double randNum = Math.random() * 100 + 1;
+			list.add(randNum);
+			assertTrue(myList.add(randNum));
+		}
+		for (int i = 0; i < 100; i++) {
+			assertEquals(list.get(i), myList.get(i));
+		}
 	}
 
 	@Test
