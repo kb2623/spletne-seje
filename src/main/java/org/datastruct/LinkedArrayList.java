@@ -29,7 +29,7 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public boolean contains(Object o) {
-		return false;
+		return indexOf(0) != -1;
 	}
 
 	@Override
@@ -37,6 +37,12 @@ public class LinkedArrayList<E> implements List<E> {
 		return new LinkedArrayListIterator();
 	}
 
+	/**
+	 * Metoda za brisanje vrednosti v tabeli na dolocenm mestu.
+	 *
+	 * @param i Mesto v tabeli
+	 * @return Vrednost ki se je nahajala na izbranem mestu
+	 */
 	private E delete(int i) {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
@@ -69,6 +75,9 @@ public class LinkedArrayList<E> implements List<E> {
 		return true;
 	}
 
+	/**
+	 * Metoda ki poveca tabelo.
+	 */
 	private void resizeMatrix() {
 		Object[] array = new Object[this.matrix.length + 1];
 		for (int i = 0; i < this.matrix.length; i++) {
@@ -110,6 +119,12 @@ public class LinkedArrayList<E> implements List<E> {
 		return insertAll(i, collection);
 	}
 
+	/**
+	 * Metoda za dodajanje vecih elementov na izbrano mesto.
+	 * @param i Izbrano mesto za didajanje
+	 * @param collection Elementi, ki jih zelimo dodati
+	 * @return <code>true</code> ce so se dodali vsi elementi, <code>false</code> ce se niso dodali vsi elementi
+	 */
 	private boolean insertAll(int i, Collection<? extends E> collection) {
 		// FIXME
 	}
@@ -158,6 +173,12 @@ public class LinkedArrayList<E> implements List<E> {
 		return update(i, e);
 	}
 
+	/**
+	 * Metoda za spreminjanje vrednosti na izbranem mestu v tabeli.
+	 * @param i Mesto v tabeli
+	 * @param e Nova vresnost
+	 * @return Predhodna vrednost
+	 */
 	private E update(int i, E e) {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
@@ -181,6 +202,11 @@ public class LinkedArrayList<E> implements List<E> {
 		this.insert(i, e);
 	}
 
+	/**
+	 * Metoda za dodajane na izbano mesto.
+	 * @param i Mesto v tabeli
+	 * @param e Nov element
+	 */
 	private void insert(int i, E e) {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
@@ -197,6 +223,12 @@ public class LinkedArrayList<E> implements List<E> {
 		array[iIndex] = e;
 	}
 
+	/**
+	 * Metoda ki se jo uporablja pri dodajnju novega elemeta. Tabelo <code>matrix</code> moramo pred klicem te metode povecati.
+	 * @param oIndex Mesto v tabeli <code>matrix</code>
+	 * @param iIndex Mesto v notranji tabeli tabele <code>matrix</code>
+	 * @param size Stevilo mest, ki jih preskocimo
+	 */
 	private void shiftRight(int oIndex, int iIndex, int size) {
 		Object[] array = (Object[]) this.matrix[this.matrix.length - 1];
 		int start = (int) (this.size / array.length);
@@ -284,12 +316,12 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public ListIterator<E> listIterator() {
-		return new IterateLAL();
+		return new LinkedArrayListListIterator();
 	}
 
 	@Override
 	public ListIterator<E> listIterator(int i) throws ArrayIndexOutOfBoundsException {
-		return new IterateLAL(i);
+		return new LinkedArrayListListIterator(i);
 	}
 
 	@Override
@@ -297,6 +329,9 @@ public class LinkedArrayList<E> implements List<E> {
 		return null;
 	}
 
+	/**
+	 * Razred za spredos po elementih podatkovne srukture
+	 */
 	class LinkedArrayListIterator implements Iterator<E> {
 
 		private int next;
@@ -332,13 +367,16 @@ public class LinkedArrayList<E> implements List<E> {
 		}
 	}
 
-	class IterateLAL implements ListIterator<E> {
+	/**
+	 * Razred za sprehod po elementih podatkovne strukture, ki podpira tudi prehajanje na prejsnji elemnt
+	 */
+	class LinkedArrayListListIterator implements ListIterator<E> {
 
 		private int next;
 		private boolean canDel;
 		private boolean canSet;
 
-		IterateLAL(int start) throws ArrayIndexOutOfBoundsException {
+		LinkedArrayListListIterator(int start) throws ArrayIndexOutOfBoundsException {
 			this();
 			if (start < 0 || start >= size) {
 				throw new ArrayIndexOutOfBoundsException("Bad index!!!");
@@ -346,7 +384,7 @@ public class LinkedArrayList<E> implements List<E> {
 			this.next = start - 1;
 		}
 
-		IterateLAL() {
+		LinkedArrayListListIterator() {
 			this.next = 0;
 			this.canDel = false;
 			this.canSet = false;

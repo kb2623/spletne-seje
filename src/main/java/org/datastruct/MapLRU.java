@@ -4,56 +4,9 @@ import java.util.*;
 
 public class MapLRU<K, V> implements Map<K, V> {
 
-	class Entry<K, V> implements Map.Entry<K, V> {
-
-		protected Entry<K, V> prev;
-		protected Entry<K, V> next;
-		protected Entry<K, V>[] conns;
-		protected K key;
-		protected V value;
-
-		protected Entry(int maxConns) {
-			this.conns = new Entry[maxConns];
-			this.prev = this.next = null;
-			this.key = null;
-			this.value = null;
-		}
-
-		protected Entry(K key, V value, int maxConns) {
-			this.key = key;
-			this.value = value;
-			int size;
-			for (size = 1; size < maxConns; size++) {
-				if ((int) (Math.random() * 2) != 1) {
-					break;
-				}
-			}
-			this.conns = new Entry[size];
-			this.prev = this.next = null;
-		}
-
-		@Override
-		public K getKey() {
-			return this.key;
-		}
-
-		@Override
-		public V getValue() {
-			return this.value;
-		}
-
-		@Override
-		public V setValue(V value) {
-			V ret = this.value;
-			this.value = value;
-			return ret;
-		}
-	}
-
 	private int maxCone;
 	private int maxSize;
 	private Entry<K, V> sentinel;
-
 	public MapLRU(int maxCone, int maxSize) {
 		this.maxCone = maxCone;
 		this.maxSize = maxSize;
@@ -351,8 +304,10 @@ public class MapLRU<K, V> implements Map<K, V> {
 	}
 
 	@Override
-	public void putAll(Map<? extends K, ? extends V> map) {
-
+	public void putAll(Map<? extends K, ? extends V> map) throws NullPointerException {
+		for (Map.Entry e : map.entrySet()) {
+			this.put((K) e.getKey(), (V) e.getValue());
+		}
 	}
 
 	@Override
@@ -362,5 +317,51 @@ public class MapLRU<K, V> implements Map<K, V> {
 			i++;
 		}
 		return i;
+	}
+
+	class Entry<K, V> implements Map.Entry<K, V> {
+
+		protected Entry<K, V> prev;
+		protected Entry<K, V> next;
+		protected Entry<K, V>[] conns;
+		protected K key;
+		protected V value;
+
+		protected Entry(int maxConns) {
+			this.conns = new Entry[maxConns];
+			this.prev = this.next = null;
+			this.key = null;
+			this.value = null;
+		}
+
+		protected Entry(K key, V value, int maxConns) {
+			this.key = key;
+			this.value = value;
+			int size;
+			for (size = 1; size < maxConns; size++) {
+				if ((int) (Math.random() * 2) != 1) {
+					break;
+				}
+			}
+			this.conns = new Entry[size];
+			this.prev = this.next = null;
+		}
+
+		@Override
+		public K getKey() {
+			return this.key;
+		}
+
+		@Override
+		public V getValue() {
+			return this.value;
+		}
+
+		@Override
+		public V setValue(V value) {
+			V ret = this.value;
+			this.value = value;
+			return ret;
+		}
 	}
 }
