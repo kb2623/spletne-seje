@@ -78,7 +78,7 @@ public class LinkedArrayList<E> implements List<E> {
 		if (e == null) {
 			throw new NullPointerException("Can not insert null elements into " + getClass().getName());
 		}
-		this.insert(this.size, e);
+		this.insertOne(this.size, e);
 		return true;
 	}
 
@@ -90,6 +90,7 @@ public class LinkedArrayList<E> implements List<E> {
 		for (int i = 0; i < this.matrix.length; i++) {
 			array[i] = this.matrix[i];
 		}
+		array[array.length - 1] = new Object[((Object[]) this.matrix[0]).length];
 		this.matrix = array;
 	}
 
@@ -217,7 +218,7 @@ public class LinkedArrayList<E> implements List<E> {
 		if (e == null) {
 			throw new NullPointerException("Can not insert null elements into " + getClass().getName());
 		}
-		this.insert(i, e);
+		this.insertOne(i, e);
 	}
 
 	/**
@@ -225,16 +226,14 @@ public class LinkedArrayList<E> implements List<E> {
 	 * @param i Mesto v tabeli
 	 * @param e Nov element
 	 */
-	private void insert(int i, E e) {
+	private void insertOne(int i, E e) {
 		Object[] array = (Object[]) this.matrix[0];
 		int oIndex = (int) (i / array.length);
 		int iIndex = i % array.length;
-		if ((int) (this.size / array.length) == this.matrix.length) {
+		if (oIndex >= this.matrix.length) {
 			this.resizeMatrix();
 		}
-		if (i != this.size) {
-			this.shiftRight(oIndex, iIndex, 1);
-		}
+		this.shiftRight(oIndex, iIndex, 1);
 		if (oIndex > 0) {
 			array = (Object[]) this.matrix[oIndex];
 		}
@@ -250,13 +249,15 @@ public class LinkedArrayList<E> implements List<E> {
 	 */
 	private void shiftRight(int oIndex, int iIndex, int size) {
 		Object[] array = (Object[]) this.matrix[this.matrix.length - 1];
-		int start = (int) (this.size / array.length);
+		int start = this.size % array.length;
 		for (int i = start; i >= 0; i--) {
 			if (i == iIndex && this.matrix.length - 1 == oIndex) {
+				System.out.println("\t" + i + " " + (this.matrix.length - 1));
 				return;
 			} else if (i - 1 == -1 && this.matrix.length - 2 >= 0) {
 				array[i] = ((Objects[]) this.matrix[this.matrix.length - 2])[array.length - 1];
 			} else {
+				System.out.println("\t\t" + i + " " + (this.matrix.length - 1));
 				array[i] = array[i - 1];
 			}
 		}
@@ -464,7 +465,7 @@ public class LinkedArrayList<E> implements List<E> {
 				throw new IllegalStateException();
 			}
 			if (e == null) {
-				throw new IllegalArgumentException("Can not insert null elements!!!");
+				throw new IllegalArgumentException("Can not nsert null elements!!!");
 			}
 			update(this.next - 1, (E) e);
 		}
@@ -476,7 +477,7 @@ public class LinkedArrayList<E> implements List<E> {
 			if (e == null) {
 				throw new IllegalArgumentException("Can not add null elemts");
 			}
-			insert(this.next - 1, (E) e);
+			insertOne(this.next - 1, (E) e);
 		}
 	}
 }
