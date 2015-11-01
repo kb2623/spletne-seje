@@ -296,11 +296,11 @@ public class LinkedArrayList<E> implements List<E> {
 		}
 		for (int i = oIndex + 1; i < this.matrix.length; i++) {
 			array = (Object[]) this.matrix[i];
-			for (int j = 1; j < array.length; j++) {
-				if (array[j] == null) {
+			for (int j = 0; j < array.length; j++) {
+				if (array[j] == null || (j + 1 >= array.length && i + 1 == this.matrix.length)) {
 					return;
-				} else if (j + 1 == array.length && i + 1 < this.matrix.length) {
-					array[j] = ((Object[]) this.matrix[j + 1])[0];
+				} else if (j + 1 >= array.length && i + 1 < this.matrix.length) {
+					array[j] = ((Object[]) this.matrix[i + 1])[0];
 				} else {
 					array[j] = array[j + 1];
 				}
@@ -373,6 +373,7 @@ public class LinkedArrayList<E> implements List<E> {
 				throw new NoSuchElementException();
 			}
 			this.next++;
+			canDel = true;
 			return get(this.next - 1);
 		}
 
