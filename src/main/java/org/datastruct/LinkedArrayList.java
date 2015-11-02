@@ -256,7 +256,7 @@ public class LinkedArrayList<E> implements List<E> {
 			if (i == iIndex && this.matrix.length - 1 == oIndex) {
 				return;
 			} else if (i - 1 == -1 && this.matrix.length - 2 >= 0) {
-				array[i] = ((Objects[]) this.matrix[this.matrix.length - 2])[array.length - 1];
+				array[i] = ((Object[]) this.matrix[this.matrix.length - 2])[array.length - 1];
 			} else {
 				array[i] = array[i - 1];
 			}
@@ -266,7 +266,7 @@ public class LinkedArrayList<E> implements List<E> {
 			for (int j = array.length - 1; j >= 0; j--) {
 				if (j == iIndex && i == oIndex) {
 					return;
-				} else if (j - 1 == -1 && j - 1 >= 0) {
+				} else if (j - 1 == -1 && i - 1 >= 0) {
 					array[j] = ((Object[]) this.matrix[i])[array.length - 1];
 				} else {
 					array[j] = array[j - 1];
@@ -286,7 +286,7 @@ public class LinkedArrayList<E> implements List<E> {
 	private void shiftLeft(int oIndex, int iIndex) {
 		Object[] array = (Object[]) this.matrix[oIndex];
 		for (int i = iIndex; i < array.length; i++) {
-			if (array[i] == null) {
+			if (oIndex * array.length + i == this.size) {
 				return;
 			} else if (i + 1 == array.length && oIndex + 1 < this.matrix.length) {
 				array[i] = ((Object[]) this.matrix[oIndex + 1])[0];
@@ -349,6 +349,20 @@ public class LinkedArrayList<E> implements List<E> {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
+		for (int i = 0; i < this.matrix.length; i++) {
+			Object[] array = (Object[]) this.matrix[i];
+			for (int j = 0; j < array.length; j++) {
+				builder.append(array[j].toString()).append(", ");
+			}
+		}
+		builder.delete(builder.length() - 2, builder.length()).append(']');
+		return builder.toString();
+	}
+
 	/**
 	 * Razred za spredos po elementih podatkovne srukture
 	 */
@@ -382,7 +396,8 @@ public class LinkedArrayList<E> implements List<E> {
 			if (!canDel) {
 				throw new IllegalStateException();
 			} else {
-				delete(this.next - 1);
+				this.next--;
+				delete(this.next);
 				this.canDel = false;
 			}
 		}

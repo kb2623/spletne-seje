@@ -59,11 +59,15 @@ public class LinkedArrayListTest {
 		itMl = myList.iterator();
 		boolean first = true;
 		while (itLi.hasNext() && itMl.hasNext()) {
+			try {
+				assertEquals(itLi.next(), itMl.next());
+			} catch (AssertionError e) {
+				assertEquals(list.toString(), myList.toString());
+			}
 			if ((int) (Math.random() * 2) == 0 && !first) {
 				itLi.remove();
 				itMl.remove();
 			} else {
-				assertEquals(itLi.next(), itMl.next());
 				first = false;
 			}
 		}
@@ -74,6 +78,24 @@ public class LinkedArrayListTest {
 			assertEquals(itLi.next(), itMl.next());
 		}
 		if (itLi.hasNext() || itMl.hasNext()) {
+			fail();
+		}
+		testAdd(false);
+		itMl = myList.iterator();
+		try {
+			itMl.remove();
+			fail();
+		} catch (IllegalStateException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			itMl.next();
+			itMl.remove();
+			itMl.remove();
+			fail();
+		} catch (IllegalStateException e) {
+		} catch (Exception e) {
 			fail();
 		}
 	}
