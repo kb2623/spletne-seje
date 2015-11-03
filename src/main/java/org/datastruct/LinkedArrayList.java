@@ -70,7 +70,30 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public <T> T[] toArray(T[] ts) {
-		return null;
+		try {
+			T[] ret = null;
+			if (ts.length >= this.size) {
+				ret = ts;
+				if (ts.length > this.size) {
+					ret[this.size] = null;
+				}
+			} else {
+				ret = (T[]) new Object[this.size];
+			}
+			for (int i = 0; i < this.matrix.length; i++) {
+				Object[] array = (Object[]) this.matrix[i];
+				for (int j = 0; j < array.length; j++) {
+					if (array[j] == null) {
+						break;
+					} else {
+						ret[i * array.length + j] = (T) array[j];
+					}
+				}
+			}
+			return ret;
+		} catch (ClassCastException e) {
+			throw new ArrayStoreException("can not save " + ts.getClass() + "!!!");
+		}
 	}
 
 	@Override
@@ -85,12 +108,15 @@ public class LinkedArrayList<E> implements List<E> {
 	/**
 	 * Metoda ki poveca tabelo.
 	 */
-	private void resizeMatrix() {
-		Object[] array = new Object[this.matrix.length + 1];
-		for (int i = 0; i < this.matrix.length; i++) {
-			array[i] = this.matrix[i];
+	private void resizeMatrix(int size) {
+		Object[] array = new Object[this.matrix.length + size];
+		for (int i = 0; i < array.length; i++) {
+			if (i < this.matrix.length) {
+				array[i] = this.matrix[i];
+			} else {
+				array[i] = new Object[((Object[]) this.matrix[0]).length];
+			}
 		}
-		array[array.length - 1] = new Object[((Object[]) this.matrix[0]).length];
 		this.matrix = array;
 	}
 
@@ -231,47 +257,43 @@ public class LinkedArrayList<E> implements List<E> {
 		int oIndex = (int) (i / array.length);
 		int iIndex = i % array.length;
 		if (oIndex >= this.matrix.length) {
-			this.resizeMatrix();
+			this.resizeMatrix(e.length);
 		}
 		this.shiftRight(oIndex, iIndex, e.length);
 		if (oIndex > 0) {
 			array = (Object[]) this.matrix[oIndex];
 		}
 		this.size += e.length;
-		for (int j = 0; j < e.length; j++) {
-			array[iIndex + j] = e[j];
-		}
+		// TODO vstavljaneje
 	}
 
 	/**
-	 * Metoda ki se jo uporablja pri dodajnju novega elemeta. Tabelo <code>matrix</code> moramo pred klicem te metode povecati.
+	 * Metoda ki se jo uporablja pri dodajnju novega elemeta. Tabelo <code>matrix</code> moramo pred klicem te metode povecati, vendar same veliskosti podatkovne strukture ne smemo spremeniti.
 	 * @param oIndex Mesto v tabeli <code>matrix</code>
 	 * @param iIndex Mesto v notranji tabeli tabele <code>matrix</code>
 	 * @param size Stevilo mest, ki jih preskocimo
 	 */
 	private void shiftRight(int oIndex, int iIndex, int size) {
 		Object[] array = (Object[]) this.matrix[this.matrix.length - 1];
-		int start = this.size % array.length;
-		for (int i = start; i >= 0; i--) {
-			if (i == iIndex && this.matrix.length - 1 == oIndex) {
-				return;
-			} else if (i - 1 == -1 && this.matrix.length - 2 >= 0) {
-				array[i] = ((Object[]) this.matrix[this.matrix.length - 2])[array.length - 1];
-			} else {
-				array[i] = array[i - 1];
-			}
-		}
-		for (int i = this.matrix.length - 2; i >= 0; i--) {
+		boolean first = true;
+		int oMove = (int) (size / array.length);
+		int iMove = size % array.length;
+		for (int i = this.matrix.length - 1; i >= 0; i--) {
 			array = (Object[]) this.matrix[i];
-			for (int j = array.length - 1; j >= 0; j--) {
-				if (j == iIndex && i == oIndex) {
+			for (int j = (first) ? this.size % array.length : array.length - 1; j >= 0; j--) {
+				if (j == iIndex + iMove && i == oIndex + oMove) {
 					return;
-				} else if (j - 1 == -1 && i - 1 >= 0) {
-					array[j] = ((Object[]) this.matrix[i])[array.length - 1];
+				} else if (j - iMove < 0) {
+					if (i - 1 >= 0) {
+						array[j] = ((Object[]) this.matrix[i - 1])[array.length - iMove];
+					} else {
+						return;
+					}
 				} else {
-					array[j] = array[j - 1];
+					array[j] = array[j - iMove];
 				}
 			}
+			first = false;
 		}
 	}
 

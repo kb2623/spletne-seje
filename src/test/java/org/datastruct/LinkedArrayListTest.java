@@ -112,7 +112,42 @@ public class LinkedArrayListTest {
 
 	@Test
 	public void testAdd() {
+		try {
+			myList.add(null);
+			fail();
+		} catch (NullPointerException e) {
+		} catch (Exception e) {
+			fail();
+		}
 		testAdd(true);
+		try {
+			myList.add(0, null);
+			fail();
+		} catch (NullPointerException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			myList.add(-10, 2.32);
+			fail();
+		} catch (IndexOutOfBoundsException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			myList.add(myList.size() + 100, 2.23);
+			fail();
+		} catch (IndexOutOfBoundsException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		for (int i = 0; i < 100; i++) {
+			double randNum = Math.random() * 100 + 1;
+			int index = (int) (Math.random() * 100 + 1);
+			list.add(index, randNum);
+			myList.add(index, randNum);
+		}
+		assertEquals(list.toString(), myList.toString());
 	}
 
 	private void testAdd(boolean test) {
