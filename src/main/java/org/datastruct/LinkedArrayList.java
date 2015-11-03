@@ -260,11 +260,17 @@ public class LinkedArrayList<E> implements List<E> {
 			this.resizeMatrix(e.length);
 		}
 		this.shiftRight(oIndex, iIndex, e.length);
-		if (oIndex > 0) {
-			array = (Object[]) this.matrix[oIndex];
-		}
 		this.size += e.length;
-		// TODO vstavljaneje
+		boolean first = true;
+		for (E ele : e) {
+			for (int j = oIndex; j < this.matrix.length; j++) {
+				array = (Object[]) this.matrix[j];
+				for (int k = (first) ? iIndex : 0; k < array.length; k++) {
+					array[k] = ele;
+				}
+				first = false;
+			}
+		}
 	}
 
 	/**
