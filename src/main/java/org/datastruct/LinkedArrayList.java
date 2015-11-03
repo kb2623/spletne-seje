@@ -4,17 +4,16 @@ import java.util.*;
 
 public class LinkedArrayList<E> implements List<E> {
 
-	private int size = 0;
-	private Object[] matrix;
-
+	private int size;
+	private Array array;
 	public LinkedArrayList() {
-		this.matrix = new Object[1];
-		this.matrix[0] = new Object[100];
+		this.array = new Array(100);
+		this.size = 0;
 	}
 
 	public LinkedArrayList(int tabSize) {
-		this.matrix = new Object[1];
-		this.matrix[0] = new Object[tabSize];
+		this.array = new Array(tabSize);
+		this.size = 0;
 	}
 
 	@Override
@@ -58,42 +57,12 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public Object[] toArray() {
-		Object[] array = new Object[this.size];
-		for (int i = 0; i < this.matrix.length; i++) {
-			Object[] tmp = (Object[]) this.matrix[i];
-			for (int j = 0; j < tmp.length; j++) {
-				array[i * tmp.length + j] = tmp[j];
-			}
-		}
-		return array;
+		return null;
 	}
 
 	@Override
 	public <T> T[] toArray(T[] ts) {
-		try {
-			T[] ret = null;
-			if (ts.length >= this.size) {
-				ret = ts;
-				if (ts.length > this.size) {
-					ret[this.size] = null;
-				}
-			} else {
-				ret = (T[]) new Object[this.size];
-			}
-			for (int i = 0; i < this.matrix.length; i++) {
-				Object[] array = (Object[]) this.matrix[i];
-				for (int j = 0; j < array.length; j++) {
-					if (array[j] == null) {
-						break;
-					} else {
-						ret[i * array.length + j] = (T) array[j];
-					}
-				}
-			}
-			return ret;
-		} catch (ClassCastException e) {
-			throw new ArrayStoreException("can not save " + ts.getClass() + "!!!");
-		}
+		return null;
 	}
 
 	@Override
@@ -109,15 +78,14 @@ public class LinkedArrayList<E> implements List<E> {
 	 * Metoda ki poveca tabelo.
 	 */
 	private void resizeMatrix(int size) {
-		Object[] array = new Object[this.matrix.length + size];
-		for (int i = 0; i < array.length; i++) {
-			if (i < this.matrix.length) {
-				array[i] = this.matrix[i];
-			} else {
-				array[i] = new Object[((Object[]) this.matrix[0]).length];
-			}
+		Array array = this.array;
+		while (array.next != null) {
+			array = array.next;
 		}
-		this.matrix = array;
+		for (int i = (int) Math.ceil(size / this.array.getLength()); i > 0; i--) {
+			array.next = new Array(this.array.getLength(), array, null);
+			array = array.next;
+		}
 	}
 
 	@Override
@@ -186,25 +154,22 @@ public class LinkedArrayList<E> implements List<E> {
 
 	@Override
 	public void clear() {
-		Object[] array = new Object[((Object[]) this.matrix[0]).length];
-		this.matrix = array;
+		this.array = new Array(this.array.getLength());
 		this.size = 0;
 	}
 
 	@Override
-	public E get(int i) throws IndexOutOfBoundsException {
+	public E get(int index) throws IndexOutOfBoundsException {
 		if (i < 0 || i >= this.size) {
 			throw new IndexOutOfBoundsException("Bad index!!!");
 		}
-		Object[] array = (Object[]) this.matrix[0];
-		int oIndex = (int) (i / array.length);
-		int iIndex = i % array.length;
-		if (oIndex > 0) {
-			array = (Object[]) this.matrix[oIndex];
-			return (E) array[iIndex];
-		} else {
-			return (E) array[i];
+		int oIndex = (int) (index / this.array.getLength());
+		int iIndex = index % this.array.getLength();
+		Array array = this.array;
+		for (int i = 0; i < oIndex; i++) {
+			array = array.next;
 		}
+		return (E) array.get(iIndex);
 	}
 
 	@Override
@@ -224,16 +189,14 @@ public class LinkedArrayList<E> implements List<E> {
 	 * @param e Nova vresnost
 	 * @return Predhodna vrednost
 	 */
-	private E update(int i, E e) {
-		Object[] array = (Object[]) this.matrix[0];
-		int oIndex = (int) (i / array.length);
-		int iIndex = i % array.length;
-		if (oIndex > 0) {
-			array = (Object[]) this.matrix[oIndex];
+	private E update(int index, E e) {
+		int oIndex = (int) (index / this.array.getLength());
+		int iIndex = index % this.array.getLength();
+		Array array = this.array;
+		for (int i = 0; i < oIndex; i++) {
+			array = array.next;
 		}
-		E ret = (E) array[iIndex];
-		array[iIndex] = e;
-		return ret;
+		return (E) array.set(iIndex, e);
 	}
 
 	@Override
@@ -249,28 +212,14 @@ public class LinkedArrayList<E> implements List<E> {
 
 	/**
 	 * Metoda za dodajane na izbano mesto.
-	 * @param i Mesto v tabeli
-	 * @param e Nov element
+	 *
+	 * @param i    Mesto v tabeli
+	 * @param eTab Nov element
 	 */
-	private void insert(int i, E... e) {
-		Object[] array = (Object[]) this.matrix[0];
-		int oIndex = (int) (i / array.length);
-		int iIndex = i % array.length;
-		if (oIndex >= this.matrix.length) {
-			this.resizeMatrix(e.length);
-		}
-		this.shiftRight(oIndex, iIndex, e.length);
-		this.size += e.length;
-		boolean first = true;
-		for (E ele : e) {
-			for (int j = oIndex; j < this.matrix.length; j++) {
-				array = (Object[]) this.matrix[j];
-				for (int k = (first) ? iIndex : 0; k < array.length; k++) {
-					array[k] = ele;
-				}
-				first = false;
-			}
-		}
+	private void insert(int i, E... eTab) {
+		int oIndex = (int) (i / this.array.getLength());
+		int iIndex = i % this.array.getLength();
+		if ()
 	}
 
 	/**
@@ -280,27 +229,7 @@ public class LinkedArrayList<E> implements List<E> {
 	 * @param size Stevilo mest, ki jih preskocimo
 	 */
 	private void shiftRight(int oIndex, int iIndex, int size) {
-		Object[] array = (Object[]) this.matrix[this.matrix.length - 1];
-		boolean first = true;
-		int oMove = (int) (size / array.length);
-		int iMove = size % array.length;
-		for (int i = this.matrix.length - 1; i >= 0; i--) {
-			array = (Object[]) this.matrix[i];
-			for (int j = (first) ? this.size % array.length : array.length - 1; j >= 0; j--) {
-				if (j == iIndex + iMove && i == oIndex + oMove) {
-					return;
-				} else if (j - iMove < 0) {
-					if (i - 1 >= 0) {
-						array[j] = ((Object[]) this.matrix[i - 1])[array.length - iMove];
-					} else {
-						return;
-					}
-				} else {
-					array[j] = array[j - iMove];
-				}
-			}
-			first = false;
-		}
+
 	}
 
 	@Override
@@ -312,53 +241,28 @@ public class LinkedArrayList<E> implements List<E> {
 	}
 
 	private void shiftLeft(int oIndex, int iIndex) {
-		Object[] array = (Object[]) this.matrix[oIndex];
-		for (int i = iIndex; i < array.length; i++) {
-			if (oIndex * array.length + i == this.size) {
-				return;
-			} else if (i + 1 == array.length && oIndex + 1 < this.matrix.length) {
-				array[i] = ((Object[]) this.matrix[oIndex + 1])[0];
-			} else {
-				array[i] = array[i + 1];
-			}
-		}
-		for (int i = oIndex + 1; i < this.matrix.length; i++) {
-			array = (Object[]) this.matrix[i];
-			for (int j = 0; j < array.length; j++) {
-				if (array[j] == null || (j + 1 >= array.length && i + 1 == this.matrix.length)) {
-					return;
-				} else if (j + 1 >= array.length && i + 1 < this.matrix.length) {
-					array[j] = ((Object[]) this.matrix[i + 1])[0];
-				} else {
-					array[j] = array[j + 1];
-				}
-			}
-		}
+		// TODO
 	}
 
 	@Override
 	public int indexOf(Object o) {
-		for (int i = 0; i < this.matrix.length; i++) {
-			Object[] array = (Object[]) this.matrix[i];
-			for (int j = 0; j < array.length; j++) {
-				if (array[j].equals(o)) {
-					return i * array.length + j;
+		Array array = this.array;
+		int j = 0;
+		while (array.next != null) {
+			for (int i = 0; i < array.getLength(); i++) {
+				if (array.get(i).equals(o)) {
+					return j * array.getLength() + i;
 				}
 			}
+			j++;
+			array = array.next;
 		}
 		return -1;
 	}
 
 	@Override
 	public int lastIndexOf(Object o) {
-		for (int i = this.matrix.length - 1; i >= 0; i--) {
-			Object[] array = (Object[]) this.matrix[i];
-			for (int j = array.length - 1; j >= 0; j--) {
-				if (array[j].equals(o)) {
-					return i * array.length + j;
-				}
-			}
-		}
+		// TODO isci od zadaj
 		return -1;
 	}
 
@@ -389,6 +293,39 @@ public class LinkedArrayList<E> implements List<E> {
 		}
 		builder.delete(builder.length() - 2, builder.length()).append(']');
 		return builder.toString();
+	}
+
+	class Array {
+
+		protected Array prev;
+		protected Array next;
+		private Object[] array;
+
+		Array(int size) {
+			this.array = new Object[size];
+			this.prev = null;
+			this.next = null;
+		}
+
+		Array(int size, Array prev, Array next) {
+			this.array = new Object[size];
+			this.prev = prev;
+			this.next = next;
+		}
+
+		Object get(int index) {
+			return this.array[index];
+		}
+
+		Object set(int index, Object o) {
+			Object ret = this.array[index];
+			this.array[index] = o;
+			return ret;
+		}
+
+		int getLength() {
+			return this.array.length;
+		}
 	}
 
 	/**

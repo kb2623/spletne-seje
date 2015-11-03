@@ -12,12 +12,12 @@ import static org.junit.Assert.*;
 public class LinkedArrayListTest {
 
 	private List<Double> myList;
-	private List<Double> list;
+	private ArList<Double> list;
 
 	@Before
 	public void setUp() {
-		myList = new LinkedArrayList<>(25);
-		list = new ArrayList<>(100);
+		myList = new LarList<>(25);
+		list = new ArList<>(100);
 	}
 
 	@Test
@@ -120,6 +120,7 @@ public class LinkedArrayListTest {
 			fail();
 		}
 		testAdd(true);
+		assertEquals(list.toString(), myList.toString());
 		try {
 			myList.add(0, null);
 			fail();
@@ -240,5 +241,29 @@ public class LinkedArrayListTest {
 
 	@Test
 	public void testSubList() throws Exception {
+	}
+
+	class ArList<E> extends ArrayList<E> {
+
+		ArList(int num) {
+			super(num);
+		}
+
+		@Override
+		public String toString() {
+			return super.toString().replace("[", "").replace("]", "").replaceAll(", ", "\n");
+		}
+	}
+
+	class LarList<E> extends LinkedArrayList<E> {
+
+		LarList(int num) {
+			super(num);
+		}
+
+		@Override
+		public String toString() {
+			return super.toString().replace("[", "").replace("]", "").replaceAll(", ", "\n");
+		}
 	}
 }
