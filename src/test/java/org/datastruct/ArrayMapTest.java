@@ -3,20 +3,19 @@ package org.datastruct;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
 public class ArrayMapTest {
 
 	private Map<Integer, Integer> map;
+	private SortedMap<Integer, Integer> smap;
 
 	@Before
 	public void setUp() {
 		map = new ArrayMap<>(10, .5f);
+		smap = new TreeMap<>(new Compare());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -305,5 +304,12 @@ public class ArrayMapTest {
 		testPutNoLimits();
 		Set<Map.Entry<Integer, Integer>> set = map.entrySet();
 		// TODO
+	}
+
+	class Compare implements Comparator<Integer> {
+		@Override
+		public int compare(Integer integer, Integer t1) {
+			return integer.hashCode() - t1.hashCode();
+		}
 	}
 }

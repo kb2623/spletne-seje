@@ -7,6 +7,7 @@ public class MapLRU<K, V> implements Map<K, V> {
 	private int maxCone;
 	private int maxSize;
 	private Entry<K, V> sentinel;
+
 	public MapLRU(int maxCone, int maxSize) {
 		this.maxCone = maxCone;
 		this.maxSize = maxSize;
@@ -25,7 +26,7 @@ public class MapLRU<K, V> implements Map<K, V> {
 			Entry<K, V> tmp = curr.conns[level];
 			if (tmp != null) {
 				int cmp = tmp.key.hashCode() - hash;
-				if (hash == 0) {
+				if (cmp == 0) {
 					if (tmp.key.equals(k)) {
 						return tmp.setValue(v);
 					} else {
@@ -319,6 +320,21 @@ public class MapLRU<K, V> implements Map<K, V> {
 		return i;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append('{');
+		for (Entry<K, V> e = this.sentinel.conns[0]; e != null; e = e.conns[0]) {
+			builder.append(e.getKey().toString()).append('=').append(e.getValue().toString());
+			builder.append(", ");
+		}
+		if (builder.length() > 2) {
+			builder.delete(builder.length() - 2, builder.length());
+		}
+		builder.append('}');
+		return builder.toString();
+	}
+
 	class Entry<K, V> implements Map.Entry<K, V> {
 
 		protected Entry<K, V> prev;
@@ -327,14 +343,14 @@ public class MapLRU<K, V> implements Map<K, V> {
 		protected K key;
 		protected V value;
 
-		protected Entry(int maxConns) {
+		Entry(int maxConns) {
 			this.conns = new Entry[maxConns];
 			this.prev = this.next = null;
 			this.key = null;
 			this.value = null;
 		}
 
-		protected Entry(K key, V value, int maxConns) {
+		Entry(K key, V value, int maxConns) {
 			this.key = key;
 			this.value = value;
 			int size;
