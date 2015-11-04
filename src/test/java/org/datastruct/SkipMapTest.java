@@ -7,14 +7,14 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class MapLRUTest {
+public class SkipMapTest {
 
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
 
 	@Before
 	public void setUp() throws Exception {
-		map = new MapLRU<>(5, 150);
+		map = new SkipMap<>(5);
 		tmap = new TreeMap<>(new Compare());
 	}
 

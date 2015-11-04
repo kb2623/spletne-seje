@@ -2,15 +2,13 @@ package org.datastruct;
 
 import java.util.*;
 
-public class MapLRU<K, V> implements Map<K, V> {
+public class SkipMap<K, V> implements Map<K, V> {
 
 	private int maxCone;
-	private int maxSize;
 	private Entry<K, V> sentinel;
 
-	public MapLRU(int maxCone, int maxSize) {
+	public SkipMap(int maxCone) {
 		this.maxCone = maxCone;
-		this.maxSize = maxSize;
 		this.sentinel = new Entry(maxCone);
 	}
 
@@ -70,16 +68,6 @@ public class MapLRU<K, V> implements Map<K, V> {
 			e.conns[level] = curr.conns[level];
 			curr.conns[level] = e;
 		}
-		/**
-		 * Dodaj na konec prioritetne vrste, ter poprvi povezave v sentinelu
-		 */
-		if (this.sentinel.next == null) {
-			this.sentinel.prev = this.sentinel.next = e;
-		} else {
-			e.next = this.sentinel.prev;
-			this.sentinel.prev.prev = e;
-			this.sentinel.prev = e;
-		}
 		return null;
 	}
 
@@ -88,7 +76,6 @@ public class MapLRU<K, V> implements Map<K, V> {
 		for (int level = 0; level < maxCone; level++) {
 			sentinel.conns[level] = null;
 		}
-		this.sentinel.prev = this.sentinel.next = null;
 	}
 
 	@Override
@@ -189,7 +176,6 @@ public class MapLRU<K, V> implements Map<K, V> {
 				int cmp = tmp.key.hashCode() - hash;
 				if (cmp == 0) {
 					if (tmp.key.equals(key)) {
-						lowerPriority(tmp);
 						return tmp.value;
 					} else {
 						curr = tmp;
@@ -201,7 +187,6 @@ public class MapLRU<K, V> implements Map<K, V> {
 						cmp = tmp.key.hashCode() - hash;
 						if (cmp == 0) {
 							if (tmp.key.equals(key)) {
-								lowerPriority(tmp);
 								return tmp.value;
 							} else {
 								curr = tmp;
@@ -216,26 +201,6 @@ public class MapLRU<K, V> implements Map<K, V> {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Metoda ki zmanjsa prioriteto za brisanje elementa
-	 *
-	 * @param e elemnt ki mu zmanjsujemp prioriteto
-	 */
-	private void lowerPriority(Entry e) {
-		if (e.prev != null) {
-			Entry tmp = e.prev;
-			tmp.next = e.next;
-			e.next = tmp;
-			e.prev = tmp.prev;
-			tmp.prev = e;
-			if (e == this.sentinel.next && e != this.sentinel.prev) {
-				this.sentinel.next = e;
-			} else if (tmp == this.sentinel.prev) {
-				this.sentinel.prev = e;
-			}
-		}
 	}
 
 	@Override
@@ -289,21 +254,6 @@ public class MapLRU<K, V> implements Map<K, V> {
 		if (found == null) {
 			return null;
 		}
-		/**
-		 * Popravljanje strukture vrste
-		 */
-		if (found.next != null) {
-			found.next.prev = found.prev;
-			if (found == this.sentinel.next) {
-				this.sentinel.next = found.prev;
-			}
-		}
-		if (found.prev != null) {
-			found.prev.next = found.next;
-			if (found == this.sentinel.prev) {
-				this.sentinel.prev = found.next;
-			}
-		}
 		return found.value;
 	}
 
@@ -317,7 +267,7 @@ public class MapLRU<K, V> implements Map<K, V> {
 	@Override
 	public int size() {
 		int i = 0;
-		for (Entry<K, V> node = sentinel.conns[0]; node != null; node = node.conns[0]) {
+		for (Entry<K, V> node = this.sentinel.conns[0]; node != null; node = node.conns[0]) {
 			i++;
 		}
 		return i;
@@ -340,15 +290,12 @@ public class MapLRU<K, V> implements Map<K, V> {
 
 	class Entry<K, V> implements Map.Entry<K, V> {
 
-		protected Entry<K, V> prev;
-		protected Entry<K, V> next;
 		protected Entry<K, V>[] conns;
 		protected K key;
 		protected V value;
 
 		Entry(int maxConns) {
 			this.conns = new Entry[maxConns];
-			this.prev = this.next = null;
 			this.key = null;
 			this.value = null;
 		}
@@ -363,7 +310,6 @@ public class MapLRU<K, V> implements Map<K, V> {
 				}
 			}
 			this.conns = new Entry[size];
-			this.prev = this.next = null;
 		}
 
 		@Override

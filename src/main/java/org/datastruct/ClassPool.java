@@ -64,14 +64,14 @@ public class ClassPool {
 			hash += o.hashCode();
 		}
 		if (ClassPool.mapObject == null) {
-			Map<Integer, Object> map = new MapLRU<>(5, getSize(c));
+			Map<Integer, Object> map = new SkipMap<>(5);
 			ret = makeObject(c, args);
 			map.put(hash, ret);
 		} else {
 			try {
 				ret = getObject(c, hash);
 			} catch (MapDoesNotExist mapDoesNotExist) {
-				Map<Integer, Object> map = new MapLRU<>(5, getSize(c));
+				Map<Integer, Object> map = new SkipMap<>(5);
 				ret = makeObject(c, args);
 				map.put(hash, ret);
 			} catch (ObjectDoesNotExist objectDoesNotExist) {

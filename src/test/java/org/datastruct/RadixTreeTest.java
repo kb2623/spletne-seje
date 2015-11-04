@@ -1,22 +1,33 @@
 package org.datastruct;
 
-import static org.junit.Assert.*;
+import org.datastruct.exception.DuplicateKeyException;
 import org.junit.Before;
 import org.junit.Test;
-import org.datastruct.exception.DuplicateKeyException;
 
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.junit.Assert.*;
+
 @SuppressWarnings("SuspiciousMethodCalls")
 public class RadixTreeTest {
 
-	private RadixTree<Integer> insRadixTree;
+	private RadixTree<Integer> intRTree;
 	private RadixTree<String> tree;
+
+	private String getRandomKey() {
+		int rNum = (int) (Math.random() * 101 + 1);
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < rNum; i++) {
+			int c = (int) (Math.random() * 26 + 97);
+			builder.append((char) c);
+		}
+		return builder.toString();
+	}
 
 	@Before
 	public void setUp() {
-		this.insRadixTree = new RadixTree<>();
+		this.intRTree = new RadixTree<>();
 		this.tree = new RadixTree<>();
 	}
 
@@ -29,40 +40,40 @@ public class RadixTreeTest {
 	}
 
 	private void testAddOK() {
-		this.insRadixTree.add(23, "test");
-		this.insRadixTree.add(32, "team");
-		assertEquals(new Integer(23), insRadixTree.get("test"));
-		assertEquals(new Integer(32), insRadixTree.get("team"));
+		this.intRTree.add(23, "test");
+		this.intRTree.add(32, "team");
+		assertEquals(new Integer(23), intRTree.get("test"));
+		assertEquals(new Integer(32), intRTree.get("team"));
 	}
 
 	private void testAddMoreOK() {
-		this.insRadixTree.add(1, "romane");
-		this.insRadixTree.add(2, "romanus");
-		this.insRadixTree.add(3, "romulus");
-		this.insRadixTree.add(4, "rubens");
-		this.insRadixTree.add(5, "ruber");
-		this.insRadixTree.add(6, "rubicon");
-		this.insRadixTree.add(7, "rubicudus");
-		assertEquals(new Integer(4), this.insRadixTree.get("rubens"));
-		assertEquals(new Integer(7), this.insRadixTree.get("rubicudus"));
-		assertEquals(new Integer(1), this.insRadixTree.get("romane"));
-		assertEquals(new Integer(5), this.insRadixTree.get("ruber"));
-		assertEquals(new Integer(2), this.insRadixTree.get("romanus"));
-		assertEquals(new Integer(6), this.insRadixTree.get("rubicon"));
-		assertEquals(new Integer(3), this.insRadixTree.get("romulus"));
+		this.intRTree.add(1, "romane");
+		this.intRTree.add(2, "romanus");
+		this.intRTree.add(3, "romulus");
+		this.intRTree.add(4, "rubens");
+		this.intRTree.add(5, "ruber");
+		this.intRTree.add(6, "rubicon");
+		this.intRTree.add(7, "rubicudus");
+		assertEquals(new Integer(4), this.intRTree.get("rubens"));
+		assertEquals(new Integer(7), this.intRTree.get("rubicudus"));
+		assertEquals(new Integer(1), this.intRTree.get("romane"));
+		assertEquals(new Integer(5), this.intRTree.get("ruber"));
+		assertEquals(new Integer(2), this.intRTree.get("romanus"));
+		assertEquals(new Integer(6), this.intRTree.get("rubicon"));
+		assertEquals(new Integer(3), this.intRTree.get("romulus"));
 	}
 
 	private void testAddNullArgumentExceptions() {
 		try{
-			this.insRadixTree.add(null, null);
+			this.intRTree.add(null, null);
 			assert false;
 		} catch(NullPointerException e) {}
 		try {
-			this.insRadixTree.add(null, "hello");
+			this.intRTree.add(null, "hello");
 			assert false;
 		} catch(NullPointerException e) {}
 		try {
-			this.insRadixTree.add(12, null);
+			this.intRTree.add(12, null);
 			assert false;
 		} catch(NullPointerException e) {}
 	}
@@ -71,11 +82,11 @@ public class RadixTreeTest {
 		testAddMoreOK();
 		testAddOK();
 		try {
-			this.insRadixTree.add(41, "team");
+			this.intRTree.add(41, "team");
 			assert false;
 		} catch(DuplicateKeyException e) {}
 		try {
-			this.insRadixTree.add(42, "rubicon");
+			this.intRTree.add(42, "rubicon");
 			assert false;
 		} catch(DuplicateKeyException e) {}
 	}
@@ -84,19 +95,19 @@ public class RadixTreeTest {
 	@Test
 	public void testPrintTree() {
 		testAdd();
-		insRadixTree.printTree();
+		intRTree.printTree();
 		setUp(); testAddMoreOK();
-		insRadixTree.printTree();
+		intRTree.printTree();
 		setUp(); testAddMoreOK(); testAdd();
-		insRadixTree.printTree();
+		intRTree.printTree();
 	}
 
 	@Test
 	public void testIsEmpty() {
-		assertTrue(insRadixTree.isEmpty());
-		this.insRadixTree.add(23, "test");
-		this.insRadixTree.add(32, "team");
-		assertFalse(insRadixTree.isEmpty());
+		assertTrue(intRTree.isEmpty());
+		this.intRTree.add(23, "test");
+		this.intRTree.add(32, "team");
+		assertFalse(intRTree.isEmpty());
 	}
 
 	@Test
@@ -107,25 +118,25 @@ public class RadixTreeTest {
 
 	private void testRemoveOK() {
 		testAddOK();
-		assertTrue(this.insRadixTree.remove("test"));
-		assertFalse(this.insRadixTree.remove("Hello"));
+		assertTrue(this.intRTree.remove("test"));
+		assertFalse(this.intRTree.remove("Hello"));
 	}
 
 	private void testRemoveMore() {
 		testAddMoreOK();
 		testAddOK();
-		assertTrue(this.insRadixTree.remove("test"));
-		assertTrue(this.insRadixTree.remove("rubicudus"));
-		assertFalse(this.insRadixTree.remove("rubers"));
-		assertTrue(this.insRadixTree.remove("romanus"));
-		assertFalse(this.insRadixTree.remove("test"));
-		assertTrue(this.insRadixTree.remove("team"));
-		assertFalse(this.insRadixTree.remove("team"));
-		assertTrue(this.insRadixTree.remove("romane"));
-		assertTrue(this.insRadixTree.remove("romulus"));
-		assertTrue(this.insRadixTree.remove("rubicon"));
-		assertTrue(this.insRadixTree.remove("ruber"));
-		assertTrue(this.insRadixTree.remove("rubens"));
+		assertTrue(this.intRTree.remove("test"));
+		assertTrue(this.intRTree.remove("rubicudus"));
+		assertFalse(this.intRTree.remove("rubers"));
+		assertTrue(this.intRTree.remove("romanus"));
+		assertFalse(this.intRTree.remove("test"));
+		assertTrue(this.intRTree.remove("team"));
+		assertFalse(this.intRTree.remove("team"));
+		assertTrue(this.intRTree.remove("romane"));
+		assertTrue(this.intRTree.remove("romulus"));
+		assertTrue(this.intRTree.remove("rubicon"));
+		assertTrue(this.intRTree.remove("ruber"));
+		assertTrue(this.intRTree.remove("rubens"));
 	}
 
 	@Test
@@ -136,25 +147,25 @@ public class RadixTreeTest {
 
 	private void testRemoveOKObject() {
 		testAddOK();
-		assertEquals(new Integer(23), ((Map) insRadixTree).remove("test"));
-		assertNull(((Map) insRadixTree).remove("Hello"));
+		assertEquals(new Integer(23), ((Map) intRTree).remove("test"));
+		assertNull(((Map) intRTree).remove("Hello"));
 	}
 
 	private void testRemoveMoreObject() {
 		testAddMoreOK();
 		testAddOK();
-		assertEquals(new Integer(23), ((Map) insRadixTree).remove("test"));
-		assertEquals(new Integer(7), ((Map) insRadixTree).remove("rubicudus"));
-		assertNull(((Map) insRadixTree).remove("rubers"));
-		assertEquals(new Integer(2), ((Map) insRadixTree).remove("romanus"));
-		assertNull(((Map) insRadixTree).remove("test"));
-		assertEquals(new Integer(32), ((Map) insRadixTree).remove("team"));
-		assertNull(((Map) insRadixTree).remove("team"));
-		assertEquals(new Integer(1), ((Map) insRadixTree).remove("romane"));
-		assertEquals(new Integer(3), ((Map) insRadixTree).remove("romulus"));
-		assertEquals(new Integer(6), ((Map) insRadixTree).remove("rubicon"));
-		assertEquals(new Integer(5), ((Map) insRadixTree).remove("ruber"));
-		assertEquals(new Integer(4), ((Map) insRadixTree).remove("rubens"));
+		assertEquals(new Integer(23), ((Map) intRTree).remove("test"));
+		assertEquals(new Integer(7), ((Map) intRTree).remove("rubicudus"));
+		assertNull(((Map) intRTree).remove("rubers"));
+		assertEquals(new Integer(2), ((Map) intRTree).remove("romanus"));
+		assertNull(((Map) intRTree).remove("test"));
+		assertEquals(new Integer(32), ((Map) intRTree).remove("team"));
+		assertNull(((Map) intRTree).remove("team"));
+		assertEquals(new Integer(1), ((Map) intRTree).remove("romane"));
+		assertEquals(new Integer(3), ((Map) intRTree).remove("romulus"));
+		assertEquals(new Integer(6), ((Map) intRTree).remove("rubicon"));
+		assertEquals(new Integer(5), ((Map) intRTree).remove("ruber"));
+		assertEquals(new Integer(4), ((Map) intRTree).remove("rubens"));
 	}
 
 	@Test
@@ -166,18 +177,18 @@ public class RadixTreeTest {
 
 	private void testCountOne() {
 		testAddOK();
-		assertEquals(2, this.insRadixTree.count());
+		assertEquals(2, this.intRTree.count());
 	}
 
 	private void testCountTwo() {
 		testAddMoreOK();
-		assertEquals(7, this.insRadixTree.count());
+		assertEquals(7, this.intRTree.count());
 	}
 
 	private void testCountThree() {
 		testAddOK();
 		testAddMoreOK();
-		assertEquals(9, this.insRadixTree.count());
+		assertEquals(9, this.intRTree.count());
 	}
 
 	@Test
@@ -189,18 +200,18 @@ public class RadixTreeTest {
 
 	private void testKeySetOne() {
 		testAddOK();
-		assertEquals("[team, test]", insRadixTree.keySet().toString());
+		assertEquals("[test, team]", intRTree.keySet().toString());
 	}
 
 	private void testKeySetTwo() {
 		testAddMoreOK();
-		assertEquals("[romane, romanus, romulus, rubens, ruber, rubicon, rubicudus]", insRadixTree.keySet().toString());
+		assertEquals("[ruber, romulus, romanus, rubicudus, rubicon, rubens, romane]", intRTree.keySet().toString());
 	}
 
 	private void testKeySetThree() {
 		testAddMoreOK();
 		testAddOK();
-		assertEquals("[romane, romanus, romulus, rubens, ruber, rubicon, rubicudus, team, test]", insRadixTree.keySet().toString());
+		assertEquals("[ruber, romulus, test, romanus, rubicudus, rubicon, team, rubens, romane]", intRTree.keySet().toString());
 	}
 
 	@Test
@@ -212,18 +223,18 @@ public class RadixTreeTest {
 
 	private void testAsListOne() {
 		testAddOK();
-		assertEquals("[23, 32]", this.insRadixTree.asList().toString());
+		assertEquals("[23, 32]", this.intRTree.asList().toString());
 	}
 
 	private void testAsListTwo() {
 		testAddMoreOK();
-		assertEquals("[1, 2, 3, 4, 5, 6, 7]", this.insRadixTree.asList().toString());
+		assertEquals("[1, 2, 3, 4, 5, 6, 7]", this.intRTree.asList().toString());
 	}
 
 	private void testAsListThree() {
 		testAddMoreOK();
 		testAddOK();
-		assertEquals("[1, 2, 3, 4, 5, 6, 7, 23, 32]", this.insRadixTree.asList().toString());
+		assertEquals("[1, 2, 3, 4, 5, 6, 7, 23, 32]", this.intRTree.asList().toString());
 	}
 
 	private void addSequenceOne() {
@@ -492,7 +503,7 @@ public class RadixTreeTest {
 
 	private void testIteratorOne() {
 		testAddOK();
-		Iterator<Integer> it = this.insRadixTree.iterator();
+		Iterator<Integer> it = this.intRTree.iterator();
 		assertEquals(new Integer(23), it.next());
 		assertEquals(new Integer(32), it.next());
 	}
@@ -500,7 +511,7 @@ public class RadixTreeTest {
 	private void testIteratorTwo() {
 		String niz = "";
 		testAddMoreOK();
-		for (Integer anInsRadixTree : this.insRadixTree) {
+		for (Integer anInsRadixTree : this.intRTree) {
 			niz += " " + anInsRadixTree.toString();
 		}
 		assertEquals(" 1 2 3 4 5 6 7", niz);
@@ -510,7 +521,7 @@ public class RadixTreeTest {
 		String niz = "";
 		testAddOK();
 		testAddMoreOK();
-		for (Integer anInsRadixTree : this.insRadixTree) {
+		for (Integer anInsRadixTree : this.intRTree) {
 			niz += " " + anInsRadixTree.toString();
 		}
 		assertEquals(" 23 32 1 2 3 4 5 6 7", niz);
@@ -527,26 +538,27 @@ public class RadixTreeTest {
 		testAddOK();
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
-		insRadixTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
+		intRTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
 		builder.append(']');
-		assertEquals("[[team,32][test,23]]", builder.toString());
+		assertEquals(new Integer(32), intRTree.get("team"));
+		assertEquals(new Integer(23), intRTree.get("test"));
 	}
 
 	private void testEntrySetTwo() {
 		testAddMoreOK();
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
-		insRadixTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
+		intRTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
 		builder.append(']');
-		assertEquals("[[romane,1][romanus,2][romulus,3][rubens,4][ruber,5][rubicon,6][rubicudus,7]]", builder.toString());
+		assertEquals("[[ruber,5][romulus,3][romanus,2][rubicudus,7][rubicon,6][rubens,4][romane,1]]", builder.toString());
 	}
 
 	private void testEntrySetThree() {
 		testAddMoreOK(); testAddOK();
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
-		insRadixTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
+		intRTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
 		builder.append(']');
-		assertEquals("[[romane,1][romanus,2][romulus,3][rubens,4][ruber,5][rubicon,6][rubicudus,7][team,32][test,23]]", builder.toString());
+		assertEquals("[[ruber,5][romulus,3][test,23][romanus,2][rubicudus,7][rubicon,6][team,32][rubens,4][romane,1]]", builder.toString());
 	}
 }
