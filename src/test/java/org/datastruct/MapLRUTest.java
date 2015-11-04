@@ -3,12 +3,9 @@ package org.datastruct;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class MapLRUTest {
 
@@ -50,57 +47,179 @@ public class MapLRUTest {
 
 	@Test
 	public void testClear() throws Exception {
-
+		map.clear();
+		tmap.clear();
+		assertEquals(tmap.toString(), map.toString());
+		testPut(true);
+		assertEquals(tmap.toString(), map.toString());
+		map.clear();
+		tmap.clear();
+		assertEquals(tmap.toString(), map.toString());
 	}
 
 	@Test
 	public void testKeySet() throws Exception {
+		testKeySetWithIterator();
+		testPut(true);
+		testKeySetWithIterator();
+	}
 
+	private void testKeySetWithIterator() {
+		Iterator<Integer> itM = map.keySet().iterator();
+		Iterator<Integer> itT = tmap.keySet().iterator();
+		while (itM.hasNext() && itT.hasNext()) {
+			assertEquals(itT.next(), itM.next());
+		}
+		if (itM.hasNext() || itT.hasNext()) {
+			fail();
+		}
 	}
 
 	@Test
 	public void testValues() throws Exception {
+		testValuesWithIterator();
+		testPut(true);
+		testValuesWithIterator();
+	}
 
+	private void testValuesWithIterator() {
+		Iterator<Integer> itM = map.values().iterator();
+		Iterator<Integer> itT = tmap.values().iterator();
+		while (itM.hasNext() && itT.hasNext()) {
+			assertEquals(itT.next(), itM.next());
+		}
+		if (itM.hasNext() || itT.hasNext()) {
+			fail();
+		}
 	}
 
 	@Test
 	public void testEntrySet() throws Exception {
+		testEntrySetWithIterator();
+		testPut(true);
+		testEntrySetWithIterator();
+	}
 
+	private void testEntrySetWithIterator() {
+		Iterator<Map.Entry<Integer, Integer>> itM = map.entrySet().iterator();
+		Iterator<Map.Entry<Integer, Integer>> itT = tmap.entrySet().iterator();
+		while (itM.hasNext() && itT.hasNext()) {
+			Map.Entry<Integer, Integer> eM = itM.next();
+			Map.Entry<Integer, Integer> eT = itT.next();
+			assertEquals(eT.getKey(), eM.getKey());
+			assertEquals(eT.getValue(), eM.getValue());
+		}
+		if (itM.hasNext() || itT.hasNext()) {
+			fail();
+		}
 	}
 
 	@Test
 	public void testIsEmpty() throws Exception {
-
+		assertTrue(map.isEmpty());
+		testPut(false);
+		assertFalse(map.isEmpty());
+		map.clear();
+		assertTrue(map.isEmpty());
 	}
 
 	@Test
 	public void testContainsKey() throws Exception {
-
+		try {
+			map.containsKey(null);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		int key = (int) (Math.random() * 51 + 100);
+		assertFalse(map.containsKey(key));
+		testPut(true);
+		for (int i = 0; i < 200; i++) {
+			key = (int) (Math.random() * 201 + 1);
+			try {
+				assertEquals(tmap.containsKey(key), map.containsKey(key));
+			} catch (AssertionError e) {
+				throw new AssertionError("Can not find key = " + key + "\n" + tmap.toString() + "\n" + map.toString(), e);
+			}
+		}
 	}
 
 	@Test
 	public void testContainsValue() throws Exception {
-
+		try {
+			map.containsValue(null);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		int value = (int) (Math.random() * 11 + 100);
+		assertFalse(map.containsValue(value));
+		testPut(true);
+		for (int i = 0; i < 200; i++) {
+			value = (int) (Math.random() * 201 + 1);
+			assertEquals(tmap.containsValue(value), map.containsValue(value));
+		}
 	}
 
 	@Test
 	public void testGet() throws Exception {
-
+		try {
+			map.get(null);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		int key = (int) (Math.random() * 101 + 1);
+		assertNull(map.get(key));
+		testPut(true);
+		for (int i = 0; i < 200; i++) {
+			key = (int) (Math.random() * 201 + 1);
+			assertEquals(tmap.get(key), map.get(key));
+		}
 	}
 
 	@Test
 	public void testRemove() throws Exception {
-
+		try {
+			map.remove(null);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		int key = (int) (Math.random() * 201 + 1);
+		assertNull(map.remove(key));
+		testPut(true);
+		for (int i = 0; i < 200; i++) {
+			key = (int) (Math.random() * 201 + 1);
+			try {
+				assertEquals(tmap.remove(key), map.remove(key));
+			} catch (AssertionError e) {
+				String s = "Error at ramoveing key = " + key + "\n" +
+						tmap.toString() + "\n" +
+						map.toString();
+				throw new AssertionError(s, e);
+			}
+		}
+		assertEquals(tmap.toString(), map.toString());
 	}
 
 	@Test
 	public void testPutAll() throws Exception {
-
+		Map<Integer, Integer> nMap = new HashMap<>();
+		for (int i = 0; i < 50; i++) {
+			int key = (int) (Math.random() * 201 + 1);
+			int value = (int) (Math.random() * 2001 + 1);
+			nMap.put(key, value);
+		}
+		map.putAll(nMap);
+		tmap.putAll(nMap);
+		assertEquals(tmap.toString(), map.toString());
 	}
 
 	@Test
 	public void testSize() throws Exception {
-
+		assertEquals(tmap.size(), map.size());
+		testPut(true);
+		assertEquals(tmap.size(), map.size());
+		map.clear();
+		tmap.clear();
+		assertEquals(tmap.size(), map.size());
 	}
 
 	class Compare implements Comparator<Integer> {

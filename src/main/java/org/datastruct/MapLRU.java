@@ -154,7 +154,7 @@ public class MapLRU<K, V> implements Map<K, V> {
 							} else {
 								curr = tmp;
 							}
-						} else if (cmp < 0) {
+						} else if (cmp > 0) {
 							break;
 						} else {
 							curr = tmp;
@@ -286,6 +286,9 @@ public class MapLRU<K, V> implements Map<K, V> {
 				break;
 			}
 		}
+		if (found == null) {
+			return null;
+		}
 		/**
 		 * Popravljanje strukture vrste
 		 */
@@ -378,6 +381,22 @@ public class MapLRU<K, V> implements Map<K, V> {
 			V ret = this.value;
 			this.value = value;
 			return ret;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof Entry)) return false;
+			Entry<?, ?> entry = (Entry<?, ?>) o;
+			if (getKey() != null ? !getKey().equals(entry.getKey()) : entry.getKey() != null) return false;
+			if (getValue() != null ? !getValue().equals(entry.getValue()) : entry.getValue() != null) return false;
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = getKey() != null ? getKey().hashCode() : 0;
+			return result;
 		}
 	}
 }
