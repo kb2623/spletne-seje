@@ -4,8 +4,8 @@ import java.util.*;
 
 public class SkipMap<K, V> implements Map<K, V> {
 
+	protected Entry<K, V> sentinel;
 	private int maxCone;
-	private Entry<K, V> sentinel;
 
 	public SkipMap(int maxCone) {
 		this.maxCone = maxCone;
