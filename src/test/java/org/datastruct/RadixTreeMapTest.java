@@ -15,7 +15,7 @@ public class RadixTreeMapTest {
 	private Map<String, Double> map;
 	private Map<String, Double> tmap;
 
-	private int size = 50;
+	private int size = 500;
 
 	@Before
 	public void setUp() throws Exception {

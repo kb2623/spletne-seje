@@ -1,5 +1,6 @@
 package org.datastruct;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,10 +13,20 @@ public class SkipMapTest {
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
 
+	private int size = 200;
+	private int conns = 5;
+
 	@Before
-	public void setUp() throws Exception {
-		map = new SkipMap<>(5);
+	public void start() throws Exception {
+		map = new SkipMap<>(conns);
 		tmap = new TreeMap<>(new Compare());
+		assertTrue(map.isEmpty());
+	}
+
+	@After
+	public void end() {
+		map.clear();
+		assertTrue(map.isEmpty());
 	}
 
 	@Test
@@ -34,27 +45,19 @@ public class SkipMapTest {
 	}
 
 	private void testPut(boolean test) {
-		for (int i = 0; i < 150; i++) {
-			int rNumK = (int) (Math.random() * 101 + 1);
-			int rNumV = (int) (Math.random() * 101 + 1);
+		for (int i = 0; i < size; i++) {
+			int rNumK = (int) (Math.random() * (size + 1) + 1);
+			int rNumV = (int) (Math.random() * (size + 1000) + 1);
 			if (test) {
 				assertEquals(tmap.put(rNumK, rNumV), map.put(rNumK, rNumV));
 			} else {
 				map.put(rNumK, rNumV);
 			}
 		}
-	}
-
-	@Test
-	public void testClear() throws Exception {
-		map.clear();
-		tmap.clear();
-		assertEquals(tmap.toString(), map.toString());
-		testPut(true);
-		assertEquals(tmap.toString(), map.toString());
-		map.clear();
-		tmap.clear();
-		assertEquals(tmap.toString(), map.toString());
+		if (test) {
+			assertEquals(tmap.size(), map.size());
+			assertFalse(map.isEmpty());
+		}
 	}
 
 	@Test
@@ -115,15 +118,6 @@ public class SkipMapTest {
 	}
 
 	@Test
-	public void testIsEmpty() throws Exception {
-		assertTrue(map.isEmpty());
-		testPut(false);
-		assertFalse(map.isEmpty());
-		map.clear();
-		assertTrue(map.isEmpty());
-	}
-
-	@Test
 	public void testContainsKey() throws Exception {
 		try {
 			map.containsKey(null);
@@ -133,8 +127,8 @@ public class SkipMapTest {
 		int key = (int) (Math.random() * 51 + 100);
 		assertFalse(map.containsKey(key));
 		testPut(true);
-		for (int i = 0; i < 200; i++) {
-			key = (int) (Math.random() * 201 + 1);
+		for (int i = 0; i < size; i++) {
+			key = (int) (Math.random() * (size + 1) + 1);
 			try {
 				assertEquals(tmap.containsKey(key), map.containsKey(key));
 			} catch (AssertionError e) {
@@ -153,8 +147,8 @@ public class SkipMapTest {
 		int value = (int) (Math.random() * 11 + 100);
 		assertFalse(map.containsValue(value));
 		testPut(true);
-		for (int i = 0; i < 200; i++) {
-			value = (int) (Math.random() * 201 + 1);
+		for (int i = 0; i < size + 200; i++) {
+			value = (int) (Math.random() * (size + 2001) + 1);
 			assertEquals(tmap.containsValue(value), map.containsValue(value));
 		}
 	}
@@ -166,11 +160,11 @@ public class SkipMapTest {
 			fail();
 		} catch (NullPointerException e) {
 		}
-		int key = (int) (Math.random() * 101 + 1);
+		int key = (int) (Math.random() * (size + 1) + 1);
 		assertNull(map.get(key));
 		testPut(true);
-		for (int i = 0; i < 200; i++) {
-			key = (int) (Math.random() * 201 + 1);
+		for (int i = 0; i < size; i++) {
+			key = (int) (Math.random() * (size + 1) + 1);
 			assertEquals(tmap.get(key), map.get(key));
 		}
 	}
@@ -185,8 +179,8 @@ public class SkipMapTest {
 		int key = (int) (Math.random() * 201 + 1);
 		assertNull(map.remove(key));
 		testPut(true);
-		for (int i = 0; i < 200; i++) {
-			key = (int) (Math.random() * 201 + 1);
+		for (int i = 0; i < size; i++) {
+			key = (int) (Math.random() * (size + 1) + 1);
 			try {
 				assertEquals(tmap.remove(key), map.remove(key));
 			} catch (AssertionError e) {
@@ -203,7 +197,7 @@ public class SkipMapTest {
 	public void testPutAll() throws Exception {
 		Map<Integer, Integer> nMap = new HashMap<>();
 		for (int i = 0; i < 50; i++) {
-			int key = (int) (Math.random() * 201 + 1);
+			int key = (int) (Math.random() * (size + 200 + 1) + 1);
 			int value = (int) (Math.random() * 2001 + 1);
 			nMap.put(key, value);
 		}
