@@ -14,15 +14,6 @@ public class RadixTreeTest {
 	private RadixTree<Integer> intRTree;
 	private RadixTree<String> tree;
 
-	private String getRandomKey() {
-		int rNum = (int) (Math.random() * 101 + 1);
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < rNum; i++) {
-			int c = (int) (Math.random() * 26 + 97);
-			builder.append((char) c);
-		}
-		return builder.toString();
-	}
 
 	@Before
 	public void setUp() {
