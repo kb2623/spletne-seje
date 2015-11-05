@@ -10,7 +10,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	private RadixEntry<V> rootNode;
 
 	public RadixTree() {
-		this.rootNode = new RadixEntry();
+		this.rootNode = new RadixEntry<>();
 	}
 
 	public void add(V data, String key) throws NullPointerException, DuplicateKeyException {
@@ -151,68 +151,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public Iterator<V> iterator() {
-		return new Iterator<V>() {
-
-			private final Stack<Iterator<RadixEntry<V>>> stackIt;
-			private RadixEntry next;
-
-			{
-				this.stackIt = new Stack<>();
-				this.stackIt.push(rootNode.children.iterator());
-				if (!stackIt.peek().hasNext()) {
-					next = null;
-				} else {
-					RadixEntry tmpNode = stackIt.peek().next();
-					while (tmpNode.data == null) {
-						stackIt.push(tmpNode.children.iterator());
-						tmpNode = stackIt.peek().next();
-					}
-					next = tmpNode;
-				}
-			}
-
-			@Override
-			public boolean hasNext() {
-				return next != null;
-			}
-
-			@Override
-			public V next() throws NoSuchElementException {
-				if (!hasNext()) throw new NoSuchElementException();
-				V tmp = (V) next.data;
-				if (!next.children.isEmpty()) {
-					stackIt.push(next.children.iterator());
-					RadixEntry tmpNode = stackIt.peek().next();
-					while (tmpNode.data == null) {
-						stackIt.push(tmpNode.children.iterator());
-						tmpNode = stackIt.peek().next();
-					}
-					next = tmpNode;
-				} else if (stackIt.peek().hasNext()) {
-					RadixEntry tmpNode = stackIt.peek().next();
-					while (tmpNode.data == null) {
-						stackIt.push(tmpNode.children.iterator());
-						tmpNode = stackIt.peek().next();
-					}
-					next = tmpNode;
-				} else {
-					do {
-						stackIt.pop();
-						if (stackIt.isEmpty()) {
-							next = null;
-							return tmp;
-						}
-					} while (!stackIt.peek().hasNext());
-					RadixEntry tmpNode = stackIt.peek().next();
-					while (tmpNode.data == null) {
-						stackIt.push(tmpNode.children.iterator());
-						tmpNode = stackIt.peek().next();
-					}
-					next = tmpNode;
-				}
-				return tmp;
-			}
-		};
+		return new RadixTreeIterator<>();
 	}
 
 	@Override
@@ -400,6 +339,69 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		public int hashCode() {
 			int result = getKey() != null ? getKey().hashCode() : 0;
 			return result;
+		}
+	}
+
+	class RadixTreeIterator<V> implements Iterator<V> {
+
+		private final Stack<Iterator<RadixEntry<V>>> stackIt;
+		private RadixEntry<V> next;
+
+		RadixTreeIterator() {
+			this.stackIt = new Stack<>();
+			this.stackIt.offer(rootNode.children.iterator());
+			if (!stackIt.peek().hasNext()) {
+				next = null;
+			} else {
+				RadixEntry tmpNode = stackIt.peek().next();
+				while (tmpNode.data == null) {
+					stackIt.offer(tmpNode.children.iterator());
+					tmpNode = stackIt.peek().next();
+				}
+				next = tmpNode;
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		@Override
+		public V next() throws NoSuchElementException {
+			if (!hasNext()) throw new NoSuchElementException();
+			V tmp = (V) next.data;
+			if (!next.children.isEmpty()) {
+				stackIt.offer(next.children.iterator());
+				RadixEntry tmpNode = stackIt.peek().next();
+				while (tmpNode.data == null) {
+					stackIt.offer(tmpNode.children.iterator());
+					tmpNode = stackIt.peek().next();
+				}
+				next = tmpNode;
+			} else if (stackIt.peek().hasNext()) {
+				RadixEntry tmpNode = stackIt.peek().next();
+				while (tmpNode.data == null) {
+					stackIt.push(tmpNode.children.iterator());
+					tmpNode = stackIt.peek().next();
+				}
+				next = tmpNode;
+			} else {
+				do {
+					stackIt.poll();
+					if (stackIt.isEmpty()) {
+						next = null;
+						return tmp;
+					}
+				} while (!stackIt.peek().hasNext());
+				RadixEntry tmpNode = stackIt.peek().next();
+				while (tmpNode.data == null) {
+					stackIt.offer(tmpNode.children.iterator());
+					tmpNode = stackIt.peek().next();
+				}
+				next = tmpNode;
+			}
+			return tmp;
 		}
 	}
 }
