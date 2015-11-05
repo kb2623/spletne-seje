@@ -1,57 +1,60 @@
 package org.datastruct;
 
-import org.datastruct.exception.DuplicateKeyException;
-
 import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
-	private RadixEntry<V> rootNode;
+	private RadixEntry rootNode;
 
 	public RadixTree() {
-		this.rootNode = new RadixEntry<>();
+		this.rootNode = new RadixEntry();
 	}
 
-	public void add(V data, String key) throws NullPointerException, DuplicateKeyException {
-		if (data != null && key != null) {
-			this.insert(data, key, this.rootNode);
-		} else {
+	public V add(V data, String key) throws NullPointerException {
+		if (data == null || key == null) {
 			throw new NullPointerException();
 		}
+		return this.insert(data, key, this.rootNode);
 	}
 
-	private void insert(V data, String key, RadixEntry<V> node) throws DuplicateKeyException {
+	private V insert(V data, String key, RadixEntry node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if(numMatchChar == 0 || (numMatchChar == node.key.length() && numMatchChar < key.length())) {
 			boolean add = true;
+			V ret = null;
 			String ostanekKljuca = key.substring(numMatchChar, key.length());
-			for (RadixEntry<V> child : node.children) {
+			for (RadixEntry child : node.children) {
 				if(child.key.charAt(0) == ostanekKljuca.charAt(0)) {
-					this.insert(data, ostanekKljuca, child);
+					ret = this.insert(data, ostanekKljuca, child);
 					add = false;
 					break;
 				}
 			}
-			if (add) node.children.add(new RadixEntry(data, ostanekKljuca));
+			if (add) {
+				node.children.add(new RadixEntry(data, ostanekKljuca));
+			}
+			return ret;
 		} else if(numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			if(node.data != null) {
-				throw new DuplicateKeyException("Duplicate key: '"+key+"'");
+				return node.setValue(data);
 			} else {
 				node.data = data;
+				return null;
 			}
 		} else {
-			RadixEntry<V> tmp1 = new RadixEntry(node.data, node.key.substring(numMatchChar, node.key.length()), node.children);
+			RadixEntry tmp1 = new RadixEntry(node.data, node.key.substring(numMatchChar, node.key.length()), node.children);
 			node.key = key.substring(0, numMatchChar);
 			node.children = new LinkedList<>();
 			node.children.add(tmp1);
 			if(numMatchChar < key.length()) {
-				RadixEntry<V> tmp2 = new RadixEntry<>(data, key.substring(numMatchChar, key.length()));
+				RadixEntry tmp2 = new RadixEntry(data, key.substring(numMatchChar, key.length()));
 				node.data = null;
 				node.children.add(tmp2);
 			} else {
 				node.data = data;
 			}
+			return null;
 		}
 	}
 
@@ -63,34 +66,37 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		}
 	}
 
-	private V findNode(String key, RadixEntry<V> node) {
+	private V findNode(String key, RadixEntry node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if(numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			return node.data;
 		} else if(node.key.equals("") || (numMatchChar < key.length() && numMatchChar >= node.key.length())) {
 			String ostanekKjuca = key.substring(numMatchChar, key.length());
-			for (RadixEntry<V> child : node.children) {
+			for (RadixEntry child : node.children) {
 				if(child.key.charAt(0) == ostanekKjuca.charAt(0)) return this.findNode(ostanekKjuca, child);
 			}
 		}
 		return null;
 	}
 
-	public boolean remove(String key) {
+	public boolean remove(String key) throws NullPointerException {
+		if (key == null) {
+			throw new NullPointerException();
+		}
 		return !this.isEmpty() && this.deleteNode(key, null, this.rootNode);
 	}
 
-	private boolean deleteNode(String key, RadixEntry<V> parent, RadixEntry<V> node) {
+	private boolean deleteNode(String key, RadixEntry parent, RadixEntry node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if(node.key.equals("") || (numMatchChar < key.length() && numMatchChar == node.key.length())) {
 			String ostanekKljuca = key.substring(numMatchChar, key.length());
-			for (RadixEntry<V> child : node.children) {
+			for (RadixEntry child : node.children) {
 				if(child.key.charAt(0) == ostanekKljuca.charAt(0)) return this.deleteNode(ostanekKljuca, node, child);
 			}
 		} else if(numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			if(node.data != null) {
 				if(node.children.isEmpty()) {
-					for (Iterator<RadixEntry<V>> it = parent.children.iterator(); it.hasNext(); ) {
+					for (Iterator<RadixEntry> it = parent.children.iterator(); it.hasNext(); ) {
 						if(it.next().key.equals(node.key)) it.remove();
 					}
 					if(parent.children.size() == 1 && parent.data == null && !parent.key.equals("")) this.mergeNodes(parent, parent.children.get(0));
@@ -105,7 +111,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		return false;
 	}
 
-	private void mergeNodes(RadixEntry<V> parent, RadixEntry<V> child) {
+	private void mergeNodes(RadixEntry parent, RadixEntry child) {
 		parent.key += child.key;
 		parent.data = child.data;
 		parent.children = child.children;
@@ -115,10 +121,14 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		return this.count(this.rootNode);
 	}
 
-	private int count(RadixEntry<V> node) {
+	private int count(RadixEntry node) {
 		int size = 0;
-		if(node.data != null) size++;
-		for (RadixEntry<V> child : node.children) size += this.count(child);
+		if (node.data != null) {
+			size++;
+		}
+		for (RadixEntry child : node.children) {
+			size += this.count(child);
+		}
 		return size;
 	}
 
@@ -126,9 +136,11 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		return this.asList(this.rootNode, new LinkedList<>());
 	}
 
-	private List<V> asList(RadixEntry<V> node, List<V> list) {
+	private List<V> asList(RadixEntry node, List<V> list) {
 		node.children.forEach(children -> list.addAll(asList(children, new LinkedList<>())));
-		if(node.data != null) list.add(node.data);
+		if (node.data != null) {
+			list.add(node.data);
+		}
 		return list;
 	}
 
@@ -138,7 +150,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	@Deprecated
-	private void printTree(int len, RadixEntry<V> node) {
+	private void printTree(int len, RadixEntry node) {
 		System.out.print("|");
 		for (int i = 0; i < len; i++) {
 			System.out.print("_");
@@ -148,7 +160,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		} else {
 			System.out.printf("%s%n", node.key);
 		}
-		for (RadixEntry<V> child : node.children) {
+		for (RadixEntry child : node.children) {
 			printTree(len + node.key.length(), child);
 		}
 	}
@@ -169,20 +181,23 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public boolean containsKey(Object key) {
-		return (key instanceof String ? get((String) key) : null) != null;
+	public boolean containsKey(Object key) throws NullPointerException, ClassCastException {
+		return get(key) != null;
 	}
 
 	@Override
-	public boolean containsValue(Object value) {
+	public boolean containsValue(Object value) throws NullPointerException {
+		if (value == null) {
+			throw new NullPointerException();
+		}
 		return search(rootNode, value);
 	}
 
-	private boolean search(RadixEntry<V> node, Object value) {
+	private boolean search(RadixEntry node, Object value) {
 		if(node.data.equals(value)) {
 			return true;
 		} else {
-			for (RadixEntry<V> child : node.children) {
+			for (RadixEntry child : node.children) {
 				if (this.search(child, value)) {
 					return true;
 				}
@@ -192,46 +207,49 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public V get(Object key) {
-		return key instanceof String ? get((String) key) : null;
-	}
-
-	@Override
-	public V put(String key, V value) {
-		try {
-			add(value, key);
-			return value;
-		} catch (NullPointerException | DuplicateKeyException e) {
-			return null;
+	public V get(Object key) throws NullPointerException, ClassCastException {
+		if (key == null) {
+			throw new NullPointerException();
 		}
+		return get((String) key);
 	}
 
 	@Override
-	public V remove(Object key) {
+	public V put(String key, V value) throws NullPointerException {
+		return add(value, key);
+	}
+
+	@Override
+	public V remove(Object key) throws NullPointerException {
+		if (key == null) {
+			throw new NullPointerException();
+		}
 		return !isEmpty() ? returnDeletedNode((String) key, null, rootNode) : null;
 	}
 
-	private V returnDeletedNode(String key, RadixEntry<V> parent, RadixEntry<V> node) {
+	private V returnDeletedNode(String key, RadixEntry parent, RadixEntry node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if(node.key.equals("") || (numMatchChar < key.length() && numMatchChar == node.key.length())) {
 			String ostanekKljuca = key.substring(numMatchChar, key.length());
-			for (RadixEntry<V> child : node.children) {
-				if(child.key.charAt(0) == ostanekKljuca.charAt(0))
+			for (RadixEntry child : node.children) {
+				if (child.key.charAt(0) == ostanekKljuca.charAt(0)) {
 					return returnDeletedNode(ostanekKljuca, node, child);
+				}
 			}
 		} else if(numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			if(node.data != null) {
 				V data = null;
 				if(node.children.isEmpty()) {
-					for (Iterator<RadixEntry<V>> it = parent.children.iterator(); it.hasNext(); ) {
-						RadixEntry<V> tmp = it.next();
+					for (Iterator<RadixEntry> it = parent.children.iterator(); it.hasNext(); ) {
+						RadixEntry tmp = it.next();
 						if (tmp.key.equals(node.key)) {
 							it.remove();
 							data = (V) tmp.data;
 						}
 					}
-					if(parent.children.size() == 1 && parent.data == null && !parent.key.equals(""))
+					if (parent.children.size() == 1 && parent.data == null && !parent.key.equals("")) {
 						mergeNodes(parent, parent.children.get(0));
+					}
 				} else if(node.children.size() == 1) {
 					data = node.data;
 					mergeNodes(node, node.children.get(0));
@@ -246,7 +264,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public void putAll(Map<? extends String, ? extends V> map) {
+	public void putAll(Map<? extends String, ? extends V> map) throws NullPointerException {
 		map.entrySet().forEach(e -> put(e.getKey(), e.getValue()));
 	}
 
@@ -260,9 +278,11 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		return keysAsSet(rootNode, rootNode.key, new HashSet<>());
 	}
 
-	private Set<String> keysAsSet(RadixEntry<V> node, String key, Set<String> set) {
+	private Set<String> keysAsSet(RadixEntry node, String key, Set<String> set) {
 		node.children.forEach(children -> set.addAll(keysAsSet(children, key + children.key, new HashSet<>())));
-		if (node.data != null) set.add(key);
+		if (node.data != null) {
+			set.add(key);
+		}
 		return set;
 	}
 
@@ -276,21 +296,21 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		return entryAsSet(rootNode, rootNode.key, new HashSet<>());
 	}
 
-	private Set<Map.Entry<String, V>> entryAsSet(RadixEntry<V> node, String key, Set<Map.Entry<String, V>> set) {
+	private Set<Map.Entry<String, V>> entryAsSet(RadixEntry node, String key, Set<Map.Entry<String, V>> set) {
 		if (node.data != null) {
-			set.add(new RadixEntry<>(node.data, key + node.key, null));
+			set.add(new RadixEntry(node.data, key + node.key, null));
 		}
 		node.children.forEach(children -> set.addAll(entryAsSet(children, key + node.key, new HashSet<>())));
 		return set;
 	}
 
-	class RadixEntry<V> implements Map.Entry<String, V> {
+	class RadixEntry implements Map.Entry<String, V> {
 
-		protected List<RadixEntry<V>> children;
+		protected List<RadixEntry> children;
 		private V data;
 		private String key;
 
-		RadixEntry(V data, String key, List<RadixEntry<V>> children) {
+		RadixEntry(V data, String key, List<RadixEntry> children) {
 			this.data = data;
 			this.key = key;
 			this.children = children;
@@ -336,10 +356,13 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		@Override
 		public boolean equals(Object o) {
 			if (this == o) return true;
-			if (o instanceof RadixEntry) return true;
-			RadixEntry that = (RadixEntry) o;
-			if (data != null ? !data.equals(that.data) : that.data != null) return false;
-			if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
+			try {
+				RadixEntry that = (RadixEntry) o;
+				if (data != null ? !data.equals(that.data) : that.data != null) return false;
+				if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
+			} catch (ClassCastException e) {
+				return false;
+			}
 			return true;
 		}
 
@@ -351,7 +374,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	class RadixTreeIterator implements Iterator<V> {
 
-		private Stack<Iterator> stackIt;
+		private Stack<Iterator<RadixEntry>> stackIt;
 		private RadixEntry next;
 
 		RadixTreeIterator() {

@@ -1,6 +1,5 @@
 package org.datastruct;
 
-import org.datastruct.exception.DuplicateKeyException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,14 +80,8 @@ public class RadixTreeTest {
 	private void testAddDuplicateKeyException() {
 		testAddMoreOK();
 		testAddOK();
-		try {
-			this.intRTree.add(41, "team");
-			assert false;
-		} catch(DuplicateKeyException e) {}
-		try {
-			this.intRTree.add(42, "rubicon");
-			assert false;
-		} catch(DuplicateKeyException e) {}
+		assertNotNull(this.intRTree.add(41, "team"));
+		assertNotNull(this.intRTree.add(42, "rubicon"));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -287,10 +280,10 @@ public class RadixTreeTest {
 		assertEquals("apple", tree.get("apple"));
 	}
 
-	@Test(expected = DuplicateKeyException.class)
-	public void testDuplicatesNotAllowed() {
-		tree.add("apple", "apple");
-		tree.add("appleOne", "apple");
+	@Test
+	public void testDuplicates() {
+		assertNull(tree.add("apple", "apple"));
+		assertNotNull(tree.add("appleOne", "apple"));
 	}
 
 	@Test
