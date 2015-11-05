@@ -194,7 +194,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	private boolean search(RadixEntry node, Object value) {
-		if(node.data.equals(value)) {
+		if (node.data != null && node.data.equals(value)) {
 			return true;
 		} else {
 			for (RadixEntry child : node.children) {
@@ -275,15 +275,16 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public Set<String> keySet() {
-		return keysAsSet(rootNode, rootNode.key, new HashSet<>());
+		Set<String> set = new HashSet<>();
+		keysAsSet(rootNode, rootNode.key, set);
+		return set;
 	}
 
-	private Set<String> keysAsSet(RadixEntry node, String key, Set<String> set) {
-		node.children.forEach(children -> set.addAll(keysAsSet(children, key + children.key, new HashSet<>())));
+	private void keysAsSet(RadixEntry node, String key, Set<String> set) {
 		if (node.data != null) {
-			set.add(key);
+			set.add(key + node.key);
 		}
-		return set;
+		node.children.forEach(children -> keysAsSet(children, key + node.key, set));
 	}
 
 	@Override
@@ -293,15 +294,36 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public Set<Map.Entry<String, V>> entrySet() {
-		return entryAsSet(rootNode, rootNode.key, new HashSet<>());
+		Set<Map.Entry<String, V>> set = new HashSet<>();
+		entryAsSet(rootNode, rootNode.key, set);
+		return set;
 	}
 
-	private Set<Map.Entry<String, V>> entryAsSet(RadixEntry node, String key, Set<Map.Entry<String, V>> set) {
+	private void entryAsSet(RadixEntry node, String key, Set<Map.Entry<String, V>> set) {
 		if (node.data != null) {
 			set.add(new RadixEntry(node.data, key + node.key, null));
 		}
-		node.children.forEach(children -> set.addAll(entryAsSet(children, key + node.key, new HashSet<>())));
-		return set;
+		node.children.forEach(children -> entryAsSet(children, key + node.key, set));
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append('{');
+		makeString(rootNode, rootNode.key, builder);
+		if (builder.length() > 2) {
+			builder.delete(builder.length() - 2, builder.length());
+		}
+		builder.append('}');
+		return builder.toString();
+	}
+
+	private void makeString(RadixEntry node, String key, StringBuilder builder) {
+		if (node.data != null) {
+			builder.append(key + node.key).append('=').append(node.data);
+			builder.append(", ");
+		}
+		node.children.forEach(children -> makeString(children, key + node.key, builder));
 	}
 
 	class RadixEntry implements Map.Entry<String, V> {
@@ -356,14 +378,13 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		@Override
 		public boolean equals(Object o) {
 			if (this == o) return true;
-			try {
-				RadixEntry that = (RadixEntry) o;
-				if (data != null ? !data.equals(that.data) : that.data != null) return false;
-				if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
-			} catch (ClassCastException e) {
+			if (o == null) return false;
+			if (o instanceof Entry) {
+				Entry e = (Entry) o;
+				return (getKey() != null ? getKey().equals(e.getKey()) : null == e.getKey()) && (getValue() != null ? getValue().equals(e.getValue()) : null == e.getValue());
+			} else {
 				return false;
 			}
-			return true;
 		}
 
 		@Override

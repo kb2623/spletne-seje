@@ -14,7 +14,6 @@ public class RadixTreeTest {
 	private RadixTree<Integer> intRTree;
 	private RadixTree<String> tree;
 
-
 	@Before
 	public void setUp() {
 		this.intRTree = new RadixTree<>();
