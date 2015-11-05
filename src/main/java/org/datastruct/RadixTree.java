@@ -41,12 +41,12 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 				node.data = data;
 			}
 		} else {
-			RadixEntry tmp1 = new RadixEntry(node.data, node.key.substring(numMatchChar, node.key.length()), node.children);
+			RadixEntry<V> tmp1 = new RadixEntry(node.data, node.key.substring(numMatchChar, node.key.length()), node.children);
 			node.key = key.substring(0, numMatchChar);
 			node.children = new LinkedList<>();
 			node.children.add(tmp1);
 			if(numMatchChar < key.length()) {
-				RadixEntry tmp2 = new RadixEntry(data, key.substring(numMatchChar, key.length()));
+				RadixEntry<V> tmp2 = new RadixEntry<>(data, key.substring(numMatchChar, key.length()));
 				node.data = null;
 				node.children.add(tmp2);
 			} else {
@@ -66,7 +66,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	private V findNode(String key, RadixEntry<V> node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if(numMatchChar == key.length() && numMatchChar == node.key.length()) {
-			return (V) node.data;
+			return node.data;
 		} else if(node.key.equals("") || (numMatchChar < key.length() && numMatchChar >= node.key.length())) {
 			String ostanekKjuca = key.substring(numMatchChar, key.length());
 			for (RadixEntry<V> child : node.children) {
@@ -140,18 +140,22 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	@Deprecated
 	private void printTree(int len, RadixEntry<V> node) {
 		System.out.print("|");
-		for (int i = 0; i < len; i++) System.out.print("_");
+		for (int i = 0; i < len; i++) {
+			System.out.print("_");
+		}
 		if (node.data != null) {
 			System.out.printf("%s => [%s]%n", node.key, node.data.toString());
 		} else {
 			System.out.printf("%s%n", node.key);
 		}
-		for (RadixEntry<V> child : node.children) printTree(len + node.key.length(), child);
+		for (RadixEntry<V> child : node.children) {
+			printTree(len + node.key.length(), child);
+		}
 	}
 
 	@Override
 	public Iterator<V> iterator() {
-		return new RadixTreeIterator<>();
+		return new RadixTreeIterator();
 	}
 
 	@Override
@@ -179,7 +183,9 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			return true;
 		} else {
 			for (RadixEntry<V> child : node.children) {
-				if (this.search(child, value)) return true;
+				if (this.search(child, value)) {
+					return true;
+				}
 			}
 			return false;
 		}
@@ -218,7 +224,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 				V data = null;
 				if(node.children.isEmpty()) {
 					for (Iterator<RadixEntry<V>> it = parent.children.iterator(); it.hasNext(); ) {
-						RadixEntry tmp = it.next();
+						RadixEntry<V> tmp = it.next();
 						if (tmp.key.equals(node.key)) {
 							it.remove();
 							data = (V) tmp.data;
@@ -271,7 +277,9 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	private Set<Map.Entry<String, V>> entryAsSet(RadixEntry<V> node, String key, Set<Map.Entry<String, V>> set) {
-		if (node.data != null) set.add(new RadixEntry<>(node.data, key + node.key, null));
+		if (node.data != null) {
+			set.add(new RadixEntry<>(node.data, key + node.key, null));
+		}
 		node.children.forEach(children -> set.addAll(entryAsSet(children, key + node.key, new HashSet<>())));
 		return set;
 	}
@@ -328,8 +336,8 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		@Override
 		public boolean equals(Object o) {
 			if (this == o) return true;
-			if (!(o instanceof RadixEntry)) return false;
-			RadixEntry<?> that = (RadixEntry<?>) o;
+			if (o instanceof RadixEntry) return true;
+			RadixEntry that = (RadixEntry) o;
 			if (data != null ? !data.equals(that.data) : that.data != null) return false;
 			if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
 			return true;
@@ -337,26 +345,25 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 		@Override
 		public int hashCode() {
-			int result = getKey() != null ? getKey().hashCode() : 0;
-			return result;
+			return getKey() != null ? getKey().hashCode() : 0;
 		}
 	}
 
-	class RadixTreeIterator<V> implements Iterator<V> {
+	class RadixTreeIterator implements Iterator<V> {
 
-		private final Stack<Iterator<RadixEntry<V>>> stackIt;
-		private RadixEntry<V> next;
+		private Stack<Iterator> stackIt;
+		private RadixEntry next;
 
 		RadixTreeIterator() {
 			this.stackIt = new Stack<>();
-			this.stackIt.offer(rootNode.children.iterator());
+			this.stackIt.push(rootNode.children.iterator());
 			if (!stackIt.peek().hasNext()) {
 				next = null;
 			} else {
-				RadixEntry tmpNode = stackIt.peek().next();
+				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
 					stackIt.offer(tmpNode.children.iterator());
-					tmpNode = stackIt.peek().next();
+					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
 			}
@@ -369,21 +376,23 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 		@Override
 		public V next() throws NoSuchElementException {
-			if (!hasNext()) throw new NoSuchElementException();
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
 			V tmp = (V) next.data;
 			if (!next.children.isEmpty()) {
 				stackIt.offer(next.children.iterator());
-				RadixEntry tmpNode = stackIt.peek().next();
+				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
 					stackIt.offer(tmpNode.children.iterator());
-					tmpNode = stackIt.peek().next();
+					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
 			} else if (stackIt.peek().hasNext()) {
-				RadixEntry tmpNode = stackIt.peek().next();
+				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
 					stackIt.push(tmpNode.children.iterator());
-					tmpNode = stackIt.peek().next();
+					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
 			} else {
@@ -394,10 +403,10 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 						return tmp;
 					}
 				} while (!stackIt.peek().hasNext());
-				RadixEntry tmpNode = stackIt.peek().next();
+				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
 					stackIt.offer(tmpNode.children.iterator());
-					tmpNode = stackIt.peek().next();
+					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
 			}
