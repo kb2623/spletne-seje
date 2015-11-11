@@ -18,8 +18,9 @@ public class SkipMapTest {
 
 	@Before
 	public void start() throws Exception {
-		map = new SkipMap<>(conns);
-		tmap = new TreeMap<>(new Compare());
+		Compare cmp = new Compare();
+		map = new SkipMap<>(conns, cmp);
+		tmap = new TreeMap<>(cmp);
 		assertTrue(map.isEmpty());
 	}
 
@@ -31,11 +32,6 @@ public class SkipMapTest {
 
 	@Test
 	public void testPut() throws Exception {
-		try {
-			map.put(34, null);
-			fail();
-		} catch (NullPointerException e) {
-		}
 		try {
 			map.put(null, 23);
 			fail();
