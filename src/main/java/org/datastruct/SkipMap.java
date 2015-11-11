@@ -5,25 +5,27 @@ import java.util.*;
 public class SkipMap<K, V> implements Map<K, V> {
 
 	protected Entry<K, V> sentinel;
-	private int maxCone;
+	private Comparator<K> keyCmp;
+
+	public SkipMap(int maxCone, Comparator<K> keyCmp) {
+		sentinel = new Entry<>(maxCone);
+		this.keyCmp = keyCmp;
+	}
 
 	public SkipMap(int maxCone) {
-		this.maxCone = maxCone;
-		this.sentinel = new Entry(maxCone);
+		this(maxCone, (e1, e2) -> e1.hashCode() - e2.hashCode());
 	}
 
 	@Override
 	public V put(K k, V v) throws NullPointerException {
 		if (k == null) throw new NullPointerException();
-		if (v == null) throw new NullPointerException();
-		int hash = k.hashCode();
 		Entry<K, V> e = null;
 		Stack<Entry> stack = new Stack<>();
 		Entry<K, V> curr = sentinel;
-		for (int level = maxCone - 1; level >= 0; level--) {
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
 			Entry<K, V> tmp = curr.conns[level];
 			if (tmp != null) {
-				int cmp = tmp.key.hashCode() - hash;
+				int cmp = keyCmp.compare(tmp.key, k);
 				if (cmp == 0) {
 					if (tmp.key.equals(k)) {
 						return tmp.setValue(v);
@@ -38,7 +40,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 					curr = tmp;
 					while (curr.conns[level] != null) {
 						tmp = curr.conns[level];
-						cmp = tmp.key.hashCode() - hash;
+						cmp = keyCmp.compare(tmp.key, k);
 						if (cmp == 0) {
 							if (tmp.key.equals(k)) {
 								return tmp.setValue(v);
@@ -61,7 +63,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 			stack.offer(curr);
 		}
 		if (e == null) {
-			e = new Entry(k, v, maxCone);
+			e = new Entry(k, v, sentinel.conns.length);
 		}
 		for (int level = 0; level < e.conns.length; level++) {
 			curr = stack.poll();
@@ -73,7 +75,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 
 	@Override
 	public void clear() {
-		for (int level = 0; level < maxCone; level++) {
+		for (int level = 0; level < sentinel.conns.length; level++) {
 			sentinel.conns[level] = null;
 		}
 	}
@@ -118,12 +120,11 @@ public class SkipMap<K, V> implements Map<K, V> {
 	public boolean containsKey(Object o) throws NullPointerException {
 		if (o == null) throw new NullPointerException();
 		K key = (K) o;
-		int hash = key.hashCode();
 		Entry<K, V> curr = this.sentinel;
-		for (int level = maxCone - 1; level >= 0; level--) {
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
 			Entry<K, V> tmp = curr.conns[level];
 			if (tmp != null) {
-				int cmp = tmp.key.hashCode() - hash;
+				int cmp = keyCmp.compare(tmp.key, key);
 				if (cmp == 0) {
 					if (tmp.key.equals(key)) {
 						return true;
@@ -134,7 +135,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 					curr = tmp;
 					while (curr.conns[level] != null) {
 						tmp = curr.conns[level];
-						cmp = tmp.key.hashCode() - hash;
+						cmp = keyCmp.compare(tmp.key, key);
 						if (cmp == 0) {
 							if (tmp.key.equals(key)) {
 								return true;
@@ -168,12 +169,11 @@ public class SkipMap<K, V> implements Map<K, V> {
 	public V get(Object o) throws ClassCastException, NullPointerException {
 		if (o == null) throw new NullPointerException();
 		K key = (K) o;
-		int hash = key.hashCode();
 		Entry<K, V> curr = this.sentinel;
-		for (int level = maxCone - 1; level >= 0; level--) {
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
 			Entry<K, V> tmp = curr.conns[level];
 			if (tmp != null) {
-				int cmp = tmp.key.hashCode() - hash;
+				int cmp = keyCmp.compare(tmp.key, key);
 				if (cmp == 0) {
 					if (tmp.key.equals(key)) {
 						return tmp.value;
@@ -184,7 +184,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 					curr = tmp;
 					while (curr.conns[level] != null) {
 						tmp = curr.conns[level];
-						cmp = tmp.key.hashCode() - hash;
+						cmp = keyCmp.compare(tmp.key, key);
 						if (cmp == 0) {
 							if (tmp.key.equals(key)) {
 								return tmp.value;
@@ -207,14 +207,13 @@ public class SkipMap<K, V> implements Map<K, V> {
 	public V remove(Object o) throws ClassCastException, NullPointerException {
 		if (o == null) throw new NullPointerException();
 		K key = (K) o;
-		int hash = key.hashCode();
 		Stack<Entry<K, V>> stack = new Stack<>();
 		Entry<K, V> curr = this.sentinel;
 		Entry<K, V> found = null;
-		for (int level = maxCone - 1; level >= 0; level--) {
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
 			Entry<K, V> tmp = curr.conns[level];
 			if (tmp != null) {
-				int cmp = tmp.key.hashCode() - hash;
+				int cmp = keyCmp.compare(tmp.key, key);
 				if (cmp == 0) {
 					if (tmp.key.equals(key)) {
 						found = tmp;
@@ -225,7 +224,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 					curr = tmp;
 					while (curr.conns[level] != null) {
 						tmp = curr.conns[level];
-						cmp = tmp.key.hashCode() - hash;
+						cmp = keyCmp.compare(tmp.key, key);
 						if (cmp == 0) {
 							if (tmp.key.equals(key)) {
 								found = tmp;
@@ -243,7 +242,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 			}
 			stack.offer(curr);
 		}
-		for (int level = 0; level < maxCone && found != null; level++) {
+		for (int level = 0; level < sentinel.conns.length && found != null; level++) {
 			curr = stack.poll();
 			if (found.conns.length > level) {
 				curr.conns[level] = found.conns[level];
