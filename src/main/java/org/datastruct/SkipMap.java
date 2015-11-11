@@ -32,7 +32,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 					} else {
 						e = new Entry(k, v, tmp.conns.length);
 						for (; level > 0; level--) {
-							stack.offer(tmp);
+							stack.push(tmp);
 						}
 						curr = tmp;
 					}
@@ -47,7 +47,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 							} else {
 								e = new Entry(k, v, tmp.conns.length);
 								for (; level > 0; level--) {
-									stack.offer(tmp);
+									stack.push(tmp);
 								}
 								curr = tmp;
 								break;
@@ -60,13 +60,13 @@ public class SkipMap<K, V> implements Map<K, V> {
 					}
 				}
 			}
-			stack.offer(curr);
+			stack.push(curr);
 		}
 		if (e == null) {
 			e = new Entry(k, v, sentinel.conns.length);
 		}
 		for (int level = 0; level < e.conns.length; level++) {
-			curr = stack.poll();
+			curr = stack.pop();
 			e.conns[level] = curr.conns[level];
 			curr.conns[level] = e;
 		}
@@ -240,10 +240,10 @@ public class SkipMap<K, V> implements Map<K, V> {
 					}
 				}
 			}
-			stack.offer(curr);
+			stack.push(curr);
 		}
 		for (int level = 0; level < sentinel.conns.length && found != null; level++) {
-			curr = stack.poll();
+			curr = stack.pop();
 			if (found.conns.length > level) {
 				curr.conns[level] = found.conns[level];
 			} else {

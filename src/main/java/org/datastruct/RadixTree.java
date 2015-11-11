@@ -406,7 +406,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			} else {
 				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
-					stackIt.offer(tmpNode.children.iterator());
+					stackIt.push(tmpNode.children.iterator());
 					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
@@ -425,10 +425,10 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			}
 			V tmp = (V) next.data;
 			if (!next.children.isEmpty()) {
-				stackIt.offer(next.children.iterator());
+				stackIt.push(next.children.iterator());
 				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
-					stackIt.offer(tmpNode.children.iterator());
+					stackIt.push(tmpNode.children.iterator());
 					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
@@ -441,7 +441,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 				next = tmpNode;
 			} else {
 				do {
-					stackIt.poll();
+					stackIt.pop();
 					if (stackIt.isEmpty()) {
 						next = null;
 						return tmp;
@@ -449,7 +449,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 				} while (!stackIt.peek().hasNext());
 				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
-					stackIt.offer(tmpNode.children.iterator());
+					stackIt.push(tmpNode.children.iterator());
 					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
