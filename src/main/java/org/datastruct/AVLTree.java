@@ -268,9 +268,26 @@ public class AVLTree<K, V> implements Map<K, V> {
 				}
 			}
 		}
-		V ret = curr.value;
-		// TODO najdi nadomestno vrdnost, ce nisi v listu, ter popravi drevo
-		return ret;
+		if (curr == null) {
+			return null;
+		} else {
+			AVLEntry<K, V> removeNode = stack.pop();
+			V ret = removeNode.value;
+			if (curr.lower != null) {
+				curr = curr.lower;
+				stack.push(curr);
+				while (curr != null) {
+					stack.push(curr);
+
+				}
+			} else if (curr.higher != null) {
+				removeNode.setValue(curr.higher.value);
+
+			} else {
+
+			}
+			return ret;
+		}
 	}
 
 	@Override
