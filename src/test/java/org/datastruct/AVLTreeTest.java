@@ -53,6 +53,7 @@ public class AVLTreeTest {
 		if (test) {
 			assertEquals(tmap.size(), map.size());
 			assertFalse(map.isEmpty());
+			assertEquals(tmap.toString(), map.toString());
 		}
 	}
 
