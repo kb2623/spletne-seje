@@ -10,10 +10,6 @@ public class Stack<T> {
 		this.top = null;
 	}
 
-	public Stack(T data) {
-		push(data);
-	}
-
 	public void push(T e) {
 		this.top = new StackNode(e, this.top);
 	}

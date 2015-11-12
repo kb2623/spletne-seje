@@ -5,15 +5,14 @@ import java.util.*;
 public class AVLTree<K, V> implements Map<K, V> {
 
 	private AVLEntry<K, V> root;
-	private Comparator<K> keyCmp;
-
+	private CompareKey<K> keyCmp;
 	public AVLTree() {
 		this((k1, k2) -> k1.hashCode() - k2.hashCode());
 	}
 
 	public AVLTree(Comparator<K> keyCmp) {
 		root = null;
-		this.keyCmp = keyCmp;
+		this.keyCmp = new CompareKey<>(keyCmp);
 	}
 
 	@Override
@@ -54,13 +53,7 @@ public class AVLTree<K, V> implements Map<K, V> {
 		while (true) {
 			int cmp = keyCmp.compare(key, curr.key);
 			if (cmp == 0) {
-				if (curr.key.equals(key)) {
-					return true;
-				} else if (curr.lower != null) {
-					curr = curr.lower;
-				} else {
-					return false;
-				}
+				return true;
 			} else if (cmp > 0) {
 				if (curr.higher != null) {
 					curr = curr.higher;
@@ -107,13 +100,7 @@ public class AVLTree<K, V> implements Map<K, V> {
 		while (true) {
 			int cmp = keyCmp.compare(key, curr.key);
 			if (cmp == 0) {
-				if (curr.key.equals(key)) {
-					return curr.value;
-				} else if (curr.lower != null) {
-					curr = curr.lower;
-				} else {
-					return null;
-				}
+				return curr.value;
 			} else if (cmp > 0) {
 				if (curr.higher != null) {
 					curr = curr.higher;
@@ -146,13 +133,7 @@ public class AVLTree<K, V> implements Map<K, V> {
 				cmp = keyCmp.compare(key, curr.key);
 				stack.push(curr);
 				if (cmp == 0) {
-					if (curr.key.equals(key)) {
-						return curr.setValue(value);
-					} else if (curr.lower != null) {
-						curr = curr.lower;
-					} else {
-						break;
-					}
+					return curr.setValue(value);
 				} else if (cmp > 0) {
 					if (curr.higher != null) {
 						curr = curr.higher;
@@ -185,7 +166,7 @@ public class AVLTree<K, V> implements Map<K, V> {
 					}
 					return null;
 				} else {
-					curr.height++;
+					curr.updataHeight();
 				}
 			}
 			return null;
@@ -212,10 +193,8 @@ public class AVLTree<K, V> implements Map<K, V> {
 		AVLEntry<K, V> nRoot = node.higher;
 		node.higher = nRoot.lower;
 		nRoot.lower = node;
-		if (!drot) {
-			nRoot.height++;
-		}
-		node.height--;
+		nRoot.updataHeight();
+		node.updataHeight();
 		return nRoot;
 	}
 
@@ -223,10 +202,8 @@ public class AVLTree<K, V> implements Map<K, V> {
 		AVLEntry<K, V> nRoot = node.lower;
 		node.lower = nRoot.higher;
 		nRoot.higher = node;
-		if (!drot) {
-			nRoot.height++;
-		}
-		node.height--;
+		nRoot.updataHeight();
+		node.updataHeight();
 		return nRoot;
 	}
 
@@ -237,47 +214,76 @@ public class AVLTree<K, V> implements Map<K, V> {
 		}
 		K key = (K) o;
 		Stack<AVLEntry<K, V>> stack = new Stack<>();
-		AVLEntry<K, V> curr = root;
+		AVLEntry<K, V> found = root;
 		int cmp;
 		while (true) {
-			stack.push(curr);
-			cmp = keyCmp.compare(key, curr.key);
+			stack.push(found);
+			cmp = keyCmp.compare(key, found.key);
 			if (cmp == 0) {
-				if (curr.key.equals(key)) {
-					break;
-				} else if (curr.lower != null) {
-					curr = curr.lower;
-				} else {
-					return null;
-				}
+				break;
 			} else if (cmp > 0) {
-				if (curr.higher != null) {
-					curr = curr.higher;
+				if (found.higher != null) {
+					found = found.higher;
 				} else {
 					return null;
 				}
 			} else {
-				if (curr.lower != null) {
-					curr = curr.lower;
+				if (found.lower != null) {
+					found = found.lower;
 				} else {
 					return null;
 				}
 			}
 		}
-		if (curr == null) {
+		if (found == null) {
 			return null;
 		} else {
-			AVLEntry<K, V> removeNode = stack.pop();
-			V ret = removeNode.value;
-			if (curr.lower != null) {
-				// TODO iscemo najvecjega v levem podrevesu
-			} else if (curr.higher != null) {
-				// TODO iscemo najmanjsega v desnem podrevesu
+			AVLEntry<K, V> minNode = found;
+			if (found.lower != null) {
+				minNode = found.lower;
+				while (minNode.higher != null) {
+					stack.push(minNode);
+					minNode = minNode.higher;
+				}
+				stack.peek().higher = minNode.lower;
+				stack.peek().updataHeight();
+				;
+			} else if (found.higher != null) {
+				minNode = minNode.higher;
+				found.lower = minNode.lower;
+				found.higher = minNode.higher;
+				found.updataHeight();
 			} else {
-				// TODO imamo list
+				if (found == root) {
+					root = null;
+				} else {
+					if (stack.peek().lower == found) {
+						stack.peek().lower = null;
+					} else {
+						stack.peek().higher = null;
+					}
+					stack.peek().updataHeight();
+				}
 			}
-			// TODO rebalance tree
-			return ret;
+			AVLEntry<K, V> node;
+			while (!stack.isEmpty()) {
+				node = stack.pop();
+				cmp = node.getBalance();
+				if (cmp < -1 || cmp > 1) {
+					if (stack.isEmpty()) {
+						root = rotate(node, cmp);
+					} else if (stack.peek().lower == node) {
+						stack.peek().lower = rotate(node, cmp);
+					} else {
+						stack.peek().higher = rotate(node, cmp);
+					}
+					break;
+				} else {
+					node.updataHeight();
+				}
+			}
+			found.key = minNode.key;
+			return found.setValue(minNode.value);
 		}
 	}
 
@@ -347,6 +353,33 @@ public class AVLTree<K, V> implements Map<K, V> {
 		return set;
 	}
 
+	class CompareKey<K> implements Comparator<K> {
+
+		Comparator<K> cmp;
+
+		CompareKey(Comparator<K> cmp) {
+			this.cmp = cmp;
+		}
+
+		CompareKey() {
+			this((k1, k2) -> k1.hashCode() - k2.hashCode());
+		}
+
+		@Override
+		public int compare(K k1, K k2) {
+			int res = this.cmp.compare(k1, k2);
+			if (res == 0) {
+				if (k1.equals(k2)) {
+					return 0;
+				} else {
+					return 1;
+				}
+			} else {
+				return res;
+			}
+		}
+	}
+
 	class AVLEntry<K, V> implements Map.Entry<K, V> {
 
 		K key;
@@ -369,6 +402,14 @@ public class AVLTree<K, V> implements Map<K, V> {
 
 		int getBalance() {
 			return (lower != null ? lower.height : 0) - (higher != null ? higher.height : 0);
+		}
+
+		void updataHeight() {
+			if ((lower != null ? lower.height : 0) >= (higher != null ? higher.height : 0)) {
+				height = (lower != null ? lower.height : 0) + 1;
+			} else {
+				height = (higher != null ? higher.height : 0) + 1;
+			}
 		}
 
 		@Override

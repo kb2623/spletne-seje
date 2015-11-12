@@ -49,6 +49,19 @@ public class AVLTreeTest {
 		assertNull(tree.put(45, 90.99));
 		assertNull(tree.put(34, 54.34));
 		assertEquals(4, tree.size());
+		assertNull(tree.put(78, 89.43));
+		assertNull(tree.put(88, 45.12));
+		assertEquals(6, tree.size());
+		assertNull(tree.put(46, 65.09));
+		assertNull(tree.put(66, 88.33));
+		assertNull(tree.put(70, 70.89));
+		assertNull(tree.put(99, 99D));
+		assertNull(tree.put(85, 86.23));
+		assertEquals(11, tree.size());
+		assertEquals(new Double(90.99), tree.remove(45));
+		assertEquals(10, tree.size());
+		assertEquals(new Double(88.33), tree.remove(66));
+		assertEquals(9, tree.size());
 	}
 
 	@Test
