@@ -48,6 +48,9 @@ public class AVLTree<K, V> implements Map<K, V> {
 		if (o == null) {
 			throw new NullPointerException();
 		}
+		if (isEmpty()) {
+			return false;
+		}
 		K key = (K) o;
 		AVLEntry<K, V> curr = root;
 		while (true) {
@@ -94,6 +97,9 @@ public class AVLTree<K, V> implements Map<K, V> {
 	public V get(Object o) throws NullPointerException {
 		if (o == null) {
 			throw new NullPointerException();
+		}
+		if (isEmpty()) {
+			return null;
 		}
 		K key = (K) o;
 		AVLEntry<K, V> curr = root;
@@ -211,6 +217,9 @@ public class AVLTree<K, V> implements Map<K, V> {
 	public V remove(Object o) throws NullPointerException {
 		if (o == null) {
 			throw new NullPointerException();
+		}
+		if (isEmpty()) {
+			return null;
 		}
 		K key = (K) o;
 		Stack<AVLEntry<K, V>> stack = new Stack<>();
@@ -351,6 +360,30 @@ public class AVLTree<K, V> implements Map<K, V> {
 			}
 		}
 		return set;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append('{');
+		Stack<AVLEntry<K, V>> stack = new Stack<>();
+		AVLEntry<K, V> curr = root;
+		while (!stack.isEmpty() || curr != null) {
+			if (curr != null) {
+				stack.push(curr);
+				curr = curr.lower;
+			} else {
+				curr = stack.pop();
+				builder.append(curr.key).append('=').append(curr.value);
+				builder.append(", ");
+				curr = curr.higher;
+			}
+		}
+		if (builder.length() > 2) {
+			builder.delete(builder.length() - 2, builder.length());
+		}
+		builder.append('}');
+		return builder.toString();
 	}
 
 	class CompareKey<K> implements Comparator<K> {

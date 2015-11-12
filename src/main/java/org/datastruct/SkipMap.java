@@ -18,7 +18,9 @@ public class SkipMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K k, V v) throws NullPointerException {
-		if (k == null) throw new NullPointerException();
+		if (k == null) {
+			throw new NullPointerException();
+		}
 		Entry<K, V> e = null;
 		Stack<Entry> stack = new Stack<>();
 		Entry<K, V> curr = sentinel;
@@ -155,8 +157,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 	}
 
 	@Override
-	public boolean containsValue(Object o) throws NullPointerException {
-		if (o == null) throw new NullPointerException();
+	public boolean containsValue(Object o) {
 		for (Entry<K, V> curr = this.sentinel.conns[0]; curr != null; curr = curr.conns[0]) {
 			if (curr.value.equals(o)) {
 				return true;
@@ -167,7 +168,9 @@ public class SkipMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V get(Object o) throws ClassCastException, NullPointerException {
-		if (o == null) throw new NullPointerException();
+		if (o == null) {
+			throw new NullPointerException();
+		}
 		K key = (K) o;
 		Entry<K, V> curr = this.sentinel;
 		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
@@ -205,7 +208,9 @@ public class SkipMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V remove(Object o) throws ClassCastException, NullPointerException {
-		if (o == null) throw new NullPointerException();
+		if (o == null) {
+			throw new NullPointerException();
+		}
 		K key = (K) o;
 		Stack<Entry<K, V>> stack = new Stack<>();
 		Entry<K, V> curr = this.sentinel;

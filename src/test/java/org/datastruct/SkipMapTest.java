@@ -135,11 +135,6 @@ public class SkipMapTest {
 
 	@Test
 	public void testContainsValue() throws Exception {
-		try {
-			map.containsValue(null);
-			fail();
-		} catch (NullPointerException e) {
-		}
 		int value = (int) (Math.random() * 11 + 100);
 		assertFalse(map.containsValue(value));
 		testPut(true);
