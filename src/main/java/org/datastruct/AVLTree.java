@@ -177,33 +177,33 @@ public class AVLTree<K, V> implements Map<K, V> {
 		if (cmp < 0) {
 			AVLEntry<K, V> cNode = node.higher;
 			if (cNode.getBalance() > 0) {
-				node.higher = rotateRight(cNode, true);
+				node.higher = rotateRight(cNode);
 			}
-			return rotateLeft(node, false);
+			return rotateLeft(node);
 		} else {
 			AVLEntry<K, V> cNode = node.lower;
 			if (cNode.getBalance() < 0) {
-				node.lower = rotateLeft(cNode, true);
+				node.lower = rotateLeft(cNode);
 			}
-			return rotateRight(node, false);
+			return rotateRight(node);
 		}
 	}
 
-	private AVLEntry<K, V> rotateLeft(AVLEntry<K, V> node, boolean drot) {
+	private AVLEntry<K, V> rotateLeft(AVLEntry<K, V> node) {
 		AVLEntry<K, V> nRoot = node.higher;
 		node.higher = nRoot.lower;
 		nRoot.lower = node;
-		nRoot.updataHeight();
 		node.updataHeight();
+		nRoot.updataHeight();
 		return nRoot;
 	}
 
-	private AVLEntry<K, V> rotateRight(AVLEntry<K, V> node, boolean drot) {
+	private AVLEntry<K, V> rotateRight(AVLEntry<K, V> node) {
 		AVLEntry<K, V> nRoot = node.lower;
 		node.lower = nRoot.higher;
 		nRoot.higher = node;
-		nRoot.updataHeight();
 		node.updataHeight();
+		nRoot.updataHeight();
 		return nRoot;
 	}
 
