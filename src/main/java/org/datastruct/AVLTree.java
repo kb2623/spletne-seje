@@ -174,7 +174,7 @@ public class AVLTree<K, V> implements Map<K, V> {
 			}
 			while (!stack.isEmpty()) {
 				curr = stack.pop();
-				cmp = getBalance(curr);
+				cmp = curr.getBalance();
 				if (cmp < -1 || cmp > 1) {
 					if (stack.isEmpty()) {
 						root = rotate(curr, cmp);
@@ -195,13 +195,13 @@ public class AVLTree<K, V> implements Map<K, V> {
 	private AVLEntry<K, V> rotate(AVLEntry<K, V> node, int cmp) {
 		if (cmp < 0) {
 			AVLEntry<K, V> cNode = node.higher;
-			if (getBalance(cNode) > 0) {
+			if (cNode.getBalance() > 0) {
 				node.higher = rotateRight(cNode, true);
 			}
 			return rotateLeft(node, false);
 		} else {
 			AVLEntry<K, V> cNode = node.lower;
-			if (getBalance(cNode) < 0) {
+			if (cNode.getBalance() < 0) {
 				node.lower = rotateLeft(cNode, true);
 			}
 			return rotateRight(node, false);
@@ -228,10 +228,6 @@ public class AVLTree<K, V> implements Map<K, V> {
 		}
 		node.height--;
 		return nRoot;
-	}
-
-	private int getBalance(AVLEntry<K, V> node) {
-		return (node.lower != null ? node.lower.height : 0) - (node.higher != null ? node.higher.height : 0);
 	}
 
 	@Override
@@ -274,18 +270,13 @@ public class AVLTree<K, V> implements Map<K, V> {
 			AVLEntry<K, V> removeNode = stack.pop();
 			V ret = removeNode.value;
 			if (curr.lower != null) {
-				curr = curr.lower;
-				stack.push(curr);
-				while (curr != null) {
-					stack.push(curr);
-
-				}
+				// TODO iscemo najvecjega v levem podrevesu
 			} else if (curr.higher != null) {
-				removeNode.setValue(curr.higher.value);
-
+				// TODO iscemo najmanjsega v desnem podrevesu
 			} else {
-
+				// TODO imamo list
 			}
+			// TODO rebalance tree
 			return ret;
 		}
 	}
@@ -374,6 +365,10 @@ public class AVLTree<K, V> implements Map<K, V> {
 
 		AVLEntry(K key, V value) {
 			this(key, value, null, null, 1);
+		}
+
+		int getBalance() {
+			return (lower != null ? lower.height : 0) - (higher != null ? higher.height : 0);
 		}
 
 		@Override
