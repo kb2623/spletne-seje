@@ -227,16 +227,79 @@ public class AVLTreeTest {
 		assertNull(root.higher);
 
 		assertNull(map.put(19, ++i));
+		root = (AVLTree.AVLEntry) rootField.get(map);
+		assertEquals(46, root.key);
+		assertEquals(2, root.height);
+		assertEquals(19, root.lower.key);
+		assertEquals(1, root.lower.height);
 
 		assertNull(map.put(37, ++i));
+		root = (AVLTree.AVLEntry) rootField.get(map);
+		assertEquals(37, root.key);
+		assertEquals(2, root.height);
+		assertEquals(19, root.lower.key);
+		assertEquals(1, root.lower.height);
+		assertEquals(46, root.higher.key);
+		assertEquals(1, root.higher.height);
 
 		assertNull(map.put(9, ++i));
+		root = (AVLTree.AVLEntry) rootField.get(map);
+		assertEquals(37, root.key);
+		assertEquals(3, root.height);
+		assertEquals(19, root.lower.key);
+		assertEquals(2, root.lower.height);
+		assertEquals(9, root.lower.lower.key);
+		assertEquals(1, root.lower.lower.height);
+		assertEquals(46, root.higher.key);
+		assertEquals(1, root.higher.height);
 
 		assertNull(map.put(20, ++i));
+		root = (AVLTree.AVLEntry) rootField.get(map);
+		assertEquals(37, root.key);
+		assertEquals(3, root.height);
+		assertEquals(19, root.lower.key);
+		assertEquals(2, root.lower.height);
+		assertEquals(9, root.lower.lower.key);
+		assertEquals(1, root.lower.lower.height);
+		assertEquals(20, root.lower.higher.key);
+		assertEquals(1, root.lower.higher.height);
+		assertEquals(46, root.higher.key);
+		assertEquals(1, root.higher.height);
 
 		assertNull(map.put(24, ++i));
+		root = (AVLTree.AVLEntry) rootField.get(map);
+		assertEquals(20, root.key);
+		assertEquals(3, root.height);
+		assertEquals(19, root.lower.key);
+		assertEquals(2, root.lower.height);
+		assertEquals(9, root.lower.lower.key);
+		assertEquals(1, root.lower.lower.height);
+		assertNull(root.lower.higher);
+		assertEquals(37, root.higher.key);
+		assertEquals(2, root.higher.height);
+		assertEquals(24, root.higher.lower.key);
+		assertEquals(1, root.higher.lower.height);
+		assertEquals(46, root.higher.higher.key);
+		assertEquals(1, root.higher.higher.height);
 
 		assertNull(map.put(23, ++i));
+		root = (AVLTree.AVLEntry) rootField.get(map);
+		assertEquals(20, root.key);
+		assertEquals(4, root.height);
+		assertEquals(19, root.lower.key);
+		assertEquals(2, root.lower.height);
+		assertEquals(9, root.lower.lower.key);
+		assertEquals(1, root.lower.lower.height);
+		assertNull(root.lower.higher);
+		assertEquals(37, root.higher.key);
+		assertEquals(3, root.higher.height);
+		assertEquals(24, root.higher.lower.key);
+		assertEquals(2, root.higher.lower.height);
+		assertEquals(23, root.higher.lower.lower.key);
+		assertEquals(1, root.higher.lower.lower.height);
+		assertNull(root.higher.lower.higher);
+		assertEquals(46, root.higher.higher.key);
+		assertEquals(1, root.higher.higher.height);
 
 		assertNull(map.put(41, ++i));
 
