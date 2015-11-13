@@ -242,55 +242,51 @@ public class AVLTree<K, V> implements Map<K, V> {
 					}
 				}
 			}
-			if (found == null) {
-				return null;
-			} else {
-				AVLEntry<K, V> minNode = found;
-				if (found.lower != null) {
-					minNode = found.lower;
-					while (minNode.higher != null) {
-						stack.push(minNode);
-						minNode = minNode.higher;
-					}
-					stack.peek().higher = minNode.lower;
-					stack.peek().updataHeight();
-				} else if (found.higher != null) {
+			AVLEntry<K, V> minNode = stack.pop();
+			if (found.lower != null) {
+				minNode = found.lower;
+				while (minNode.higher != null) {
+					stack.push(minNode);
 					minNode = minNode.higher;
-					found.lower = minNode.lower;
-					found.higher = minNode.higher;
-					found.updataHeight();
+				}
+				stack.peek().higher = minNode.lower;
+				stack.peek().updataHeight();
+			} else if (found.higher != null) {
+				minNode = minNode.higher;
+				found.lower = minNode.lower;
+				found.higher = minNode.higher;
+				found.updataHeight();
+			} else {
+				if (found == root) {
+					root = null;
 				} else {
-					if (found == root) {
-						root = null;
+					if (stack.peek().lower == found) {
+						stack.peek().lower = null;
 					} else {
-						if (stack.peek().lower == found) {
-							stack.peek().lower = null;
-						} else {
-							stack.peek().higher = null;
-						}
-						stack.peek().updataHeight();
+						stack.peek().higher = null;
 					}
+					stack.peek().updataHeight();
 				}
-				AVLEntry<K, V> node;
-				while (!stack.isEmpty()) {
-					node = stack.pop();
-					cmp = node.getBalance();
-					if (cmp < -1 || cmp > 1) {
-						if (stack.isEmpty()) {
-							root = rotate(node, cmp);
-						} else if (stack.peek().lower == node) {
-							stack.peek().lower = rotate(node, cmp);
-						} else {
-							stack.peek().higher = rotate(node, cmp);
-						}
-						break;
-					} else {
-						node.updataHeight();
-					}
-				}
-				found.key = minNode.key;
-				return found.setValue(minNode.value);
 			}
+			AVLEntry<K, V> node;
+			while (!stack.isEmpty()) {
+				node = stack.pop();
+				cmp = node.getBalance();
+				if (cmp < -1 || cmp > 1) {
+					if (stack.isEmpty()) {
+						root = rotate(node, cmp);
+					} else if (stack.peek().lower == node) {
+						stack.peek().lower = rotate(node, cmp);
+					} else {
+						stack.peek().higher = rotate(node, cmp);
+					}
+					break;
+				} else {
+					node.updataHeight();
+				}
+			}
+			found.key = minNode.key;
+			return found.setValue(minNode.value);
 		}
 	}
 

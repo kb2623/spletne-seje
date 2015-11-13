@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -13,7 +14,7 @@ public class AVLTreeTest {
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
 
-	private int size = 2000;
+	private int size = 50;
 
 	@Before
 	public void setUp() throws Exception {
@@ -44,6 +45,7 @@ public class AVLTreeTest {
 		for (int i = 0; i < size; i++) {
 			int rNumK = (int) (Math.random() * (size + 1) + 1);
 			int rNumV = (int) (Math.random() * (size + 1000) + 1);
+			System.out.println(rNumK);
 			if (test) {
 				assertEquals(tmap.put(rNumK, rNumV), map.put(rNumK, rNumV));
 			} else {
@@ -176,7 +178,6 @@ public class AVLTreeTest {
 			try {
 				assertEquals(tmap.remove(key), map.remove(key));
 			} catch (AssertionError e) {
-				assertEquals(tmap.toString(), map.toString());
 				String s = "Error at ramoveing key = " + key + "\n" +
 						tmap.toString() + "\n" +
 						map.toString();
@@ -208,6 +209,88 @@ public class AVLTreeTest {
 		tmap.clear();
 		assertEquals(tmap.size(), map.size());
 		map.put(23, 23);
+	}
+
+	@Test
+	public void testMixWithReflections() throws NoSuchFieldException, IllegalAccessException {
+		Field rootField = AVLTree.class.getDeclaredField("root");
+		rootField.setAccessible(true);
+		AVLTree.AVLEntry root = (AVLTree.AVLEntry) rootField.get(map);
+		assertNull(root);
+		int i = 1;
+
+		assertNull(map.put(46, i));
+		root = (AVLTree.AVLEntry) rootField.get(map);
+		assertNotNull(root);
+		assertEquals(1, root.height);
+		assertNull(root.lower);
+		assertNull(root.higher);
+
+		assertNull(map.put(19, ++i));
+
+		assertNull(map.put(37, ++i));
+
+		assertNull(map.put(9, ++i));
+
+		assertNull(map.put(20, ++i));
+
+		assertNull(map.put(24, ++i));
+
+		assertNull(map.put(23, ++i));
+
+		assertNull(map.put(41, ++i));
+
+		assertNull(map.put(21, ++i));
+
+		assertNull(map.put(42, ++i));
+
+		assertNull(map.put(13, ++i));
+
+		assertNull(map.put(36, ++i));
+
+		assertNull(map.put(29, ++i));
+
+		assertNull(map.put(7, ++i));
+
+		assertNull(map.put(15, ++i));
+
+		assertNull(map.put(50, ++i));
+
+		assertNull(map.put(44, ++i));
+
+		assertNull(map.put(27, ++i));
+
+		assertNull(map.put(2, ++i));
+
+		assertNull(map.put(32, ++i));
+
+		assertNull(map.put(47, ++i));
+
+		assertNull(map.put(34, ++i));
+
+		assertNull(map.put(35, ++i));
+
+		assertNull(map.put(49, ++i));
+
+		assertNull(map.put(38, ++i));
+
+		assertNull(map.put(5, ++i));
+
+		assertNull(map.put(8, ++i));
+
+		assertNull(map.put(10, ++i));
+
+		assertNull(map.put(43, ++i));
+
+		assertNull(map.put(18, ++i));
+
+		assertNull(map.put(16, ++i));
+
+		assertNull(map.put(17, ++i));
+
+		assertNull(map.put(40, ++i));
+
+		assertNull(map.put(3, ++i));
 	}
 
 	class Compare implements Comparator<Integer> {
