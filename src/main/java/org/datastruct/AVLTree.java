@@ -47,27 +47,27 @@ public class AVLTree<K, V> implements Map<K, V> {
 	public boolean containsKey(Object o) throws NullPointerException {
 		if (o == null) {
 			throw new NullPointerException();
-		}
-		if (isEmpty()) {
+		} else if (isEmpty()) {
 			return false;
-		}
-		K key = (K) o;
-		AVLEntry<K, V> curr = root;
-		while (true) {
-			int cmp = keyCmp.compare(key, curr.key);
-			if (cmp == 0) {
-				return true;
-			} else if (cmp > 0) {
-				if (curr.higher != null) {
-					curr = curr.higher;
+		} else {
+			K key = (K) o;
+			AVLEntry<K, V> curr = root;
+			while (true) {
+				int cmp = keyCmp.compare(key, curr.key);
+				if (cmp == 0) {
+					return true;
+				} else if (cmp > 0) {
+					if (curr.higher != null) {
+						curr = curr.higher;
+					} else {
+						return false;
+					}
 				} else {
-					return false;
-				}
-			} else {
-				if (curr.lower != null) {
-					curr = curr.lower;
-				} else {
-					return false;
+					if (curr.lower != null) {
+						curr = curr.lower;
+					} else {
+						return false;
+					}
 				}
 			}
 		}
@@ -97,27 +97,27 @@ public class AVLTree<K, V> implements Map<K, V> {
 	public V get(Object o) throws NullPointerException {
 		if (o == null) {
 			throw new NullPointerException();
-		}
-		if (isEmpty()) {
+		} else if (isEmpty()) {
 			return null;
-		}
-		K key = (K) o;
-		AVLEntry<K, V> curr = root;
-		while (true) {
-			int cmp = keyCmp.compare(key, curr.key);
-			if (cmp == 0) {
-				return curr.value;
-			} else if (cmp > 0) {
-				if (curr.higher != null) {
-					curr = curr.higher;
+		} else {
+			K key = (K) o;
+			AVLEntry<K, V> curr = root;
+			while (true) {
+				int cmp = keyCmp.compare(key, curr.key);
+				if (cmp == 0) {
+					return curr.value;
+				} else if (cmp > 0) {
+					if (curr.higher != null) {
+						curr = curr.higher;
+					} else {
+						return null;
+					}
 				} else {
-					return null;
-				}
-			} else {
-				if (curr.lower != null) {
-					curr = curr.lower;
-				} else {
-					return null;
+					if (curr.lower != null) {
+						curr = curr.lower;
+					} else {
+						return null;
+					}
 				}
 			}
 		}
@@ -127,8 +127,7 @@ public class AVLTree<K, V> implements Map<K, V> {
 	public V put(K key, V value) throws NullPointerException {
 		if (key == null) {
 			throw new NullPointerException();
-		}
-		if (isEmpty()) {
+		} else if (isEmpty()) {
 			root = new AVLEntry<>(key, value);
 			return null;
 		} else {
@@ -217,82 +216,81 @@ public class AVLTree<K, V> implements Map<K, V> {
 	public V remove(Object o) throws NullPointerException {
 		if (o == null) {
 			throw new NullPointerException();
-		}
-		if (isEmpty()) {
-			return null;
-		}
-		K key = (K) o;
-		Stack<AVLEntry<K, V>> stack = new Stack<>();
-		AVLEntry<K, V> found = root;
-		int cmp;
-		while (true) {
-			stack.push(found);
-			cmp = keyCmp.compare(key, found.key);
-			if (cmp == 0) {
-				break;
-			} else if (cmp > 0) {
-				if (found.higher != null) {
-					found = found.higher;
-				} else {
-					return null;
-				}
-			} else {
-				if (found.lower != null) {
-					found = found.lower;
-				} else {
-					return null;
-				}
-			}
-		}
-		if (found == null) {
+		} else if (isEmpty()) {
 			return null;
 		} else {
-			AVLEntry<K, V> minNode = found;
-			if (found.lower != null) {
-				minNode = found.lower;
-				while (minNode.higher != null) {
-					stack.push(minNode);
-					minNode = minNode.higher;
-				}
-				stack.peek().higher = minNode.lower;
-				stack.peek().updataHeight();
-				;
-			} else if (found.higher != null) {
-				minNode = minNode.higher;
-				found.lower = minNode.lower;
-				found.higher = minNode.higher;
-				found.updataHeight();
-			} else {
-				if (found == root) {
-					root = null;
-				} else {
-					if (stack.peek().lower == found) {
-						stack.peek().lower = null;
-					} else {
-						stack.peek().higher = null;
-					}
-					stack.peek().updataHeight();
-				}
-			}
-			AVLEntry<K, V> node;
-			while (!stack.isEmpty()) {
-				node = stack.pop();
-				cmp = node.getBalance();
-				if (cmp < -1 || cmp > 1) {
-					if (stack.isEmpty()) {
-						root = rotate(node, cmp);
-					} else if (stack.peek().lower == node) {
-						stack.peek().lower = rotate(node, cmp);
-					} else {
-						stack.peek().higher = rotate(node, cmp);
-					}
+			K key = (K) o;
+			Stack<AVLEntry<K, V>> stack = new Stack<>();
+			AVLEntry<K, V> found = root;
+			int cmp;
+			while (true) {
+				stack.push(found);
+				cmp = keyCmp.compare(key, found.key);
+				if (cmp == 0) {
 					break;
+				} else if (cmp > 0) {
+					if (found.higher != null) {
+						found = found.higher;
+					} else {
+						return null;
+					}
 				} else {
-					node.updataHeight();
+					if (found.lower != null) {
+						found = found.lower;
+					} else {
+						return null;
+					}
 				}
 			}
-			found.key = minNode.key;
-			return found.setValue(minNode.value);
+			if (found == null) {
+				return null;
+			} else {
+				AVLEntry<K, V> minNode = found;
+				if (found.lower != null) {
+					minNode = found.lower;
+					while (minNode.higher != null) {
+						stack.push(minNode);
+						minNode = minNode.higher;
+					}
+					stack.peek().higher = minNode.lower;
+					stack.peek().updataHeight();
+				} else if (found.higher != null) {
+					minNode = minNode.higher;
+					found.lower = minNode.lower;
+					found.higher = minNode.higher;
+					found.updataHeight();
+				} else {
+					if (found == root) {
+						root = null;
+					} else {
+						if (stack.peek().lower == found) {
+							stack.peek().lower = null;
+						} else {
+							stack.peek().higher = null;
+						}
+						stack.peek().updataHeight();
+					}
+				}
+				AVLEntry<K, V> node;
+				while (!stack.isEmpty()) {
+					node = stack.pop();
+					cmp = node.getBalance();
+					if (cmp < -1 || cmp > 1) {
+						if (stack.isEmpty()) {
+							root = rotate(node, cmp);
+						} else if (stack.peek().lower == node) {
+							stack.peek().lower = rotate(node, cmp);
+						} else {
+							stack.peek().higher = rotate(node, cmp);
+						}
+						break;
+					} else {
+						node.updataHeight();
+					}
+				}
+				found.key = minNode.key;
+				return found.setValue(minNode.value);
+			}
 		}
 	}
 
