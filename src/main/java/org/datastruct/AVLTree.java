@@ -380,6 +380,20 @@ public class AVLTree<K, V> implements Map<K, V> {
 		return builder.toString();
 	}
 
+	@Deprecated
+	public String printTree() {
+		StringBuilder builder = new StringBuilder();
+		LinkQueue<AVLEntry<K, V>> queue = new LinkQueue<>();
+		AVLEntry<K, V> curr = root;
+		while (!queue.isEmpty() || curr != null) {
+			builder.append(curr.key).append(':').append(curr.height).append(", ");
+			queue.offer(curr.lower);
+			queue.offer(curr.higher);
+			curr = queue.poll();
+		}
+		return builder.toString();
+	}
+
 	class CompareKey<K> implements Comparator<K> {
 
 		Comparator<K> cmp;

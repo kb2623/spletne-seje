@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-public class LInkQueue<E> implements Queue<E> {
+public class LinkQueue<E> implements Queue<E> {
 
 	private Node<E> first;
 	private Node<E> last;

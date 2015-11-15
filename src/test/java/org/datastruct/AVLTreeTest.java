@@ -1334,6 +1334,7 @@ public class AVLTreeTest {
 		assertNull(root.higher.higher.lower.higher.higher);
 		assertNull(root.higher.higher.higher.lower.lower);
 		assertNull(root.higher.higher.higher.lower.higher);
+		System.out.println(((AVLTree) map).printTree());
 		/** brisanje z iskanjem najmanjsega lista */
 		assertEquals(new Integer(11), map.remove(13));
 		root = (AVLTree.AVLEntry) rootField.get(map);
