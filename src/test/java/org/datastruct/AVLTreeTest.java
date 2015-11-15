@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -212,47 +211,21 @@ public class AVLTreeTest {
 	}
 
 	@Test
-	public void testMixWithReflections() throws NoSuchFieldException, IllegalAccessException {
-		Field rootField = AVLTree.class.getDeclaredField("root");
-		rootField.setAccessible(true);
-		AVLTree.AVLEntry root = (AVLTree.AVLEntry) rootField.get(map);
-		assertNull(root);
-		int i = 1;
+	public void testMixWith() throws NoSuchFieldException, IllegalAccessException {
+		int i = 0;
+		System.out.println(((AVLTree) map).printTree());
 
-		assertNull(map.put(46, i));
-		root = (AVLTree.AVLEntry) rootField.get(map);
-		testAVLEntry(root, 46, 1);
-		assertNull(root.lower);
-		assertNull(root.higher);
+		assertNull(map.put(46, ++i));
+		System.out.println(((AVLTree) map).printTree());
 
 		assertNull(map.put(19, ++i));
-		root = (AVLTree.AVLEntry) rootField.get(map);
-		// Level 0
-		testAVLEntry(root, 46, 2);
-		// Level 1
-		testAVLEntry(root.lower, 19, 1);
-		assertNull(root.higher);
+		System.out.println(((AVLTree) map).printTree());
 
 		assertNull(map.put(37, ++i));
-		root = (AVLTree.AVLEntry) rootField.get(map);
-		// Level 0
-		testAVLEntry(root, 37, 2);
-		// Level 1
-		testAVLEntry(root.lower, 19, 1);
-		testAVLEntry(root.higher, 46, 1);
+		System.out.println(((AVLTree) map).printTree());
 
 		assertNull(map.put(9, ++i));
-		root = (AVLTree.AVLEntry) rootField.get(map);
-		// Level 0
-		testAVLEntry(root, 37, 3);
-		// Level 1
-		testAVLEntry(root.lower, 19, 2);
-		testAVLEntry(root.higher, 46, 1);
-		// Level 2
-		testAVLEntry(root.lower.lower, 9, 1);
-		assertNull(root.lower.higher);
-		assertNull(root.higher.lower);
-		assertNull(root.higher.higher);
+		System.out.println(((AVLTree) map).printTree());
 
 		assertNull(map.put(20, ++i));
 		root = (AVLTree.AVLEntry) rootField.get(map);

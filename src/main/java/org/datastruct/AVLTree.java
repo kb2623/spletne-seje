@@ -387,8 +387,12 @@ public class AVLTree<K, V> implements Map<K, V> {
 		AVLEntry<K, V> curr = root;
 		while (!queue.isEmpty() || curr != null) {
 			builder.append(curr.key).append(':').append(curr.height).append(", ");
-			queue.offer(curr.lower);
-			queue.offer(curr.higher);
+			if (curr.lower != null) {
+				queue.offer(curr.lower);
+			}
+			if (curr.higher != null) {
+				queue.offer(curr.higher);
+			}
 			curr = queue.poll();
 		}
 		return builder.toString();

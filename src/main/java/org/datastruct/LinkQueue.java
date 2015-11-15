@@ -13,9 +13,10 @@ public class LinkQueue<E> implements Queue<E> {
 	@Override
 	public int size() {
 		int size = 0;
-		Node<E> curr = last;
+		Node<E> curr = first;
 		while (curr != null) {
 			size++;
+			curr = curr.prev;
 		}
 		return size;
 	}
@@ -88,9 +89,11 @@ public class LinkQueue<E> implements Queue<E> {
 			throw new NullPointerException();
 		}
 		if (isEmpty()) {
-			first = last = new Node(o, null);
+			first = last = new Node(o);
 		} else {
-			last = new Node(o, last);
+			Node<E> curr = last;
+			last = new Node(o);
+			curr.prev = last;
 		}
 		return true;
 	}
@@ -240,9 +243,13 @@ public class LinkQueue<E> implements Queue<E> {
 		E data;
 		Node<E> prev;
 
-		Node(E data, Node<E> next) {
+		Node(E data, Node<E> prev) {
 			this.data = data;
-			this.prev = next;
+			this.prev = prev;
+		}
+
+		Node(E data) {
+			this(data, null);
 		}
 	}
 
