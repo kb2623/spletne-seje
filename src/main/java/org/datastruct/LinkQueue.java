@@ -256,11 +256,9 @@ public class LinkQueue<E> implements Queue<E> {
 	class IterateLinkQueue<E> implements Iterator<E> {
 
 		Node<E> next;
-		Node<E> prev;
 
 		IterateLinkQueue() {
 			next = (Node<E>) first;
-			prev = null;
 		}
 
 		@Override
@@ -273,22 +271,9 @@ public class LinkQueue<E> implements Queue<E> {
 			if (next == null) {
 				throw new NoSuchElementException();
 			}
-			prev = next;
+			E ret = next.data;
 			next = next.prev;
-			return prev.data;
-		}
-
-		@Override
-		public void remove() throws IllegalStateException {
-			if (prev == null) {
-				throw new IllegalStateException();
-			}
-			if (prev == first) {
-				first = first.prev;
-			} else {
-
-			}
-			prev = null;
+			return ret;
 		}
 	}
 }
