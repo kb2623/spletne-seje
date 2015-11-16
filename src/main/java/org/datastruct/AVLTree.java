@@ -383,6 +383,7 @@ public class AVLTree<K, V> implements Map<K, V> {
 	@Deprecated
 	public String printTree() {
 		StringBuilder builder = new StringBuilder();
+		builder.append("{");
 		LinkQueue<AVLEntry<K, V>> queue = new LinkQueue<>();
 		AVLEntry<K, V> curr = root;
 		while (!queue.isEmpty() || curr != null) {
@@ -395,6 +396,10 @@ public class AVLTree<K, V> implements Map<K, V> {
 			}
 			curr = queue.poll();
 		}
+		if (builder.length() > 2) {
+			builder.delete(builder.length() - 2, builder.length());
+		}
+		builder.append('}');
 		return builder.toString();
 	}
 
