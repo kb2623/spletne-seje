@@ -13,7 +13,7 @@ public class AVLTreeTest {
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
 
-	private int size = 50;
+	private int size = 1000;
 
 	@Before
 	public void setUp() throws Exception {
@@ -44,7 +44,6 @@ public class AVLTreeTest {
 		for (int i = 0; i < size; i++) {
 			int rNumK = (int) (Math.random() * (size + 1) + 1);
 			int rNumV = (int) (Math.random() * (size + 1000) + 1);
-			System.out.println(rNumK);
 			if (test) {
 				assertEquals(tmap.put(rNumK, rNumV), map.put(rNumK, rNumV));
 			} else {
@@ -174,14 +173,8 @@ public class AVLTreeTest {
 		testPut(true);
 		for (int i = 0; i < size; i++) {
 			key = (int) (Math.random() * (size + 1) + 1);
-			try {
-				assertEquals(tmap.remove(key), map.remove(key));
-			} catch (AssertionError e) {
-				String s = "Error at ramoveing key = " + key + "\n" +
-						tmap.toString() + "\n" +
-						map.toString();
-				throw new AssertionError(s, e);
-			}
+			assertEquals(tmap.remove(key), map.remove(key));
+			assertEquals(tmap.toString(), map.toString());
 		}
 		assertEquals(tmap.toString(), map.toString());
 	}
@@ -287,6 +280,28 @@ public class AVLTreeTest {
 		assertEquals("{23:6, 9:4, 37:5, 7:3, 18:3, 29:4, 46:4, 3:2, 8:1, 16:2, 20:2, 24:2, 34:3, 42:3, 49:2, 2:1, 5:1, 15:1, 17:1, 19:1, 21:1, 27:1, 32:1, 36:2, 40:2, 44:2, 47:1, 50:1, 35:1, 38:1, 41:1, 43:1}", tree.printTree());
 		assertEquals(new Integer(27), tree.remove(8));
 		assertEquals("{23:6, 9:4, 37:5, 3:3, 18:3, 29:4, 46:4, 2:1, 7:2, 16:2, 20:2, 24:2, 34:3, 42:3, 49:2, 5:1, 15:1, 17:1, 19:1, 21:1, 27:1, 32:1, 36:2, 40:2, 44:2, 47:1, 50:1, 35:1, 38:1, 41:1, 43:1}", tree.printTree());
+		assertEquals(new Integer(7), tree.remove(23));
+		assertEquals("{21:6, 9:4, 37:5, 3:3, 18:3, 29:4, 46:4, 2:1, 7:2, 16:2, 20:2, 24:2, 34:3, 42:3, 49:2, 5:1, 15:1, 17:1, 19:1, 27:1, 32:1, 36:2, 40:2, 44:2, 47:1, 50:1, 35:1, 38:1, 41:1, 43:1}", tree.printTree());
+		assertEquals(new Integer(19), tree.remove(2));
+		assertEquals("{21:6, 9:4, 37:5, 5:2, 18:3, 29:4, 46:4, 3:1, 7:1, 16:2, 20:2, 24:2, 34:3, 42:3, 49:2, 15:1, 17:1, 19:1, 27:1, 32:1, 36:2, 40:2, 44:2, 47:1, 50:1, 35:1, 38:1, 41:1, 43:1}", tree.printTree());
+		assertEquals(new Integer(5), tree.remove(20));
+		assertEquals("{21:6, 9:4, 37:5, 5:2, 18:3, 29:4, 46:4, 3:1, 7:1, 16:2, 19:1, 24:2, 34:3, 42:3, 49:2, 15:1, 17:1, 27:1, 32:1, 36:2, 40:2, 44:2, 47:1, 50:1, 35:1, 38:1, 41:1, 43:1}", tree.printTree());
+		assertEquals(new Integer(6), tree.remove(24));
+		assertEquals("{21:6, 9:4, 37:5, 5:2, 18:3, 34:3, 46:4, 3:1, 7:1, 16:2, 19:1, 29:2, 36:2, 42:3, 49:2, 15:1, 17:1, 27:1, 32:1, 35:1, 40:2, 44:2, 47:1, 50:1, 38:1, 41:1, 43:1}", tree.printTree());
+		assertEquals(new Integer(17), tree.remove(44));
+		assertEquals("{21:6, 9:4, 37:5, 5:2, 18:3, 34:3, 46:4, 3:1, 7:1, 16:2, 19:1, 29:2, 36:2, 42:3, 49:2, 15:1, 17:1, 27:1, 32:1, 35:1, 40:2, 43:1, 47:1, 50:1, 38:1, 41:1}", tree.printTree());
+		assertEquals(new Integer(9), tree.remove(21));
+		assertEquals("{19:6, 9:4, 37:5, 5:2, 16:3, 34:3, 46:4, 3:1, 7:1, 15:1, 18:2, 29:2, 36:2, 42:3, 49:2, 17:1, 27:1, 32:1, 35:1, 40:2, 43:1, 47:1, 50:1, 38:1, 41:1}", tree.printTree());
+		assertEquals(new Integer(2), tree.remove(19));
+		assertEquals("{37:5, 18:4, 46:4, 9:3, 34:3, 42:3, 49:2, 5:2, 16:2, 29:2, 36:2, 40:2, 43:1, 47:1, 50:1, 3:1, 7:1, 15:1, 17:1, 27:1, 32:1, 35:1, 38:1, 41:1}", tree.printTree());
+		assertEquals(new Integer(14), tree.remove(7));
+		assertEquals("{37:5, 18:4, 46:4, 9:3, 34:3, 42:3, 49:2, 5:2, 16:2, 29:2, 36:2, 40:2, 43:1, 47:1, 50:1, 3:1, 15:1, 17:1, 27:1, 32:1, 35:1, 38:1, 41:1}", tree.printTree());
+		assertEquals(new Integer(4), tree.remove(9));
+		assertEquals("{37:5, 18:4, 46:4, 5:3, 34:3, 42:3, 49:2, 3:1, 16:2, 29:2, 36:2, 40:2, 43:1, 47:1, 50:1, 15:1, 17:1, 27:1, 32:1, 35:1, 38:1, 41:1}", tree.printTree());
+		assertEquals(new Integer(33), tree.remove(40));
+		assertEquals("{37:5, 18:4, 46:4, 5:3, 34:3, 42:3, 49:2, 3:1, 16:2, 29:2, 36:2, 38:2, 43:1, 47:1, 50:1, 15:1, 17:1, 27:1, 32:1, 35:1, 41:1}", tree.printTree());
+		assertEquals(new Integer(10), tree.remove(42));
+		assertEquals("{37:5, 18:4, 46:3, 5:3, 34:3, 41:2, 49:2, 3:1, 16:2, 29:2, 36:2, 38:1, 43:1, 47:1, 50:1, 15:1, 17:1, 27:1, 32:1, 35:1}", tree.printTree());
 	}
 
 	class Compare implements Comparator<Integer> {

@@ -242,15 +242,25 @@ public class AVLTree<K, V> implements Map<K, V> {
 					}
 				}
 			}
-			AVLEntry<K, V> minNode = stack.pop();
+			AVLEntry<K, V> minNode = found;
 			if (found.lower != null) {
 				minNode = found.lower;
-				while (minNode.higher != null) {
-					stack.push(minNode);
-					minNode = minNode.higher;
+				if (minNode.higher != null) {
+					while (minNode.higher != null) {
+						stack.push(minNode);
+						minNode = minNode.higher;
+					}
+					stack.peek().higher = minNode.lower;
+				} else {
+					stack.pop();
+					if (stack.peek().lower == found) {
+						stack.peek().lower = minNode;
+					} else {
+						stack.peek().higher = minNode;
+					}
+					minNode.higher = found.higher;
+					minNode.updataHeight();
 				}
-				stack.peek().higher = minNode.lower;
-				stack.peek().updataHeight();
 			} else if (found.higher != null) {
 				minNode = minNode.higher;
 				found.lower = minNode.lower;
@@ -260,12 +270,12 @@ public class AVLTree<K, V> implements Map<K, V> {
 				if (found == root) {
 					root = null;
 				} else {
+					stack.pop();
 					if (stack.peek().lower == found) {
 						stack.peek().lower = null;
 					} else {
 						stack.peek().higher = null;
 					}
-					stack.peek().updataHeight();
 				}
 			}
 			AVLEntry<K, V> node;
