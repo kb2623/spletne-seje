@@ -18,7 +18,7 @@ public class AVLTreeTest {
 	@Before
 	public void setUp() throws Exception {
 		Compare cmp = new Compare();
-		map = new AVLTree<>(cmp);
+		map = new AvlTree<>(cmp);
 		tmap = new TreeMap<>(cmp);
 		assertTrue(map.isEmpty());
 	}
@@ -205,7 +205,7 @@ public class AVLTreeTest {
 
 	@Test
 	public void testMixWith() {
-		AVLTree<Integer, Integer> tree = (AVLTree<Integer, Integer>) map;
+		AvlTree<Integer, Integer> tree = (AvlTree<Integer, Integer>) map;
 		assertNull(tree.put(46, 1));
 		assertEquals("{46:1}", tree.printTree());
 		assertNull(tree.put(19, 2));

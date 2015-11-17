@@ -2,15 +2,16 @@ package org.datastruct;
 
 import java.util.*;
 
-public class AVLTree<K, V> implements Map<K, V> {
+public class AvlTree<K, V> implements Map<K, V> {
 
 	private AVLEntry<K, V> root;
 	private CompareKey<K> keyCmp;
-	public AVLTree() {
+
+	public AvlTree() {
 		this((k1, k2) -> k1.hashCode() - k2.hashCode());
 	}
 
-	public AVLTree(Comparator<K> keyCmp) {
+	public AvlTree(Comparator<K> keyCmp) {
 		root = null;
 		this.keyCmp = new CompareKey<>(keyCmp);
 	}

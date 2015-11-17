@@ -1,6 +1,6 @@
 package org.datastruct.concurrent;
 
-import org.datastruct.AVLTree;
+import org.datastruct.AvlTree;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -9,16 +9,16 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ConcurrentAVLTree<K, V> extends AVLTree<K, V> {
+public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 
 	private ReadWriteLock lock;
 
-	public ConcurrentAVLTree() {
+	public ConcurrentAvlTree() {
 		super();
 		lock = new ReentrantReadWriteLock();
 	}
 
-	public ConcurrentAVLTree(Comparator<K> keyCmp) {
+	public ConcurrentAvlTree(Comparator<K> keyCmp) {
 		super(keyCmp);
 		lock = new ReentrantReadWriteLock();
 	}
