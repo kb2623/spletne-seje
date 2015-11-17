@@ -12,7 +12,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	public V add(V data, String key) throws NullPointerException {
-		if (key == null) {
+		if (key == null || data == null) {
 			throw new NullPointerException();
 		}
 		return this.insert(data, key, this.rootNode);
@@ -369,7 +369,10 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		}
 
 		@Override
-		public V setValue(V v) {
+		public V setValue(V v) throws NullPointerException {
+			if (v == null) {
+				throw new NullPointerException();
+			}
 			V ret = this.data;
 			this.data = v;
 			return ret;
