@@ -572,7 +572,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append('{');
-		makeString(rootNode, rootNode.key, builder);
+		makeString(builder);
 		if (builder.length() > 2) {
 			builder.delete(builder.length() - 2, builder.length());
 		}
@@ -580,12 +580,26 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		return builder.toString();
 	}
 
-	private void makeString(RadixEntry node, String key, StringBuilder builder) {
-		if (node.data != null) {
-			builder.append(key + node.key).append('=').append(node.data);
-			builder.append(", ");
+	private void makeString(StringBuilder builder) {
+		Stack<RadixEntry> stack = new Stack<>();
+		Stack<String> kStack = new Stack<>();
+		RadixEntry curr = rootNode;
+		String key = rootNode.key;
+		while (curr != null) {
+			if (curr.data != null) {
+				builder.append(key).append('=').append(curr.data).append(", ");
+			}
+			for (RadixEntry chield : curr.children) {
+				stack.push(chield);
+				kStack.push(key);
+			}
+			if (!stack.isEmpty()) {
+				curr = stack.pop();
+				key = kStack.pop() + curr.key;
+			} else {
+				curr = null;
+			}
 		}
-		node.children.forEach(children -> makeString(children, key + node.key, builder));
 	}
 
 	class RadixEntry implements Map.Entry<String, V> {

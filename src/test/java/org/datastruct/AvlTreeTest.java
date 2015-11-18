@@ -189,7 +189,10 @@ public class AvlTreeTest {
 		}
 		map.putAll(nMap);
 		tmap.putAll(nMap);
-		assertEquals(tmap.toString(), map.toString());
+		assertEquals(tmap.size(), map.size());
+		for (Map.Entry<Integer, Integer> e : map.entrySet()) {
+			assertEquals(tmap.get(e.getKey()), e.getValue());
+		}
 	}
 
 	@Test

@@ -111,7 +111,7 @@ public class RadixTreeMapTest {
 	private void testPut(boolean test) {
 		for (int i = 0; i < size; i++) {
 			double value = Math.random() * 5000 + 1;
-			String key = getRandomKey((int) (Math.random() * 101 + 1));
+			String key = getRandomKey((int) (Math.random() * 26 + 1));
 			if (test) {
 				assertEquals(tmap.put(key, value), map.put(key, value));
 			} else {
@@ -144,7 +144,32 @@ public class RadixTreeMapTest {
 
 	@Test
 	public void testPutAll() throws Exception {
-
+		Map<String, Double> addMap = new HashMap<>(50);
+		addMap.put("asdf", null);
+		try {
+			map.putAll(addMap);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		addMap.clear();
+		addMap.put(null, 23.43);
+		try {
+			map.putAll(addMap);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		addMap.clear();
+		for (int i = 0; i < 50; i++) {
+			double value = Math.random() * 5000 + 1;
+			String key = getRandomKey((int) (Math.random() * 26 + 1));
+			addMap.put(key, value);
+		}
+		map.putAll(addMap);
+		tmap.putAll(addMap);
+		assertEquals(tmap.size(), map.size());
+		for (Map.Entry<String, Double> e : map.entrySet()) {
+			assertEquals(tmap.get(e.getKey()), e.getValue());
+		}
 	}
 
 	@Test
