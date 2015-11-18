@@ -15,46 +15,89 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		if (key == null || data == null) {
 			throw new NullPointerException();
 		}
-		return insert(data, key, rootNode);
+		return insert(data, key);
+//		return insert(data, key, rootNode);
 	}
 
+	/**
+	 * Rekurzivna metoda za vnasanje novega elementa
+	 *
+	 * @param data Nov element
+	 * @param key  Kjuc novega elementa
+	 * @param node Vozlisce v obdelavi
+	 * @return Vrednost starega elementa
+	 */
 	private V insert(V data, String key, RadixEntry node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
-		if (numMatchChar == node.key.length() && numMatchChar < key.length()) {
-			boolean add = true;
-			V ret = null;
-			String ostanekKljuca = key.substring(numMatchChar, key.length());
+		if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
+			return node.setValue(data);
+		} else if (numMatchChar == 0 || (numMatchChar == node.key.length() && numMatchChar < key.length())) {
+			String ostanekKljuca = key.substring(numMatchChar);
 			for (RadixEntry child : node.children) {
 				if (child.key.charAt(0) == ostanekKljuca.charAt(0)) {
-					ret = this.insert(data, ostanekKljuca, child);
-					add = false;
-					break;
+					return insert(data, ostanekKljuca, child);
 				}
 			}
-			if (add) {
-				node.children.add(new RadixEntry(data, ostanekKljuca));
-			}
-			return ret;
-		} else if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
-			if (node.data != null) {
-				return node.setValue(data);
-			} else {
-				node.data = data;
-				return null;
-			}
+			node.children.add(new RadixEntry(data, ostanekKljuca));
+			return null;
 		} else {
-			RadixEntry tmp1 = new RadixEntry(node.data, node.key.substring(numMatchChar, node.key.length()), node.children);
+			RadixEntry tmp = new RadixEntry(node.data, node.key.substring(numMatchChar), node.children);
 			node.key = key.substring(0, numMatchChar);
 			node.children = new LinkedList<>();
-			node.children.add(tmp1);
+			node.children.add(tmp);
 			if (numMatchChar < key.length()) {
-				RadixEntry tmp2 = new RadixEntry(data, key.substring(numMatchChar, key.length()));
+				RadixEntry tmp1 = new RadixEntry(data, key.substring(numMatchChar));
 				node.data = null;
-				node.children.add(tmp2);
+				node.children.add(tmp1);
 			} else {
 				node.data = data;
 			}
 			return null;
+		}
+	}
+
+	/**
+	 * Iterativna metoda za vnasanje novega elemnta
+	 *
+	 * @param key  Kjuc novega elementa
+	 * @param data Vrednost novega elementa
+	 * @return Vrednost starega elementa
+	 */
+	private V insert(V data, String key) {
+		RadixEntry curr = rootNode;
+		String currKey = key;
+		while (true) {
+			int numMatchChar = curr.getNumberOfMatchingCharacters(currKey);
+			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
+				return curr.setValue(data);
+			} else if (numMatchChar == 0 || (numMatchChar == curr.key.length() && numMatchChar < currKey.length())) {
+				boolean add = true;
+				currKey = currKey.substring(numMatchChar);
+				for (RadixEntry chield : curr.children) {
+					if (chield.key.charAt(0) == currKey.charAt(0)) {
+						curr = chield;
+						add = false;
+						break;
+					}
+				}
+				if (add) {
+					curr.children.add(new RadixEntry(data, currKey));
+					return null;
+				}
+			} else {
+				RadixEntry tmp = new RadixEntry(curr.data, curr.key.substring(numMatchChar), curr.children);
+				curr.key = currKey.substring(0, numMatchChar);
+				curr.children = new LinkedList<>();
+				curr.children.add(tmp);
+				if (numMatchChar < currKey.length()) {
+					RadixEntry tmp1 = new RadixEntry(data, currKey.substring(numMatchChar));
+					curr.data = null;
+					curr.children.add(tmp1);
+				} else {
+					curr.setValue(data);
+				}
+				return null;
+			}
 		}
 	}
 

@@ -194,7 +194,7 @@ public class RadixTreeTest {
 	private void testKeySetThree() {
 		testAddMoreOK();
 		testAddOK();
-		assertEquals("[ruber, romulus, test, romanus, rubicudus, rubicon, team, rubens, romane]", intRTree.keySet().toString());
+		assertEquals("[ruber, romulus, test, romanus, rubicudus, team, rubicon, rubens, romane]", intRTree.keySet().toString());
 	}
 
 	@Test
@@ -206,18 +206,18 @@ public class RadixTreeTest {
 
 	private void testAsListOne() {
 		testAddOK();
-		assertEquals("[23, 32]", this.intRTree.asList().toString());
+		assertEquals("[32, 23]", this.intRTree.asList().toString());
 	}
 
 	private void testAsListTwo() {
 		testAddMoreOK();
-		assertEquals("[1, 2, 3, 4, 5, 6, 7]", this.intRTree.asList().toString());
+		assertEquals("[7, 6, 5, 4, 3, 2, 1]", this.intRTree.asList().toString());
 	}
 
 	private void testAsListThree() {
 		testAddMoreOK();
 		testAddOK();
-		assertEquals("[1, 2, 3, 4, 5, 6, 7, 23, 32]", this.intRTree.asList().toString());
+		assertEquals("[32, 23, 7, 6, 5, 4, 3, 2, 1]", this.intRTree.asList().toString());
 	}
 
 	private void addSequenceOne() {
@@ -542,6 +542,6 @@ public class RadixTreeTest {
 		builder.append('[');
 		intRTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));
 		builder.append(']');
-		assertEquals("[[ruber,5][romulus,3][test,23][romanus,2][rubicudus,7][rubicon,6][team,32][rubens,4][romane,1]]", builder.toString());
+		assertEquals("[[ruber,5][romulus,3][test,23][romanus,2][rubicudus,7][team,32][rubicon,6][rubens,4][romane,1]]", builder.toString());
 	}
 }
