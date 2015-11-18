@@ -29,7 +29,7 @@ public class BTree<V, K> implements Map<K, V> {
 
 	@Override
 	public boolean isEmpty() {
-		return false;
+		return root.size == 0;
 	}
 
 	@Override
@@ -48,7 +48,51 @@ public class BTree<V, K> implements Map<K, V> {
 	}
 
 	@Override
-	public V put(K k, V v) {
+	public V put(K k, V v) throws NullPointerException {
+		if (k == null) {
+			throw new NullPointerException();
+		}
+		Stack<Node> stack = new Stack<>();
+		Node curr = root;
+		int index;
+		while (true) {
+			index = curr.getIndex(k);
+			if (index >= 0) {
+				return ((Entry) curr.array[index]).setValue(v);
+			} else {
+				index = -(index + 1);
+				if (curr.size > index) {
+					Node tmp = ((Entry) curr.array[index]).lower;
+					if (tmp == null) {
+						break;
+					} else {
+						stack.push(curr);
+						curr = tmp;
+					}
+				} else {
+					if (curr.higher == null) {
+						break;
+					} else {
+						stack.push(curr);
+						curr = curr.higher;
+					}
+				}
+			}
+		}
+		if (curr.isFull()) {
+			if (stack.isEmpty()) {
+				// TODO popravi root node
+			} else {
+				while (!stack.isEmpty()) {
+					// TODO
+					break;
+				}
+			}
+		} else {
+			curr.shift(index);
+			curr.array[index] = new Entry(k, v);
+			curr.size++;
+		}
 		return null;
 	}
 
@@ -64,7 +108,7 @@ public class BTree<V, K> implements Map<K, V> {
 
 	@Override
 	public void clear() {
-
+		root = new Node(root.array.length);
 	}
 
 	@Override
@@ -119,11 +163,16 @@ public class BTree<V, K> implements Map<K, V> {
 
 		private K key;
 		private V value;
-		private Entry lower;
+		private Node lower;
 
-		Entry(K key, V value) {
+		Entry(K key, V value, Node lower) {
 			this.key = key;
 			this.value = value;
+			this.lower = lower;
+		}
+
+		Entry(K key, V value) {
+			this(key, value, null);
 		}
 
 		@Override
@@ -140,14 +189,14 @@ public class BTree<V, K> implements Map<K, V> {
 		public V setValue(V v) {
 			V ret = value;
 			value = v;
-			return value;
+			return ret;
 		}
 	}
 
 	class Node {
 
 		private Object[] array;
-		private Entry higher;
+		private Node higher;
 		private int size;
 
 		Node(int size) {
@@ -161,9 +210,12 @@ public class BTree<V, K> implements Map<K, V> {
 		}
 
 		int getIndex(K key) {
+			if (size == 0) {
+				return -1;
+			}
 			int low = 0;
 			int high = size - 1;
-			while (low < +high) {
+			while (low <= high) {
 				int mid = (low + high) / 2;
 				int cmp = keyCmp.compare(((Entry) array[mid]).key, key);
 				if (cmp == 0) {
@@ -174,7 +226,17 @@ public class BTree<V, K> implements Map<K, V> {
 					high = mid - 1;
 				}
 			}
-			return -(high) - 1;
+			if (high < 0) {
+				return high;
+			} else {
+				return -(high + 2);
+			}
+		}
+
+		void shift(int index) {
+			for (int i = size; i > index; i--) {
+				array[i] = array[i - 1];
+			}
 		}
 	}
 }
