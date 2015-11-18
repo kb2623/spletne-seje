@@ -162,38 +162,100 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		if (key == null) {
 			throw new NullPointerException();
 		}
-		return !this.isEmpty() && this.deleteNode(key, null, this.rootNode);
+//		return !isEmpty() && delete(key) != null;
+		return !isEmpty() && delete(key, null, this.rootNode) != null;
 	}
 
-	private boolean deleteNode(String key, RadixEntry parent, RadixEntry node) {
+	/**
+	 * Rekurzivna metoda za brisanje elementa
+	 *
+	 * @param key    Kjuc elementa
+	 * @param parent Predhodnik trenutnga vozlisca
+	 * @param node   Trenutno vozlisce v obdelavi
+	 * @return Vrednost izbrisanega elementa
+	 */
+	private V delete(String key, RadixEntry parent, RadixEntry node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if (node.key.equals("") || (numMatchChar < key.length() && numMatchChar == node.key.length())) {
-			String ostanekKljuca = key.substring(numMatchChar, key.length());
+			String ostanekKljuca = key.substring(numMatchChar);
 			for (RadixEntry child : node.children) {
 				if (child.key.charAt(0) == ostanekKljuca.charAt(0)) {
-					return this.deleteNode(ostanekKljuca, node, child);
+					return delete(ostanekKljuca, node, child);
 				}
 			}
 		} else if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			if (node.data != null) {
-				if(node.children.isEmpty()) {
+				V data = node.data;
+				if (node.children.isEmpty()) {
 					for (Iterator<RadixEntry> it = parent.children.iterator(); it.hasNext(); ) {
-						if (it.next().key.equals(node.key)) {
+						RadixEntry tmp = it.next();
+						if (tmp.key.equals(node.key)) {
 							it.remove();
+							break;
 						}
 					}
 					if (parent.children.size() == 1 && parent.data == null && !parent.key.equals("")) {
-						this.mergeNodes(parent, parent.children.get(0));
+						mergeNodes(parent, parent.children.get(0));
 					}
 				} else if (node.children.size() == 1) {
-					this.mergeNodes(node, node.children.get(0));
+					mergeNodes(node, node.children.get(0));
 				} else {
 					node.data = null;
 				}
-				return true;
+				return data;
 			}
 		}
-		return false;
+		return null;
+	}
+
+	/**
+	 * Iterativna metoda za brisanje elementa
+	 *
+	 * @param key Kjuc elementa
+	 * @return Vresnost elementa
+	 */
+	private V delete(String key) {
+		RadixEntry curr = rootNode;
+		RadixEntry prev = null;
+		String currKey = rootNode.key;
+		while (true) {
+			int numMatchChar = curr.getNumberOfMatchingCharacters(currKey);
+			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
+				if (curr.data != null) {
+					V data = curr.data;
+					if (prev == null) {
+						return curr.setValue(null);
+					} else if (curr.children.isEmpty()) {
+						for (Iterator<RadixEntry> it = prev.children.iterator(); it.hasNext(); ) {
+							RadixEntry tmp = it.next();
+							if (tmp.key.equals(curr.key)) {
+								it.remove();
+								break;
+							}
+						}
+						if (prev.children.size() == 1 && prev.data == null && prev != rootNode) {
+							mergeNodes(prev, prev.children.get(0));
+						}
+					}
+					if (curr.children.size() == 1) {
+						mergeNodes(curr, curr.children.get(0));
+					} else {
+						curr.data = null;
+					}
+					return data;
+				} else if (curr.key.equals("") || (numMatchChar < currKey.length() && numMatchChar == curr.key.length())) {
+					currKey = currKey.substring(numMatchChar);
+					prev = curr;
+					for (RadixEntry chield : curr.children) {
+						if (chield.key.charAt(0) == currKey.charAt(0)) {
+							curr = chield;
+						}
+					}
+				} else {
+					return null;
+				}
+			}
+		}
 	}
 
 	private void mergeNodes(RadixEntry parent, RadixEntry child) {
@@ -388,43 +450,9 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		if (key == null) {
 			throw new NullPointerException();
 		}
-		return !isEmpty() ? returnDeletedNode((String) key, null, rootNode) : null;
-	}
-
-	private V returnDeletedNode(String key, RadixEntry parent, RadixEntry node) {
-		int numMatchChar = node.getNumberOfMatchingCharacters(key);
-		if (node.key.equals("") || (numMatchChar < key.length() && numMatchChar == node.key.length())) {
-			String ostanekKljuca = key.substring(numMatchChar, key.length());
-			for (RadixEntry child : node.children) {
-				if (child.key.charAt(0) == ostanekKljuca.charAt(0)) {
-					return returnDeletedNode(ostanekKljuca, node, child);
-				}
-			}
-		} else if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
-			if (node.data != null) {
-				V data = null;
-				if (node.children.isEmpty()) {
-					for (Iterator<RadixEntry> it = parent.children.iterator(); it.hasNext(); ) {
-						RadixEntry tmp = it.next();
-						if (tmp.key.equals(node.key)) {
-							it.remove();
-							data = (V) tmp.data;
-						}
-					}
-					if (parent.children.size() == 1 && parent.data == null && !parent.key.equals("")) {
-						mergeNodes(parent, parent.children.get(0));
-					}
-				} else if (node.children.size() == 1) {
-					data = node.data;
-					mergeNodes(node, node.children.get(0));
-				} else {
-					data = node.data;
-					node.data = null;
-				}
-				return data;
-			}
-		}
-		return null;
+		String sKey = (String) key;
+		return !isEmpty() ? delete(sKey) : null;
+//		return !isEmpty() ? delete(sKey, null, rootNode) : null;
 	}
 
 	@Override
