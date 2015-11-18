@@ -8,19 +8,19 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	private RadixEntry rootNode;
 
 	public RadixTree() {
-		this.rootNode = new RadixEntry();
+		rootNode = new RadixEntry();
 	}
 
 	public V add(V data, String key) throws NullPointerException {
 		if (key == null || data == null) {
 			throw new NullPointerException();
 		}
-		return this.insert(data, key, this.rootNode);
+		return insert(data, key, rootNode);
 	}
 
 	private V insert(V data, String key, RadixEntry node) {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
-		if (numMatchChar == 0 || (numMatchChar == node.key.length() && numMatchChar < key.length())) {
+		if (numMatchChar == node.key.length() && numMatchChar < key.length()) {
 			boolean add = true;
 			V ret = null;
 			String ostanekKljuca = key.substring(numMatchChar, key.length());
@@ -58,27 +58,61 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		}
 	}
 
-	private V get(String key) {
-		if (this.isEmpty()) {
-			return null;
-		} else {
-			return this.findNode(key, this.rootNode);
-		}
-	}
-
-	private V findNode(String key, RadixEntry node) {
-		int numMatchChar = node.getNumberOfMatchingCharacters(key);
-		if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
-			return node.data;
-		} else if(node.key.equals("") || (numMatchChar < key.length() && numMatchChar >= node.key.length())) {
-			String ostanekKjuca = key.substring(numMatchChar, key.length());
-			for (RadixEntry child : node.children) {
-				if (child.key.charAt(0) == ostanekKjuca.charAt(0)) {
-					return this.findNode(ostanekKjuca, child);
+	/**
+	 * Metoda, ki iterativno isce element
+	 *
+	 * @param key Kjuc iskanega elemnta
+	 * @return Vrednost elementa
+	 */
+	private V search(String key) {
+		String currKey = key;
+		RadixEntry curr = rootNode;
+		while (curr != null) {
+			int numMatchChar = curr.getNumberOfMatchingCharacters(currKey);
+			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
+				return curr.data;
+			} else if (numMatchChar < currKey.length() && numMatchChar == curr.key.length()) {
+				currKey = currKey.substring(numMatchChar);
+				boolean found = false;
+				for (RadixEntry chield : curr.children) {
+					if (chield.key.charAt(0) == currKey.charAt(0)) {
+						curr = chield;
+						found = true;
+						break;
+					}
 				}
+				if (!found) {
+					curr = null;
+				}
+			} else {
+				curr = null;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Metoda, ki rekuzivno isce element
+	 *
+	 * @param node Vozlisce, ki ga pregledujemo
+	 * @param key  Kljuc iskanega elementa
+	 * @return Vrednost elementa
+	 */
+	private V search(RadixEntry node, String key) {
+		int numMatchChar = node.getNumberOfMatchingCharacters(key);
+		if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
+			return node.data;
+		} else if (numMatchChar < key.length() && numMatchChar == node.key.length()) {
+			String nKey = key.substring(numMatchChar);
+			for (RadixEntry chield : node.children) {
+				if (chield.key.charAt(0) == nKey.charAt(0)) {
+					return search(chield, nKey);
+				}
+			}
+			return null;
+		} else {
+			return null;
+		}
 	}
 
 	public boolean remove(String key) throws NullPointerException {
@@ -125,6 +159,11 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		parent.children = child.children;
 	}
 
+	/**
+	 * Metoda za stetje elementov v strukturi
+	 *
+	 * @return Stevilo elementov v srukturi
+	 */
 	public int count() {
 		int size = 0;
 		Stack<RadixEntry> stack = new Stack<>();
@@ -146,15 +185,46 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	public List<V> asList() {
-		return this.asList(this.rootNode, new LinkedList<>());
+		List<V> list = new ArrayList<>(count());
+		asList(list);
+//		asList(rootNode, list);
+		return list;
 	}
 
-	private List<V> asList(RadixEntry node, List<V> list) {
-		node.children.forEach(children -> list.addAll(asList(children, new LinkedList<>())));
+	/**
+	 * Iterativna metoda za polnjenje Lista
+	 *
+	 * @param list List, ki ga zelimo napolniti
+	 */
+	private void asList(List<V> list) {
+		Stack<RadixEntry> stack = new Stack<>();
+		RadixEntry curr = rootNode;
+		while (curr != null) {
+			if (curr.data != null) {
+				list.add(curr.data);
+			}
+			for (RadixEntry chield : curr.children) {
+				stack.push(chield);
+			}
+			if (!stack.isEmpty()) {
+				curr = stack.pop();
+			} else {
+				curr = null;
+			}
+		}
+	}
+
+	/**
+	 * Rekurzivna metoda za polnjenje Lista
+	 *
+	 * @param node Vozlisce, ki ga obdelujemo
+	 * @param list List, ki ga zelimo napolniti
+	 */
+	private void asList(RadixEntry node, List<V> list) {
+		node.children.forEach(children -> asList(children, list));
 		if (node.data != null) {
 			list.add(node.data);
 		}
-		return list;
 	}
 
 	@Deprecated
@@ -162,7 +232,6 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		printTree(0, this.rootNode);
 	}
 
-	@Deprecated
 	private void printTree(int len, RadixEntry node) {
 		System.out.print("|");
 		for (int i = 0; i < len; i++) {
@@ -203,9 +272,43 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		if (value == null) {
 			throw new NullPointerException();
 		}
+//		return search(value);
 		return search(rootNode, value);
 	}
 
+	/**
+	 * Iterativna metoda za iskanje elementa
+	 *
+	 * @param value Vrednost elementa
+	 * @return Ali element obstaja v strukturi
+	 */
+	private boolean search(Object value) {
+		Stack<RadixEntry> stack = new Stack<>();
+		RadixEntry curr = rootNode;
+		while (curr != null) {
+			if (curr.data != null && curr.data.equals(value)) {
+				return true;
+			} else {
+				for (RadixEntry chield : curr.children) {
+					stack.push(chield);
+				}
+				if (!stack.isEmpty()) {
+					curr = stack.pop();
+				} else {
+					curr = null;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Rekurzivna metoda za iskanje elementa
+	 *
+	 * @param node Vozlisce, ki ga pregledujemo
+	 * @param value Vrednost elementa
+	 * @return Ali element obstaja v strukturi
+	 */
 	private boolean search(RadixEntry node, Object value) {
 		if (node.data != null && node.data.equals(value)) {
 			return true;
@@ -220,11 +323,16 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public V get(Object key) throws NullPointerException, ClassCastException {
+	public V get(Object key) throws NullPointerException {
 		if (key == null) {
 			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		} else {
+			String sKey = (String) key;
+			return search(sKey);
+//			return search(rootNode, sKey);
 		}
-		return get((String) key);
 	}
 
 	@Override
@@ -288,16 +396,51 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public Set<String> keySet() {
-		Set<String> set = new HashSet<>();
-		keysAsSet(rootNode, rootNode.key, set);
+		Set<String> set = new HashSet<>(count());
+		keySet(set);
+//		keySet(rootNode, rootNode.key, set);
 		return set;
 	}
 
-	private void keysAsSet(RadixEntry node, String key, Set<String> set) {
+	/**
+	 * Iterativna metoda za polnjenje Seta s kjuci
+	 *
+	 * @param set Set, ki ga zelimo napolniti
+	 */
+	private void keySet(Set<String> set) {
+		Stack<RadixEntry> stack = new Stack<>();
+		Stack<String> kStack = new Stack<>();
+		RadixEntry curr = rootNode;
+		String key = rootNode.key;
+		while (curr != null) {
+			if (curr.data != null) {
+				set.add(key);
+			}
+			for (RadixEntry chield : curr.children) {
+				stack.push(chield);
+				kStack.push(key);
+			}
+			if (!stack.isEmpty()) {
+				curr = stack.pop();
+				key = kStack.pop() + curr.key;
+			} else {
+				curr = null;
+			}
+		}
+	}
+
+	/**
+	 * Rekurzivna metoda za polnjenje Seta s kjuci
+	 *
+	 * @param node Vozlisce, ki ga pregledujemo
+	 * @param key  Kjuc, vozlisca (v trenutnem vozliscu se nahaj samo delcek kljuca)
+	 * @param set  Set, ki ga zelimo napolniti
+	 */
+	private void keySet(RadixEntry node, String key, Set<String> set) {
 		if (node.data != null) {
 			set.add(key + node.key);
 		}
-		node.children.forEach(children -> keysAsSet(children, key + node.key, set));
+		node.children.forEach(children -> keySet(children, key + node.key, set));
 	}
 
 	@Override
@@ -307,16 +450,51 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	@Override
 	public Set<Map.Entry<String, V>> entrySet() {
-		Set<Map.Entry<String, V>> set = new HashSet<>();
-		entryAsSet(rootNode, rootNode.key, set);
+		Set<Map.Entry<String, V>> set = new HashSet<>(count());
+		entrySet(set);
+//		entrySet(rootNode, rootNode.key, set);
 		return set;
 	}
 
-	private void entryAsSet(RadixEntry node, String key, Set<Map.Entry<String, V>> set) {
+	/**
+	 * Iterativna metoda za polnjenje Seta z zapisi v nasi strukturi
+	 *
+	 * @param set Set, ki ga zelmo napolniti
+	 */
+	private void entrySet(Set<Map.Entry<String, V>> set) {
+		Stack<RadixEntry> stack = new Stack<>();
+		Stack<String> kStack = new Stack<>();
+		RadixEntry curr = rootNode;
+		String key = rootNode.key;
+		while (curr != null) {
+			if (curr.data != null) {
+				set.add(new RadixEntry(curr.data, key, null));
+			}
+			for (RadixEntry chiled : curr.children) {
+				stack.push(chiled);
+				kStack.push(key);
+			}
+			if (!stack.isEmpty()) {
+				curr = stack.pop();
+				key = kStack.pop() + curr.key;
+			} else {
+				curr = null;
+			}
+		}
+	}
+
+	/**
+	 * Rekurzivna metoda za polnjenje Seta z zapisi v nasi podatkovni srukturi
+	 *
+	 * @param node Vozlisce, ki ga obdelujemo
+	 * @param key  Kjuc trenutnega vozlisca (v trenutnem vozliscu je samo del kjuca)
+	 * @param set  Set, ki ga zelmo napolniti
+	 */
+	private void entrySet(RadixEntry node, String key, Set<Map.Entry<String, V>> set) {
 		if (node.data != null) {
 			set.add(new RadixEntry(node.data, key + node.key, null));
 		}
-		node.children.forEach(children -> entryAsSet(children, key + node.key, set));
+		node.children.forEach(children -> entrySet(children, key + node.key, set));
 	}
 
 	@Override

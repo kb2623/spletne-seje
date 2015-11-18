@@ -56,11 +56,6 @@ public class RadixTreeMapTest {
 			fail();
 		} catch (NullPointerException e) {
 		}
-		try {
-			map.containsKey(new Integer(23));
-			fail();
-		} catch (ClassCastException e) {
-		}
 		testPut(true);
 		for (String s : tmap.keySet()) {
 			assertTrue(map.containsKey(s));
@@ -77,7 +72,6 @@ public class RadixTreeMapTest {
 		testPut(true);
 		for (Double d : tmap.values()) {
 			assertTrue(map.containsValue(d));
-			;
 		}
 	}
 
@@ -87,11 +81,6 @@ public class RadixTreeMapTest {
 			map.get(null);
 			fail();
 		} catch (NullPointerException e) {
-		}
-		try {
-			map.get(new Integer(23));
-			fail();
-		} catch (ClassCastException e) {
 		}
 		testPut(true);
 		for (String s : tmap.keySet()) {

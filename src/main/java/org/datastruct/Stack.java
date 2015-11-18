@@ -15,14 +15,14 @@ public class Stack<T> {
 	}
 
 	public T pop() throws NoSuchElementException {
-		if(this.isEmpty()) throw new NoSuchElementException();
+		if (this.isEmpty()) throw new NoSuchElementException();
 		T ret = this.top.data;
 		this.top = this.top.prev;
 		return ret;
 	}
 
 	public T peek() {
-		if(this.isEmpty()) {
+		if (this.isEmpty()) {
 			return null;
 		} else {
 			return this.top.data;
