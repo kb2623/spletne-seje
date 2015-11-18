@@ -118,16 +118,21 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	}
 
 	public int count() {
-		return this.count(this.rootNode);
-	}
-
-	private int count(RadixEntry node) {
 		int size = 0;
-		if (node.data != null) {
-			size++;
-		}
-		for (RadixEntry child : node.children) {
-			size += this.count(child);
+		Stack<RadixEntry> stack = new Stack<>();
+		RadixEntry curr = rootNode;
+		while (curr != null) {
+			if (curr.data != null) {
+				size++;
+			}
+			for (RadixEntry chield : curr.children) {
+				stack.push(chield);
+			}
+			if (!stack.isEmpty()) {
+				curr = stack.pop();
+			} else {
+				curr = null;
+			}
 		}
 		return size;
 	}
