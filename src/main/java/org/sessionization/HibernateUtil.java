@@ -1,22 +1,18 @@
 package org.sessionization;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
 import org.sessionization.fields.LogFieldType;
-import org.sessionization.fields.LogField;
 import org.sessionization.parser.AbsParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.datastruct.PageViewDump;
 import org.sessionization.parser.datastruct.ResourceDump;
 
-import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
@@ -26,35 +22,24 @@ import java.util.Set;
 
 public class HibernateUtil implements AutoCloseable {
 
-	public class UrlLoader extends URLClassLoader {
-
-		public UrlLoader(URL[] urls) {
-			super(urls);
-		}
-
-		public void defineClass(String name, byte[] bytes) {
-			super.defineClass(name, bytes, 0, bytes.length);
-		}
-	}
-
 	private SessionFactory factory = null;
-	private ServiceRegistry registry = null;
+	private ServiceRegistry serviceRegistry = null;
 	private ClassLoader loader = null;
-
 	public HibernateUtil(ArgsParser argsParser, AbsParser logParser) throws ExceptionInInitializerError {
 		this.loader = initClassLoader(argsParser, logParser);
 		Properties props = initProperties(argsParser);
+		/** Dodaj potrebne razrede */
 		Set<Class> classes = initClasses(logParser.getFieldType());
-		registry = new StandardServiceRegistryBuilder()
+		serviceRegistry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
 				.applySettings(props)
 				.build();
 		try {
-			MetadataSources sources = new MetadataSources(registry);
+			MetadataSources sources = new MetadataSources(serviceRegistry);
 			for (Class c : classes) sources.addAnnotatedClass(c);
 			factory = sources.buildMetadata().buildSessionFactory();
 		} catch (Exception e) {
-			StandardServiceRegistryBuilder.destroy(registry);
+			StandardServiceRegistryBuilder.destroy(serviceRegistry);
 			throw new ExceptionInInitializerError(e);
 		}
 	}
@@ -106,7 +91,6 @@ public class HibernateUtil implements AutoCloseable {
 			set.add(argsParser.getDialect());
 		}
 		UrlLoader loader = new UrlLoader(set.toArray(new URL[set.size()]));
-
 		/** Ustvari dinamicne razrede */
 		loader.defineClass(PageViewDump.getClassName(), PageViewDump.dump(logParser.getFieldType()));
 		loader.defineClass(ResourceDump.getClassName(), ResourceDump.dump(logParser.getFieldType()));
@@ -117,40 +101,24 @@ public class HibernateUtil implements AutoCloseable {
 		return loader;
 	}
 
-	private Session getSession() {
+	public Session getSession() {
 		return factory.openSession();
-	}
-
-	public <T extends LogField> Serializable save(T o) {
-		Serializable ret = null;
-		synchronized (factory) {
-			Session s = getSession();
-			Transaction t = s.getTransaction();
-			try {
-				t.begin();
-				ret = s.save(o);
-				t.commit();
-			} catch (HibernateException e) {
-				if (t != null) {
-					t.rollback();
-				}
-			}
-			s.close();
-		}
-		return ret;
-	}
-
-	public <T extends LogField> T getObject(T t) {
-		T ret = null;
-		synchronized (factory) {
-			// TODO
-		}
-		return ret;
 	}
 
 	@Override
 	public void close() {
-		if (registry != null) StandardServiceRegistryBuilder.destroy(registry);
+		if (serviceRegistry != null) StandardServiceRegistryBuilder.destroy(serviceRegistry);
 		if (factory != null) factory.close();
+	}
+
+	public class UrlLoader extends URLClassLoader {
+
+		public UrlLoader(URL[] urls) {
+			super(urls);
+		}
+
+		public void defineClass(String name, byte[] bytes) {
+			super.defineClass(name, bytes, 0, bytes.length);
+		}
 	}
 }

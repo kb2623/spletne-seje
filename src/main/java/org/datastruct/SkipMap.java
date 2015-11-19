@@ -5,11 +5,16 @@ import java.util.*;
 public class SkipMap<K, V> implements Map<K, V> {
 
 	protected Entry<K, V> sentinel;
-	private Comparator<K> keyCmp;
+	private CompareKey<K> keyCmp;
+
+	protected SkipMap(Entry<K, V> sentinel, Comparator<K> cmp) {
+		this.sentinel = sentinel;
+		this.keyCmp = new CompareKey<>(cmp);
+	}
 
 	public SkipMap(int maxCone, Comparator<K> keyCmp) {
 		sentinel = new Entry<>(maxCone);
-		this.keyCmp = keyCmp;
+		this.keyCmp = new CompareKey<>(keyCmp);
 	}
 
 	public SkipMap(int maxCone) {
@@ -18,42 +23,26 @@ public class SkipMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K k, V v) throws NullPointerException {
-		if (k == null) {
-			throw new NullPointerException();
-		}
-		Entry<K, V> e = null;
+		Entry<K, V> e = new Entry<>(k, v, sentinel.conns.length);
+		return insertEntry(e);
+	}
+
+	protected V insertEntry(Entry<K, V> e) {
 		Stack<Entry> stack = new Stack<>();
 		Entry<K, V> curr = sentinel;
 		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
 			Entry<K, V> tmp = curr.conns[level];
 			if (tmp != null) {
-				int cmp = keyCmp.compare(tmp.key, k);
+				int cmp = keyCmp.compare(tmp.key, e.key);
 				if (cmp == 0) {
-					if (tmp.key.equals(k)) {
-						return tmp.setValue(v);
-					} else {
-						e = new Entry(k, v, tmp.conns.length);
-						for (; level > 0; level--) {
-							stack.push(tmp);
-						}
-						curr = tmp;
-					}
+					return tmp.setValue(e.value);
 				} else if (cmp < 0) {
 					curr = tmp;
 					while (curr.conns[level] != null) {
 						tmp = curr.conns[level];
-						cmp = keyCmp.compare(tmp.key, k);
+						cmp = keyCmp.compare(tmp.key, e.key);
 						if (cmp == 0) {
-							if (tmp.key.equals(k)) {
-								return tmp.setValue(v);
-							} else {
-								e = new Entry(k, v, tmp.conns.length);
-								for (; level > 0; level--) {
-									stack.push(tmp);
-								}
-								curr = tmp;
-								break;
-							}
+							return tmp.setValue(e.value);
 						} else if (cmp > 0) {
 							break;
 						} else {
@@ -63,9 +52,6 @@ public class SkipMap<K, V> implements Map<K, V> {
 				}
 			}
 			stack.push(curr);
-		}
-		if (e == null) {
-			e = new Entry(k, v, sentinel.conns.length);
 		}
 		for (int level = 0; level < e.conns.length; level++) {
 			curr = stack.pop();
@@ -172,28 +158,29 @@ public class SkipMap<K, V> implements Map<K, V> {
 			throw new NullPointerException();
 		}
 		K key = (K) o;
+		Entry<K, V> ret = getEnrty(key);
+		if (ret == null) {
+			return null;
+		} else {
+			return ret.value;
+		}
+	}
+
+	protected Entry<K, V> getEnrty(K key) {
 		Entry<K, V> curr = this.sentinel;
 		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
 			Entry<K, V> tmp = curr.conns[level];
 			if (tmp != null) {
 				int cmp = keyCmp.compare(tmp.key, key);
 				if (cmp == 0) {
-					if (tmp.key.equals(key)) {
-						return tmp.value;
-					} else {
-						curr = tmp;
-					}
+					return tmp;
 				} else if (cmp < 0) {
 					curr = tmp;
 					while (curr.conns[level] != null) {
 						tmp = curr.conns[level];
 						cmp = keyCmp.compare(tmp.key, key);
 						if (cmp == 0) {
-							if (tmp.key.equals(key)) {
-								return tmp.value;
-							} else {
-								curr = tmp;
-							}
+							return tmp;
 						} else if (cmp > 0) {
 							break;
 						} else {
@@ -212,6 +199,15 @@ public class SkipMap<K, V> implements Map<K, V> {
 			throw new NullPointerException();
 		}
 		K key = (K) o;
+		Entry<K, V> e = removeEntry(key);
+		if (e == null) {
+			return null;
+		} else {
+			return e.value;
+		}
+	}
+
+	protected Entry<K, V> removeEntry(K key) {
 		Stack<Entry<K, V>> stack = new Stack<>();
 		Entry<K, V> curr = this.sentinel;
 		Entry<K, V> found = null;
@@ -220,23 +216,15 @@ public class SkipMap<K, V> implements Map<K, V> {
 			if (tmp != null) {
 				int cmp = keyCmp.compare(tmp.key, key);
 				if (cmp == 0) {
-					if (tmp.key.equals(key)) {
-						found = tmp;
-					} else {
-						curr = tmp;
-					}
+					found = tmp;
 				} else if (cmp < 0) {
 					curr = tmp;
 					while (curr.conns[level] != null) {
 						tmp = curr.conns[level];
 						cmp = keyCmp.compare(tmp.key, key);
 						if (cmp == 0) {
-							if (tmp.key.equals(key)) {
-								found = tmp;
-								break;
-							} else {
-								curr = tmp;
-							}
+							found = tmp;
+							break;
 						} else if (cmp > 0) {
 							break;
 						} else {
@@ -257,8 +245,9 @@ public class SkipMap<K, V> implements Map<K, V> {
 		}
 		if (found == null) {
 			return null;
+		} else {
+			return found;
 		}
-		return found.value;
 	}
 
 	@Override
@@ -292,6 +281,30 @@ public class SkipMap<K, V> implements Map<K, V> {
 		return builder.toString();
 	}
 
+	@Deprecated
+	public String printTree() {
+		StringBuilder[] builders = new StringBuilder[sentinel.conns.length];
+		for (int i = 0; i < builders.length; i++) {
+			builders[i] = new StringBuilder();
+		}
+		Entry<K, V> curr = sentinel.conns[0];
+		while (curr != null) {
+			for (int i = 0; i < builders.length; i++) {
+				if (i < curr.conns.length) {
+					builders[i].append('x').append('\t');
+				} else {
+					builders[i].append(' ').append('\t');
+				}
+			}
+			curr = curr.conns[0];
+		}
+		StringBuilder builder = new StringBuilder();
+		for (int i = builders.length - 1; i >= 0; i--) {
+			builder.append(builders[i].toString()).append('\n');
+		}
+		return builder.toString();
+	}
+
 	class Entry<K, V> implements Map.Entry<K, V> {
 
 		protected Entry<K, V>[] conns;
@@ -304,7 +317,10 @@ public class SkipMap<K, V> implements Map<K, V> {
 			this.value = null;
 		}
 
-		Entry(K key, V value, int maxConns) {
+		Entry(K key, V value, int maxConns) throws NullPointerException {
+			if (key == null) {
+				throw new NullPointerException();
+			}
 			this.key = key;
 			this.value = value;
 			int size;
@@ -347,6 +363,29 @@ public class SkipMap<K, V> implements Map<K, V> {
 		public int hashCode() {
 			int result = getKey() != null ? getKey().hashCode() : 0;
 			return result;
+		}
+	}
+
+	class CompareKey<K> implements Comparator<K> {
+
+		Comparator<K> cmp;
+
+		CompareKey(Comparator<K> cmp) {
+			this.cmp = cmp;
+		}
+
+		@Override
+		public int compare(K k1, K k2) {
+			int cmp = this.cmp.compare(k1, k2);
+			if (cmp == 0) {
+				if (k1.equals(k2)) {
+					return 0;
+				} else {
+					return 1;
+				}
+			} else {
+				return cmp;
+			}
 		}
 	}
 }

@@ -13,8 +13,8 @@ public class SkipMapTest {
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
 
-	private int size = 200;
-	private int conns = 5;
+	private int size = 50;
+	private int conns = 6;
 
 	@Before
 	public void start() throws Exception {
@@ -205,6 +205,16 @@ public class SkipMapTest {
 		map.clear();
 		tmap.clear();
 		assertEquals(tmap.size(), map.size());
+	}
+
+	@Test
+	public void testPrintTtree() {
+		testPut(false);
+		System.out.println(((SkipMap) map).printTree());
+		System.out.println(map.toString());
+		testPut(false);
+		System.out.println(((SkipMap) map).printTree());
+		System.out.println(map.toString());
 	}
 
 	class Compare implements Comparator<Integer> {
