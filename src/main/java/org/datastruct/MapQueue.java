@@ -31,29 +31,54 @@ public class MapQueue<K, V> extends SkipMap<K, V> {
 
 	@Override
 	public V put(K k, V v) throws NullPointerException, IllegalArgumentException {
-		if (size == maxSize) {
-			throw new IllegalArgumentException();
+		Entry<K, V> sentinel = (Entry<K, V>) super.sentinel;
+		Entry<K, V> e = (Entry<K, V>) getEnrty(k);
+		if (e == null) {
+			if (size == maxSize) {
+				throw new IllegalArgumentException();
+			} else {
+				e = new Entry<>(k, v, sentinel.conns.length, sentinel.prev);
+				if (sentinel.prev == null) {
+					sentinel.next = sentinel.prev = e;
+				} else {
+					sentinel.prev.prev = e;
+					sentinel.prev = e;
+				}
+				return insertEntry(e);
+			}
+		} else {
+			if (sentinel.prev != sentinel.next) {
+				if (e.next == null) {
+					sentinel.next = e.prev;
+				}
+				if (e.prev != null) {
+					e.remove();
+					e.next = sentinel.prev;
+					sentinel.prev.prev = e;
+					sentinel.prev = e;
+				}
+			}
+			return (V) e.setValue(v);
 		}
-		Entry<K, V> e = new Entry<>(k, v, super.sentinel.conns.length, ((Entry<K, V>) sentinel).prev);
-		if (((Entry<K, V>) sentinel).next == null) {
-			((Entry<K, V>) sentinel).next = e;
-		}
-		size++;
-		return super.insertEntry(e);
 	}
 
 	@Override
 	public V remove(Object o) throws ClassCastException, NullPointerException {
-		if (o == null) {
-			throw new NullPointerException();
-		}
+		Entry<K, V> sentinel = (Entry<K, V>) super.sentinel;
 		K key = (K) o;
-		Entry<K, V> e = (Entry<K, V>) super.removeEntry(key);
-		if (e == null) {
-			return null;
-		} else {
-			// todo izbrisi povezave
+		Entry<K, V> e = (Entry<K, V>) getEnrty(key);
+		if (e != null) {
+			if (sentinel.next != sentinel.prev) {
+				if (e.next == null) {
+					sentinel.next = e.prev;
+				}
+			}
+			if (e.lowerPriority()) {
+				sentinel.prev = e;
+			}
 			return (V) e.value;
+		} else {
+			return null;
 		}
 	}
 
@@ -81,6 +106,31 @@ public class MapQueue<K, V> extends SkipMap<K, V> {
 
 		Entry(Object key, Object value, int maxConns) {
 			super(key, value, maxConns);
+		}
+
+		boolean lowerPriority() {
+			if (prev != null) {
+				Entry<K, V> e = prev;
+				prev = e.prev;
+				e.next = next;
+				next = e;
+				e.prev = this;
+				if (prev == null) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		void remove() {
+			if (prev != null && next != null) {
+				prev.next = next;
+				next.prev = prev;
+			} else if (prev == null && next != null) {
+				next.prev = null;
+			} else if (prev != null && next == null) {
+				prev.next = null;
+			}
 		}
 	}
 }

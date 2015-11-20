@@ -305,7 +305,7 @@ public class SkipMap<K, V> implements Map<K, V> {
 		return builder.toString();
 	}
 
-	class Entry<K, V> implements Map.Entry<K, V> {
+	protected class Entry<K, V> implements Map.Entry<K, V> {
 
 		protected Entry<K, V>[] conns;
 		protected K key;
