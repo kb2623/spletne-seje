@@ -13,7 +13,7 @@ public class SkipMapTest {
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
 
-	private int size = 50;
+	private int size = 500;
 	private int conns = 6;
 
 	@Before

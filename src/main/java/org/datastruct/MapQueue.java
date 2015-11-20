@@ -31,27 +31,29 @@ public class MapQueue<K, V> extends SkipMap<K, V> {
 
 	@Override
 	public V put(K k, V v) throws NullPointerException, IllegalArgumentException {
+		if (k == null) {
+			throw new NullPointerException();
+		}
 		Entry<K, V> sentinel = (Entry<K, V>) super.sentinel;
 		Entry<K, V> e = (Entry<K, V>) getEnrty(k);
 		if (e == null) {
 			if (size == maxSize) {
-				throw new IllegalArgumentException();
-			} else {
-				e = new Entry<>(k, v, sentinel.conns.length, sentinel.prev);
-				if (sentinel.prev == null) {
-					sentinel.next = sentinel.prev = e;
-				} else {
-					sentinel.prev.prev = e;
-					sentinel.prev = e;
-				}
-				return insertEntry(e);
+				remove(sentinel.next.key);
 			}
+			e = new Entry<>(k, v, sentinel.conns.length, sentinel.prev);
+			if (sentinel.prev == null) {
+				sentinel.next = sentinel.prev = e;
+			} else {
+				sentinel.prev.prev = e;
+				sentinel.prev = e;
+			}
+			size++;
+			return (V) insertEntry(e);
 		} else {
 			if (sentinel.prev != sentinel.next) {
 				if (e.next == null) {
 					sentinel.next = e.prev;
-				}
-				if (e.prev != null) {
+				} else if (e.prev != null) {
 					e.remove();
 					e.next = sentinel.prev;
 					sentinel.prev.prev = e;
@@ -64,6 +66,38 @@ public class MapQueue<K, V> extends SkipMap<K, V> {
 
 	@Override
 	public V remove(Object o) throws ClassCastException, NullPointerException {
+		if (o == null) {
+			throw new NullPointerException();
+		}
+		K key = (K) o;
+		Entry<K, V> sentinel = (Entry<K, V>) super.sentinel;
+		Entry<K, V> e = (Entry<K, V>) removeEntry(key);
+		if (e == null) {
+			return null;
+		} else {
+			if (sentinel.next != sentinel.prev) {
+				if (e.next == null) {
+					sentinel.next = sentinel.next.prev;
+					sentinel.next.next = null;
+				} else if (e.prev == null) {
+					sentinel.prev = sentinel.prev.next;
+					sentinel.prev.prev = null;
+				} else {
+					e.remove();
+				}
+			} else {
+				clear();
+			}
+			size--;
+			return (V) e.value;
+		}
+	}
+
+	@Override
+	public V get(Object o) throws ClassCastException, NullPointerException {
+		if (o == null) {
+			throw new NullPointerException();
+		}
 		Entry<K, V> sentinel = (Entry<K, V>) super.sentinel;
 		K key = (K) o;
 		Entry<K, V> e = (Entry<K, V>) getEnrty(key);
@@ -80,12 +114,6 @@ public class MapQueue<K, V> extends SkipMap<K, V> {
 		} else {
 			return null;
 		}
-	}
-
-	@Override
-	public V get(Object o) throws ClassCastException, NullPointerException {
-		// TODO
-		return super.get(o);
 	}
 
 	class Entry<K, V> extends SkipMap.Entry {
