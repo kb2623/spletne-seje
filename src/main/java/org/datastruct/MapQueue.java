@@ -39,8 +39,8 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 		Entry<K, V> sentinel = (Entry<K, V>) super.sentinel;
 		Entry<K, V> e = (Entry<K, V>) getEnrty(k);
 		if (e == null) {
-			if (size == maxSize) {
-				remove(sentinel.next.key);
+			if (size >= maxSize) {
+				assert remove(sentinel.next.key) != null : "Bad removel";
 			}
 			e = new Entry<>(k, v, sentinel.conns.length, sentinel.prev);
 			if (sentinel.prev == null) {
@@ -52,15 +52,14 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 			size++;
 			return (V) insertEntry(e);
 		} else {
-			if (sentinel.prev != sentinel.next) {
+			if (sentinel.prev != sentinel.next && sentinel.prev != e) {
 				if (e.next == null) {
 					sentinel.next = e.prev;
-				} else if (e.prev != null) {
-					e.remove();
-					e.next = sentinel.prev;
-					sentinel.prev.prev = e;
-					sentinel.prev = e;
 				}
+				e.remove();
+				e.next = sentinel.prev;
+				sentinel.prev.prev = e;
+				sentinel.prev = e;
 			}
 			return (V) e.setValue(v);
 		}
@@ -82,7 +81,7 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 					sentinel.next = sentinel.next.prev;
 					sentinel.next.next = null;
 				} else if (e.prev == null) {
-					sentinel.prev = sentinel.prev.next;
+					sentinel.prev = e.next;
 					sentinel.prev.prev = null;
 				} else {
 					e.remove();
@@ -105,8 +104,8 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 		Entry<K, V> e = (Entry<K, V>) getEnrty(key);
 		if (e != null) {
 			if (sentinel.next != sentinel.prev) {
-				if (e.next == null) {
-					sentinel.next = e.prev;
+				if (sentinel.next == e) {
+					sentinel.next = sentinel.next.prev;
 				}
 			}
 			if (e.lowerPriority()) {
@@ -127,8 +126,8 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
-		for (Iterator<V> it = iterator(); it.hasNext(); ) {
-			builder.append(it.next()).append(", ");
+		for (Entry<K, V> node = ((Entry<K, V>) sentinel).prev; node != null; node = node.next) {
+			builder.append(node.key).append('=').append(node.value).append(", ");
 		}
 		if (builder.length() > 2) {
 			builder.delete(builder.length() - 2, builder.length());
@@ -158,28 +157,40 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 		}
 
 		boolean lowerPriority() {
-			if (prev != null) {
-				Entry<K, V> e = prev;
-				prev = e.prev;
-				e.next = next;
-				next = e;
-				e.prev = this;
-				if (prev == null) {
-					return true;
+			if (prev != null && prev.prev != null) {
+				Entry pp = prev.prev, p = prev;
+				if (next != null) {
+					next.prev = p;
 				}
+				pp.next = this;
+				prev = pp;
+				p.prev = this;
+				p.next = next;
+				next = p;
+				return false;
+			} else if (prev != null) {
+				Entry p = prev;
+				if (next != null) {
+					next.prev = p;
+				}
+				p.next = next;
+				p.prev = this;
+				next = p;
+				prev = null;
+				return true;
+			} else {
+				return false;
 			}
-			return false;
 		}
 
 		void remove() {
-			if (prev != null && next != null) {
+			if (prev != null) {
 				prev.next = next;
-				next.prev = prev;
-			} else if (prev == null && next != null) {
-				next.prev = null;
-			} else if (prev != null && next == null) {
-				prev.next = null;
 			}
+			if (next != null) {
+				next.prev = prev;
+			}
+			prev = next = null;
 		}
 	}
 

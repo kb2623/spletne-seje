@@ -5,7 +5,8 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class MapQueueTest {
 
@@ -14,13 +15,13 @@ public class MapQueueTest {
 	private List<Integer> listK;
 
 	private int size = 100;
-	private int capacity = 25;
+	private int capacity = 10;
 
 	@Before
 	public void setUp() {
 		map = new MapQueue<>(5, capacity);
-		listV = new ArrayList<>(capacity);
-		listK = new ArrayList<>(capacity);
+		listV = new LinkedList<>();
+		listK = new LinkedList<>();
 	}
 
 	@Test
@@ -44,36 +45,26 @@ public class MapQueueTest {
 		for (int i = 0; i < size; i++) {
 			int rNumK = (int) (Math.random() * (size + 1) + 1);
 			int rNumV = (int) (Math.random() * (size + 1000) + 1);
-			map.put(rNumK, rNumV);
-			int indexOf = listV.indexOf(new Integer(rNumV));
-			if (listV.size() < capacity) {
-				if (indexOf > -1) {
-					if (testGet) {
-						listK.remove(indexOf);
-						listK.add(0, rNumK);
-					}
-					listV.remove(indexOf);
-					listV.add(0, rNumV);
-				} else {
-					if (testGet) {
-						listK.add(0, rNumK);
-					}
-					listV.add(0, rNumV);
+			Integer ret = map.put(rNumK, rNumV);
+			if (ret != null) {
+				int index = remove(listV, ret);
+				listV.add(0, rNumV);
+				if (testGet) {
+					listK.remove(index);
+					listK.add(0, rNumK);
 				}
 			} else {
-				if (indexOf > -1) {
+				if (listV.size() >= capacity) {
 					if (testGet) {
-						listK.remove(indexOf);
-						listK.add(0, rNumK);
-					}
-					listV.remove(indexOf);
-					listV.add(0, rNumV);
-				} else {
-					if (testGet) {
-						assertNotNull(listK.remove(capacity - 1));
+						listK.remove(capacity - 1);
 						listK.add(0, rNumK);
 					}
 					listV.remove(capacity - 1);
+					listV.add(0, rNumV);
+				} else {
+					if (testGet) {
+						listK.add(0, rNumK);
+					}
 					listV.add(0, rNumV);
 				}
 			}
@@ -84,15 +75,35 @@ public class MapQueueTest {
 		assertEquals(listV.size(), map.size());
 	}
 
+	private int remove(List<Integer> list, Integer o) {
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).intValue() - o.intValue() == 0) {
+				list.remove(i);
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	@Test
 	public void testGet() {
 		put(true);
 		for (int i = 0; i < size; i++) {
-			int rIndex = (int) (Math.random() * capacity);
-			System.out.println(listV.get(rIndex));
-			map.get(listK.get(rIndex));
+			int rIndex = (int) (Math.random() * listK.size());
+			assertEquals(listV.get(rIndex), map.get(listK.get(rIndex)));
 			lowerPririty(rIndex);
-			assertEquals(listV.toString(), map.toString());
+			Iterator<Integer> itM = ((MapQueue<Integer, Integer>) map).iterator();
+			Iterator<Integer> itL = listV.iterator();
+			while (itL.hasNext()) {
+				try {
+					assertEquals(itL.next(), itM.next());
+				} catch (AssertionError e) {
+					throw new AssertionError(map.toString() + "\n" + listK.toString(), e);
+				}
+			}
+			if (itM.hasNext()) {
+				fail();
+			}
 		}
 	}
 
@@ -103,5 +114,9 @@ public class MapQueueTest {
 			tmp = listV.set(index - 1, listV.get(index));
 			listV.set(index, tmp);
 		}
+	}
+
+	@Test
+	public void testRemove() {
 	}
 }
