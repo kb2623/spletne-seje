@@ -1,5 +1,7 @@
 package org.sessionization.fields;
 
+import org.datastruct.ClassPool;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +24,21 @@ public class Cookie implements LogField {
 			pairs = new ArrayList<>(tab.length);
 			for (String s : tab) {
 				int indexOf = s.indexOf('=');
+				CookiePair tmp = null;
 				if (indexOf == s.length() - 1) {
-					pairs.add(new CookiePair(s.substring(0, indexOf), "-"));
+					tmp = ClassPool.getObject(CookiePair.class, s.substring(0, indexOf), "-");
 				} else {
-					pairs.add(new CookiePair(s.substring(0, indexOf), s.substring(indexOf + 1)));
+					tmp = ClassPool.getObject(CookiePair.class, s.substring(0, indexOf), s.substring(indexOf + 1));
 				}
+				pairs.add(tmp);
 			}
 		} else {
 			pairs = null;
 		}
+	}
+
+	public static String patteren() {
+		return "([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*;)*([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*){1}";
 	}
 
 	public Integer getId() {
@@ -98,9 +106,5 @@ public class Cookie implements LogField {
 		int result = getId() != null ? getId().hashCode() : 0;
 		result = 31 * result + (getPairs() != null ? getPairs().hashCode() : 0);
 		return result;
-	}
-
-	public static String patteren() {
-		return "([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*;)*([^ \\\"\\[\\{\\(\\]\\}\\)<>/\\\\?=@,;:]+=[\\x21\\x23-\\x2B\\x2D-\\x3A\\x3C-\\x5B\\x5D-\\x7E]*){1}";
 	}
 }
