@@ -1,8 +1,10 @@
 package org.datastruct;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-public class MapQueue<K, V> extends SkipMap<K, V> {
+public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 
 	private int maxSize;
 	private int size;
@@ -116,6 +118,25 @@ public class MapQueue<K, V> extends SkipMap<K, V> {
 		}
 	}
 
+	@Override
+	public Iterator<V> iterator() {
+		return new QueueIterator<>();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append('[');
+		for (Iterator<V> it = iterator(); it.hasNext(); ) {
+			builder.append(it.next()).append(", ");
+		}
+		if (builder.length() > 2) {
+			builder.delete(builder.length() - 2, builder.length());
+		}
+		builder.append(']');
+		return builder.toString();
+	}
+
 	class Entry<K, V> extends SkipMap.Entry {
 
 		protected Entry<K, V> prev;
@@ -159,6 +180,30 @@ public class MapQueue<K, V> extends SkipMap<K, V> {
 			} else if (prev != null && next == null) {
 				prev.next = null;
 			}
+		}
+	}
+
+	class QueueIterator<V> implements Iterator<V> {
+
+		private Entry<K, V> next;
+
+		QueueIterator() {
+			next = ((Entry<K, V>) sentinel).prev;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		@Override
+		public V next() {
+			if (next == null) {
+				throw new NoSuchElementException();
+			}
+			V ret = (V) next.value;
+			next = next.next;
+			return ret;
 		}
 	}
 }
