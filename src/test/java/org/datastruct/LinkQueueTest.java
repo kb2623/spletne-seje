@@ -4,16 +4,24 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.Queue;
+
+import static org.junit.Assert.*;
 
 public class LinkQueueTest {
 
-	private LinkQueue<Integer> queue;
+	private Queue<Integer> queue;
+	private Queue<Integer> tqueue;
+
+	private int size = 100;
 
 	@Before
 	public void setUp() throws Exception {
 		queue = new LinkQueue<>();
+		tqueue = new LinkedList<>();
 		assertTrue(queue.isEmpty());
 	}
 
@@ -24,87 +32,117 @@ public class LinkQueueTest {
 	}
 
 	@Test
-	public void testSize() throws Exception {
-
-	}
-
-	@Test
-	public void testContains() throws Exception {
-
-	}
-
-	@Test
-	public void testIterator() throws Exception {
-
-	}
-
-	@Test
-	public void testToArray() throws Exception {
-
-	}
-
-	@Test
-	public void testToArray1() throws Exception {
-
-	}
-
-	@Test
 	public void testAdd() throws Exception {
-		queue.add(1);
-		queue.add(2);
-		queue.add(3);
-		assertEquals(new Integer(1), queue.poll());
-		assertEquals(new Integer(2), queue.poll());
-		assertEquals(new Integer(3), queue.poll());
+		try {
+			queue.add(null);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		add(true);
+		Iterator<Integer> itQ = queue.iterator();
+		Iterator<Integer> itT = tqueue.iterator();
+		while (itT.hasNext()) {
+			assertEquals(itT.next(), itQ.next());
+		}
+		if (itQ.hasNext()) {
+			fail();
+		}
+		try {
+			itQ.next();
+			fail();
+		} catch (NoSuchElementException e) {}
+	}
+
+	private void add(boolean test) {
+		for (int i = 0; i < size; i++) {
+			int num = (int) (Math.random() * (size * size));
+			if (test) {
+				assertEquals(tqueue.add(num), queue.add(num));
+			} else {
+				assertTrue(queue.add(num));
+			}
+		}
+		assertFalse(queue.isEmpty());
+		if (test) {
+			assertEquals(tqueue.size(), queue.size());
+		}
 	}
 
 	@Test
 	public void testRemove() throws Exception {
-
-	}
-
-	@Test
-	public void testAddAll() throws Exception {
-
-	}
-
-	@Test
-	public void testRetainAll() throws Exception {
-
-	}
-
-	@Test
-	public void testRemoveAll() throws Exception {
-
+		add(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tqueue.remove(), queue.remove());
+		}
+		assertTrue(queue.isEmpty());
+		try {
+			queue.remove();
+			fail();
+		} catch (NoSuchElementException e) {
+		}
 	}
 
 	@Test
 	public void testContainsAll() throws Exception {
-
+		add(true);
+		assertTrue(queue.containsAll(tqueue));
 	}
 
 	@Test
 	public void testOffer() throws Exception {
-
-	}
-
-	@Test
-	public void testRemove1() throws Exception {
-
+		assertFalse(queue.offer(null));
+		for (int i = 0; i < size; i++) {
+			int num = (int) (Math.random() * (size * size));
+			assertEquals(tqueue.offer(num), queue.offer(num));
+		}
+		assertFalse(queue.isEmpty());
+		Iterator<Integer> itQ = queue.iterator();
+		Iterator<Integer> itT = tqueue.iterator();
+		while (itT.hasNext()) {
+			assertEquals(itT.next(), itQ.next());
+		}
+		if (itQ.hasNext()) {
+			fail();
+		}
 	}
 
 	@Test
 	public void testPoll() throws Exception {
-
+		assertNull(queue.poll());
+		add(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tqueue.poll(), queue.poll());
+		}
+		assertNull(queue.poll());
 	}
 
 	@Test
 	public void testElement() throws Exception {
-
+		try {
+			queue.element();
+			fail();
+		} catch (NoSuchElementException e) {}
+		add(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tqueue.element(), queue.element());
+			queue.remove();
+			tqueue.remove();
+		}
+		try {
+			queue.element();
+			fail();
+		}  catch (NoSuchElementException e) {}
 	}
 
 	@Test
 	public void testPeek() throws Exception {
-
+		assertNull(queue.peek());
+		add(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tqueue.peek(), queue.peek());
+			queue.remove();
+			tqueue.remove();
+		}
+		assertNull(queue.peek());
 	}
 }
