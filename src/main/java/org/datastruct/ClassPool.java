@@ -3,9 +3,11 @@ package org.datastruct;
 import org.datastruct.exception.MapDoesNotExist;
 import org.datastruct.exception.ObjectDoesNotExist;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -13,44 +15,67 @@ public class ClassPool {
 
 	private static Map<Class, Map<Integer, Object>> mapObject = null;
 	private static Properties properties = null;
+	private static ClassLoader loader = null;
 
-	private ClassPool() throws IOException {
-		mapObject = new ArrayMap<>();
-		properties = new Properties();
-		properties.load(getClass().getResourceAsStream("ClassPool.properties"));
-	}
-
-	private ClassPool(Properties props) {
-		mapObject = new ArrayMap<>();
+	private ClassPool(Map<Class, Map<Integer, Object>> map, Properties props, ClassLoader loader) {
+		mapObject = map;
 		properties = props;
+		this.loader = loader;
 	}
 
-	public static void initClassPool(int size, Properties properties) throws IOException {
-		if (size == 0) {
-			mapObject = new ArrayMap<>();
+	public static void initClassPool(Integer size, String pathProp, ClassLoader loader) throws IOException {
+		Map<Class, Map<Integer, Object>> map;
+		Properties props = new Properties();
+		if (size == null || size < +0) {
+			map = new HashMap<>();
 		} else {
-			mapObject = new ArrayMap<>(size);
+			map = new HashMap<>(size);
 		}
-		// TODO za propretije
+		if (pathProp == null) {
+			props.load(ClassLoader.getSystemResourceAsStream("ClassPool.properties"));
+		} else {
+			props.load(new FileInputStream(pathProp));
+		}
+		if (loader == null) {
+			new ClassPool(map, props, ClassLoader.getSystemClassLoader());
+		} else {
+			new ClassPool(map, props, loader);
+		}
 	}
 
-	private static int getSize(Class c) {
-		if (properties == null) {
-			return 50;
-		} else {
-			try {
-				return Integer.valueOf(properties.getProperty("size." + c.getClass().getSimpleName()));
-			} catch (NumberFormatException e) {
-				return 50;
+	private static Map<Integer, Object> initMap(Class type) {
+		int size = 0;
+		if (properties.getProperty(type.getSimpleName() + ".size") != null) {
+			size = Integer.valueOf(properties.getProperty(type.getSimpleName() + ".size"));
+			if (size <= 0) {
+				size = 0;
 			}
 		}
-	}
-
-	private synchronized static String getMapType(Class c) {
-		if (properties == null) {
-			return "";
+		Class cMap = null;
+		try {
+			cMap = loader.loadClass(properties.getProperty(type.getSimpleName() + ".map"));
+		} catch (ClassNotFoundException e) {
+			if (size <= 0) {
+				cMap = SkipMap.class;
+			} else {
+				cMap = MapQueue.class;
+			}
+		}
+		if (size > 0) {
+			try {
+				Constructor init = cMap.getConstructor(int.class);
+				return (Map<Integer, Object>) init.newInstance(size);
+			} catch (NoSuchMethodException e) {
+				throw new ExceptionInInitializerError("Missing construktor for map " + cMap.getSimpleName() + "!!!");
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+				throw new ExceptionInInitializerError("Error making instance for " + cMap.getSimpleName() + "!!!");
+			}
 		} else {
-			return properties.getProperty("map." + c.getClass().getSimpleName());
+			try {
+				return (Map<Integer, Object>) cMap.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				throw new ExceptionInInitializerError("Error making instance for " + cMap.getSimpleName() + "!!!");
+			}
 		}
 	}
 
@@ -71,7 +96,7 @@ public class ClassPool {
 			try {
 				ret = getObject(c, hash);
 			} catch (MapDoesNotExist mapDoesNotExist) {
-				Map<Integer, Object> map = new SkipMap<>(5);
+				Map<Integer, Object> map = initMap(c);
 				ret = makeObject(c, args);
 				map.put(hash, ret);
 			} catch (ObjectDoesNotExist objectDoesNotExist) {
@@ -99,18 +124,15 @@ public class ClassPool {
 	private static <T> T makeObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
 		Class[] initArgsType = new Class[args.length];
 		for (int i = 0; i < initArgsType.length; i++) {
-			if (args[i] instanceof Enum) {
-				/** za enume moramo pridobiti super razred, ki pa je razred, ki se nahaja v kostruktorju */
-				initArgsType[i] = args[i].getClass().getSuperclass();
-			} else {
-				initArgsType[i] = args[i].getClass();
-			}
+			initArgsType[i] = args[i].getClass();
 		}
 		try {
 			Constructor init = c.getConstructor(initArgsType);
 			Object newObject = init.newInstance(args);
 			return c.cast(newObject);
-		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+		} catch (NoSuchMethodException e) {
+			throw new ExceptionInInitializerError(e);
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 	}

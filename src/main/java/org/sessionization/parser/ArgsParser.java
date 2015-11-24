@@ -29,31 +29,19 @@ public class ArgsParser {
 		initDefaults();
 		parser = new PropretiesCmdParser(this);
 		parser.parseArgument(args);
-		if (printHelp) {
-			throw new CmdLineException(parser, "Print help");
-		}
 	}
 
 	private void initDefaults() {
+		properties = new Properties();
 		properties.setProperty("crawlers", String.valueOf(false));
 		properties.setProperty("database.driver.class", "org.sqlite.JDBC");
-		properties.setProperty("database.dialect", "org.dialect.SQLiteDialect");
+		properties.setProperty("database.dialect.class", "org.dialect.SQLiteDialect");
 		properties.setProperty("database.ddl", String.valueOf(DdlOperation.Create));
 		properties.setProperty("database.connection.pool_size", "1");
 		properties.setProperty("database.url", "jdbc:sqlite:sqliteDB");
-	}
-
-	public Locale getLocale() {
-		return new Locale(properties.getProperty("format.locale"));
-	}
-
-	@Option(name = "-flo", aliases = "format.locale", usage = "Locale for time parsing. Check ISO 639 standard for names.", metaVar = "<locale>")
-	public void setLocale(String locale) {
-		properties.setProperty("format.locale", locale);
-	}
-
-	public boolean ignoreCrawlers() {
-		return Boolean.valueOf(properties.getProperty("crawlers"));
+		properties.setProperty("database.sql.show", String.valueOf(false));
+		properties.setProperty("database.sql.show.format", String.valueOf(false));
+		properties.setProperty("format.locale", Locale.US.toLanguageTag());
 	}
 
 	public String[] getLogFormat() {
@@ -67,15 +55,6 @@ public class ArgsParser {
 	@Option(name = "-fl", aliases = "format.log", usage = "Log file format. Check NCSA or W3C log formats.", metaVar = "<log format>")
 	public void setLogFormat(String format) {
 		properties.setProperty("format.log", format);
-	}
-
-	public String getDateFormat() {
-		return properties.getProperty("format.date");
-	}
-
-	@Option(name = "-fd", aliases = "format.date", usage = "Date format", metaVar = "<date format>")
-	public void setDateFormat(String line) {
-		properties.setProperty("format.date", line);
 	}
 
 	public String getTimeFormat() {
@@ -217,6 +196,28 @@ public class ArgsParser {
 	@Option(name = "-dbdr", aliases = "database.driver", usage = "Path to jar file, that is a driver", metaVar = "<path>", depends = "-dbdrc")
 	public void setDriverUrl(File file) throws MalformedURLException {
 		properties.setProperty("database.driver", file.getPath());
+	}
+
+	public String getDateFormat() {
+		return properties.getProperty("format.date");
+	}
+
+	@Option(name = "-fd", aliases = "format.date", usage = "Date format", metaVar = "<date format>")
+	public void setDateFormat(String line) {
+		properties.setProperty("format.date", line);
+	}
+
+	public boolean ignoreCrawlers() {
+		return Boolean.valueOf(properties.getProperty("crawlers"));
+	}
+
+	public Locale getLocale() {
+		return Locale.forLanguageTag(properties.getProperty("format.locale"));
+	}
+
+	@Option(name = "-flo", aliases = "format.locale", usage = "Locale for time parsing. Check lahguage tags.", metaVar = "<tag>")
+	public void setLocale(String locale) {
+		properties.setProperty("format.locale", locale);
 	}
 
 	public enum DdlOperation {

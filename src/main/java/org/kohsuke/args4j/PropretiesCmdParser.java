@@ -51,7 +51,9 @@ public class PropretiesCmdParser extends CmdLineParser {
 				properties.load(new FileInputStream(popsFile));
 				for (String s : properties.stringPropertyNames()) {
 					currentOptionHandler = findOptionByAliasName(s);
-					if (!present.contains(currentOptionHandler)) {
+					if (currentOptionHandler == null) {
+						System.err.println("Ignoring " + s + " = " + properties.getProperty(s));
+					} else if (!present.contains(currentOptionHandler)) {
 						CmdLineImpl line = new CmdLineImpl(properties.getProperty(s));
 						currentOptionHandler.parseArguments(line);
 						present.add(currentOptionHandler);

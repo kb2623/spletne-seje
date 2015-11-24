@@ -20,6 +20,10 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 		this(maxCone, maxSize, (k1, k2) -> k1.hashCode() - k2.hashCode());
 	}
 
+	public MapQueue(int maxSize) {
+		this(maxSize / 10 < 2 ? 2 : maxSize / 10, maxSize);
+	}
+
 	@Override
 	public int size() {
 		return size;

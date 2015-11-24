@@ -4,10 +4,9 @@ import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 
 import java.net.URISyntaxException;
-import java.util.ResourceBundle;
+import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class ArgsParserTest {
 
@@ -23,10 +22,34 @@ public class ArgsParserTest {
 				fail();
 			}
 		} catch (CmdLineException e) {
-			e.printStackTrace();
 			fail();
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			fail();
+		}
+	}
+
+	@Test(expected = CmdLineException.class)
+	public void testNoFileError() throws URISyntaxException, CmdLineException {
+		parser = new ArgsParser("-prps", ClassLoader.getSystemResource("H2.properties").toURI().getPath());
+	}
+
+	@Test
+	public void testArgsParsingZero() {
+		try {
+			parser = new ArgsParser("test");
+			assertFalse(parser.isShowSql());
+			assertFalse(parser.ignoreCrawlers());
+			assertFalse(parser.isShowSqlFormat());
+			assertEquals("org.sqlite.JDBC", parser.getDriverClass());
+			assertEquals("org.dialect.SQLiteDialect", parser.getDialectClass());
+			assertEquals(1, parser.getConnectoinPoolSize());
+			assertEquals("jdbc:sqlite:sqliteDB", parser.getDatabaseUrl().toASCIIString());
+			assertEquals("test", parser.getInputFile()[0].getName());
+			assertEquals(Locale.US, parser.getLocale());
+			System.out.println();
+		} catch (CmdLineException e) {
+			fail();
+		} catch (URISyntaxException e) {
 			fail();
 		}
 	}
@@ -34,17 +57,17 @@ public class ArgsParserTest {
 	@Test
 	public void testArgsParsingOne() {
 		try {
-			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("H2.cfg.xml").toURI().getPath(), "test");
-			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
-			assertEquals("org.h2.Driver", parser.getDriverClass());
+			parser = new ArgsParser("-props", ClassLoader.getSystemResource("H2.properties").toURI().getPath(), "test");
+			assertEquals(Locale.CANADA_FRENCH, parser.getLocale());
+			assertTrue(parser.ignoreCrawlers());
+			assertTrue(parser.isShowSql());
+			assertTrue(parser.isShowSqlFormat());
+			assertEquals("testname", parser.getUserName());
+			assertEquals("testpass", parser.getPassWord());
 			assertEquals("test", parser.getInputFile()[0].getName());
-			assertEquals("jdbc:h2:./h2DB", parser.getDatabaseUrl().toString());
-			assertEquals(ArgsParser.DdlOperation.Create, parser.getOperation());
 		} catch (CmdLineException e) {
-			e.printStackTrace();
 			fail();
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
 			fail();
 		}
 	}

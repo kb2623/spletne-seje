@@ -25,6 +25,7 @@ public class HibernateUtil implements AutoCloseable {
 	private SessionFactory factory = null;
 	private ServiceRegistry serviceRegistry = null;
 	private ClassLoader loader = null;
+
 	public HibernateUtil(ArgsParser argsParser, AbsParser logParser) throws ExceptionInInitializerError {
 		this.loader = initClassLoader(argsParser, logParser);
 		Properties props = initProperties(argsParser);
@@ -117,8 +118,10 @@ public class HibernateUtil implements AutoCloseable {
 			super(urls);
 		}
 
-		public void defineClass(String name, byte[] bytes) {
-			super.defineClass(name, bytes, 0, bytes.length);
+		public Class<?> defineClass(String name, byte[] bytes) {
+			Class<?> c = super.defineClass(name, bytes, 0, bytes.length);
+			super.resolveClass(c);
+			return c;
 		}
 	}
 }
