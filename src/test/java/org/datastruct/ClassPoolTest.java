@@ -3,12 +3,35 @@ package org.datastruct;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
-
 public class ClassPoolTest {
+
+	private Map<Integer, TestObject> map;
+
+	@Before
+	public void setUp() {
+	}
+
+	@Test
+	public void testSetMaxSize() throws Exception {
+		Properties properties = null;
+		Integer.valueOf(properties.getProperty("size"));
+	}
+
+	@Test
+	public void testGetObject() throws Exception {
+
+	}
+
+	@Test
+	public void testSome() throws IOException {
+		Properties properties = new Properties();
+		properties.load(ClassLoader.getSystemResourceAsStream("ClassPool.properties"));
+		properties.list(System.out);
+	}
 
 	private class TestObject {
 
@@ -30,22 +53,5 @@ public class ClassPoolTest {
 		public void setHash(int hash) {
 			this.hash = hash;
 		}
-	}
-
-	private Map<Integer, TestObject> map;
-
-	@Before
-	public void setUp() {
-	}
-
-	@Test
-	public void testSetMaxSize() throws Exception {
-		Properties properties = null;
-		Integer.valueOf(properties.getProperty("size"));
-	}
-
-	@Test
-	public void testGetObject() throws Exception {
-
 	}
 }
