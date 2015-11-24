@@ -15,15 +15,13 @@ public class ClassPool {
 
 	private static Map<Class, Map<Integer, Object>> mapObject = null;
 	private static Properties properties = null;
-	private static ClassLoader loader = null;
 
-	private ClassPool(Map<Class, Map<Integer, Object>> map, Properties props, ClassLoader loader) {
+	private ClassPool(Map<Class, Map<Integer, Object>> map, Properties props) {
 		mapObject = map;
 		properties = props;
-		this.loader = loader;
 	}
 
-	public static void initClassPool(Integer size, String pathProp, ClassLoader loader) throws IOException {
+	public static void initClassPool(Integer size, String pathProp) throws IOException {
 		Map<Class, Map<Integer, Object>> map;
 		Properties props = new Properties();
 		if (size == null || size < +0) {
@@ -36,11 +34,7 @@ public class ClassPool {
 		} else {
 			props.load(new FileInputStream(pathProp));
 		}
-		if (loader == null) {
-			new ClassPool(map, props, ClassLoader.getSystemClassLoader());
-		} else {
-			new ClassPool(map, props, loader);
-		}
+		new ClassPool(map, props);
 	}
 
 	private static Map<Integer, Object> initMap(Class type) {
@@ -48,33 +42,23 @@ public class ClassPool {
 		if (properties.getProperty(type.getSimpleName() + ".size") != null) {
 			size = Integer.valueOf(properties.getProperty(type.getSimpleName() + ".size"));
 			if (size <= 0) {
+				System.err.println("Ignoring " + type.getSimpleName() + ".size");
 				size = 0;
 			}
 		}
-		Class cMap = null;
-		try {
-			cMap = loader.loadClass(properties.getProperty(type.getSimpleName() + ".map"));
-		} catch (ClassNotFoundException e) {
-			if (size <= 0) {
-				cMap = SkipMap.class;
-			} else {
-				cMap = MapQueue.class;
-			}
-		}
-		if (size > 0) {
-			try {
-				Constructor init = cMap.getConstructor(int.class);
-				return (Map<Integer, Object>) init.newInstance(size);
-			} catch (NoSuchMethodException e) {
-				throw new ExceptionInInitializerError("Missing construktor for map " + cMap.getSimpleName() + "!!!");
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-				throw new ExceptionInInitializerError("Error making instance for " + cMap.getSimpleName() + "!!!");
-			}
+		if (size == 0) {
+			return new SkipMap<>(5);
 		} else {
-			try {
-				return (Map<Integer, Object>) cMap.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
-				throw new ExceptionInInitializerError("Error making instance for " + cMap.getSimpleName() + "!!!");
+			int maxCone = 0;
+			if (properties.getProperty(type.getSimpleName() + ".cons") != null) {
+				maxCone = Integer.valueOf(properties.getProperty(type.getSimpleName() + ".cons"));
+				if (maxCone < 2) {
+					return new MapQueue<>(5, size);
+				} else {
+					return new MapQueue<>(maxCone, size);
+				}
+			} else {
+				return new MapQueue<>(5, size);
 			}
 		}
 	}
@@ -99,6 +83,7 @@ public class ClassPool {
 				Map<Integer, Object> map = initMap(c);
 				ret = makeObject(c, args);
 				map.put(hash, ret);
+				mapObject.put(c, map);
 			} catch (ObjectDoesNotExist objectDoesNotExist) {
 				Map<Integer, Object> map = ClassPool.mapObject.get(c);
 				ret = makeObject(c, args);

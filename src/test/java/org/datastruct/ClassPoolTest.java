@@ -15,7 +15,7 @@ public class ClassPoolTest {
 
 	@Before
 	public void setUp() throws IOException {
-		ClassPool.initClassPool(10, ClassLoader.getSystemResource("ClassPool.properties").getPath(), ClassLoader.getSystemClassLoader());
+		ClassPool.initClassPool(10, ClassLoader.getSystemResource("ClassPool.properties").getPath());
 	}
 
 	@Test
@@ -44,7 +44,7 @@ class TestObject1 {
 	public TestObject1(String s, Integer i, Boolean test) {
 		if (test) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
