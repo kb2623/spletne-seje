@@ -11,53 +11,165 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 public class ArgsParser {
 
+	private Properties properties;
+
 	private CmdLineParser parser;
-	@Option(name = "-c", aliases = "crawlers", usage = "Ignore web crawlers", metaVar = "<bool>")
-	private boolean ignoreCrawlers = false;
+
 	@Option(name = "-h", aliases = {"--help", "-?"}, usage = "Prints this message", hidden = true, help = true)
 	private boolean printHelp = false;
-	@Option(name = "-fd", aliases = "format.date", usage = "Date format", metaVar = "<date format>")
-	private String dateFormat = null;
-	@Option(name = "-ft", aliases = "format.time", usage = "Time format", metaVar = "<time format>")
-	private String timeFormat = null;
-	@Option(name = "-dbun", aliases = "database.username", usage = "User name for database", metaVar = "<string>")
-	private String userName = null;
-	@Option(name = "-dbpw", aliases = "database.password", usage = "Password for user", metaVar = "<string>")
-	private String passWord = null;
-	@Option(name = "-dbdrc", aliases = "database.driver.class", usage = "Driver class for connecting to databse", metaVar = "<string>")
-	private String driverClass = "org.sqlite.JDBC";
-	@Option(name = "-dbdi", aliases = "database.dialect", usage = "Database dialect class name", metaVar = "<string>")
-	private String dialectClass = "org.dialect.SQLiteDialect";
-	@Option(name = "-dburl", aliases = "database.url", usage = "URL to database", metaVar = "<URL>")
-	private URI databaseUrl = null;
-	@Option(name = "-dbdic", aliases = "database.dialect.class", usage = "Path to class file, that is dialect for database", metaVar = "<path>", depends = "-dbdi")
-	private URL dialect = null;
+
 	@Argument(usage = "Input log files", metaVar = "<path>", required = true, multiValued = true)
 	private File[] inputFile = null;
-	@Option(name = "-dbddl", aliases = "database.ddl", usage = "Create new tables or update exsisting ones", metaVar = "<create|update>")
-	private DdlOperation operation = DdlOperation.Create;
-	@Option(name = "-dbcp", aliases = "database.connection.pool_size", usage = "Number of connetions alowed for connecting to database", metaVar = "<int>")
-	private int connectoinPoolSize = 1;
-	@Option(name = "-dbsq", aliases = "database.sql.show", usage = "Show sql querys", metaVar = "<bool>")
-	private boolean showSql = false;
-	@Option(name = "-dbsqf", aliases = "database.sql.show.format", usage = "Show formated sql querys", metaVar = "<bool>", depends = "-dbsq")
-	private boolean showSqlFormat = false;
-	@Option(name = "-cc", aliases = "cache", usage = "Do you want to use second-leve cache", metaVar = "<bool>")
-	private boolean useCache;
-	private URL driverUrl = null;
-	private String[] logFormat = null;
-	private Locale locale = Locale.US;
 
 	public ArgsParser(String... args) throws CmdLineException, URISyntaxException {
-		parser = new XmlCmdParser(this);
+		initDefaults();
+		parser = new PropretiesCmdParser(this);
 		parser.parseArgument(args);
 		if (printHelp) {
 			throw new CmdLineException(parser, "Print help");
 		}
-		if (databaseUrl == null) databaseUrl = new URI("jdbc:sqlite:sqliteDB");
+	}
+
+	private void initDefaults() {
+		properties.setProperty("crawlers", String.valueOf(false));
+		properties.setProperty("database.driver.class", "org.sqlite.JDBC");
+		properties.setProperty("database.dialect", "org.dialect.SQLiteDialect");
+		properties.setProperty("database.ddl", String.valueOf(DdlOperation.Create));
+		properties.setProperty("database.connection.pool_size", "1");
+		properties.setProperty("database.url", "jdbc:sqlite:sqliteDB");
+	}
+
+	public Locale getLocale() {
+		return new Locale(properties.getProperty("format.locale"));
+	}
+
+	@Option(name = "-flo", aliases = "format.locale", usage = "Locale for time parsing. Check ISO 639 standard for names.", metaVar = "<locale>")
+	public void setLocale(String locale) {
+		properties.setProperty("format.locale", locale);
+	}
+
+	public boolean ignoreCrawlers() {
+		return Boolean.valueOf(properties.getProperty("crawlers"));
+	}
+
+	public String[] getLogFormat() {
+		List<String> tmp = new ArrayList<>();
+		for (String symbol : properties.getProperty("format.log").split(" ")) {
+			tmp.add(symbol);
+		}
+		return tmp.toArray(new String[tmp.size()]);
+	}
+
+	@Option(name = "-fl", aliases = "format.log", usage = "Log file format. Check NCSA or W3C log formats.", metaVar = "<log format>")
+	public void setLogFormat(String format) {
+		properties.setProperty("format.log", format);
+	}
+
+	public String getDateFormat() {
+		return properties.getProperty("format.date");
+	}
+
+	@Option(name = "-fd", aliases = "format.date", usage = "Date format", metaVar = "<date format>")
+	public void setDateFormat(String line) {
+		properties.setProperty("format.date", line);
+	}
+
+	public String getTimeFormat() {
+		return properties.getProperty("format.time");
+	}
+
+	@Option(name = "-ft", aliases = "format.time", usage = "Time format", metaVar = "<time format>")
+	public void setTimeFormat(String line) {
+		properties.setProperty("format.time", line);
+	}
+
+	public URI getDatabaseUrl() {
+		try {
+			return new URI(properties.getProperty("database.url"));
+		} catch (URISyntaxException e) {
+			return null;
+		}
+	}
+
+	@Option(name = "-dburl", aliases = "database.url", usage = "URL to database", metaVar = "<URL>")
+	public void setDatabaseUrl(URI uri) {
+		properties.setProperty("database.url", uri.toASCIIString());
+	}
+
+	public String getUserName() {
+		return properties.getProperty("database.username");
+	}
+
+	@Option(name = "-dbun", aliases = "database.username", usage = "User name for database", metaVar = "<string>")
+	public void setUserName(String name) {
+		properties.setProperty("database.username", name);
+	}
+
+	public String getPassWord() {
+		return properties.getProperty("database.password");
+	}
+
+	@Option(name = "-dbpw", aliases = "database.password", usage = "Password for user", metaVar = "<string>")
+	public void setPassWord(String pass) {
+		properties.setProperty("database.password", pass);
+	}
+
+	public String getDialectClass() {
+		return properties.getProperty("database.dialect.class");
+	}
+
+	@Option(name = "-dbdi", aliases = "database.dialect", usage = "Database dialect class name", metaVar = "<string>")
+	public void setDialectClass(String name) {
+		properties.setProperty("database.dialect", name);
+	}
+
+	public DdlOperation getOperation() {
+		return Enum.valueOf(DdlOperation.class, properties.getProperty("database.ddl"));
+	}
+
+	@Option(name = "-dbddl", aliases = "database.ddl", usage = "Create new tables or update exsisting ones", metaVar = "<create|update>")
+	public void setOperation(DdlOperation opt) {
+		properties.setProperty("database.ddl", String.valueOf(opt));
+	}
+
+	public String getDriverClass() {
+		return properties.getProperty("database.driver.class");
+	}
+
+	@Option(name = "-dbdrc", aliases = "database.driver.class", usage = "Driver class for connecting to databse", metaVar = "<string>")
+	public void setDriverClass(String name) {
+		properties.setProperty("database.driver.class", name);
+	}
+
+	public int getConnectoinPoolSize() {
+		return Integer.valueOf(properties.getProperty("database.connection.pool_size"));
+	}
+
+	@Option(name = "-dbcp", aliases = "database.connection.pool_size", usage = "Number of connetions alowed for connecting to database", metaVar = "<int>")
+	public void setConnectoinPoolSize(int size) {
+		properties.setProperty("database.connection.pool_size", String.valueOf(size));
+	}
+
+	public boolean isShowSql() {
+		return Boolean.valueOf(properties.getProperty("database.sql.show"));
+	}
+
+	@Option(name = "-dbsq", aliases = "database.sql.show", usage = "Show sql querys", metaVar = "<bool>")
+	public void setShowSql(boolean opt) {
+		properties.setProperty("database.sql.show", String.valueOf(opt));
+	}
+
+	public boolean isShowSqlFormat() {
+		return Boolean.valueOf(properties.getProperty("database.sql.show.format"));
+	}
+
+	@Option(name = "-dbsqf", aliases = "database.sql.show.format", usage = "Show formated sql querys", metaVar = "<bool>", depends = "-dbsq")
+	public void setShowSqlFormat(boolean opt) {
+		properties.setProperty("database.sql.show.format", String.valueOf(opt));
 	}
 
 	public void printHelp(OutputStream out) {
@@ -65,7 +177,12 @@ public class ArgsParser {
 	}
 
 	public boolean isIgnoreCrawlers() {
-		return ignoreCrawlers;
+		return Boolean.valueOf(properties.getProperty("crawlers"));
+	}
+
+	@Option(name = "-c", aliases = "crawlers", usage = "Ignore web crawlers", metaVar = "<bool>")
+	public void setIgnoreCrawlers(boolean opt) {
+		properties.setProperty("crawlers", String.valueOf(opt));
 	}
 
 	public boolean isPrintHelp() {
@@ -73,7 +190,16 @@ public class ArgsParser {
 	}
 
 	public URL getDialect() {
-		return dialect;
+		try {
+			return new URL(properties.getProperty("database.dialect"));
+		} catch (MalformedURLException e) {
+			return null;
+		}
+	}
+
+	@Option(name = "-dbdic", aliases = "database.dialect.class", usage = "Path to class file, that is dialect for database", metaVar = "<path>", depends = "-dbdi")
+	public void setDialect(URL url) {
+		properties.setProperty("", "");
 	}
 
 	public File[] getInputFile() {
@@ -81,86 +207,16 @@ public class ArgsParser {
 	}
 
 	public URL getDriverUrl() {
-		return driverUrl;
+		try {
+			return new URL(properties.getProperty("database.driver"));
+		} catch (MalformedURLException e) {
+			return null;
+		}
 	}
 
 	@Option(name = "-dbdr", aliases = "database.driver", usage = "Path to jar file, that is a driver", metaVar = "<path>", depends = "-dbdrc")
 	public void setDriverUrl(File file) throws MalformedURLException {
-		driverUrl = file.toURI().toURL();
-	}
-
-	public Locale getLocale() {
-		return locale;
-	}
-
-	@Option(name = "-flo", aliases = "format.locale", usage = "Locale for time parsing. Check ISO 639 standard for names.", metaVar = "<locale>")
-	public void setLocale(String locale) {
-		this.locale = new Locale(locale);
-	}
-
-	public boolean ignoreCrawlers() {
-		return ignoreCrawlers;
-	}
-
-	public String[] getLogFormat() {
-		return logFormat;
-	}
-
-	@Option(name = "-fl", aliases = "format.log", usage = "Log file format. Check NCSA or W3C log formats.", metaVar = "<log format>")
-	public void setLogFormat(String format) {
-		List<String> tmp = new ArrayList<>();
-		for (String symbol : format.split(" ")) {
-			tmp.add(symbol);
-		}
-		logFormat = tmp.toArray(new String[tmp.size()]);
-	}
-
-	public String getDateFormat() {
-		return dateFormat;
-	}
-
-	public String getTimeFormat() {
-		return timeFormat;
-	}
-
-	public URI getDatabaseUrl() {
-		return databaseUrl;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public String getPassWord() {
-		return passWord;
-	}
-
-	public String getDialectClass() {
-		return dialectClass;
-	}
-
-	public DdlOperation getOperation() {
-		return operation;
-	}
-
-	public String getDriverClass() {
-		return driverClass;
-	}
-
-	public int getConnectoinPoolSize() {
-		return connectoinPoolSize;
-	}
-
-	public boolean isShowSql() {
-		return showSql;
-	}
-
-	public boolean isShowSqlFormat() {
-		return showSqlFormat;
-	}
-
-	public boolean isUseCache() {
-		return useCache;
+		properties.setProperty("database.driver", file.getPath());
 	}
 
 	public enum DdlOperation {
