@@ -1,8 +1,5 @@
 package org.datastruct;
 
-import org.datastruct.exception.MapDoesNotExist;
-import org.datastruct.exception.ObjectDoesNotExist;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -63,47 +60,33 @@ public class ClassPool {
 		}
 	}
 
-	public synchronized static <T> T getObject(Class<T> c, Object... args) throws ExceptionInInitializerError, NullPointerException {
+	public synchronized static <T> T getObject(Class<T> c, Object... args) throws NullPointerException {
 		if (mapObject == null || properties == null) {
 			throw new NullPointerException("Have to init first!!!");
 		}
-		T ret = null;
 		int hash = 0;
 		for (Object o : args) {
 			hash += o.hashCode();
 		}
-		if (ClassPool.mapObject == null) {
-			Map<Integer, Object> map = new SkipMap<>(5);
+		return getObject(c, hash, args);
+	}
+
+	private static <T> T getObject(Class<T> c, int hash, Object... args) {
+		Map<Integer, Object> map = ClassPool.mapObject.get(c);
+		T ret = null;
+		if (map == null) {
+			map = initMap(c);
 			ret = makeObject(c, args);
 			map.put(hash, ret);
+			mapObject.put(c, map);
 		} else {
-			try {
-				ret = getObject(c, hash);
-			} catch (MapDoesNotExist mapDoesNotExist) {
-				Map<Integer, Object> map = initMap(c);
-				ret = makeObject(c, args);
-				map.put(hash, ret);
-				mapObject.put(c, map);
-			} catch (ObjectDoesNotExist objectDoesNotExist) {
-				Map<Integer, Object> map = ClassPool.mapObject.get(c);
+			ret = c.cast(map.get(hash));
+			if (ret == null) {
 				ret = makeObject(c, args);
 				map.put(hash, ret);
 			}
 		}
 		return ret;
-	}
-
-	private static <T> T getObject(Class<T> c, int hash) throws MapDoesNotExist, ObjectDoesNotExist {
-		Map<Integer, Object> map = ClassPool.mapObject.get(c);
-		if (map == null) {
-			throw new MapDoesNotExist();
-		} else {
-			T ret = c.cast(map.get(hash));
-			if (ret == null) {
-				throw new ObjectDoesNotExist();
-			}
-			return ret;
-		}
 	}
 
 	private static <T> T makeObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
