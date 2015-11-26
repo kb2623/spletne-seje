@@ -253,8 +253,10 @@ public class AvlTree<K, V> implements Map<K, V> {
 					}
 					stack.peek().higher = minNode.lower;
 				} else {
-					stack.pop();
-					if (stack.peek().lower == found) {
+					if (stack.pop() == root) {
+						stack.push(found);
+						found.lower = minNode.lower;
+					} else if (stack.peek().lower == found) {
 						stack.peek().lower = minNode;
 					} else {
 						stack.peek().higher = minNode;
@@ -414,15 +416,15 @@ public class AvlTree<K, V> implements Map<K, V> {
 		return builder.toString();
 	}
 
-	class CompareKey<K> implements Comparator<K> {
+	private class CompareKey<K> implements Comparator<K> {
 
-		Comparator<K> cmp;
+		private Comparator<K> cmp;
 
-		CompareKey(Comparator<K> cmp) {
+		private CompareKey(Comparator<K> cmp) {
 			this.cmp = cmp;
 		}
 
-		CompareKey() {
+		private CompareKey() {
 			this((k1, k2) -> k1.hashCode() - k2.hashCode());
 		}
 
@@ -449,7 +451,7 @@ public class AvlTree<K, V> implements Map<K, V> {
 		AVLEntry<K, V> higher;
 		int height;
 
-		AVLEntry(K key, V value, AVLEntry<K, V> lower, AVLEntry<K, V> higher, int depth) {
+		private AVLEntry(K key, V value, AVLEntry<K, V> lower, AVLEntry<K, V> higher, int depth) {
 			this.key = key;
 			this.value = value;
 			this.lower = lower;
@@ -457,15 +459,15 @@ public class AvlTree<K, V> implements Map<K, V> {
 			this.height = depth;
 		}
 
-		AVLEntry(K key, V value) {
+		private AVLEntry(K key, V value) {
 			this(key, value, null, null, 1);
 		}
 
-		int getBalance() {
+		private int getBalance() {
 			return (lower != null ? lower.height : 0) - (higher != null ? higher.height : 0);
 		}
 
-		void updataHeight() {
+		private void updataHeight() {
 			if ((lower != null ? lower.height : 0) >= (higher != null ? higher.height : 0)) {
 				height = (lower != null ? lower.height : 0) + 1;
 			} else {

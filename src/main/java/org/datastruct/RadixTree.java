@@ -33,22 +33,22 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			return node.setValue(data);
 		} else if (numMatchChar == 0 || (numMatchChar == node.key.length() && numMatchChar < key.length())) {
 			String ostanekKljuca = key.substring(numMatchChar);
-			for (RadixEntry child : node.children) {
-				if (child.key.charAt(0) == ostanekKljuca.charAt(0)) {
-					return insert(data, ostanekKljuca, child);
-				}
+			RadixEntry chield = node.children.get(ostanekKljuca.charAt(0));
+			if (chield != null) {
+				return insert(data, ostanekKljuca, chield);
+			} else {
+				node.children.put(ostanekKljuca.charAt(0), new RadixEntry(data, ostanekKljuca));
+				return null;
 			}
-			node.children.add(new RadixEntry(data, ostanekKljuca));
-			return null;
 		} else {
 			RadixEntry tmp = new RadixEntry(node.data, node.key.substring(numMatchChar), node.children);
 			node.key = key.substring(0, numMatchChar);
-			node.children = new LinkedList<>();
-			node.children.add(tmp);
+			node.children = new AvlTree<>();
+			node.children.put(tmp.key.charAt(0), tmp);
 			if (numMatchChar < key.length()) {
 				RadixEntry tmp1 = new RadixEntry(data, key.substring(numMatchChar));
 				node.data = null;
-				node.children.add(tmp1);
+				node.children.put(tmp1.key.charAt(0), tmp1);
 			} else {
 				node.data = data;
 			}
@@ -71,28 +71,23 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
 				return curr.setValue(data);
 			} else if (numMatchChar == 0 || (numMatchChar == curr.key.length() && numMatchChar < currKey.length())) {
-				boolean add = true;
 				currKey = currKey.substring(numMatchChar);
-				for (RadixEntry chield : curr.children) {
-					if (chield.key.charAt(0) == currKey.charAt(0)) {
-						curr = chield;
-						add = false;
-						break;
-					}
-				}
-				if (add) {
-					curr.children.add(new RadixEntry(data, currKey));
+				RadixEntry chield = curr.children.get(currKey.charAt(0));
+				if (chield != null) {
+					curr = chield;
+				} else {
+					curr.children.put(currKey.charAt(0), new RadixEntry(data, currKey));
 					return null;
 				}
 			} else {
 				RadixEntry tmp = new RadixEntry(curr.data, curr.key.substring(numMatchChar), curr.children);
 				curr.key = currKey.substring(0, numMatchChar);
-				curr.children = new LinkedList<>();
-				curr.children.add(tmp);
+				curr.children = new AvlTree<>();
+				curr.children.put(tmp.key.charAt(0), tmp);
 				if (numMatchChar < currKey.length()) {
 					RadixEntry tmp1 = new RadixEntry(data, currKey.substring(numMatchChar));
 					curr.data = null;
-					curr.children.add(tmp1);
+					curr.children.put(tmp1.key.charAt(0), tmp1);
 				} else {
 					curr.setValue(data);
 				}
@@ -116,17 +111,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 				return curr.data;
 			} else if (numMatchChar < currKey.length() && numMatchChar == curr.key.length()) {
 				currKey = currKey.substring(numMatchChar);
-				boolean found = false;
-				for (RadixEntry chield : curr.children) {
-					if (chield.key.charAt(0) == currKey.charAt(0)) {
-						curr = chield;
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					curr = null;
-				}
+				curr = curr.children.get(currKey.charAt(0));
 			} else {
 				curr = null;
 			}
@@ -147,12 +132,12 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			return node.data;
 		} else if (numMatchChar < key.length() && numMatchChar == node.key.length()) {
 			String nKey = key.substring(numMatchChar);
-			for (RadixEntry chield : node.children) {
-				if (chield.key.charAt(0) == nKey.charAt(0)) {
-					return search(chield, nKey);
-				}
+			RadixEntry chield = node.children.get(nKey.charAt(0));
+			if (chield != null) {
+				return search(chield, nKey);
+			} else {
+				return null;
 			}
-			return null;
 		} else {
 			return null;
 		}
@@ -162,8 +147,8 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		if (key == null) {
 			throw new NullPointerException();
 		}
-//		return !isEmpty() && delete(key) != null;
-		return !isEmpty() && delete(key, null, this.rootNode) != null;
+		return !isEmpty() && delete(key) != null;
+//		return !isEmpty() && delete(key, null, this.rootNode) != null;
 	}
 
 	/**
@@ -178,27 +163,23 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		int numMatchChar = node.getNumberOfMatchingCharacters(key);
 		if (node.key.equals("") || (numMatchChar < key.length() && numMatchChar == node.key.length())) {
 			String ostanekKljuca = key.substring(numMatchChar);
-			for (RadixEntry child : node.children) {
-				if (child.key.charAt(0) == ostanekKljuca.charAt(0)) {
-					return delete(ostanekKljuca, node, child);
-				}
+			RadixEntry chield = node.children.get(ostanekKljuca.charAt(0));
+			if (chield != null) {
+				return delete(ostanekKljuca, node, chield);
+			} else {
+				return null;
 			}
 		} else if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			if (node.data != null) {
 				V data = node.data;
 				if (node.children.isEmpty()) {
-					for (Iterator<RadixEntry> it = parent.children.iterator(); it.hasNext(); ) {
-						RadixEntry tmp = it.next();
-						if (tmp.key.equals(node.key)) {
-							it.remove();
-							break;
-						}
-					}
+					parent.children.remove(node.key.charAt(0));
 					if (parent.children.size() == 1 && parent.data == null && !parent.key.equals("")) {
-						mergeNodes(parent, parent.children.get(0));
+						mergeNodes(parent, node);
 					}
 				} else if (node.children.size() == 1) {
-					mergeNodes(node, node.children.get(0));
+					Iterator<RadixEntry> it = node.children.values().iterator();
+					mergeNodes(node, it.next());
 				} else {
 					node.data = null;
 				}
@@ -225,18 +206,14 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 				if (curr.data != null) {
 					data = curr.data;
 					if (curr.children.isEmpty()) {
-						for (Iterator<RadixEntry> it = prev.children.iterator(); it.hasNext(); ) {
-							RadixEntry tmp = it.next();
-							if (tmp.key.equals(curr.key)) {
-								it.remove();
-								break;
-							}
-						}
+						prev.children.remove(curr.key.charAt(0));
 						if (prev.children.size() == 1 && prev.data == null && prev != rootNode) {
-							mergeNodes(prev, prev.children.get(0));
+							Iterator<RadixEntry> it = prev.children.values().iterator();
+							mergeNodes(prev, it.next());
 						}
-					} else if (curr.children.size() == 1) {
-						mergeNodes(curr, curr.children.get(0));
+					} else if (curr.children.size() == 1 && prev != rootNode) {
+						Iterator<RadixEntry> it = curr.children.values().iterator();
+						mergeNodes(curr, it.next());
 					} else {
 						curr.data = null;
 					}
@@ -245,14 +222,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			} else if (curr.key.equals("") || (numMatchChar < currKey.length() && numMatchChar == curr.key.length())) {
 				currKey = currKey.substring(numMatchChar);
 				prev = curr;
-				for (RadixEntry chield : curr.children) {
-					if (chield.key.charAt(0) == currKey.charAt(0)) {
-						curr = chield;
-						break;
-					} else {
-						curr = null;
-					}
-				}
+				curr = curr.children.get(currKey.charAt(0));
 			} else {
 				curr = null;
 			}
@@ -279,7 +249,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			if (curr.data != null) {
 				size++;
 			}
-			for (RadixEntry chield : curr.children) {
+			for (RadixEntry chield : curr.children.values()) {
 				stack.push(chield);
 			}
 			if (!stack.isEmpty()) {
@@ -310,7 +280,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			if (curr.data != null) {
 				list.add(curr.data);
 			}
-			for (RadixEntry chield : curr.children) {
+			for (RadixEntry chield : curr.children.values()) {
 				stack.push(chield);
 			}
 			if (!stack.isEmpty()) {
@@ -328,7 +298,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	 * @param list List, ki ga zelimo napolniti
 	 */
 	private void asList(RadixEntry node, List<V> list) {
-		node.children.forEach(children -> asList(children, list));
+		node.children.values().forEach(children -> asList(children, list));
 		if (node.data != null) {
 			list.add(node.data);
 		}
@@ -349,7 +319,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		} else {
 			System.out.printf("%s%n", node.key);
 		}
-		for (RadixEntry child : node.children) {
+		for (RadixEntry child : node.children.values()) {
 			printTree(len + node.key.length(), child);
 		}
 	}
@@ -396,7 +366,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			if (curr.data != null && curr.data.equals(value)) {
 				return true;
 			} else {
-				for (RadixEntry chield : curr.children) {
+				for (RadixEntry chield : curr.children.values()) {
 					stack.push(chield);
 				}
 				if (!stack.isEmpty()) {
@@ -420,7 +390,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		if (node.data != null && node.data.equals(value)) {
 			return true;
 		} else {
-			for (RadixEntry child : node.children) {
+			for (RadixEntry child : node.children.values()) {
 				if (this.search(child, value)) {
 					return true;
 				}
@@ -489,7 +459,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			if (curr.data != null) {
 				set.add(key);
 			}
-			for (RadixEntry chield : curr.children) {
+			for (RadixEntry chield : curr.children.values()) {
 				stack.push(chield);
 				kStack.push(key);
 			}
@@ -513,7 +483,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		if (node.data != null) {
 			set.add(key + node.key);
 		}
-		node.children.forEach(children -> keySet(children, key + node.key, set));
+		node.children.values().forEach(children -> keySet(children, key + node.key, set));
 	}
 
 	@Override
@@ -543,7 +513,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			if (curr.data != null) {
 				set.add(new RadixEntry(curr.data, key, null));
 			}
-			for (RadixEntry chiled : curr.children) {
+			for (RadixEntry chiled : curr.children.values()) {
 				stack.push(chiled);
 				kStack.push(key);
 			}
@@ -567,7 +537,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		if (node.data != null) {
 			set.add(new RadixEntry(node.data, key + node.key, null));
 		}
-		node.children.forEach(children -> entrySet(children, key + node.key, set));
+		node.children.values().forEach(children -> entrySet(children, key + node.key, set));
 	}
 
 	@Override
@@ -591,7 +561,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			if (curr.data != null) {
 				builder.append(key).append('=').append(curr.data).append(", ");
 			}
-			for (RadixEntry chield : curr.children) {
+			for (RadixEntry chield : curr.children.values()) {
 				stack.push(chield);
 				kStack.push(key);
 			}
@@ -606,25 +576,25 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	class RadixEntry implements Map.Entry<String, V> {
 
-		protected List<RadixEntry> children;
-		private V data;
-		private String key;
+		Map<Character, RadixEntry> children;
+		V data;
+		String key;
 
-		RadixEntry(V data, String key, List<RadixEntry> children) {
+		private RadixEntry(V data, String key, Map<Character, RadixEntry> children) {
 			this.data = data;
 			this.key = key;
 			this.children = children;
 		}
 
-		RadixEntry(V data, String key) {
-			this(data, key, new LinkedList<>());
+		private RadixEntry(V data, String key) {
+			this(data, key, new AvlTree<>());
 		}
 
-		RadixEntry() {
+		private RadixEntry() {
 			this(null, "");
 		}
 
-		int getNumberOfMatchingCharacters(String key) {
+		private int getNumberOfMatchingCharacters(String key) {
 			int numChar = 0;
 			while (numChar < key.length() && numChar < this.key.length()) {
 				if (key.charAt(numChar) != this.key.charAt(numChar)) {
@@ -674,20 +644,20 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		}
 	}
 
-	class RadixTreeIterator implements Iterator<V> {
+	private class RadixTreeIterator implements Iterator<V> {
 
 		private Stack<Iterator<RadixEntry>> stackIt;
 		private RadixEntry next;
 
-		RadixTreeIterator() {
+		private RadixTreeIterator() {
 			this.stackIt = new Stack<>();
-			this.stackIt.push(rootNode.children.iterator());
+			this.stackIt.push(rootNode.children.values().iterator());
 			if (!stackIt.peek().hasNext()) {
 				next = null;
 			} else {
 				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
-					stackIt.push(tmpNode.children.iterator());
+					stackIt.push(tmpNode.children.values().iterator());
 					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
@@ -706,17 +676,17 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			}
 			V tmp = (V) next.data;
 			if (!next.children.isEmpty()) {
-				stackIt.push(next.children.iterator());
+				stackIt.push(next.children.values().iterator());
 				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
-					stackIt.push(tmpNode.children.iterator());
+					stackIt.push(tmpNode.children.values().iterator());
 					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
 			} else if (stackIt.peek().hasNext()) {
 				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
-					stackIt.push(tmpNode.children.iterator());
+					stackIt.push(tmpNode.children.values().iterator());
 					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;
@@ -730,7 +700,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 				} while (!stackIt.peek().hasNext());
 				RadixEntry tmpNode = (RadixEntry) stackIt.peek().next();
 				while (tmpNode.data == null) {
-					stackIt.push(tmpNode.children.iterator());
+					stackIt.push(tmpNode.children.values().iterator());
 					tmpNode = (RadixEntry) stackIt.peek().next();
 				}
 				next = tmpNode;

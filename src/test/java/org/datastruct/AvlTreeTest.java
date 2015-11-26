@@ -13,7 +13,7 @@ public class AvlTreeTest {
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
 
-	private int size = 1000;
+	private int size = 5000;
 
 	@Before
 	public void setUp() throws Exception {
@@ -25,7 +25,6 @@ public class AvlTreeTest {
 
 	@After
 	public void tearDown() throws Exception {
-		assertFalse(map.isEmpty());
 		map.clear();
 		assertTrue(map.isEmpty());
 	}
@@ -305,6 +304,30 @@ public class AvlTreeTest {
 		assertEquals("{37:5, 18:4, 46:4, 5:3, 34:3, 42:3, 49:2, 3:1, 16:2, 29:2, 36:2, 38:2, 43:1, 47:1, 50:1, 15:1, 17:1, 27:1, 32:1, 35:1, 41:1}", tree.printTree());
 		assertEquals(new Integer(10), tree.remove(42));
 		assertEquals("{37:5, 18:4, 46:3, 5:3, 34:3, 41:2, 49:2, 3:1, 16:2, 29:2, 36:2, 38:1, 43:1, 47:1, 50:1, 15:1, 17:1, 27:1, 32:1, 35:1}", tree.printTree());
+	}
+
+	@Test
+	public void testRemoveRoot() {
+		AvlTree<Integer, Integer> tree = (AvlTree<Integer, Integer>) map;
+		assertNull(map.put(23, 23));
+		assertNull(map.put(32, 32));
+		assertEquals("{23:2, 32:1}", tree.printTree());
+		assertEquals(new Integer(23), map.remove(23));
+		assertEquals("{32:1}", tree.printTree());
+		assertEquals(new Integer(32), map.remove(32));
+		assertEquals("{}", tree.printTree());
+		assertTrue(map.isEmpty());
+		assertNull(map.put(32, 32));
+		assertNull(map.put(23, 23));
+		assertNull(map.put(34, 34));
+		assertNull(map.put(33, 33));
+		assertNull(map.put(35, 35));
+		assertNull(map.put(10, 10));
+		assertEquals("{32:3, 23:2, 34:2, 10:1, 33:1, 35:1}", tree.printTree());
+		assertEquals(new Integer(32), map.remove(32));
+		assertEquals("{23:3, 10:1, 34:2, 33:1, 35:1}", tree.printTree());
+		assertEquals(new Integer(23), map.remove(23));
+		assertEquals("{34:3, 10:2, 35:1, 33:1}", tree.printTree());
 	}
 
 	class Compare implements Comparator<Integer> {

@@ -209,7 +209,7 @@ public class RadixTreeTest {
 
 	private void testAsListOne() {
 		testAddOK();
-		assertEquals("[32, 23]", this.intRTree.asList().toString());
+		assertEquals("[23, 32]", this.intRTree.asList().toString());
 	}
 
 	private void testAsListTwo() {
@@ -220,7 +220,7 @@ public class RadixTreeTest {
 	private void testAsListThree() {
 		testAddMoreOK();
 		testAddOK();
-		assertEquals("[32, 23, 7, 6, 5, 4, 3, 2, 1]", this.intRTree.asList().toString());
+		assertEquals("[23, 32, 7, 6, 5, 4, 3, 2, 1]", this.intRTree.asList().toString());
 	}
 
 	private void addSequenceOne() {
@@ -490,8 +490,8 @@ public class RadixTreeTest {
 	private void testIteratorOne() {
 		testAddOK();
 		Iterator<Integer> it = this.intRTree.iterator();
-		assertEquals(new Integer(23), it.next());
 		assertEquals(new Integer(32), it.next());
+		assertEquals(new Integer(23), it.next());
 	}
 
 	private void testIteratorTwo() {
@@ -510,7 +510,7 @@ public class RadixTreeTest {
 		for (Integer anInsRadixTree : this.intRTree) {
 			niz += " " + anInsRadixTree.toString();
 		}
-		assertEquals(" 23 32 1 2 3 4 5 6 7", niz);
+		assertEquals(" 1 2 3 4 5 6 7 32 23", niz);
 	}
 
 	@Test
