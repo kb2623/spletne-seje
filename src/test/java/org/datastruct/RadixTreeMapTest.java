@@ -12,8 +12,9 @@ import static org.junit.Assert.*;
 
 public class RadixTreeMapTest {
 
-	private Map<MyString, Double> map;
-	private Map<MyString, Double> tmap;
+	private Map<String, Double> map;
+	private Map<String, Double> tmap;
+
 	private int size = 500;
 
 	@Before
@@ -22,14 +23,14 @@ public class RadixTreeMapTest {
 		tmap = new HashMap<>(size);
 	}
 
-	private MyString getRandomKey(int size) {
+	private String getRandomKey(int size) {
 		int rNum = (int) (Math.random() * size + 1 + 1);
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < rNum; i++) {
 			int c = (int) (Math.random() * 26 + 97);
 			builder.append((char) c);
 		}
-		return new MyString(builder.toString());
+		return builder.toString();
 	}
 
 	@Test
@@ -56,7 +57,7 @@ public class RadixTreeMapTest {
 		} catch (NullPointerException e) {
 		}
 		testPut(true);
-		for (MyString s : tmap.keySet()) {
+		for (String s : tmap.keySet()) {
 			assertTrue(map.containsKey(s));
 		}
 	}
@@ -82,7 +83,7 @@ public class RadixTreeMapTest {
 		} catch (NullPointerException e) {
 		}
 		testPut(true);
-		for (MyString s : tmap.keySet()) {
+		for (String s : tmap.keySet()) {
 			assertEquals(tmap.get(s), map.get(s));
 		}
 	}
@@ -95,7 +96,7 @@ public class RadixTreeMapTest {
 		} catch (NullPointerException e) {
 		}
 		try {
-			map.put(new MyString("asdf"), null);
+			map.put("asdf", null);
 			fail();
 		} catch (NullPointerException e) {
 		}
@@ -110,7 +111,7 @@ public class RadixTreeMapTest {
 	private void testPut(boolean test) {
 		for (int i = 0; i < size; i++) {
 			double value = Math.random() * 5000 + 1;
-			MyString key = getRandomKey((int) (Math.random() * 26 + 1));
+			String key = getRandomKey((int) (Math.random() * 26 + 1));
 			if (test) {
 				assertEquals(tmap.put(key, value), map.put(key, value));
 			} else {
@@ -123,16 +124,16 @@ public class RadixTreeMapTest {
 	public void testRemove() throws Exception {
 		try {
 			testPut(true);
-			for (MyString s : tmap.keySet()) {
+			for (String s : tmap.keySet()) {
 				if ((int) (Math.random() * 2 + 1) == 0) {
 					assertEquals(tmap.remove(s), map.remove(s));
 				}
 			}
 			assertEquals(tmap.size(), map.size());
-			Set<Map.Entry<MyString, Double>> sm = map.entrySet();
-			Set<Map.Entry<MyString, Double>> st = tmap.entrySet();
+			Set<Map.Entry<String, Double>> sm = map.entrySet();
+			Set<Map.Entry<String, Double>> st = tmap.entrySet();
 			assertEquals(st.size(), sm.size());
-			for (Map.Entry<MyString, Double> e : sm) {
+			for (Map.Entry<String, Double> e : sm) {
 				assertEquals(tmap.get(e.getKey()), e.getValue());
 			}
 		} catch (AssertionError e) {
@@ -143,8 +144,8 @@ public class RadixTreeMapTest {
 
 	@Test
 	public void testPutAll() throws Exception {
-		Map<MyString, Double> addMap = new HashMap<>(50);
-		addMap.put(new MyString("asdf"), null);
+		Map<String, Double> addMap = new HashMap<>(50);
+		addMap.put("asdf", null);
 		try {
 			map.putAll(addMap);
 			fail();
@@ -160,13 +161,13 @@ public class RadixTreeMapTest {
 		addMap.clear();
 		for (int i = 0; i < 50; i++) {
 			double value = Math.random() * 5000 + 1;
-			MyString key = getRandomKey((int) (Math.random() * 26 + 1));
+			String key = getRandomKey((int) (Math.random() * 26 + 1));
 			addMap.put(key, value);
 		}
 		map.putAll(addMap);
 		tmap.putAll(addMap);
 		assertEquals(tmap.size(), map.size());
-		for (Map.Entry<MyString, Double> e : map.entrySet()) {
+		for (Map.Entry<String, Double> e : map.entrySet()) {
 			assertEquals(tmap.get(e.getKey()), e.getValue());
 		}
 	}
@@ -185,17 +186,17 @@ public class RadixTreeMapTest {
 	@Test
 	public void testKeySet() throws Exception {
 		try {
-			Set<MyString> sm = map.keySet();
-			Set<MyString> st = tmap.keySet();
+			Set<String> sm = map.keySet();
+			Set<String> st = tmap.keySet();
 			assertEquals(st.size(), sm.size());
-			for (MyString s : sm) {
+			for (String s : sm) {
 				assertTrue(tmap.containsKey(s));
 			}
 			testPut(true);
 			sm = map.keySet();
 			st = tmap.keySet();
 			assertEquals(st.size(), sm.size());
-			for (MyString s : sm) {
+			for (String s : sm) {
 				assertTrue(tmap.containsKey(s));
 			}
 		} catch (AssertionError e) {
@@ -229,90 +230,22 @@ public class RadixTreeMapTest {
 	@Test
 	public void testEntrySet() throws Exception {
 		try {
-			Set<Map.Entry<MyString, Double>> sm = map.entrySet();
-			Set<Map.Entry<MyString, Double>> st = tmap.entrySet();
+			Set<Map.Entry<String, Double>> sm = map.entrySet();
+			Set<Map.Entry<String, Double>> st = tmap.entrySet();
 			assertEquals(st.size(), sm.size());
-			for (Map.Entry<MyString, Double> e : sm) {
+			for (Map.Entry<String, Double> e : sm) {
 				assertEquals(tmap.get(e.getKey()), e.getValue());
 			}
 			testPut(true);
 			sm = map.entrySet();
 			st = tmap.entrySet();
 			assertEquals(st.size(), sm.size());
-			for (Map.Entry<MyString, Double> e : sm) {
+			for (Map.Entry<String, Double> e : sm) {
 				assertEquals(tmap.get(e.getKey()), e.getValue());
 			}
 		} catch (AssertionError e) {
 			((RadixTree) map).printTree();
 			throw new AssertionError(e);
-		}
-	}
-
-	class MyString implements Sequence<MyString> {
-
-		private String value;
-
-		MyString(String s) {
-			value = s;
-		}
-
-		@Override
-		public int equalDistance(MyString s) {
-			int distance = 0;
-			for (int i = 0; i < value.length(); i++) {
-				if (i < s.value.length()) {
-					if (value.charAt(i) == s.value.charAt(i)) {
-						distance++;
-					} else {
-						return distance;
-					}
-				} else {
-					return distance;
-				}
-			}
-			return distance;
-		}
-
-		@Override
-		public int length() {
-			return value.length();
-		}
-
-		@Override
-		public MyString append(MyString s) {
-			return new MyString(value + s);
-		}
-
-		@Override
-		public MyString subSequence(int start, int end) {
-			return new MyString(value.substring(start, end));
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (o == null) return false;
-			if (o == this) return true;
-			if (o instanceof String) {
-				return value.equals(o);
-			} else {
-				MyString s = (MyString) o;
-				if (!value.equals(s.value)) return false;
-				return true;
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			int hash = 0;
-			for (char c : value.toCharArray()) {
-				hash += ((int) c);
-			}
-			return hash;
-		}
-
-		@Override
-		public String toString() {
-			return value;
 		}
 	}
 }
