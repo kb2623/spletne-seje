@@ -218,14 +218,13 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		RadixEntry curr = rootNode;
 		RadixEntry prev = null;
 		String currKey = key;
-		while (true) {
+		V data = null;
+		while (curr != null) {
 			int numMatchChar = curr.getNumberOfMatchingCharacters(currKey);
 			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
 				if (curr.data != null) {
-					V data = curr.data;
-					if (prev == null) {
-						return curr.setValue(null);
-					} else if (curr.children.isEmpty()) {
+					data = curr.data;
+					if (curr.children.isEmpty()) {
 						for (Iterator<RadixEntry> it = prev.children.iterator(); it.hasNext(); ) {
 							RadixEntry tmp = it.next();
 							if (tmp.key.equals(curr.key)) {
@@ -236,27 +235,29 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 						if (prev.children.size() == 1 && prev.data == null && prev != rootNode) {
 							mergeNodes(prev, prev.children.get(0));
 						}
-					}
-					if (curr.children.size() == 1) {
+					} else if (curr.children.size() == 1) {
 						mergeNodes(curr, curr.children.get(0));
 					} else {
 						curr.data = null;
 					}
-					return data;
-				} else if (curr.key.equals("") || (numMatchChar < currKey.length() && numMatchChar == curr.key.length())) {
-					currKey = currKey.substring(numMatchChar);
-					prev = curr;
-					for (RadixEntry chield : curr.children) {
-						if (chield.key.charAt(0) == currKey.charAt(0)) {
-							curr = chield;
-							break;
-						}
-					}
-				} else {
-					return null;
 				}
+				curr = null;
+			} else if (curr.key.equals("") || (numMatchChar < currKey.length() && numMatchChar == curr.key.length())) {
+				currKey = currKey.substring(numMatchChar);
+				prev = curr;
+				for (RadixEntry chield : curr.children) {
+					if (chield.key.charAt(0) == currKey.charAt(0)) {
+						curr = chield;
+						break;
+					} else {
+						curr = null;
+					}
+				}
+			} else {
+				curr = null;
 			}
 		}
+		return data;
 	}
 
 	private void mergeNodes(RadixEntry parent, RadixEntry child) {
