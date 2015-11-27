@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -19,8 +20,9 @@ public class BinomialQueueTest {
 
 	@Before
 	public void setUp() throws Exception {
-		queue = new BinomialQueue<>((i1, i2) -> i1.intValue() - i2.intValue());
-		tqueue = new PriorityQueue<>((i1, i2) -> i1.intValue() - i2.intValue());
+		CmpInt cmp = new CmpInt();
+		queue = new BinomialQueue<>(cmp);
+		tqueue = new PriorityQueue<>(cmp);
 		assertTrue(queue.isEmpty());
 	}
 
@@ -169,5 +171,13 @@ public class BinomialQueueTest {
 	@Test
 	public void testPeek() throws Exception {
 
+	}
+
+	private class CmpInt implements Comparator<Integer> {
+
+		@Override
+		public int compare(Integer i1, Integer i2) {
+			return i1.intValue() - i2.intValue();
+		}
 	}
 }
