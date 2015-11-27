@@ -54,7 +54,15 @@ public class BinomialQueueTest {
 
 	@Test
 	public void testIterator() throws Exception {
-
+		queue.offer(23);
+		queue.offer(45);
+		queue.offer(67);
+		queue.offer(89);
+		queue.offer(90);
+		queue.offer(12);
+		queue.offer(34);
+		queue.offer(56);
+		assertEquals(8, queue.size());
 	}
 
 	@Test

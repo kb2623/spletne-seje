@@ -79,6 +79,15 @@ public class ArgsParser {
 		properties.setProperty("database.url", uri.toASCIIString());
 	}
 
+	public Locale getLocale() {
+		return Locale.forLanguageTag(properties.getProperty("format.locale"));
+	}
+
+	@Option(name = "-flo", aliases = "format.locale", usage = "Locale for time parsing. Check lahguage tags.", metaVar = "<tag>")
+	public void setLocale(String locale) {
+		properties.setProperty("format.locale", locale);
+	}
+
 	public String getUserName() {
 		return properties.getProperty("database.username");
 	}
@@ -95,6 +104,15 @@ public class ArgsParser {
 	@Option(name = "-dbpw", aliases = "database.password", usage = "Password for user", metaVar = "<string>")
 	public void setPassWord(String pass) {
 		properties.setProperty("database.password", pass);
+	}
+
+	public String getDateFormat() {
+		return properties.getProperty("format.date");
+	}
+
+	@Option(name = "-fd", aliases = "format.date", usage = "Date format", metaVar = "<date format>")
+	public void setDateFormat(String line) {
+		properties.setProperty("format.date", line);
 	}
 
 	public String getDialectClass() {
@@ -124,6 +142,19 @@ public class ArgsParser {
 		properties.setProperty("database.driver.class", name);
 	}
 
+	public URL getDriverUrl() {
+		try {
+			return new URL(properties.getProperty("database.driver"));
+		} catch (MalformedURLException e) {
+			return null;
+		}
+	}
+
+	@Option(name = "-dbdr", aliases = "database.driver", usage = "Path to jar file, that is a driver", metaVar = "<path>", depends = "-dbdrc")
+	public void setDriverUrl(File file) throws MalformedURLException {
+		properties.setProperty("database.driver", file.getPath());
+	}
+
 	public int getConnectoinPoolSize() {
 		return Integer.valueOf(properties.getProperty("database.connection.pool_size"));
 	}
@@ -142,32 +173,6 @@ public class ArgsParser {
 		properties.setProperty("database.sql.show", String.valueOf(opt));
 	}
 
-	public boolean isShowSqlFormat() {
-		return Boolean.valueOf(properties.getProperty("database.sql.show.format"));
-	}
-
-	@Option(name = "-dbsqf", aliases = "database.sql.show.format", usage = "Show formated sql querys", metaVar = "<bool>", depends = "-dbsq")
-	public void setShowSqlFormat(boolean opt) {
-		properties.setProperty("database.sql.show.format", String.valueOf(opt));
-	}
-
-	public void printHelp(OutputStream out) {
-		parser.printUsage(out);
-	}
-
-	public boolean isIgnoreCrawlers() {
-		return Boolean.valueOf(properties.getProperty("crawlers"));
-	}
-
-	@Option(name = "-c", aliases = "crawlers", usage = "Ignore web crawlers", metaVar = "<bool>")
-	public void setIgnoreCrawlers(boolean opt) {
-		properties.setProperty("crawlers", String.valueOf(opt));
-	}
-
-	public boolean isPrintHelp() {
-		return printHelp;
-	}
-
 	public URL getDialect() {
 		try {
 			return new URL(properties.getProperty("database.dialect"));
@@ -181,43 +186,47 @@ public class ArgsParser {
 		properties.setProperty("", "");
 	}
 
-	public File[] getInputFile() {
-		return inputFile;
-	}
-
-	public URL getDriverUrl() {
-		try {
-			return new URL(properties.getProperty("database.driver"));
-		} catch (MalformedURLException e) {
-			return null;
-		}
-	}
-
-	@Option(name = "-dbdr", aliases = "database.driver", usage = "Path to jar file, that is a driver", metaVar = "<path>", depends = "-dbdrc")
-	public void setDriverUrl(File file) throws MalformedURLException {
-		properties.setProperty("database.driver", file.getPath());
-	}
-
-	public String getDateFormat() {
-		return properties.getProperty("format.date");
-	}
-
-	@Option(name = "-fd", aliases = "format.date", usage = "Date format", metaVar = "<date format>")
-	public void setDateFormat(String line) {
-		properties.setProperty("format.date", line);
-	}
-
-	public boolean ignoreCrawlers() {
+	public boolean isIgnoreCrawlers() {
 		return Boolean.valueOf(properties.getProperty("crawlers"));
 	}
 
-	public Locale getLocale() {
-		return Locale.forLanguageTag(properties.getProperty("format.locale"));
+	@Option(name = "-c", aliases = "crawlers", usage = "Ignore web crawlers", metaVar = "<bool>")
+	public void setIgnoreCrawlers(boolean opt) {
+		properties.setProperty("crawlers", String.valueOf(opt));
 	}
 
-	@Option(name = "-flo", aliases = "format.locale", usage = "Locale for time parsing. Check lahguage tags.", metaVar = "<tag>")
-	public void setLocale(String locale) {
-		properties.setProperty("format.locale", locale);
+	public boolean isShowSqlFormat() {
+		return Boolean.valueOf(properties.getProperty("database.sql.show.format"));
+	}
+
+	@Option(name = "-dbsqf", aliases = "database.sql.show.format", usage = "Show formated sql querys", metaVar = "<bool>", depends = "-dbsq")
+	public void setShowSqlFormat(boolean opt) {
+		properties.setProperty("database.sql.show.format", String.valueOf(opt));
+	}
+
+	public String[] getIgnoreFields() {
+		List<String> tmp = new ArrayList<>();
+		for (String s : properties.getProperty("log.ignore").split(" ")) {
+			tmp.add(s);
+		}
+		return tmp.toArray(new String[tmp.size()]);
+	}
+
+	@Option(name = "li", aliases = "log.ignore", usage = "Fields to ignore", metaVar = "<string>")
+	public void setIgnoreFields(String niz) {
+		properties.setProperty("log.ignore", niz);
+	}
+
+	public void printHelp(OutputStream out) {
+		parser.printUsage(out);
+	}
+
+	public boolean isPrintHelp() {
+		return printHelp;
+	}
+
+	public File[] getInputFile() {
+		return inputFile;
 	}
 
 	public enum DdlOperation {
@@ -236,4 +245,5 @@ public class ArgsParser {
 
 		public abstract String getValue();
 	}
+
 }

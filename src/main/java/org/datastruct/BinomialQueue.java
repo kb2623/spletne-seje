@@ -68,8 +68,8 @@ public class BinomialQueue<E> implements Queue<E> {
 	}
 
 	@Override
-	public Iterator<E> iterator() {
-		return null;
+	public Iterator<E> iterator() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -142,8 +142,8 @@ public class BinomialQueue<E> implements Queue<E> {
 	}
 
 	@Override
-	public boolean remove(Object o) {
-		return false;
+	public boolean remove(Object o) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -168,13 +168,13 @@ public class BinomialQueue<E> implements Queue<E> {
 	}
 
 	@Override
-	public boolean removeAll(Collection<?> collection) {
-		return false;
+	public boolean removeAll(Collection<?> collection) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean retainAll(Collection<?> collection) {
-		return false;
+	public boolean retainAll(Collection<?> collection) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
