@@ -3,7 +3,7 @@ package org.sessionization.fields;
 import org.sessionization.database.ConnectionStatusConverter;
 import org.sessionization.database.InetAddressConverter;
 import org.sessionization.database.MethodConverter;
-import org.sessionization.fields.ncsa.*;
+import org.sessionization.fields.ncsa.ProcessID;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -375,7 +375,7 @@ public enum LogFieldType {
 	}
 
 	public String getGetterName() {
-		return "get" + getClassType().getSimpleName();
+		return "et" + getClassType().getSimpleName();
 	}
 
 	public Class[] getDependencies() {

@@ -43,7 +43,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		} else {
 			RadixEntry tmp = new RadixEntry(node.data, node.key.substring(numMatchChar), node.children);
 			node.key = key.substring(0, numMatchChar);
-			node.children = new AvlTree<>();
+			node.children = new SkipMap<>(5);
 			node.children.put(tmp.key.charAt(0), tmp);
 			if (numMatchChar < key.length()) {
 				RadixEntry tmp1 = new RadixEntry(data, key.substring(numMatchChar));
@@ -82,7 +82,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 			} else {
 				RadixEntry tmp = new RadixEntry(curr.data, curr.key.substring(numMatchChar), curr.children);
 				curr.key = currKey.substring(0, numMatchChar);
-				curr.children = new AvlTree<>();
+				curr.children = new SkipMap<>(5);
 				curr.children.put(tmp.key.charAt(0), tmp);
 				if (numMatchChar < currKey.length()) {
 					RadixEntry tmp1 = new RadixEntry(data, currKey.substring(numMatchChar));
@@ -178,8 +178,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 						mergeNodes(parent, node);
 					}
 				} else if (node.children.size() == 1) {
-					Iterator<RadixEntry> it = node.children.values().iterator();
-					mergeNodes(node, it.next());
+					mergeNodes(node, node.children.getAt(0));
 				} else {
 					node.data = null;
 				}
@@ -208,12 +207,10 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 					if (curr.children.isEmpty()) {
 						prev.children.remove(curr.key.charAt(0));
 						if (prev.children.size() == 1 && prev.data == null && prev != rootNode) {
-							Iterator<RadixEntry> it = prev.children.values().iterator();
-							mergeNodes(prev, it.next());
+							mergeNodes(prev, prev.children.getAt(0));
 						}
 					} else if (curr.children.size() == 1 && prev != rootNode) {
-						Iterator<RadixEntry> it = curr.children.values().iterator();
-						mergeNodes(curr, it.next());
+						mergeNodes(curr, curr.children.getAt(0));
 					} else {
 						curr.data = null;
 					}
@@ -576,18 +573,18 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 
 	class RadixEntry implements Map.Entry<String, V> {
 
-		Map<Character, RadixEntry> children;
+		SkipMap<Character, RadixEntry> children;
 		V data;
 		String key;
 
-		private RadixEntry(V data, String key, Map<Character, RadixEntry> children) {
+		private RadixEntry(V data, String key, SkipMap<Character, RadixEntry> children) {
 			this.data = data;
 			this.key = key;
 			this.children = children;
 		}
 
 		private RadixEntry(V data, String key) {
-			this(data, key, new AvlTree<>());
+			this(data, key, new SkipMap<>(5));
 		}
 
 		private RadixEntry() {

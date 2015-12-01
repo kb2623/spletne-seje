@@ -86,6 +86,45 @@ public class CmdLineParser {
 		}
 	}
 
+	/**
+	 * Reads all lines of a file with the platform encoding.
+	 */
+	private static List<String> readAllLines(File f) throws IOException {
+		BufferedReader r = new BufferedReader(new FileReader(f));
+		try {
+			List<String> result = new ArrayList<String>();
+			String line;
+			while ((line = r.readLine()) != null) {
+				result.add(line);
+			}
+			return result;
+		} finally {
+			r.close();
+		}
+	}
+
+	/**
+	 * Registers a user-defined {@link OptionHandler} class with args4j.
+	 * <p>
+	 * <p>
+	 * This method allows users to extend the behavior of args4j by writing
+	 * their own {@link OptionHandler} implementation.
+	 *
+	 * @param valueType    The specified handler is used when the field/method annotated by {@link Option}
+	 *                     is of this type.
+	 * @param handlerClass This class must have the constructor that has the same signature as
+	 *                     {@link OptionHandler#OptionHandler(CmdLineParser, OptionDef, Setter)}
+	 * @throws NullPointerException     if {@code valueType} or {@code handlerClass} is {@code null}.
+	 * @throws IllegalArgumentException if {@code handlerClass} is not a subtype of {@code OptionHandler}.
+	 * @deprecated You should use {@link OptionHandlerRegistry#registerHandler(java.lang.Class, java.lang.Class)} instead.
+	 */
+	public static void registerHandler(Class valueType, Class<? extends OptionHandler> handlerClass) {
+		checkNonNull(valueType, "valueType");
+		checkNonNull(handlerClass, "handlerClass");
+
+		OptionHandlerRegistry.getRegistry().registerHandler(valueType, handlerClass);
+	}
+
 	public ParserProperties getProperties() {
 		return parserProperties;
 	}
@@ -299,7 +338,7 @@ public class CmdLineParser {
 	 * Prints usage information for a given option.
 	 *
 	 * <p>
-	 * Subtypes may override this method and determine which options get printed (or other things),
+	 * Subtypes may override this method and determine which options et printed (or other things),
 	 * based on {@link OptionHandler} (perhaps by using {@code handler.setter.asAnnotatedElement()}).
 	 *
 	 * @param out      Writer to write into
@@ -352,7 +391,7 @@ public class CmdLineParser {
 	}
 
 	private String localize(String s, ResourceBundle rb) {
-		if(rb!=null)    return rb.getString(s);
+		if(rb!= null) return rb.getString(s);
 		return s;
 	}
 
@@ -370,9 +409,9 @@ public class CmdLineParser {
 				// try to wrap at space, but don't try too hard as some languages don't even have whitespaces.
 				int lineLength;
 				String candidate = restOfLine.substring(0, maxLength);
-				int sp=candidate.lastIndexOf(' ');
-				if(sp>maxLength*3/5)    lineLength=sp;
-				else                    lineLength=maxLength;
+				int sp = candidate.lastIndexOf(' ');
+				if (sp > maxLength * 3 / 5) lineLength = sp;
+				else lineLength = maxLength;
 				rv.add(restOfLine.substring(0, lineLength));
 				restOfLine = restOfLine.substring(lineLength).trim();
 			}
@@ -382,66 +421,10 @@ public class CmdLineParser {
 	}
 
 	private int getPrefixLen(OptionHandler h, ResourceBundle rb) {
-		if(h.option.usage().length()==0)
+		if (h.option.usage().length() == 0)
 			return 0;
 
 		return h.getNameAndMeta(rb, parserProperties).length();
-	}
-
-	/**
-	 * Essentially a pointer over a {@link String} array.
-	 * Can move forward; can look ahead.
-	 */
-	protected class CmdLineImpl implements Parameters {
-		private final String[] args;
-		private int pos;
-
-		CmdLineImpl( String[] args ) {
-			this.args = args;
-			pos = 0;
-		}
-
-		CmdLineImpl(String arg) {
-			args = new String[] {
-				arg
-			};
-			pos = 0;
-		}
-
-		protected boolean hasMore() {
-			return pos<args.length;
-		}
-
-		protected String getCurrentToken() {
-			return args[pos];
-		}
-
-		protected void proceed(int n) {
-			pos += n;
-		}
-
-		public String getParameter(int idx) throws CmdLineException {
-			if(pos + idx >= args.length || pos + idx < 0 )
-				throw new CmdLineException(CmdLineParser.this, Messages.MISSING_OPERAND, getOptionName());
-			return args[pos + idx];
-		}
-
-		public int size() {
-			return args.length-pos;
-		}
-
-		/**
-		 * Used when the current token is of the form "-option=value",
-		 * to replace the current token by "value", as if this was given as two tokens "-option value"
-		 */
-		void splitToken() {
-			if (pos < args.length && pos >= 0) {
-				int idx = args[pos].indexOf("=");
-				if (idx > 0) {
-					args[pos] = args[pos].substring(idx + 1);
-				}
-			}
-		}
 	}
 
 	private String getOptionName() {
@@ -477,14 +460,14 @@ public class CmdLineParser {
 		CmdLineImpl cmdLine = new CmdLineImpl(expandedArgs);
 		Set<OptionHandler> present = new HashSet<OptionHandler>();
 		int argIndex = 0;
-		while( cmdLine.hasMore() ) {
+		while (cmdLine.hasMore()) {
 			String arg = cmdLine.getCurrentToken();
-			if(isOption(arg)) {
+			if (isOption(arg)) {
 				// '=' is for historical compatibility fallback
-				boolean isKeyValuePair = arg.contains(parserProperties.getOptionValueDelimiter()) || arg.indexOf('=')!=-1;
+				boolean isKeyValuePair = arg.contains(parserProperties.getOptionValueDelimiter()) || arg.indexOf('=') != -1;
 				// parse this as an option.
 				currentOptionHandler = isKeyValuePair ? findOptionHandler(arg) : findOptionByName(arg);
-				if(currentOptionHandler==null) {
+				if (currentOptionHandler == null) {
 					// TODO: insert dynamic handler processing
 					throw new CmdLineException(this, Messages.UNDEFINED_OPTION, arg);
 				}
@@ -502,7 +485,7 @@ public class CmdLineParser {
 				// known argument
 				currentOptionHandler = arguments.get(argIndex);
 				if (currentOptionHandler == null) // this is a programmer error. arg index should be continuous
-					throw new IllegalStateException("@Argument with index="+argIndex+" is undefined");
+					throw new IllegalStateException("@Argument with index=" + argIndex + " is undefined");
 				if (!currentOptionHandler.option.isMultiValued())
 					argIndex++;
 			}
@@ -513,7 +496,7 @@ public class CmdLineParser {
 		// check whether a help option is set
 		boolean helpSet = false;
 		for (OptionHandler handler : options) {
-			if(handler.option.help() && present.contains(handler)) {
+			if (handler.option.help() && present.contains(handler)) {
 				helpSet = true;
 			}
 		}
@@ -538,34 +521,17 @@ public class CmdLineParser {
 			if (arg.startsWith("@")) {
 				File file = new File(arg.substring(1));
 				if (!file.exists())
-					throw new CmdLineException(this,Messages.NO_SUCH_FILE,file.getPath());
+					throw new CmdLineException(this, Messages.NO_SUCH_FILE, file.getPath());
 				try {
 					result.addAll(readAllLines(file));
 				} catch (IOException ex) {
-					throw new CmdLineException(this, "Failed to parse "+file,ex);
+					throw new CmdLineException(this, "Failed to parse " + file, ex);
 				}
 			} else {
 				result.add(arg);
 			}
 		}
 		return result.toArray(new String[result.size()]);
-	}
-
-	/**
-	 * Reads all lines of a file with the platform encoding.
-	 */
-	private static List<String> readAllLines(File f) throws IOException {
-		BufferedReader r = new BufferedReader(new FileReader(f));
-		try {
-			List<String> result = new ArrayList<String>();
-			String line;
-			while ((line = r.readLine()) != null) {
-				result.add(line);
-			}
-			return result;
-		}  finally {
-			r.close();
-		}
 	}
 
 	protected void checkRequiredOptionsAndArguments(Set<OptionHandler> present) throws CmdLineException {
@@ -662,30 +628,6 @@ public class CmdLineParser {
 	}
 
 	/**
-	 * Registers a user-defined {@link OptionHandler} class with args4j.
-	 *
-	 * <p>
-	 * This method allows users to extend the behavior of args4j by writing
-	 * their own {@link OptionHandler} implementation.
-	 *
-	 * @param valueType
-	 *      The specified handler is used when the field/method annotated by {@link Option}
-	 *      is of this type.
-	 * @param handlerClass
-	 *      This class must have the constructor that has the same signature as
-	 *      {@link OptionHandler#OptionHandler(CmdLineParser, OptionDef, Setter)}
-	 * @throws NullPointerException if {@code valueType} or {@code handlerClass} is {@code null}.
-	 * @throws IllegalArgumentException if {@code handlerClass} is not a subtype of {@code OptionHandler}.
-	 * @deprecated You should use {@link OptionHandlerRegistry#registerHandler(java.lang.Class, java.lang.Class)} instead.
-	 */
-	public static void registerHandler( Class valueType, Class<? extends OptionHandler> handlerClass ) {
-		checkNonNull(valueType, "valueType");
-		checkNonNull(handlerClass, "handlerClass");
-
-		OptionHandlerRegistry.getRegistry().registerHandler(valueType, handlerClass);
-	}
-
-	/**
 	 * Sets the width of the usage output.
 	 * @param usageWidth the width of the usage output in columns.
 	 * @throws IllegalArgumentException if {@code usageWidth} is negative
@@ -752,5 +694,61 @@ public class CmdLineParser {
 		}
 		if (!h.option.required())
 			pw.print(']');
+	}
+
+	/**
+	 * Essentially a pointer over a {@link String} array.
+	 * Can move forward; can look ahead.
+	 */
+	protected class CmdLineImpl implements Parameters {
+		private final String[] args;
+		private int pos;
+
+		CmdLineImpl(String[] args) {
+			this.args = args;
+			pos = 0;
+		}
+
+		CmdLineImpl(String arg) {
+			args = new String[] {
+					arg
+			};
+			pos = 0;
+		}
+
+		protected boolean hasMore() {
+			return pos < args.length;
+		}
+
+		protected String getCurrentToken() {
+			return args[pos];
+		}
+
+		protected void proceed(int n) {
+			pos += n;
+		}
+
+		public String getParameter(int idx) throws CmdLineException {
+			if (pos + idx >= args.length || pos + idx < 0)
+				throw new CmdLineException(CmdLineParser.this, Messages.MISSING_OPERAND, getOptionName());
+			return args[pos + idx];
+		}
+
+		public int size() {
+			return args.length - pos;
+		}
+
+		/**
+		 * Used when the current token is of the form "-option=value",
+		 * to replace the current token by "value", as if this was given as two tokens "-option value"
+		 */
+		void splitToken() {
+			if (pos < args.length && pos >= 0) {
+				int idx = args[pos].indexOf("=");
+				if (idx > 0) {
+					args[pos] = args[pos].substring(idx + 1);
+				}
+			}
+		}
 	}
 }

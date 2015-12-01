@@ -1,5 +1,6 @@
 package org.sessionization;
 
+import org.datastruct.ClassPool;
 import org.datastruct.RadixTree;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,8 @@ public class SpletneSejeTest {
 	private AbsParser parser;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
+		ClassPool.initClassPool(null, null);
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
 		pathNCSACommon = ClassLoader.getSystemResource("testLog").getFile();
 		parser = new NCSAParser();
@@ -46,7 +48,7 @@ public class SpletneSejeTest {
 				}
 			}
 			parser.closeFile();
-			assertEquals(269, testMap.size());
+			assertEquals(28, testMap.size());
 		} catch(NullPointerException | IOException e) {
 			fail();
 		}
@@ -69,7 +71,7 @@ public class SpletneSejeTest {
 				}
 			}
 			parser.closeFile();
-			assertEquals(269, testMap.size());
+			assertEquals(28, testMap.size());
 		} catch(NullPointerException | IOException e) {
 			fail();
 		}
@@ -124,7 +126,7 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testRunTwo() throws MalformedURLException {
-		SpletneSeje.main("-fl", "COMMON", "-xml", "H2.cfg.xml", "-dbdr", "lib/h2-1.4.188.jar", "-dbdrc", "adfkl;", pathNCSACommon);
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), "-dbdr", "lib/h2-1.4.188.jar", "-dbdrc", "adfkl;", pathNCSACommon);
 	}
 
 	@Test

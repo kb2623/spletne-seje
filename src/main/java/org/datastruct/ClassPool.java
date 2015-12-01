@@ -21,7 +21,7 @@ public class ClassPool {
 	public static void initClassPool(Integer size, String pathProp) throws IOException {
 		Map<Class, Map<Integer, Object>> map;
 		Properties props = new Properties();
-		if (size == null || size < +0) {
+		if (size == null || size < 0) {
 			map = new HashMap<>();
 		} else {
 			map = new HashMap<>(size);
@@ -44,7 +44,7 @@ public class ClassPool {
 			}
 		}
 		if (size == 0) {
-			return new SkipMap<>(5);
+			return new AvlTree<>();
 		} else {
 			int maxCone = 0;
 			if (properties.getProperty(type.getSimpleName() + ".cons") != null) {
@@ -92,15 +92,19 @@ public class ClassPool {
 	private static <T> T makeObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
 		Class[] initArgsType = new Class[args.length];
 		for (int i = 0; i < initArgsType.length; i++) {
-			initArgsType[i] = args[i].getClass();
+			Class ca = null;
+			if (args[i] instanceof Enum<?>) {
+				ca = args[i].getClass().getSuperclass();
+			} else {
+				ca = args[i].getClass();
+			}
+			initArgsType[i] = ca;
 		}
 		try {
 			Constructor init = c.getConstructor(initArgsType);
 			Object newObject = init.newInstance(args);
 			return c.cast(newObject);
-		} catch (NoSuchMethodException e) {
-			throw new ExceptionInInitializerError(e);
-		} catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 	}

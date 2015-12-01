@@ -29,6 +29,9 @@ public class ArgsParser {
 		initDefaults();
 		parser = new PropretiesCmdParser(this);
 		parser.parseArgument(args);
+		if (printHelp) {
+			throw new CmdLineException(parser, "Print help");
+		}
 	}
 
 	private void initDefaults() {

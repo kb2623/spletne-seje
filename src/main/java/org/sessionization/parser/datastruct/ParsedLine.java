@@ -7,6 +7,7 @@ import org.sessionization.fields.UserAgent;
 import org.sessionization.fields.ncsa.RequestLine;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
@@ -20,6 +21,10 @@ public class ParsedLine implements Iterable<LogField> {
 	 */
 	public ParsedLine(LogField[] array) {
 		this.array = array;
+	}
+
+	public ParsedLine(List<LogField> list) {
+		this.array = list.toArray(new LogField[list.size()]);
 	}
 	/**
 	 * Metoda, ki prevrja ali je zahtevo opravil uporabnik ali spletni robot.

@@ -305,6 +305,27 @@ public class SkipMap<K, V> implements Map<K, V> {
 		return builder.toString();
 	}
 
+	protected V getAt(int index) {
+		if (index < 0) {
+			return null;
+		}
+		int size = size();
+		if (index >= size) {
+			return null;
+		}
+		V ret = null;
+		Entry<K, V> curr = sentinel.conns[0];
+		for (int i = 0; i < size; i++) {
+			if (i == index) {
+				ret = curr.value;
+				break;
+			} else {
+				curr = curr.conns[0];
+			}
+		}
+		return ret;
+	}
+
 	protected class Entry<K, V> implements Map.Entry<K, V> {
 
 		protected Entry<K, V>[] conns;

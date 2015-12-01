@@ -21,7 +21,8 @@ public class UriSteamQuery extends UriSteam {
 
 	public UriSteamQuery(URI uri) {
 		super(uri.getRawPath());
-		query = ClassPool.getObject(UriQuery.class, uri.getQuery());
+		String query = uri.getQuery();
+		this.query = ClassPool.getObject(UriQuery.class, query != null ? query : "-");
 	}
 	/**
 	 * Metoda vrne query

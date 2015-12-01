@@ -38,7 +38,7 @@ public class ArgsParserTest {
 		try {
 			parser = new ArgsParser("test");
 			assertFalse(parser.isShowSql());
-			assertFalse(parser.ignoreCrawlers());
+			assertFalse(parser.isIgnoreCrawlers());
 			assertFalse(parser.isShowSqlFormat());
 			assertEquals("org.sqlite.JDBC", parser.getDriverClass());
 			assertEquals("org.dialect.SQLiteDialect", parser.getDialectClass());
@@ -59,7 +59,7 @@ public class ArgsParserTest {
 		try {
 			parser = new ArgsParser("-props", ClassLoader.getSystemResource("H2.properties").toURI().getPath(), "test");
 			assertEquals(Locale.CANADA_FRENCH, parser.getLocale());
-			assertTrue(parser.ignoreCrawlers());
+			assertTrue(parser.isIgnoreCrawlers());
 			assertTrue(parser.isShowSql());
 			assertTrue(parser.isShowSqlFormat());
 			assertEquals("testname", parser.getUserName());

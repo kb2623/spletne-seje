@@ -1,12 +1,14 @@
 package org.sessionization.parser;
 
-import org.sessionization.fields.*;
+import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
-import java.io.*;
-import java.net.URISyntaxException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 @SuppressWarnings("deprecation")
 public class IISParser extends W3CParser {
 
@@ -54,7 +56,7 @@ public class IISParser extends W3CParser {
 	}
 
 	@Override
-	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException, ParseException {
+	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
 		int i = -1;
 		String logline = super.getLine();
 		String[] tokens = new String[super.fieldType.size()];
@@ -77,13 +79,17 @@ public class IISParser extends W3CParser {
 			tokens[++i] = buff.toString();
 		}
 		if (tokens.length != i + 1) {
-			throw new ParseException("Bad line!!!", super.getPos());
+			throw new IOException();
 		}
 		return tokens;
 	}
 
 	@Override
-	public ParsedLine parseLine() throws ParseException, IOException, NullPointerException, URISyntaxException {
-		return new ParsedLine(process(parse()));
+	public ParsedLine parseLine() throws ParseException {
+		try {
+			return new ParsedLine(process(parse()));
+		} catch (ArrayIndexOutOfBoundsException | IOException e) {
+			throw new ParseException("Bad line!!!", getPos());
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package org.sessionization.parser;
 
+import org.datastruct.ClassPool;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,9 +16,7 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
 public class NCSAParserTest {
@@ -28,6 +27,7 @@ public class NCSAParserTest {
 
 	@Before
 	public void setUp() throws Exception {
+		ClassPool.initClassPool(null, null);
 		parser = new NCSAParser();
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
 		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
@@ -40,7 +40,8 @@ public class NCSAParserTest {
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
 			for (ParsedLine list : parser) list.forEach(Assert::assertNotNull);
 			parser.closeFile();
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -61,7 +62,8 @@ public class NCSAParserTest {
 			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
 			parser.forEach(line -> line.forEach(Assert::assertNotNull));
 			parser.closeFile();
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -73,20 +75,21 @@ public class NCSAParserTest {
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			parser.forEach(line -> line.forEach(Assert::assertNotNull));
 			parser.closeFile();
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
 
 	@Test
-	public void testNCSAParserCombinedWithSetFormat() {
+	public void testNCSAParserCombinedWithSetFormat() throws URISyntaxException {
 		try {
 			parser.openFile(new File[]{new File(pathNCSACombined)});
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			parser.setDateFormat("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 			for (ParsedLine list : parser) list.forEach(Assert::assertNotNull);
 			parser.closeFile();
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -99,7 +102,8 @@ public class NCSAParserTest {
 			parser.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			parser.forEach(line -> line.forEach(Assert::assertNotNull));
 			parser.closeFile();
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -113,7 +117,7 @@ public class NCSAParserTest {
 				list.forEach(Assert::assertNotNull);
 			}
 			parser.closeFile();
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -126,6 +130,7 @@ public class NCSAParserTest {
 			parser1.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			parser1.forEach(Assert::assertNotNull);
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -140,8 +145,8 @@ public class NCSAParserTest {
 			ParsedLine line = parser1.parseLine();
 			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", line.toString());
 			assertFalse(line.isResource());
-
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail();
 		}
 	}
@@ -157,11 +162,9 @@ public class NCSAParserTest {
 			ParsedLine list = parser.parseLine();
 			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", list.toString());
 			parser.closeFile();
-		} catch(NullPointerException | ParseException | IOException e) {
+		} catch (NullPointerException | ParseException | IOException e) {
 			e.printStackTrace();
 			fail();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
 		}
 	}
 }

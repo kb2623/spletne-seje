@@ -6,13 +6,11 @@ import org.sessionization.fields.w3c.*;
 import org.sessionization.fields.w3c.Date;
 import org.sessionization.parser.datastruct.ParsedLine;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -76,7 +74,7 @@ public class W3CParser extends AbsParser {
 	}
 
 	@Override
-	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException, ParseException {
+	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
 		String logline = super.getLine();
 		List<String> tokens = new ArrayList<>();
 		StringBuffer buff = new StringBuffer();
@@ -99,99 +97,112 @@ public class W3CParser extends AbsParser {
 	}
 
 	@Override
-	public ParsedLine parseLine() throws ParseException, IOException, URISyntaxException {
-		String[] tokens = parse();
-		if(tokens[0].charAt(0) == '#') {
-			LogField[] metaData = new LogField[tokens.length];
-			if(tokens[0].equals("#Fields:")) {
-				super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens));
+	public ParsedLine parseLine() throws ParseException {
+		try {
+			String[] tokens = parse();
+			if (tokens[0].charAt(0) == '#') {
+				LogField[] metaData = new LogField[tokens.length];
+				if (tokens[0].equals("#Fields:")) {
+					super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens));
+				}
+				for (int i = 0; i < tokens.length; i++) {
+					metaData[i] = new MetaData(tokens[i]);
+				}
+				return new ParsedLine(metaData);
+			} else {
+				return new ParsedLine(process(tokens));
 			}
-			for (int i = 0; i < tokens.length; i++) {
-				metaData[i] = new MetaData(tokens[i]);
-			}
-			return new ParsedLine(metaData);
-		} else {
-			return new ParsedLine(process(tokens));
+		} catch (ArrayIndexOutOfBoundsException | IOException e) {
+			throw new ParseException("Bad line!!!", getPos());
 		}
 	}
 
-	protected LogField[] process(String[] tokens) throws ParseException, URISyntaxException, UnknownHostException {
+	protected List<LogField> process(String[] tokens) throws ParseException {
 		if(super.fieldType == null) throw new ParseException("Bad log format", super.getPos());
 		if(super.fieldType.size() != tokens.length) throw new ParseException("Can't parse a line", super.getPos());
-		LogField[] lineData = new LogField[super.fieldType.size()];
+		List<LogField> lineData = new LinkedList<>();
 		for (int i = 0; i < super.fieldType.size(); i++) {
-			switch (super.fieldType.get(i)) {
-			case Referer:
-				lineData[i] = ClassPool.getObject(Referer.class, new URI(tokens[i]));
-				break;
-			case Cookie:
-				lineData[i] = ClassPool.getObject(Cookie.class, tokens[i], LogType.W3C);
-				break;
-			case UserAgent:
-				lineData[i] = ClassPool.getObject(UserAgent.class, tokens[i], LogType.W3C);
-				break;
-			case Method:
-				lineData[i] = Method.setMethod(tokens[i]);
-				break;
-			case Date:
-				lineData[i] = ClassPool.getObject(Date.class, tokens[i], dateFormat);
-				break;
-			case Time:
-				lineData[i] = ClassPool.getObject(Time.class, tokens[i], timeFormat);
-				break;
-			case SiteName:
-				lineData[i] = ClassPool.getObject(SiteName.class, tokens[i]);
-				break;
-			case ComputerName:
-				lineData[i] = ClassPool.getObject(ComputerName.class, tokens[i]);
-				break;
-			case ServerIP:
-				lineData[i] = ClassPool.getObject(Address.class, tokens[i], true);
-				break;
-			case ClientIP:
-				lineData[i] = ClassPool.getObject(Address.class, tokens[i], false);
-				break;
-			case UriSteam:
-				lineData[i] = ClassPool.getObject(UriSteam.class, tokens[i]);
-				break;
-			case UriQuery:
-				lineData[i] = ClassPool.getObject(UriQuery.class, tokens[i]);
-				break;
-			case ServerPort:
-				lineData[i] = ClassPool.getObject(Port.class, tokens[i], true);
-				break;
-			case ClientPort:
-				lineData[i] = ClassPool.getObject(Port.class, tokens[i], false);
-				break;
-			case RemoteUser:
-				lineData[i] = ClassPool.getObject(RemoteUser.class, tokens[i]);
-				break;
-			case ProtocolVersion:
-				lineData[i] = ClassPool.getObject(Protocol.class, tokens[i]);
-				break;
-			case Host:
-				lineData[i] = ClassPool.getObject(Host.class, tokens[i]);
-				break;
-			case StatusCode:
-				lineData[i] = ClassPool.getObject(StatusCode.class, tokens[i]);
-				break;
-			case SubStatus:
-				lineData[i] = ClassPool.getObject(SubStatus.class, tokens[i]);
-				break;
-			case Win32Status:
-				lineData[i] = ClassPool.getObject(Win32Status.class, tokens[i]);
-				break;
-			case SizeOfRequest:
-				lineData[i] = ClassPool.getObject(SizeOfRequest.class, tokens[i]);
-				break;
-			case SizeOfResponse:
-				lineData[i] = ClassPool.getObject(SizeOfResponse.class, tokens[i]);
-				break;
-			case TimeTaken:
-				lineData[i] = ClassPool.getObject(TimeTaken.class, tokens[i], false);
-				break;
-			default:
-				throw new ParseException("Unknown field", super.getPos());
+			LogFieldType type = fieldType.get(i);
+			if (ignore != null ? !ignore.contains(type) : true) {
+				LogField field = null;
+				switch (type) {
+					case Referer:
+						try {
+							field = ClassPool.getObject(Referer.class, new URI(tokens[i]));
+						} catch (URISyntaxException e) {
+							throw new ParseException("Bad referer!!!", getPos());
+						}
+						break;
+					case Cookie:
+						field = ClassPool.getObject(Cookie.class, tokens[i], LogType.W3C);
+						break;
+					case UserAgent:
+						field = ClassPool.getObject(UserAgent.class, tokens[i], LogType.W3C);
+						break;
+					case Method:
+						field = Method.setMethod(tokens[i]);
+						break;
+					case Date:
+						field = ClassPool.getObject(Date.class, tokens[i], dateFormat);
+						break;
+					case Time:
+						field = ClassPool.getObject(Time.class, tokens[i], timeFormat);
+						break;
+					case SiteName:
+						field = ClassPool.getObject(SiteName.class, tokens[i]);
+						break;
+					case ComputerName:
+						field = ClassPool.getObject(ComputerName.class, tokens[i]);
+						break;
+					case ServerIP:
+						field = ClassPool.getObject(Address.class, tokens[i], true);
+						break;
+					case ClientIP:
+						field = ClassPool.getObject(Address.class, tokens[i], false);
+						break;
+					case UriSteam:
+						field = ClassPool.getObject(UriSteam.class, tokens[i]);
+						break;
+					case UriQuery:
+						field = ClassPool.getObject(UriQuery.class, tokens[i]);
+						break;
+					case ServerPort:
+						field = ClassPool.getObject(Port.class, tokens[i], true);
+						break;
+					case ClientPort:
+						field = ClassPool.getObject(Port.class, tokens[i], false);
+						break;
+					case RemoteUser:
+						field = ClassPool.getObject(RemoteUser.class, tokens[i]);
+						break;
+					case ProtocolVersion:
+						field = ClassPool.getObject(Protocol.class, tokens[i]);
+						break;
+					case Host:
+						field = ClassPool.getObject(Host.class, tokens[i]);
+						break;
+					case StatusCode:
+						field = ClassPool.getObject(StatusCode.class, tokens[i]);
+						break;
+					case SubStatus:
+						field = ClassPool.getObject(SubStatus.class, tokens[i]);
+						break;
+					case Win32Status:
+						field = ClassPool.getObject(Win32Status.class, tokens[i]);
+						break;
+					case SizeOfRequest:
+						field = ClassPool.getObject(SizeOfRequest.class, tokens[i]);
+						break;
+					case SizeOfResponse:
+						field = ClassPool.getObject(SizeOfResponse.class, tokens[i]);
+						break;
+					case TimeTaken:
+						field = ClassPool.getObject(TimeTaken.class, tokens[i], false);
+						break;
+					default:
+						throw new ParseException("Unknown field", super.getPos());
+				}
+				lineData.add(field);
 			}
 		}
 		return lineData;
@@ -220,19 +231,13 @@ public class W3CParser extends AbsParser {
 					try {
 						next = parseLine();
 						return tmp;
-					} catch (EOFException e) {
+					} catch (ParseException e) {
 						next = null;
 						return tmp;
-					} catch (ParseException | IOException e) {
-						return null;
-					} catch (URISyntaxException e) {
-						return null;
 					}
 				}
 			};
-		} catch (ParseException | IOException e) {
-			return null;
-		} catch (URISyntaxException e) {
+		} catch (ParseException e) {
 			return null;
 		}
 	}

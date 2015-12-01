@@ -5,7 +5,6 @@ import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
@@ -19,6 +18,18 @@ import java.util.function.Consumer;
  */
 public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	/**
+	 * Tabela, ki vsebuje vrste polji v log datoteki
+	 *
+	 * @see LogFieldType
+	 */
+	protected List<LogFieldType> fieldType;
+	/**
+	 * Tabela, ki vsebuje polja, ki jih ignoramo
+	 *
+	 * @see LogFieldType
+	 */
+	protected List<LogFieldType> ignore;
+	/**
 	 * Vrstica v datotekah
 	 */
 	private int pos;
@@ -28,12 +39,6 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @see BufferedReader
 	 */
 	private BufferedReader[] readers;
-	/**
-	 * Tabela, ki vsebuje vrste polji v log datoteki
-	 *
-	 * @see LogFieldType
-	 */
-	protected List<LogFieldType> fieldType;
 	/**
 	 * Osnovni konstruktor, za prevzete nastavitve:<p>
 	 * pozicija = 0<p>
@@ -121,7 +126,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws ArrayIndexOutOfBoundsException
 	 * @throws IOException
 	 */
-	protected abstract String[] parse() throws ArrayIndexOutOfBoundsException, IOException, ParseException;
+	protected abstract String[] parse() throws ArrayIndexOutOfBoundsException, IOException;
 	/**
 	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
 	 *
@@ -132,7 +137,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @see LogField
 	 * @see ParsedLine
 	 */
-	public abstract ParsedLine parseLine() throws ParseException, NullPointerException, IOException, URISyntaxException;
+	public abstract ParsedLine parseLine() throws ParseException;
 	/**
 	 * Metoda za zapiranje datoteke
 	 *
@@ -144,17 +149,16 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 		}
 		pos = 0;
 	}
+
 	/**
-	 * Metoda za nastavljanje tipov polji v log datoteki.
+	 * Metoda za nastaljanje polji, ki jih med parsanjem ignoriramo
 	 *
-	 * @see LogFieldType
-	 * @param fields Tipi polji v log datoteki
-	 * @throws NullPointerException Ko je parameter <code>fields</code> enak null
+	 * @param ignore Tabela s polji, ki jih zelimo ignorirati
 	 */
-	public void setFieldType(List<LogFieldType> fields) throws NullPointerException {
-		if(fields == null) throw new NullPointerException();
-		this.fieldType = fields;
+	public void setIgnoreFieldType(List<LogFieldType> ignore) {
+		this.ignore = ignore;
 	}
+
 	/**
 	 * Geter za seznam tipov polji v log datoteki
 	 *
@@ -163,6 +167,19 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	public List<LogFieldType> getFieldType() {
 		return fieldType;
 	}
+
+	/**
+	 * Metoda za nastavljanje tipov polji v log datoteki.
+	 *
+	 * @param fields Tipi polji v log datoteki
+	 * @throws NullPointerException Ko je parameter <code>fields</code> enak null
+	 * @see LogFieldType
+	 */
+	public void setFieldType(List<LogFieldType> fields) throws NullPointerException {
+		if (fields == null) throw new NullPointerException();
+		this.fieldType = fields;
+	}
+
 	/**
 	 * Metoda, ki vrne stevilko vrstice v kateri se nahaja parser
 	 *
@@ -174,11 +191,9 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 
 	@Override
 	public void forEach(Consumer<? super ParsedLine> consumer) {
-		try {
-			for (ParsedLine line = parseLine(); line != null; line = parseLine()) {
-				consumer.accept(line);
-			}
-		} catch (IOException | NullPointerException | ParseException | URISyntaxException ignored) {}
+		for (Iterator<ParsedLine> it = iterator(); it.hasNext(); ) {
+			consumer.accept(it.next());
+		}
 	}
 
 	@Override
