@@ -375,7 +375,7 @@ public enum LogFieldType {
 	}
 
 	public String getGetterName() {
-		return "et" + getClassType().getSimpleName();
+		return "get" + getClassType().getSimpleName();
 	}
 
 	public Class[] getDependencies() {
