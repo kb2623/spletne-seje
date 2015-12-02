@@ -45,6 +45,7 @@ public class ArgsParser {
 		properties.setProperty("database.sql.show", String.valueOf(false));
 		properties.setProperty("database.sql.show.format", String.valueOf(false));
 		properties.setProperty("format.locale", Locale.US.toLanguageTag());
+		properties.setProperty("parse.size", "500");
 	}
 
 	public String[] getLogFormat() {
@@ -58,6 +59,15 @@ public class ArgsParser {
 	@Option(name = "-fl", aliases = "format.log", usage = "Log file format. Check NCSA or W3C log formats.", metaVar = "<log format>")
 	public void setLogFormat(String format) {
 		properties.setProperty("format.log", format);
+	}
+
+	public int getParseSize() {
+		return Integer.valueOf(properties.getProperty("parse.size"));
+	}
+
+	@Option(name = "-ps", aliases = "parse.size", usage = "Number of sessions", metaVar = "<int>")
+	public void setParseSize(int size) {
+		properties.setProperty("parse.size", String.valueOf(size));
 	}
 
 	public String getTimeFormat() {

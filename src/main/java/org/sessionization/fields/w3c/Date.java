@@ -1,6 +1,7 @@
 package org.sessionization.fields.w3c;
 
 import org.sessionization.fields.LogField;
+import org.sessionization.fields.TimePoint;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -10,13 +11,17 @@ import java.time.format.DateTimeFormatter;
 
 @Embeddable
 @Cacheable(false)
-public class Date implements LogField {
+public class Date implements LogField, TimePoint {
 
-	@Column(name = "data")
+	@Column
 	private LocalDate date;
 
 	public Date() {
 		date = null;
+	}
+
+	protected Date(LocalDate date) {
+		this.date = date;
 	}
 
 	public Date(String date, DateTimeFormatter formatter) {
@@ -45,16 +50,18 @@ public class Date implements LogField {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		Date date1 = (Date) o;
-
 		if (!getDate().equals(date1.getDate())) return false;
-
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		return getDate().hashCode();
+	}
+
+	@Override
+	public LocalDate getLocalDate() {
+		return date;
 	}
 }

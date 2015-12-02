@@ -1,18 +1,16 @@
 package org.sessionization.fields;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
-
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+import org.sessionization.fields.ncsa.DateTime;
 import org.sessionization.fields.ncsa.RequestLine;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Period;
+
+import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
 public class TestLogField {
@@ -122,5 +120,31 @@ public class TestLogField {
 		assertTrue(uriSteam.isResource());
 		uriSteam = new UriSteamQuery(new URI("/image/cache/data/topbananaBLU-cr-214x293.png"));
 		assertTrue(uriSteam.isResource());
+	}
+
+	@Test
+	public void testTimePointDateTime() {
+		DateTime dateTime1 = new DateTime(LocalDateTime.of(2015, 1, 24, 3, 30, 34)),
+				dateTime2 = new DateTime(LocalDateTime.of(2015, 1, 24, 3, 30, 45));
+		Period p = dateTime1.minusDate(dateTime2);
+		Duration d = dateTime1.minusTime(dateTime2);
+		System.out.println(d.isNegative());
+		System.out.println(d.toString());
+		System.out.println(d.abs().getSeconds());
+		System.out.println(d.toNanos());
+		System.out.println(p.toString());
+		System.out.println(dateTime2.getLocalTime().plus(d).toString());
+		System.out.println(dateTime2.getLocalDate().minus(p).toString());
+		System.out.println(dateTime2.getLocalTime().minus(p).toString());
+	}
+
+	@Test
+	public void testTimePointTime() {
+
+	}
+
+	@Test
+	public void testTimePointDate() {
+
 	}
 }

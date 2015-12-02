@@ -27,7 +27,7 @@ public class SpletneSejeTest {
 	public void setUp() throws IOException {
 		ClassPool.initClassPool(null, null);
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
-		pathNCSACommon = ClassLoader.getSystemResource("testLog").getFile();
+		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
 		parser = new NCSAParser();
 	}
 
@@ -48,7 +48,7 @@ public class SpletneSejeTest {
 				}
 			}
 			parser.closeFile();
-			assertEquals(28, testMap.size());
+			assertEquals(269, testMap.size());
 		} catch(NullPointerException | IOException e) {
 			fail();
 		}
@@ -71,7 +71,36 @@ public class SpletneSejeTest {
 				}
 			}
 			parser.closeFile();
-			assertEquals(28, testMap.size());
+			boolean run = true;
+			Scanner sc = new Scanner(System.in);
+			Iterator<List<ParsedLine>> listIt = testMap.values().iterator();
+			Iterator<ParsedLine> line = listIt.next().iterator();
+			while (run) {
+				int select = sc.nextInt();
+				System.out.println();
+				switch (select) {
+					case 1:
+						System.out.println("Skiping: " + line.next().getKey());
+						line = listIt.next().iterator();
+						break;
+					case 2:
+						System.out.println("Skiping: " + line.next().toString());
+						while (!line.next().isResource()) {
+						}
+						break;
+					case 3:
+						ParsedLine l = null;
+						do {
+							l = line.next();
+							System.out.println(line.next().toString());
+						} while (l.isResource());
+						break;
+					default:
+						run = false;
+
+				}
+			}
+			assertEquals(269, testMap.size());
 		} catch(NullPointerException | IOException e) {
 			fail();
 		}

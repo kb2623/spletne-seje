@@ -1,10 +1,10 @@
 package org.sessionization.parser.datastruct;
 
-import org.sessionization.fields.LogField;
-import org.sessionization.fields.Referer;
-import org.sessionization.fields.UriSteam;
-import org.sessionization.fields.UserAgent;
+import org.sessionization.fields.*;
+import org.sessionization.fields.ncsa.DateTime;
 import org.sessionization.fields.ncsa.RequestLine;
+import org.sessionization.fields.w3c.Date;
+import org.sessionization.fields.w3c.Time;
 
 import java.util.Iterator;
 import java.util.List;
@@ -132,6 +132,24 @@ public class ParsedLine implements Iterable<LogField> {
 			if (f instanceof LogField && ((LogField) f).getKey() != null) builder.append(((LogField) f).getKey());
 		}
 		return builder.toString();
+	}
+
+	public TimePoint getTime() {
+		for (LogField f : array) {
+			if (f instanceof Time || f instanceof DateTime) {
+				return (TimePoint) f;
+			}
+		}
+		return null;
+	}
+
+	public TimePoint getDate() {
+		for (LogField f : array) {
+			if (f instanceof Date || f instanceof DateTime) {
+				return (TimePoint) f;
+			}
+		}
+		return null;
 	}
 
 	@Override

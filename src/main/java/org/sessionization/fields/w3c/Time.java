@@ -1,20 +1,27 @@
 package org.sessionization.fields.w3c;
 
 import org.sessionization.fields.LogField;
+import org.sessionization.fields.TimePoint;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Embeddable
 @Cacheable(false)
-public class Time implements LogField {
+public class Time implements LogField, TimePoint {
 
+	@Column
 	private LocalTime time;
 
 	public Time() {
 		time = null;
+	}
+
+	protected Time(LocalTime time) {
+		this.time = time;
 	}
 	/**
 	 * 
@@ -25,12 +32,12 @@ public class Time implements LogField {
 		this.time = LocalTime.parse(time, formatter);
 	}
 
-	public void setTime(LocalTime time) {
-		this.time = time;
-	}
-
 	public LocalTime getTime() {
 		return time != null ? time : LocalTime.MIN;
+	}
+
+	public void setTime(LocalTime time) {
+		this.time = time;
 	}
 
 	@Override
@@ -55,5 +62,10 @@ public class Time implements LogField {
 	@Override
 	public int hashCode() {
 		return getTime().hashCode();
+	}
+
+	@Override
+	public LocalTime getLocalTime() {
+		return time;
 	}
 }

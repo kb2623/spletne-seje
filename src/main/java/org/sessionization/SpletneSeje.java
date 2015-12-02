@@ -19,6 +19,12 @@ public class SpletneSeje {
 	private ArgsParser argsParser;
 	private AbsParser logParser;
 	private HibernateUtil db;
+
+	public SpletneSeje() {
+		argsParser = null;
+		logParser = null;
+		db = null;
+	}
 	/**
 	 *
 	 * @param args
@@ -148,7 +154,7 @@ public class SpletneSeje {
 
 	public void run() throws InterruptedException {
 		BlockingQueue<Map<String, PageViewAbs>> qParserLearner = new LinkedBlockingQueue<>();
-		Thread parseThread = new ParserThread(qParserLearner, logParser, db.getLoader());
+		Thread parseThread = new ParserThread(qParserLearner, logParser, argsParser.getParseSize());
 		Thread learnThread = new LearnThread(qParserLearner);
 		parseThread.start();
 		learnThread.start();
