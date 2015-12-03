@@ -7,8 +7,8 @@ import org.sessionization.fields.w3c.Date;
 import org.sessionization.fields.w3c.Time;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class ParsedLine implements Iterable<LogField> {
@@ -23,7 +23,7 @@ public class ParsedLine implements Iterable<LogField> {
 		this.array = array;
 	}
 
-	public ParsedLine(List<LogField> list) {
+	public ParsedLine(Set<LogField> list) {
 		this.array = list.toArray(new LogField[list.size()]);
 	}
 	/**

@@ -1,9 +1,10 @@
 package org.sessionization.parser;
 
-import org.datastruct.ClassPool;
-import org.sessionization.fields.*;
-import org.sessionization.fields.w3c.*;
-import org.sessionization.fields.w3c.Date;
+import org.sessionization.fields.LogField;
+import org.sessionization.fields.LogFieldType;
+import org.sessionization.fields.LogType;
+import org.sessionization.fields.Method;
+import org.sessionization.fields.w3c.MetaData;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.File;
@@ -117,10 +118,10 @@ public class W3CParser extends AbsParser {
 		}
 	}
 
-	protected List<LogField> process(String[] tokens) throws ParseException {
+	protected Set<LogField> process(String[] tokens) throws ParseException {
 		if(super.fieldType == null) throw new ParseException("Bad log format", super.getPos());
 		if(super.fieldType.size() != tokens.length) throw new ParseException("Can't parse a line", super.getPos());
-		List<LogField> lineData = new LinkedList<>();
+		Set<LogField> lineData = new HashSet<>(fieldType.size());
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			LogFieldType type = fieldType.get(i);
 			if (ignore != null ? !ignore.contains(type) : true) {
@@ -128,79 +129,35 @@ public class W3CParser extends AbsParser {
 				switch (type) {
 					case Referer:
 						try {
-							field = ClassPool.getObject(Referer.class, new URI(tokens[i]));
+							field = getTokenInstance(type, new URI(tokens[i]));
 						} catch (URISyntaxException e) {
 							throw new ParseException("Bad referer!!!", getPos());
 						}
 						break;
 					case Cookie:
-						field = ClassPool.getObject(Cookie.class, tokens[i], LogType.W3C);
-						break;
 					case UserAgent:
-						field = ClassPool.getObject(UserAgent.class, tokens[i], LogType.W3C);
+						field = getTokenInstance(type, tokens[i], LogType.W3C);
 						break;
 					case Method:
 						field = Method.setMethod(tokens[i]);
 						break;
 					case Date:
-						field = ClassPool.getObject(Date.class, tokens[i], dateFormat);
+						field = getTokenInstance(type, tokens[i], dateFormat);
 						break;
 					case Time:
-						field = ClassPool.getObject(Time.class, tokens[i], timeFormat);
-						break;
-					case SiteName:
-						field = ClassPool.getObject(SiteName.class, tokens[i]);
-						break;
-					case ComputerName:
-						field = ClassPool.getObject(ComputerName.class, tokens[i]);
+						field = getTokenInstance(type, tokens[i], timeFormat);
 						break;
 					case ServerIP:
-						field = ClassPool.getObject(Address.class, tokens[i], true);
-						break;
-					case ClientIP:
-						field = ClassPool.getObject(Address.class, tokens[i], false);
-						break;
-					case UriSteam:
-						field = ClassPool.getObject(UriSteam.class, tokens[i]);
-						break;
-					case UriQuery:
-						field = ClassPool.getObject(UriQuery.class, tokens[i]);
-						break;
 					case ServerPort:
-						field = ClassPool.getObject(Port.class, tokens[i], true);
-						break;
-					case ClientPort:
-						field = ClassPool.getObject(Port.class, tokens[i], false);
-						break;
-					case RemoteUser:
-						field = ClassPool.getObject(RemoteUser.class, tokens[i]);
-						break;
-					case ProtocolVersion:
-						field = ClassPool.getObject(Protocol.class, tokens[i]);
-						break;
-					case Host:
-						field = ClassPool.getObject(Host.class, tokens[i]);
-						break;
-					case StatusCode:
-						field = ClassPool.getObject(StatusCode.class, tokens[i]);
-						break;
-					case SubStatus:
-						field = ClassPool.getObject(SubStatus.class, tokens[i]);
-						break;
-					case Win32Status:
-						field = ClassPool.getObject(Win32Status.class, tokens[i]);
-						break;
-					case SizeOfRequest:
-						field = ClassPool.getObject(SizeOfRequest.class, tokens[i]);
-						break;
-					case SizeOfResponse:
-						field = ClassPool.getObject(SizeOfResponse.class, tokens[i]);
+						field = getTokenInstance(type, tokens[i], true);
 						break;
 					case TimeTaken:
-						field = ClassPool.getObject(TimeTaken.class, tokens[i], false);
+					case ClientIP:
+					case ClientPort:
+						field = getTokenInstance(type, tokens[i], false);
 						break;
 					default:
-						throw new ParseException("Unknown field", super.getPos());
+						field = getTokenInstance(type, tokens[i]);
 				}
 				lineData.add(field);
 			}

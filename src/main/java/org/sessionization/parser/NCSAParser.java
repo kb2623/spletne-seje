@@ -1,8 +1,10 @@
 package org.sessionization.parser;
 
-import org.datastruct.ClassPool;
-import org.sessionization.fields.*;
-import org.sessionization.fields.ncsa.*;
+import org.sessionization.fields.LogField;
+import org.sessionization.fields.LogFieldType;
+import org.sessionization.fields.LogType;
+import org.sessionization.fields.Method;
+import org.sessionization.fields.ncsa.ConnectionStatus;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.File;
@@ -128,94 +130,50 @@ public class NCSAParser extends AbsParser {
 		}
 	}
 
-	protected List<LogField> process(String[] tokens) throws ParseException {
+	protected Set<LogField> process(String[] tokens) throws ParseException {
 		if (super.fieldType == null) {
 			throw new ParseException("Field types are not set!!!", getPos());
 		}
-		List<LogField> lineData = new LinkedList<>();
+		Set<LogField> lineData = new HashSet<>(fieldType.size());
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			LogFieldType type = fieldType.get(i);
 			if (ignore != null ? !ignore.contains(type) : true) {
 				LogField field = null;
 				switch (type) {
-					case RemoteHost:
-						field = ClassPool.getObject(RemoteHost.class, tokens[i]);
-						break;
 					case Referer:
 						try {
-							field = ClassPool.getObject(Referer.class, new URI(tokens[i]));
+							field = getTokenInstance(type, new URI(tokens[i]));
 						} catch (URISyntaxException e) {
 							throw new ParseException("Bad URI!!!", getPos());
 						}
 						break;
-					case RemoteLogname:
-						field = ClassPool.getObject(RemoteLogname.class, tokens[i]);
-						break;
-					case RemoteUser:
-						field = ClassPool.getObject(RemoteUser.class, tokens[i]);
-						break;
 					case RequestLine:
 						String[] tab = tokens[i].split(" ");
-						field = ClassPool.getObject(RequestLine.class, tab[0], tab[1], tab[2]);
-						break;
-					case SizeOfResponse:
-						field = ClassPool.getObject(SizeOfResponse.class, tokens[i]);
-						break;
-					case SizeOfRequest:
-						field = ClassPool.getObject(SizeOfRequest.class, tokens[i]);
-						break;
-					case SizeOfTransfer:
-						field = ClassPool.getObject(SizeOfTransfer.class, tokens[i]);
-						break;
-					case StatusCode:
-						field = ClassPool.getObject(StatusCode.class, tokens[i]);
-						break;
-					case Method:
-						field = Method.setMethod(tokens[i]);
-					case ProtocolVersion:
-						field = ClassPool.getObject(Protocol.class, tokens[i]);
+						field = getTokenInstance(type, tab[0], tab[1], tab[2]);
 						break;
 					case DateTime:
-						field = ClassPool.getObject(DateTime.class, tokens[i], formatter);
+						field = getTokenInstance(type, tokens[i], formatter);
 						break;
 					case UserAgent:
-						field = ClassPool.getObject(UserAgent.class, tokens[i], LogType.NCSA);
-						break;
 					case Cookie:
-						field = ClassPool.getObject(Cookie.class, tokens[i], LogType.NCSA);
-						break;
-					case UriQuery:
-						field = ClassPool.getObject(UriQuery.class, tokens[i]);
-						break;
-					case UriSteam:
-						field = ClassPool.getObject(UriSteam.class, tokens[i]);
+						field = getTokenInstance(type, tokens[i], LogType.NCSA);
 						break;
 					case TimeTaken:
-						field = ClassPool.getObject(TimeTaken.class, tokens[i], true);
+					case ServerIP:
+					case ServerPort:
+						field = getTokenInstance(type, tokens[i], true);
 						break;
 					case ClientIP:
-						field = ClassPool.getObject(Address.class, tokens[i], false);
-						break;
-					case ServerIP:
-						field = ClassPool.getObject(Address.class, tokens[i], true);
-						break;
-					case ServerPort:
-						field = ClassPool.getObject(Port.class, tokens[i], true);
-						break;
 					case ClientPort:
-						field = ClassPool.getObject(Port.class, tokens[i], false);
-						break;
-					case ProcessID:
-						field = ClassPool.getObject(ProcessID.class, tokens[i]);
-						break;
-					case KeepAliveNumber:
-						field = ClassPool.getObject(KeepAliveNumber.class, tokens[i]);
+						field = getTokenInstance(type, tokens[i], false);
 						break;
 					case ConnectionStatus:
 						field = ConnectionStatus.getConnectionStatus(tokens[i]);
 						break;
+					case Method:
+						field = Method.setMethod(tokens[i]);
 					default:
-						throw new ParseException("Unknown field", getPos());
+						field = getTokenInstance(type, tokens[i]);
 				}
 				lineData.add(field);
 			}

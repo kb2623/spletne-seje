@@ -1,14 +1,13 @@
 package org.sessionization.parser;
 
+import org.datastruct.ObjectPool;
 import org.sessionization.fields.LogField;
 import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;
 import java.text.ParseException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -17,28 +16,38 @@ import java.util.function.Consumer;
  * @author klemen
  */
 public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
+
 	/**
 	 * Tabela, ki vsebuje vrste polji v log datoteki
 	 *
 	 * @see LogFieldType
 	 */
 	protected List<LogFieldType> fieldType;
+
 	/**
 	 * Tabela, ki vsebuje polja, ki jih ignoramo
 	 *
 	 * @see LogFieldType
 	 */
-	protected List<LogFieldType> ignore;
+	protected Set<LogFieldType> ignore;
+
+	/**
+	 *
+	 */
+	protected ObjectPool pool;
+
 	/**
 	 * Vrstica v datotekah
 	 */
 	private int pos;
+
 	/**
 	 * Datoteke za branje
 	 *
 	 * @see BufferedReader
 	 */
 	private BufferedReader[] readers;
+
 	/**
 	 * Osnovni konstruktor, za prevzete nastavitve:<p>
 	 * pozicija = 0<p>
@@ -49,40 +58,53 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 		fieldType = null;
 		pos = 0;
 	}
+
 	/**
 	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public AbsParser(File[] file) throws FileNotFoundException {
+	public AbsParser(File... file) throws FileNotFoundException {
 		this();
 		openFile(file);
 	}
+
 	/**
 	 *
 	 * @param path
 	 * @throws FileNotFoundException
 	 */
-	public void openFile(File[] files) throws FileNotFoundException {
+	public void openFile(File... files) throws FileNotFoundException {
 		readers = new BufferedReader[files.length];
-		for (int i = 0; i < files.length; i++) {
+		for (int i = 0, j = 0; i < files.length; i++) {
 			if (files[i].isFile()) {
-				readers[i] = new BufferedReader(new InputStreamReader(new FileInputStream(files[i])));
+				readers[j] = new BufferedReader(new InputStreamReader(new FileInputStream(files[i])));
+				j++;
 			} else {
-				throw new FileNotFoundException("Error processing \"" + files[i].getAbsolutePath() + "\"");
+				System.err.println("Bad file [" + files[i].getAbsolutePath() + "]!!!");
 			}
 		}
+		pos = 0;
 	}
+
 	/**
 	 * Metoda za nstavljanje že odprte datoteke
 	 *
 	 * @param reader Vhodni tok
 	 */
-	public void openFile(BufferedReader reader) {
-		readers = new BufferedReader[] {
-				reader
-		};
+	public void openFile(BufferedReader... reader) {
+		readers = new BufferedReader[reader.length];
+		for (int i = 0, j = 0; i < reader.length; i++) {
+			if (reader[i] == null) {
+				System.err.println("Bad reader at " + i + "!!!");
+			} else {
+				readers[j] = reader[i];
+				j++;
+			}
+		}
+		pos = 0;
 	}
+
 	/**
 	 * Metoda namenjena testiranju, ki spremeni niz
 	 * v vhodni tok
@@ -91,14 +113,18 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws FileNotFoundException
 	 */
 	@Deprecated
-	public void openFile(StringReader input) {
-		readers = new BufferedReader[] {
-				new BufferedReader(input)
-		};
-		if (pos > 0) {
-			pos = 0;
+	public void openFile(StringReader... input) {
+		readers = new BufferedReader[input.length];
+		for (int i = 0, j = 0; i < input.length; i++) {
+			if (input[i] == null) {
+				System.err.println("Bad StringReader at " + i + "!!!");
+			} else {
+				readers[j] = new BufferedReader(input[i]);
+			}
 		}
+		pos = 0;
 	}
+
 	/**
 	 * Metoda ki vrne celotno vrstico, ki jo je potrebno še parsati
 	 *
@@ -110,16 +136,21 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	public String getLine() throws IOException {
 		StringBuilder builder = new StringBuilder();
 		for (BufferedReader br : readers) {
-			String tmp = br.readLine();
-			if (tmp != null) {
-				builder.append(tmp);
+			if (br != null) {
+				String tmp = br.readLine();
+				if (tmp != null) {
+					builder.append(tmp);
+				} else {
+					throw new EOFException();
+				}
 			} else {
-				throw new EOFException();
+				break;
 			}
 		}
 		pos++;
 		return builder.toString();
 	}
+
 	/**
 	 *
 	 * @return
@@ -127,6 +158,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws IOException
 	 */
 	protected abstract String[] parse() throws ArrayIndexOutOfBoundsException, IOException;
+
 	/**
 	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
 	 *
@@ -138,6 +170,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @see ParsedLine
 	 */
 	public abstract ParsedLine parseLine() throws ParseException;
+
 	/**
 	 * Metoda za zapiranje datoteke
 	 *
@@ -145,7 +178,11 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 */
 	public void closeFile() throws IOException {
 		for (BufferedReader br : readers) {
-			br.close();
+			if (br != null) {
+				br.close();
+			} else {
+				break;
+			}
 		}
 		pos = 0;
 	}
@@ -156,7 +193,19 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @param ignore Tabela s polji, ki jih zelimo ignorirati
 	 */
 	public void setIgnoreFieldType(List<LogFieldType> ignore) {
-		this.ignore = ignore;
+		if (ignore != null) {
+			this.ignore = EnumSet.copyOf(ignore);
+		}
+	}
+
+	/**
+	 *
+	 * @param pool
+	 */
+	public void setPool(ObjectPool pool) {
+		if (pool != null) {
+			this.pool = pool;
+		}
 	}
 
 	/**
@@ -176,8 +225,31 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @see LogFieldType
 	 */
 	public void setFieldType(List<LogFieldType> fields) throws NullPointerException {
-		if (fields == null) throw new NullPointerException();
-		this.fieldType = fields;
+		if (fields == null) {
+			throw new NullPointerException();
+		} else if (fields instanceof ArrayList) {
+			this.fieldType = fields;
+		} else {
+			this.fieldType = new ArrayList<>(fields);
+		}
+	}
+
+	/**
+	 * @param type
+	 * @param args
+	 * @return
+	 * @throws ParseException
+	 */
+	protected LogField getTokenInstance(LogFieldType type, Object... args) throws ParseException {
+		if (type.getClassType() != null) {
+			if (pool != null) {
+				return (LogField) pool.getObject(type.getClassType(), args);
+			} else {
+				return (LogField) ObjectPool.makeObject(type.getClassType(), args);
+			}
+		} else {
+			throw new ParseException("Unknown field", pos);
+		}
 	}
 
 	/**

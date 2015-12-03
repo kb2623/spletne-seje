@@ -1,6 +1,5 @@
 package org.sessionization.parser;
 
-import org.datastruct.ClassPool;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,6 @@ public class W3CParserTest {
 
 	@Before
 	public void setUp() throws Exception {
-		ClassPool.initClassPool(null, null);
 		parser = new W3CParser();
 	}
 

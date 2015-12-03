@@ -1,7 +1,5 @@
 package org.sessionization.fields;
 
-import org.datastruct.ClassPool;
-
 import javax.persistence.*;
 
 @Entity
@@ -26,7 +24,7 @@ public class UriQueryPair {
 	public UriQueryPair(String key, String value) {
 		id = null;
 		this.value = value;
-		this.key = ClassPool.getObject(UriQueryKey.class, key);
+		this.key = new UriQueryKey(key);
 	}
 
 	public Integer getId() {

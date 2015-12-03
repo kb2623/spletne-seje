@@ -1,7 +1,5 @@
 package org.sessionization.fields;
 
-import org.datastruct.ClassPool;
-
 import javax.persistence.*;
 
 @Entity
@@ -26,7 +24,7 @@ public class CookiePair {
 	public CookiePair(String key, String value) {
 		id = null;
 		this.value = value;
-		this.key = ClassPool.getObject(CookieKey.class, key);
+		this.key = new CookieKey(key);
 	}
 
 	public Integer getId() {

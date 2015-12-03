@@ -1,7 +1,5 @@
 package org.sessionization.fields;
 
-import org.datastruct.ClassPool;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -22,7 +20,7 @@ public class UriSteamQuery extends UriSteam {
 	public UriSteamQuery(URI uri) {
 		super(uri.getRawPath());
 		String query = uri.getQuery();
-		this.query = ClassPool.getObject(UriQuery.class, query != null ? query : "-");
+		this.query = new UriQuery(query != null ? query : "-");
 	}
 	/**
 	 * Metoda vrne query

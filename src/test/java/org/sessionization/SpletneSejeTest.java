@@ -1,6 +1,5 @@
 package org.sessionization;
 
-import org.datastruct.ClassPool;
 import org.datastruct.RadixTree;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +24,6 @@ public class SpletneSejeTest {
 
 	@Before
 	public void setUp() throws IOException {
-		ClassPool.initClassPool(null, null);
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
 		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
 		parser = new NCSAParser();

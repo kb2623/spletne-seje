@@ -1,7 +1,5 @@
 package org.sessionization.fields;
 
-import org.datastruct.ClassPool;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +36,9 @@ public class UriQuery implements LogField {
 			String[] pair = s.split("=");
 			UriQueryPair tmp = null;
 			if (pair.length == 2) {
-				tmp = ClassPool.getObject(UriQueryPair.class, pair[0], pair[1]);
+				tmp = new UriQueryPair(pair[0], pair[1]);
 			} else {
-				tmp = ClassPool.getObject(UriQueryPair.class, pair[0], "-");
+				tmp = new UriQueryPair(pair[0], "-");
 			}
 			pairs.add(tmp);
 		}

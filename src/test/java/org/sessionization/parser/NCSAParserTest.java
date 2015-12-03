@@ -1,6 +1,5 @@
 package org.sessionization.parser;
 
-import org.datastruct.ClassPool;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +12,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -27,7 +25,6 @@ public class NCSAParserTest {
 
 	@Before
 	public void setUp() throws Exception {
-		ClassPool.initClassPool(null, null);
 		parser = new NCSAParser();
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
 		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
@@ -165,6 +162,20 @@ public class NCSAParserTest {
 		} catch (NullPointerException | ParseException | IOException e) {
 			e.printStackTrace();
 			fail();
+		}
+	}
+
+	@Test
+	public void testSome() {
+		Set<LogFieldType> list = new HashSet<>();
+		list.add(LogFieldType.ClientIP);
+		list.add(LogFieldType.Host);
+		list.add(LogFieldType.DateTime);
+		list.add(LogFieldType.SizeOfTransfer);
+		list.add(LogFieldType.ClientPort);
+		Set<LogFieldType> set = EnumSet.copyOf(list);
+		for (LogFieldType type : set) {
+			System.out.println(type.name());
 		}
 	}
 }

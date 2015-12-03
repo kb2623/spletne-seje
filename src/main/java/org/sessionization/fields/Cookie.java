@@ -1,7 +1,5 @@
 package org.sessionization.fields;
 
-import org.datastruct.ClassPool;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +24,9 @@ public class Cookie implements LogField {
 				int indexOf = s.indexOf('=');
 				CookiePair tmp = null;
 				if (indexOf == s.length() - 1) {
-					tmp = ClassPool.getObject(CookiePair.class, s.substring(0, indexOf), "-");
+					tmp = new CookiePair(s.substring(0, indexOf), "-");
 				} else {
-					tmp = ClassPool.getObject(CookiePair.class, s.substring(0, indexOf), s.substring(indexOf + 1));
+					tmp = new CookiePair(s.substring(0, indexOf), s.substring(indexOf + 1));
 				}
 				pairs.add(tmp);
 			}
