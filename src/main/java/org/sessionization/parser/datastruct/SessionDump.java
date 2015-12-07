@@ -1,21 +1,21 @@
 package org.sessionization.parser.datastruct;
 
 import javassist.*;
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.annotation.Annotation;
 import org.objectweb.asm.*;
-import org.sessionization.fields.LogField;
 import org.sessionization.fields.LogFieldType;
 
-import javax.persistence.*;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class ResourceDump implements Opcodes {
+public class SessionDump implements Opcodes {
 
-	private static String CLASSNAME = "org/sessionization/parser/datastruct/Resource";
+	private static String CLASSNAME = "org.sessionization.parser.datastruct.Resource";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
 	private static String NAME = "Resource.java";
 
@@ -387,7 +387,41 @@ public class ResourceDump implements Opcodes {
 		return cw.toByteArray();
 	}
 
-	private static List<LogFieldType> getFields(List<LogFieldType> types) {
+	public static byte[] dump2(Collection<LogFieldType> fieldTypes) throws IOException, CannotCompileException, NotFoundException {
+		List<LogFieldType> fields = getFields(fieldTypes);
+		ClassPool pool = ClassPool.getDefault();
+		CtClass aClass = pool.makeClass(CLASSNAME);
+		aClass.setSuperclass(pool.get(SessionAbs.class.getName()));
+		/** Inicializacija ID polja */{
+			CtField field = CtField.make("private " + Integer.class.getName() + " id;", aClass);
+			aClass.addField(field);
+		}
+		/** Inicializacija polji */
+		for (LogFieldType f : fields) {
+			CtField field = CtField.make("private " + f.getClassType().getName() + " " + f.getFieldName() + ";", aClass);
+			aClass.addField(field);
+		}
+		/** Konstruktorji */{
+			// TODO
+		}
+		/** getId() */{
+			CtMethod method = CtMethod.make(
+					"public " + Integer.class.getName() + " getId() { return this.id; }",
+					aClass
+			);
+			aClass.addMethod(method);
+		}
+		/** setId(Integer id) */{
+			CtMethod method = CtMethod.make(
+					"public void setId(" + Integer.class.getName() + " id) { this.id = id; }",
+					aClass
+			);
+			aClass.addMethod(method);
+		}
+		return aClass.toBytecode();
+	}
+
+	private static List<LogFieldType> getFields(Collection<LogFieldType> types) {
 		List<LogFieldType> list = new ArrayList<>((int) (types.size() / 2));
 		for (LogFieldType f : types) {
 			if (!f.isKey()) {
@@ -397,7 +431,7 @@ public class ResourceDump implements Opcodes {
 		return list;
 	}
 
-	public static ResourceAbs makeObject(List<LogFieldType> fieldTypes, ParsedLine line, ClassLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+	public static SessionAbs makeObject(List<LogFieldType> fieldTypes, ParsedLine line, ClassLoader loader) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 		Class c = loader.loadClass(getClassName());
 		Object o = c.newInstance();
 		int i;
@@ -407,7 +441,7 @@ public class ResourceDump implements Opcodes {
 				m.invoke(o, line.get(i));
 			}
 		}
-		return (ResourceAbs) o;
+		return (SessionAbs) o;
 	}
 
 	public static String getTypeName() {

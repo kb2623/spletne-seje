@@ -10,7 +10,7 @@ public class WebPageRequestDumpTest {
 
 	@Test
 	public void testOne() throws Exception {
-		byte[] bytes = PageViewDump.dump(LogFormats.CommonLogFormat.create(null));
+		byte[] bytes = PageViewDump.dump2(LogFormats.CommonLogFormat.create(null));
 		File file = new File("WebPageRequest.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);

@@ -11,7 +11,7 @@ public class RequestDumpTest {
 
 	@Test
 	public void testOne() throws IOException {
-		byte[] bytes = ResourceDump.dump(LogFormats.CommonLogFormat.create(null));
+		byte[] bytes = SessionDump.dump(LogFormats.CommonLogFormat.create(null));
 		File file = new File("Request.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);

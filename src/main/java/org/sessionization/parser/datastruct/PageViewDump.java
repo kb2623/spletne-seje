@@ -1,5 +1,6 @@
 package org.sessionization.parser.datastruct;
 
+import javassist.*;
 import org.objectweb.asm.*;
 import org.sessionization.fields.LogFieldType;
 
@@ -9,12 +10,13 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public class PageViewDump implements Opcodes {
 
-	private static String CLASSNAME = "org/sessionization/parser/datastuct/PageView";
+	private static String CLASSNAME = "org.sessionization.parser.datastuct.PageView";
 	private static String CLASSTYPE = "L" + CLASSNAME + ";";
 	private static String NAME = "PageView.java";
 
@@ -533,7 +535,105 @@ public class PageViewDump implements Opcodes {
 		return cw.toByteArray();
 	}
 
-	private static List<LogFieldType> getFields(List<LogFieldType> fieldTypes) {
+	public static byte[] dump2(Collection<LogFieldType> fieldsTypes) throws IOException, CannotCompileException, NotFoundException {
+		List<LogFieldType> fields = getFields(fieldsTypes);
+		ClassPool pool = ClassPool.getDefault();
+		CtClass aClass = pool.makeClass(CLASSNAME);
+		/** Dodaj super Class */
+		aClass.setSuperclass(pool.get(PageViewAbs.class.getName()));
+		/** Inicializacije ID poja */{
+			CtField field = CtField.make("private " + Integer.class.getName() + " id;", aClass);
+			aClass.addField(field);
+		}
+		/** Inicializacija polji */
+		for (LogFieldType f : fields) {
+			CtField field = CtField.make("private " + f.getClassType().getName() + " " + f.getFieldName() + ";", aClass);
+			aClass.addField(field);
+		}
+		/** Inicializacije Sessino razreda */{
+			CtField field = CtField.make("private " + SessionAbs.class.getName() + " session;", aClass);
+			aClass.addField(field);
+		}
+		/** kostruktorji */{
+			// TODO
+		}
+		/** getId() */{
+			CtMethod method = CtMethod.make(
+					"public " + Integer.class.getName() + " getId() {" +
+							"return this.id;" +
+							"}",
+					aClass
+			);
+			aClass.addMethod(method);
+		}
+		/** setId(Integer id) */{
+			CtMethod method = CtMethod.make(
+					"public void setId(" + Integer.class.getName() + " id) {" +
+							"this.id = id;" +
+							"}",
+					aClass
+			);
+			aClass.addMethod(method);
+		}
+		/** setterji in getterji za ostala polja */
+		for (LogFieldType f : fields) {
+			/** setter */{
+				CtMethod method = CtMethod.make(
+						"public void " + f.getSetterName() + "(" + f.getClassType().getName() + " " + f.getFieldName() + ") {" +
+								"this." + f.getFieldName() + " = " + f.getFieldName() + ";" +
+								"}",
+						aClass
+				);
+				aClass.addMethod(method);
+			}
+			/** getter */{
+				CtMethod method = CtMethod.make(
+						"public " + f.getClassType().getName() + " " + f.getGetterName() + "() {" +
+								"return this." + f.getFieldName() + ";" +
+								"}",
+						aClass
+				);
+				aClass.addMethod(method);
+			}
+		}
+		/** getter za Session */{
+			CtMethod method = CtMethod.make(
+					"public " + SessionAbs.class.getName() + " getSession() {" +
+							"return this.session;" +
+							"}",
+					aClass
+			);
+			aClass.addMethod(method);
+		}
+		/** setter za Session */{
+			CtMethod method = CtMethod.make(
+					"public void setSession(" + SessionAbs.class.getName() + " session) {" +
+							"this.session = session;" +
+							"}",
+					aClass
+			);
+			aClass.addMethod(method);
+		}
+		/** getKey() */{
+			StringBuilder builder = new StringBuilder();
+			for (LogFieldType f : fields) {
+				builder.append(f.getFieldName()).append(".getKey() + ");
+			}
+			if (builder.length() > 2) {
+				builder.delete(builder.length() - 2, builder.length());
+			}
+			CtMethod method = CtMethod.make(
+					"public " + String.class.getName() + " getKey() {" +
+							"return " + builder.toString() + ";" +
+							"}",
+					aClass
+			);
+			aClass.addMethod(method);
+		}
+		return aClass.toBytecode();
+	}
+
+	private static List<LogFieldType> getFields(Collection<LogFieldType> fieldTypes) {
 		List<LogFieldType> retList = new ArrayList<>((int) (fieldTypes.size() / 2));
 		for (LogFieldType type : fieldTypes) {
 			if (type.isKey()) {
@@ -557,9 +657,9 @@ public class PageViewDump implements Opcodes {
 			}
 		}
 		if (hasRequests) {
-			ResourceAbs req = ResourceDump.makeObject(fieldTypes, line, loader);
+			SessionAbs req = SessionDump.makeObject(fieldTypes, line, loader);
 			Method m = c.getMethod("setResources", List.class);
-			List<ResourceAbs> list = new LinkedList<>();
+			List<SessionAbs> list = new LinkedList<>();
 			list.add(req);
 			m.invoke(o, list);
 		}

@@ -11,7 +11,7 @@ import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.AbsParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.datastruct.PageViewDump;
-import org.sessionization.parser.datastruct.ResourceDump;
+import org.sessionization.parser.datastruct.SessionDump;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -74,7 +74,7 @@ public class HibernateUtil implements AutoCloseable {
 			classes.add(f.getClassType());
 		}
 		try {
-			classes.add(loader.loadClass(ResourceDump.getClassName()));
+			classes.add(loader.loadClass(SessionDump.getClassName()));
 			classes.add(loader.loadClass(PageViewDump.getClassName()));
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionInInitializerError(e);
@@ -94,7 +94,7 @@ public class HibernateUtil implements AutoCloseable {
 		UrlLoader loader = new UrlLoader(set.toArray(new URL[set.size()]));
 		/** Ustvari dinamicne razrede */
 		loader.defineClass(PageViewDump.getClassName(), PageViewDump.dump(logParser.getFieldType()));
-		loader.defineClass(ResourceDump.getClassName(), ResourceDump.dump(logParser.getFieldType()));
+		loader.defineClass(SessionDump.getClassName(), SessionDump.dump(logParser.getFieldType()));
 		return loader;
 	}
 
