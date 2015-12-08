@@ -4,6 +4,7 @@ import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
+import org.sessionization.ClassPoolLoader;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
@@ -13,8 +14,8 @@ public class DumpUserSession {
 
 	private static String CLASSNAME = "org.sessionization.parser.datastuct.UserSession";
 
-	public static byte[] dump() throws IOException, CannotCompileException, NotFoundException {
-		ClassPool pool = ClassPool.getDefault();
+	public static Class<?> dump(ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
+		ClassPool pool = loader.getPool();
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		/** Dodajanje super razreda */
 		aClass.setSuperclass(pool.get(UserSessionAbs.class.getName()));
@@ -40,8 +41,7 @@ public class DumpUserSession {
 			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 			aClass.addConstructor(constructor);
 		}
-		aClass.toClass(ClassLoader.getSystemClassLoader(), DumpUserSession.class.getProtectionDomain());
-		return aClass.toBytecode();
+		return aClass.toClass(loader, DumpUserSession.class.getProtectionDomain());
 	}
 
 	public static String getName() {

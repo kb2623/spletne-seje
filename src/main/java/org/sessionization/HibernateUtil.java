@@ -14,6 +14,7 @@ import org.sessionization.parser.AbsParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.datastruct.DumpPageView;
 import org.sessionization.parser.datastruct.DumpUserId;
+import org.sessionization.parser.datastruct.DumpUserSession;
 
 import java.io.IOException;
 import java.net.URL;
@@ -40,7 +41,9 @@ public class HibernateUtil implements AutoCloseable {
 				.build();
 		try {
 			MetadataSources sources = new MetadataSources(serviceRegistry);
-			for (Class c : classes) sources.addAnnotatedClass(c);
+			for (Class c : classes) {
+				sources.addAnnotatedClass(c);
+			}
 			factory = sources.buildMetadata().buildSessionFactory();
 		} catch (Exception e) {
 			StandardServiceRegistryBuilder.destroy(serviceRegistry);
@@ -78,6 +81,7 @@ public class HibernateUtil implements AutoCloseable {
 		}
 		try {
 			classes.add(loader.loadClass(DumpPageView.getName()));
+			classes.add(loader.loadClass(DumpUserSession.getName()));
 			classes.add(loader.loadClass(DumpUserId.getName()));
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionInInitializerError(e);
@@ -94,10 +98,11 @@ public class HibernateUtil implements AutoCloseable {
 		if (argsParser.getDialect() != null) {
 			set.add(argsParser.getDialect());
 		}
-		UrlLoader loader = new UrlLoader(set.toArray(new URL[set.size()]));
+		URLClassLoader urlLoader = new URLClassLoader(set.toArray(new URL[set.size()]), ClassLoader.getSystemClassLoader());
 		/** Ustvari dinamicne razrede */
-		loader.defineClass(DumpUserId.getName(), DumpUserId.dump(logParser.getFieldType()));
-		loader.defineClass(DumpPageView.getName(), DumpPageView.dump(logParser.getFieldType()));
+		ClassPoolLoader loader = new ClassPoolLoader(urlLoader);
+		DumpUserId.dump(logParser.getFieldType(), loader);
+		DumpPageView.dump(logParser.getFieldType(), loader);
 		return loader;
 	}
 
@@ -113,18 +118,5 @@ public class HibernateUtil implements AutoCloseable {
 	public void close() {
 		if (serviceRegistry != null) StandardServiceRegistryBuilder.destroy(serviceRegistry);
 		if (factory != null) factory.close();
-	}
-
-	public class UrlLoader extends URLClassLoader {
-
-		public UrlLoader(URL[] urls) {
-			super(urls);
-		}
-
-		public Class<?> defineClass(String name, byte[] bytes) {
-			Class<?> c = super.defineClass(name, bytes, 0, bytes.length);
-			super.resolveClass(c);
-			return c;
-		}
 	}
 }

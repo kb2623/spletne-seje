@@ -5,6 +5,7 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.EnumMemberValue;
+import org.sessionization.ClassPoolLoader;
 import org.sessionization.fields.LogField;
 import org.sessionization.fields.LogFieldType;
 
@@ -20,9 +21,9 @@ public class DumpPageView {
 
 	private static String CLASSNAME = "org.sessionization.parser.datastruct.PageView";
 
-	public static byte[] dump(Collection<LogFieldType> fieldTypes) throws IOException, CannotCompileException, NotFoundException {
+	public static Class<?> dump(Collection<LogFieldType> fieldTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
 		List<LogFieldType> fields = getFields(fieldTypes);
-		ClassPool pool = ClassPool.getDefault();
+		ClassPool pool = loader.getPool();
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		/** Dodaj super Class */
 		aClass.setSuperclass(pool.get(PageViewAbs.class.getName()));
@@ -178,8 +179,7 @@ public class DumpPageView {
 			CtMethod method = CtMethod.make(builder.toString(), aClass);
 			aClass.addMethod(method);
 		}
-		aClass.toClass(ClassLoader.getSystemClassLoader(), DumpPageView.class.getProtectionDomain());
-		return aClass.toBytecode();
+		return aClass.toClass(loader, DumpPageView.class.getProtectionDomain());
 	}
 
 	private static List<LogFieldType> getFields(Collection<LogFieldType> types) {
