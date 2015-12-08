@@ -9,6 +9,7 @@ import org.sessionization.fields.LogFieldType;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -100,18 +101,43 @@ public class PageViewDump {
 				aClass.addMethod(method);
 			}
 		}
+		/** getLocalTime() super razreda interface */{
+			StringBuilder builder = new StringBuilder();
+			builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
+			for (LogFieldType f : fields) {
+				if (f == LogFieldType.DateTime || f == LogFieldType.Time) {
+					builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getTime() : null);");
+					break;
+				}
+			}
+			builder.append('}');
+			CtMethod method = CtMethod.make(builder.toString(), aClass);
+			aClass.addMethod(method);
+		}
+		/** getLocalDate() super razreda interface */{
+			StringBuilder builder = new StringBuilder();
+			builder.append("public " + LocalTime.class.getName() + " getLocaDate() {");
+			for (LogFieldType f : fields) {
+				if (f == LogFieldType.DateTime || f == LogFieldType.Date) {
+					builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getDate() : null);");
+				}
+			}
+			builder.append('}');
+			CtMethod method = CtMethod.make(builder.toString(), aClass);
+			aClass.addMethod(method);
+		}
 		/** equals(Object o) */{
 			StringBuilder builder = new StringBuilder();
 			builder.append("public boolean equals(" + Object.class.getName() + " o) {");
 			builder.append("if (this == o) { return true; }\n");
-			builder.append("if (o == null || getClass() != o.getClass()) { return false; }");
-			builder.append(CLASSNAME + " v = (" + CLASSNAME + ") o;");
+			builder.append("else if (o == null || getClass() != o.getClass()) { return false; }");
+			builder.append("else {" + CLASSNAME + " v = (" + CLASSNAME + ") o;");
 			builder.append("return ");
 			builder.append("(this.id != null ? this.id.equals(v.getId()) : v.getId() == null)");
 			for (LogFieldType f : fields) {
 				builder.append(" && (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".equals(v." + f.getGetterName() + "()) : v." + f.getGetterName() + "() == null)");
 			}
-			builder.append(";}");
+			builder.append(";}}");
 			CtMethod method = CtMethod.make(builder.toString(), aClass);
 			aClass.addMethod(method);
 		}

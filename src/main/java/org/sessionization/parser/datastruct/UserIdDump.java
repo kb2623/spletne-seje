@@ -140,15 +140,15 @@ public class UserIdDump {
 		/** equals(Object o) */{
 			StringBuilder builder = new StringBuilder();
 			builder.append("public boolean equals(" + Object.class.getName() + " o) {");
-			builder.append("if (this == o) { return true; }\n");
-			builder.append("if (o == null || getClass() != o.getClass()) { return false; }");
-			builder.append(CLASSNAME + " v = (" + CLASSNAME + ") o;");
+			builder.append("if (this == o) { return true; }");
+			builder.append("else if (o == null || getClass() != o.getClass()) { return false; }");
+			builder.append("else {" + CLASSNAME + " v = (" + CLASSNAME + ") o;");
 			builder.append("return ");
 			builder.append("(this.id != null ? this.id.equals(v.getId()) : v.getId() == null)");
 			for (LogFieldType f : fields) {
 				builder.append(" && (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".equals(v." + f.getGetterName() + "()) : v." + f.getGetterName() + "() == null)");
 			}
-			builder.append(";}");
+			builder.append(";}}");
 			CtMethod method = CtMethod.make(builder.toString(), aClass);
 			aClass.addMethod(method);
 		}

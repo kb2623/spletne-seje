@@ -1,11 +1,15 @@
 package org.sessionization.parser.datastruct;
 
+import org.sessionization.fields.TimePoint;
+
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
 @Cacheable
-public class UserSession {
+public class UserSession implements TimePoint {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +37,24 @@ public class UserSession {
 
 	public void setPages(List<PageViewAbs> pages) {
 		this.pages = pages;
+	}
+
+	@Override
+	public LocalDate getLocalDate() {
+		if (pages != null) {
+			return pages.get(pages.size() - 1).getLocalDate();
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public LocalTime getLocalTime() {
+		if (pages != null) {
+			return pages.get(pages.size() - 1).getLocalTime();
+		} else {
+			return null;
+		}
 	}
 
 	@Override

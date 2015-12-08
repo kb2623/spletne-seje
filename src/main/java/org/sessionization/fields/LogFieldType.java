@@ -361,10 +361,6 @@ public enum LogFieldType {
 		}
 	}
 
-	public String getType() {
-		return "L" + getClassClass() + ";";
-	}
-
 	public String getFieldName() {
 		String s = getClassType().getSimpleName();
 		return Character.toLowerCase(s.charAt(0)) + s.substring(1);

@@ -1,6 +1,6 @@
 package org.sessionization.parser.datastruct;
 
-public abstract class PageViewAbs {
+import org.sessionization.fields.TimePoint;
 
-
+public abstract class PageViewAbs implements TimePoint {
 }
