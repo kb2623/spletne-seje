@@ -1,5 +1,7 @@
 package org.sessionization;
 
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.parser.*;
@@ -35,7 +37,7 @@ public class SpletneSeje {
 	 * @throws ClassNotFoundException
 	 */
 	@SuppressWarnings("deprecation")
-	public SpletneSeje(String[] args) throws CmdLineException, URISyntaxException, IOException, ParseException, ClassNotFoundException {
+	public SpletneSeje(String[] args) throws CmdLineException, URISyntaxException, IOException, ParseException, ClassNotFoundException, CannotCompileException, NotFoundException {
 		/** Parsanje vhodnih argumentov */
 		argsParser = new ArgsParser(args);
 
@@ -149,6 +151,12 @@ public class SpletneSeje {
 		} catch (InterruptedException e) {
 			System.err.println(e.getLocalizedMessage());
 			System.exit(8);
+		} catch (CannotCompileException e) {
+			System.err.println(e.getLocalizedMessage());
+			System.exit(9);
+		} catch (NotFoundException e) {
+			System.err.println(e.getLocalizedMessage());
+			System.exit(10);
 		}
 	}
 

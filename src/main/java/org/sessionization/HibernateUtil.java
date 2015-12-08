@@ -1,5 +1,7 @@
 package org.sessionization;
 
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -13,6 +15,7 @@ import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.datastruct.PageViewDump;
 import org.sessionization.parser.datastruct.SessionDump;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
@@ -26,7 +29,7 @@ public class HibernateUtil implements AutoCloseable {
 	private ServiceRegistry serviceRegistry = null;
 	private ClassLoader loader = null;
 
-	public HibernateUtil(ArgsParser argsParser, AbsParser logParser) throws ExceptionInInitializerError {
+	public HibernateUtil(ArgsParser argsParser, AbsParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
 		this.loader = initClassLoader(argsParser, logParser);
 		Properties props = initProperties(argsParser);
 		/** Dodaj potrebne razrede */
@@ -74,15 +77,15 @@ public class HibernateUtil implements AutoCloseable {
 			classes.add(f.getClassType());
 		}
 		try {
-			classes.add(loader.loadClass(SessionDump.getClassName()));
-			classes.add(loader.loadClass(PageViewDump.getClassName()));
+			classes.add(loader.loadClass(SessionDump.getName()));
+			classes.add(loader.loadClass(PageViewDump.getName()));
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 		return classes;
 	}
 
-	private ClassLoader initClassLoader(ArgsParser argsParser, AbsParser logParser) {
+	private ClassLoader initClassLoader(ArgsParser argsParser, AbsParser logParser) throws NotFoundException, CannotCompileException, IOException {
 		/** Dodaj jar datoeke */
 		Set<URL> set = new HashSet<>();
 		if (argsParser.getDriverUrl() != null) {
@@ -93,8 +96,8 @@ public class HibernateUtil implements AutoCloseable {
 		}
 		UrlLoader loader = new UrlLoader(set.toArray(new URL[set.size()]));
 		/** Ustvari dinamicne razrede */
-		loader.defineClass(PageViewDump.getClassName(), PageViewDump.dump(logParser.getFieldType()));
-		loader.defineClass(SessionDump.getClassName(), SessionDump.dump(logParser.getFieldType()));
+		loader.defineClass(PageViewDump.getName(), PageViewDump.dump(logParser.getFieldType()));
+		loader.defineClass(SessionDump.getName(), SessionDump.dump(logParser.getFieldType()));
 		return loader;
 	}
 

@@ -1,5 +1,7 @@
 package org.sessionization.parser.datastruct;
 
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
 import org.junit.Test;
 import org.sessionization.parser.LogFormats;
 
@@ -10,7 +12,7 @@ import java.io.IOException;
 public class RequestDumpTest {
 
 	@Test
-	public void testOne() throws IOException {
+	public void testOne() throws IOException, CannotCompileException, NotFoundException {
 		byte[] bytes = SessionDump.dump(LogFormats.CommonLogFormat.create(null));
 		File file = new File("Request.class");
 		file.delete();
