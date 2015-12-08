@@ -14,7 +14,7 @@ public class RequestDumpTest {
 	@Test
 	public void testOne() throws IOException, CannotCompileException, NotFoundException {
 		byte[] bytes = SessionDump.dump(LogFormats.CommonLogFormat.create(null));
-		File file = new File("Request.class");
+		File file = new File("Session.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(bytes);

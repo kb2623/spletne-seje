@@ -39,6 +39,21 @@ public class SessionDump implements Opcodes {
 		}
 		/** Inicializacija ID polja */{
 			CtField field = CtField.make("private " + Integer.class.getName() + " id;", aClass);
+			ConstPool constPool = field.getFieldInfo().getConstPool();
+			AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+			{
+				Annotation anno = new Annotation(Id.class.getName(), constPool);
+				attr.addAnnotation(anno);
+			}
+			{
+				Annotation anno = new Annotation(GeneratedValue.class.getName(), constPool);
+				EnumMemberValue value = new EnumMemberValue(constPool);
+				value.setType(GenerationType.class.getName());
+				value.setValue(GenerationType.IDENTITY.name());
+				anno.addMemberValue("strategy", value);
+				attr.addAnnotation(anno);
+			}
+			field.getFieldInfo().addAttribute(attr);
 			aClass.addField(field);
 		}
 		/** Inicializacija polji */
@@ -74,6 +89,27 @@ public class SessionDump implements Opcodes {
 		/** setId(Integer id) */{
 			CtMethod method = CtMethod.make("public void setId(" + Integer.class.getName() + " id) { this.id = id; }", aClass);
 			aClass.addMethod(method);
+		}
+		/** setterji in getterji za ostala polja */
+		for (LogFieldType f : fields) {
+			/** setter */{
+				CtMethod method = CtMethod.make(
+						"public void " + f.getSetterName() + "(" + f.getClassType().getName() + " " + f.getFieldName() + ") {" +
+								"this." + f.getFieldName() + " = " + f.getFieldName() + ";" +
+								"}",
+						aClass
+				);
+				aClass.addMethod(method);
+			}
+			/** getter */{
+				CtMethod method = CtMethod.make(
+						"public " + f.getClassType().getName() + " " + f.getGetterName() + "() {" +
+								"return this." + f.getFieldName() + ";" +
+								"}",
+						aClass
+				);
+				aClass.addMethod(method);
+			}
 		}
 		return aClass.toBytecode();
 	}
