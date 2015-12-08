@@ -5,7 +5,6 @@ import javassist.NotFoundException;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.parser.*;
-import org.sessionization.parser.datastruct.ParsedLine;
 import org.sessionization.parser.datastruct.UserIdAbs;
 
 import java.io.FileNotFoundException;
@@ -40,49 +39,47 @@ public class SpletneSeje {
 	public SpletneSeje(String[] args) throws CmdLineException, URISyntaxException, IOException, ParseException, ClassNotFoundException, CannotCompileException, NotFoundException {
 		/** Parsanje vhodnih argumentov */
 		argsParser = new ArgsParser(args);
-
 		/** Preveri format in nastavi tipe polji v datoteki */
 		switch ((argsParser.getLogFormat() != null) ? argsParser.getLogFormat()[0] : "") {
-		case "":
-			LogAnalyzer analyzer = new LogAnalyzer(argsParser.getInputFile());
-			switch (analyzer.getLogFileType()) {
-			case NCSA:
-				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
+			case "":
+				LogAnalyzer analyzer = new LogAnalyzer(argsParser.getInputFile());
+				switch (analyzer.getLogFileType()) {
+					case NCSA:
+						logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
+						break;
+					case W3C:
+						logParser = new W3CParser(argsParser.getLocale(), argsParser.getInputFile());
+						break;
+					case IIS:
+						logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
+						break;
+					default:
+						throw new ParseException("Unknow format of input log file!!!", 0);
+				}
+				logParser.openFile(argsParser.getInputFile());
 				break;
-			case W3C:
+			case "COMMON":
+				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+				break;
+			case "COMBINED":
+				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+				break;
+			case "CUSTOM":
+				if (argsParser.getLogFormat().length > 1) {
+					logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
+				} else {
+					throw new ExceptionInInitializerError("Need more args!!!");
+				}
+				break;
+			case "EXTENDED":
 				logParser = new W3CParser(argsParser.getLocale(), argsParser.getInputFile());
 				break;
-			case IIS:
-				logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
+			case "IIS":
+				logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
 				break;
 			default:
-				throw new ParseException("Unknow format of input log file!!!", 0);
-			}
-			logParser.openFile(argsParser.getInputFile());
-			break;
-		case "COMMON":
-			logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
-			break;
-		case "COMBINED":
-			logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
-			break;
-		case "CUSTOM":
-			if (argsParser.getLogFormat().length > 1) {
-				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
-			} else {
-				throw new ExceptionInInitializerError("Need more args!!!");
-			}
-			break;
-		case "EXTENDED":
-			logParser = new W3CParser(argsParser.getLocale(), argsParser.getInputFile());
-			break;
-		case "IIS":
-			logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
-			break;
-		default:
-			throw new ExceptionInInitializerError("Unknown log format!!!");
+				throw new ExceptionInInitializerError("Unknown log format!!!");
 		}
-
 		/** Nastavi format datuma */
 		if(argsParser.getDateFormat() != null) {
 			if(logParser instanceof NCSAParser) {
@@ -93,7 +90,6 @@ public class SpletneSeje {
 				((IISParser) logParser).setDateFormat(argsParser.getDateFormat(), argsParser.getLocale());
 			}
 		}
-
 		/** Nastavi format ure */
 		if(argsParser.getTimeFormat() != null) {
 			if(logParser instanceof NCSAParser) {
@@ -104,13 +100,11 @@ public class SpletneSeje {
 				((IISParser) logParser).setTimeFormat(argsParser.getDateFormat(), argsParser.getLocale());
 			}
 		}
-
-		if (logParser instanceof W3CParser) {
-			for (ParsedLine l : logParser) {
-				if (logParser.getFieldType() != null) break;
-			}
+		/** Dodaj polja, ki jih ignoriramo */
+		String[] ignore = argsParser.getIgnoreFields();
+		if (ignore.length > 0) {
+			logParser.setIgnoreFieldType(LogFormats.CustomLogFormat.create(ignore));
 		}
-
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
 		db = new HibernateUtil(argsParser, logParser);
 	}

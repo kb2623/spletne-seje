@@ -1,5 +1,6 @@
 package org.sessionization;
 
+import com.sun.org.apache.bcel.internal.util.ClassLoader;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import org.hibernate.Session;
@@ -28,13 +29,17 @@ public class HibernateUtil implements AutoCloseable {
 
 	private SessionFactory factory = null;
 	private ServiceRegistry serviceRegistry = null;
-	private ClassLoader loader = null;
+	private ClassPoolLoader loader = null;
 
 	public HibernateUtil(ArgsParser argsParser, AbsParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
-		this.loader = initClassLoader(argsParser, logParser);
+		/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
+		List<LogFieldType> list = logParser.getFieldType();
+		list.removeAll(logParser.getIgnoreFieldTypes());
+		/** Inicializacija ClassLoaderja */
+		this.loader = initClassLoader(argsParser);
 		Properties props = initProperties(argsParser);
 		/** Dodaj potrebne razrede */
-		Set<Class> classes = initClasses(logParser.getFieldType());
+		Set<Class> classes = initClasses(list, loader);
 		serviceRegistry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
 				.applySettings(props)
@@ -71,7 +76,7 @@ public class HibernateUtil implements AutoCloseable {
 		return props;
 	}
 
-	private Set<Class> initClasses(List<LogFieldType> list) throws ExceptionInInitializerError {
+	private Set<Class> initClasses(List<LogFieldType> list, ClassPoolLoader loader) throws ExceptionInInitializerError {
 		Set<Class> classes = new HashSet<>();
 		for (LogFieldType f : list) {
 			for (Class c : f.getDependencies()) {
@@ -79,17 +84,31 @@ public class HibernateUtil implements AutoCloseable {
 			}
 			classes.add(f.getClassE());
 		}
+		Class c;
 		try {
-			classes.add(loader.loadClass(DumpPageView.getName()));
-			classes.add(loader.loadClass(DumpUserSession.getName()));
-			classes.add(loader.loadClass(DumpUserId.getName()));
-		} catch (ClassNotFoundException e) {
-			throw new ExceptionInInitializerError(e);
+			c = DumpPageView.dump(list, loader);
+		} catch (IOException | CannotCompileException | NotFoundException e) {
+			c = null;
+		}
+		if (c != null) {
+			classes.add(c);
+			try {
+				classes.add(DumpUserSession.dump(loader));
+			} catch (IOException | CannotCompileException | NotFoundException e) {
+				throw new ExceptionInInitializerError(e);
+			}
+		}
+		try {
+			c = DumpUserId.dump(list, loader);
+		} catch (IOException | CannotCompileException | NotFoundException e) {
+		}
+		if (c != null) {
+			classes.add(c);
 		}
 		return classes;
 	}
 
-	private ClassLoader initClassLoader(ArgsParser argsParser, AbsParser logParser) throws NotFoundException, CannotCompileException, IOException {
+	private ClassPoolLoader initClassLoader(ArgsParser argsParser) throws NotFoundException, CannotCompileException, IOException {
 		/** Dodaj jar datoeke */
 		Set<URL> set = new HashSet<>();
 		if (argsParser.getDriverUrl() != null) {
@@ -100,13 +119,10 @@ public class HibernateUtil implements AutoCloseable {
 		}
 		URLClassLoader urlLoader = new URLClassLoader(set.toArray(new URL[set.size()]), ClassLoader.getSystemClassLoader());
 		/** Ustvari dinamicne razrede */
-		ClassPoolLoader loader = new ClassPoolLoader(urlLoader);
-		DumpUserId.dump(logParser.getFieldType(), loader);
-		DumpPageView.dump(logParser.getFieldType(), loader);
-		return loader;
+		return new ClassPoolLoader(urlLoader);
 	}
 
-	public ClassLoader getLoader() {
+	public ClassPoolLoader getLoader() {
 		return loader;
 	}
 

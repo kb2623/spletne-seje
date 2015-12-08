@@ -27,10 +27,8 @@ public class IISParser extends W3CParser {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(Locale locale, File[] file) throws FileNotFoundException {
-		super();
-		setDefaultFields(locale);
-		super.openFile(file);
+	public IISParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
+		super(locale, file);
 	}
 	/**
 	 *
@@ -38,10 +36,8 @@ public class IISParser extends W3CParser {
 	 * @param list
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(Locale locale, File[] file, List<LogFieldType> list) throws FileNotFoundException {
-		super();
-		setDefaultFields(locale);
-		super.openFile(file);
+	public IISParser(Locale locale, File[] file, List<LogFieldType> list, List<LogFieldType> ignore) throws FileNotFoundException {
+		super(locale, file);
 		super.setFieldType(list);
 	}
 	/**

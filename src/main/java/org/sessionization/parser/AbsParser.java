@@ -200,6 +200,14 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 
 	/**
 	 *
+	 * @return
+	 */
+	public Set<LogFieldType> getIgnoreFieldTypes() {
+		return ignore;
+	}
+
+	/**
+	 *
 	 * @param pool
 	 */
 	public void setPool(ObjectPool pool) {
