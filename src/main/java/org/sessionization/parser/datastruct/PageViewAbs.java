@@ -1,4 +1,6 @@
 package org.sessionization.parser.datastruct;
 
-public abstract class SessionAbs {
+public abstract class PageViewAbs {
+
+
 }

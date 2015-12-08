@@ -5,7 +5,6 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.EnumMemberValue;
-import org.objectweb.asm.Opcodes;
 import org.sessionization.fields.LogFieldType;
 
 import javax.persistence.*;
@@ -14,16 +13,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SessionDump implements Opcodes {
+public class PageViewDump {
 
-	private static String CLASSNAME = "org.sessionization.parser.datastruct.Session";
+	private static String CLASSNAME = "org.sessionization.parser.datastruct.PageView";
 
 	public static byte[] dump(Collection<LogFieldType> fieldTypes) throws IOException, CannotCompileException, NotFoundException {
 		List<LogFieldType> fields = getFields(fieldTypes);
 		ClassPool pool = ClassPool.getDefault();
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		/** Dodaj super Class */
-		aClass.setSuperclass(pool.get(SessionAbs.class.getName()));
+		aClass.setSuperclass(pool.get(PageViewAbs.class.getName()));
 		/** Dodaj anoracije */{
 			ConstPool constPool = aClass.getClassFile().getConstPool();
 			AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
@@ -93,23 +92,39 @@ public class SessionDump implements Opcodes {
 		/** setterji in getterji za ostala polja */
 		for (LogFieldType f : fields) {
 			/** setter */{
-				CtMethod method = CtMethod.make(
-						"public void " + f.getSetterName() + "(" + f.getClassType().getName() + " " + f.getFieldName() + ") {" +
-								"this." + f.getFieldName() + " = " + f.getFieldName() + ";" +
-								"}",
-						aClass
-				);
+				CtMethod method = CtMethod.make("public void " + f.getSetterName() + "(" + f.getClassType().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}", aClass);
 				aClass.addMethod(method);
 			}
 			/** getter */{
-				CtMethod method = CtMethod.make(
-						"public " + f.getClassType().getName() + " " + f.getGetterName() + "() {" +
-								"return this." + f.getFieldName() + ";" +
-								"}",
-						aClass
-				);
+				CtMethod method = CtMethod.make("public " + f.getClassType().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}", aClass);
 				aClass.addMethod(method);
 			}
+		}
+		/** equals(Object o) */{
+			StringBuilder builder = new StringBuilder();
+			builder.append("public boolean equals(" + Object.class.getName() + " o) {");
+			builder.append("if (this == o) { return true; }\n");
+			builder.append("if (o == null || getClass() != o.getClass()) { return false; }");
+			builder.append(CLASSNAME + " v = (" + CLASSNAME + ") o;");
+			builder.append("return ");
+			builder.append("(this.id != null ? this.id.equals(v.getId()) : v.getId() == null)");
+			for (LogFieldType f : fields) {
+				builder.append(" && (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".equals(v." + f.getGetterName() + "()) : v." + f.getGetterName() + "() == null)");
+			}
+			builder.append(";}");
+			CtMethod method = CtMethod.make(builder.toString(), aClass);
+			aClass.addMethod(method);
+		}
+		/** hashCode() */{
+			StringBuilder builder = new StringBuilder();
+			builder.append("public " + int.class.getName() + " hashCode() {");
+			builder.append(int.class.getName() + " res = this.id != null ? id.hashCode() : 0;");
+			for (LogFieldType f : fields) {
+				builder.append("res = 31 * res + (" + f.getFieldName() + " != null ? this." + f.getFieldName() + ".hashCode() : 0);");
+			}
+			builder.append("return res;").append('}');
+			CtMethod method = CtMethod.make(builder.toString(), aClass);
+			aClass.addMethod(method);
 		}
 		return aClass.toBytecode();
 	}

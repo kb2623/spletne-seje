@@ -78,8 +78,19 @@ public class UserIdDump {
 			field.getFieldInfo().addAttribute(attr);
 			aClass.addField(field);
 		}
-		/** Inicializacije Sessino razreda */{
-			CtField field = CtField.make("private " + SessionAbs.class.getName() + " session;", aClass);
+		/** Inicializacije UserSessino razreda */{
+			CtField field = CtField.make("private " + UserSession.class.getName() + " session;", aClass);
+			ConstPool constPool = field.getFieldInfo().getConstPool();
+			AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+			/** Dodajanje anoracije ManyToMany */{
+				Annotation anno = new Annotation(ManyToMany.class.getName(), constPool);
+				EnumMemberValue value = new EnumMemberValue(constPool);
+				value.setType(CascadeType.class.getName());
+				value.setValue(CascadeType.ALL.name());
+				anno.addMemberValue("cascade", value);
+				attr.addAnnotation(anno);
+			}
+			field.getFieldInfo().addAttribute(attr);
 			aClass.addField(field);
 		}
 		/** kostruktorji */{
@@ -96,59 +107,37 @@ public class UserIdDump {
 		/** setterji in getterji za ostala polja */
 		for (LogFieldType f : fields) {
 			/** setter */{
-				CtMethod method = CtMethod.make(
-						"public void " + f.getSetterName() + "(" + f.getClassType().getName() + " " + f.getFieldName() + ") {" +
-								"this." + f.getFieldName() + " = " + f.getFieldName() + ";" +
-								"}",
-						aClass
-				);
+				CtMethod method = CtMethod.make("public void " + f.getSetterName() + "(" + f.getClassType().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}", aClass);
 				aClass.addMethod(method);
 			}
 			/** getter */{
-				CtMethod method = CtMethod.make(
-						"public " + f.getClassType().getName() + " " + f.getGetterName() + "() {" +
-								"return this." + f.getFieldName() + ";" +
-								"}",
-						aClass
-				);
+				CtMethod method = CtMethod.make("public " + f.getClassType().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}", aClass);
 				aClass.addMethod(method);
 			}
 		}
 		/** getter za Session */{
-			CtMethod method = CtMethod.make(
-					"public " + SessionAbs.class.getName() + " getSession() {" +
-							"return this.session;" +
-							"}",
-					aClass
-			);
+			CtMethod method = CtMethod.make("public " + UserSession.class.getName() + " getSession() {" + "return this.session;" + "}", aClass);
 			aClass.addMethod(method);
 		}
 		/** setter za Session */{
-			CtMethod method = CtMethod.make(
-					"public void setSession(" + SessionAbs.class.getName() + " session) {" +
-							"this.session = session;" +
-							"}",
-					aClass
-			);
+			CtMethod method = CtMethod.make("public void setSession(" + UserSession.class.getName() + " session) {" + "this.session = session;" + "}", aClass);
 			aClass.addMethod(method);
 		}
 		/** getKey() super razreda */{
 			StringBuilder builder = new StringBuilder();
+			builder.append("public " + String.class.getName() + " getKey() {");
+			builder.append("return ");
 			for (LogFieldType f : fields) {
-				builder.append(f.getFieldName()).append(".getKey() + ");
+				builder.append("(this." + f.getFieldName() + " != null ? " + f.getFieldName()).append(".getKey() : \"\") + ");
 			}
 			if (builder.length() > 2) {
 				builder.delete(builder.length() - 2, builder.length());
 			}
-			CtMethod method = CtMethod.make(
-					"public " + String.class.getName() + " getKey() {" +
-							"return " + builder.toString() + ";" +
-							"}",
-					aClass
-			);
+			builder.append(";}");
+			CtMethod method = CtMethod.make(builder.toString(), aClass);
 			aClass.addMethod(method);
 		}
-		/** equals() */{
+		/** equals(Object o) */{
 			StringBuilder builder = new StringBuilder();
 			builder.append("public boolean equals(" + Object.class.getName() + " o) {");
 			builder.append("if (this == o) { return true; }\n");
