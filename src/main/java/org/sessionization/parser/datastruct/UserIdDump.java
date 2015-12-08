@@ -13,16 +13,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class PageViewDump {
+public class UserIdDump {
 
-	private static String CLASSNAME = "org.sessionization.parser.datastuct.PageView";
+	private static String CLASSNAME = "org.sessionization.parser.datastuct.UserId";
 
 	public static byte[] dump(Collection<LogFieldType> fieldsTypes) throws IOException, CannotCompileException, NotFoundException {
 		List<LogFieldType> fields = getFields(fieldsTypes);
 		ClassPool pool = ClassPool.getDefault();
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		/** Dodaj super class */
-		aClass.setSuperclass(pool.get(PageViewAbs.class.getName()));
+		aClass.setSuperclass(pool.get(UserIdAbs.class.getName()));
 		/** Dodaj anotacije */{
 			ConstPool constPool = aClass.getClassFile().getConstPool();
 			AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
@@ -132,7 +132,7 @@ public class PageViewDump {
 			);
 			aClass.addMethod(method);
 		}
-		/** getKey() */{
+		/** getKey() super razreda */{
 			StringBuilder builder = new StringBuilder();
 			for (LogFieldType f : fields) {
 				builder.append(f.getFieldName()).append(".getKey() + ");
@@ -146,6 +146,32 @@ public class PageViewDump {
 							"}",
 					aClass
 			);
+			aClass.addMethod(method);
+		}
+		/** equals() */{
+			StringBuilder builder = new StringBuilder();
+			builder.append("public boolean equals(" + Object.class.getName() + " o) {");
+			builder.append("if (this == o) { return true; }\n");
+			builder.append("if (o == null || getClass() != o.getClass()) { return false; }");
+			builder.append(CLASSNAME + " v = (" + CLASSNAME + ") o;");
+			builder.append("return ");
+			builder.append("(this.id != null ? this.id.equals(v.getId()) : v.getId() == null)");
+			for (LogFieldType f : fields) {
+				builder.append(" && (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".equals(v." + f.getGetterName() + "()) : v." + f.getGetterName() + "() == null)");
+			}
+			builder.append(";}");
+			CtMethod method = CtMethod.make(builder.toString(), aClass);
+			aClass.addMethod(method);
+		}
+		/** hashCode() */{
+			StringBuilder builder = new StringBuilder();
+			builder.append("public " + int.class.getName() + " hashCode() {");
+			builder.append(int.class.getName() + " res = this.id != null ? id.hashCode() : 0;");
+			for (LogFieldType f : fields) {
+				builder.append("res = 31 * res + (" + f.getFieldName() + " != null ? this." + f.getFieldName() + ".hashCode() : 0);");
+			}
+			builder.append("return res;").append('}');
+			CtMethod method = CtMethod.make(builder.toString(), aClass);
 			aClass.addMethod(method);
 		}
 		return aClass.toBytecode();
