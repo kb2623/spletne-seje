@@ -17,7 +17,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.ncsa.RemoteHost.class;
 		}
 	},
@@ -29,7 +29,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.ncsa.RemoteLogname.class;
 		}
 	},
@@ -41,21 +41,21 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.RemoteUser.class;
 		}
 	},
 	/** Datum in čas */
 	DateTime {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.ncsa.DateTime.class;
 		}
 	},
 	/** Metoda, url in protokol */
 	RequestLine {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.ncsa.RequestLine.class;
 		}
 
@@ -76,28 +76,28 @@ public enum LogFieldType {
 	/** Status zahteve */
 	StatusCode {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.StatusCode.class;
 		}
 	},
 	/** Preneseno število bytov od strežnika do klienta */
 	SizeOfResponse {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.SizeOfResponse.class;
 		}
 	},
 	/** Preneseno število bytov od klienta do strežnika */
 	SizeOfRequest {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.SizeOfRequest.class;
 		}
 	},
 	/** Stran s katere je prišel na našo stran */
 	Referer {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.Referer.class;
 		}
 
@@ -122,7 +122,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.UserAgent.class;
 		}
 	},
@@ -134,7 +134,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.Cookie.class;
 		}
 
@@ -149,7 +149,7 @@ public enum LogFieldType {
 	/** W3C metoda */
 	Method {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.Method.class;
 		}
 
@@ -163,35 +163,35 @@ public enum LogFieldType {
 	/** W3C datum */
 	Date {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.w3c.Date.class;
 		}
 	},
 	/** W3C �as */
 	Time {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.w3c.Time.class;
 		}
 	},
 	/** �tevilka port na strežniku */
 	ServerPort {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return Port.class;
 		}
 	},
 	/** �tevilka port na klientu */
 	ClientPort {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return Port.class;
 		}
 	},
 	/** IP strežnika */
 	ServerIP {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return Address.class;
 		}
 
@@ -210,7 +210,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return Address.class;
 		}
 
@@ -224,56 +224,56 @@ public enum LogFieldType {
 	/**	Čas porabljen za obdelavo zahteve (pri W3C v sekundah, pri Apache v milisekunah) */
 	TimeTaken {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.TimeTaken.class;
 		}
 	},
 	/** Pod status protokola */
 	SubStatus {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.w3c.SubStatus.class;
 		}
 	},
 	/** Status akcije, vezan na Windows */
 	Win32Status {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.w3c.Win32Status.class;
 		}
 	},
 	/** Ime gostovanja */
 	Host {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.Host.class;
 		}
 	},
 	/** Verija uporabljenega protokola in ime protokola */
 	ProtocolVersion {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return Protocol.class;
 		}
 	},
 	/** Ime strani */
 	SiteName {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.w3c.SiteName.class;
 		}
 	},
 	/** Ime Računalnika */
 	ComputerName {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.w3c.ComputerName.class;
 		}
 	},
 	/** Atributi zahteve */
 	UriQuery {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.UriQuery.class;
 		}
 
@@ -288,7 +288,7 @@ public enum LogFieldType {
 	/** Ime zahtevanega resursa */
 	UriSteam {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return UriSteam.class;
 		}
 	},
@@ -298,7 +298,7 @@ public enum LogFieldType {
 	 */
 	SizeOfTransfer {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.ncsa.SizeOfTransfer.class;
 		}
 	},
@@ -308,7 +308,7 @@ public enum LogFieldType {
 	 */
 	KeepAliveNumber {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.ncsa.KeepAliveNumber.class;
 		}
 	},
@@ -321,7 +321,7 @@ public enum LogFieldType {
 	 */
 	ConnectionStatus {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return org.sessionization.fields.ncsa.ConnectionStatus.class;
 		}
 
@@ -335,7 +335,7 @@ public enum LogFieldType {
 	/** ID procesa, ki je obdelal zahtevo */
 	ProcessID {
 		@Override
-		public Class getClassType() {
+		public Class getClassE() {
 			return ProcessID.class;
 		}
 	},
@@ -348,30 +348,21 @@ public enum LogFieldType {
 		return false;
 	}
 
-	public Class getClassType() {
+	public Class<LogField> getClassE() {
 		return null;
 	}
 
-	public String getClassClass() {
-		Class c = getClassType();
-		if (c != null) {
-			return c.getName().replace(".", "/");
-		} else {
-			return "";
-		}
-	}
-
 	public String getFieldName() {
-		String s = getClassType().getSimpleName();
+		String s = getClassE().getSimpleName();
 		return Character.toLowerCase(s.charAt(0)) + s.substring(1);
 	}
 
 	public String getSetterName() {
-		return "set" + getClassType().getSimpleName();
+		return "set" + getClassE().getSimpleName();
 	}
 
 	public String getGetterName() {
-		return "get" + getClassType().getSimpleName();
+		return "get" + getClassE().getSimpleName();
 	}
 
 	public Class[] getDependencies() {

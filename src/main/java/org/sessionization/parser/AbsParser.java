@@ -241,11 +241,11 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @throws ParseException
 	 */
 	protected LogField getTokenInstance(LogFieldType type, Object... args) throws ParseException {
-		if (type.getClassType() != null) {
+		if (type.getClassE() != null) {
 			if (pool != null) {
-				return (LogField) pool.getObject(type.getClassType(), args);
+				return (LogField) pool.getObject(type.getClassE(), args);
 			} else {
-				return (LogField) ObjectPool.makeObject(type.getClassType(), args);
+				return (LogField) ObjectPool.makeObject(type.getClassE(), args);
 			}
 		} else {
 			throw new ParseException("Unknown field", pos);

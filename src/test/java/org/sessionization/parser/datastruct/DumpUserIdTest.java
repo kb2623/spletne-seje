@@ -1,16 +1,21 @@
 package org.sessionization.parser.datastruct;
 
 import org.junit.Test;
+import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.LogFormats;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 
-public class UserIdDumpTest {
+public class DumpUserIdTest {
 
 	@Test
 	public void testOne() throws Exception {
-		byte[] bytes = UserIdDump.dump(LogFormats.CommonLogFormat.create(null));
+		List<LogFieldType> list = LogFormats.CommonLogFormat.create(null);
+		DumpPageView.dump(list);
+		DumpUserSession.dump();
+		byte[] bytes = DumpUserId.dump(list);
 		File file = new File("UserId.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);

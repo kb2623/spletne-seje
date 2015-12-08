@@ -9,11 +9,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class PageViewDumpTest {
+public class DumpPageViewTest {
 
 	@Test
 	public void testOne() throws IOException, CannotCompileException, NotFoundException {
-		byte[] bytes = PageViewDump.dump(LogFormats.CommonLogFormat.create(null));
+		byte[] bytes = DumpPageView.dump(LogFormats.CommonLogFormat.create(null));
 		File file = new File("PageView.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);
