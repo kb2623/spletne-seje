@@ -84,51 +84,6 @@ public class DumpUserId {
 				field.getFieldInfo().addAttribute(attr);
 				aClass.addField(field);
 			}
-			/** Inicializacije UserSessino razreda */{
-				CtField field = CtField.make("private " + UserSessionAbs.class.getName() + " session;", aClass);
-				ConstPool constPool = field.getFieldInfo().getConstPool();
-				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-				/** Dodajanje anoracije ManyToMany */{
-					Annotation anno = new Annotation(ManyToMany.class.getName(), constPool);
-					EnumMemberValue value = new EnumMemberValue(constPool);
-					value.setType(CascadeType.class.getName());
-					value.setValue(CascadeType.ALL.name());
-					anno.addMemberValue("cascade", value);
-					attr.addAnnotation(anno);
-				}
-				field.getFieldInfo().addAttribute(attr);
-				aClass.addField(field);
-			}
-			/** UserId() */{
-				StringBuilder builder = new StringBuilder();
-				builder.append("public UserId() {");
-				builder.append("super();");
-				builder.append("this.id = null;");
-				for (LogFieldType f : fields) {
-					builder.append("this." + f.getFieldName() + " = null;");
-				}
-				builder.append("session = null;");
-				builder.append('}');
-				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
-				aClass.addConstructor(constructor);
-			}
-			/** UserId(ParsedLine line) */{
-				StringBuilder builder = new StringBuilder();
-				builder.append("public UserId(" + ParsedLine.class.getName() + " line) {");
-				builder.append("super();");
-				builder.append("this.id = null;");
-				builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
-				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
-				for (LogFieldType f : fields) {
-					builder.append("if (f.getClass() == " + f.getClassE().getName() + ".class)");
-					builder.append("{ this." + f.getFieldName() + " = f; }");
-				}
-				builder.append('}');
-				builder.append("this.session = new " + pool.get(DumpUserSession.getName()).getName() + "(line);");
-				builder.append('}');
-				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
-				aClass.addConstructor(constructor);
-			}
 			/** getId() */{
 				CtMethod method = CtMethod.make("public " + Integer.class.getName() + " getId() { return this.id; }", aClass);
 				aClass.addMethod(method);
@@ -148,13 +103,30 @@ public class DumpUserId {
 					aClass.addMethod(method);
 				}
 			}
-			/** getter za Session */{
-				CtMethod method = CtMethod.make("public " + UserSessionAbs.class.getName() + " getSession() {" + "return this.session;" + "}", aClass);
-				aClass.addMethod(method);
-			}
-			/** setter za Session */{
-				CtMethod method = CtMethod.make("public void setSession(" + UserSessionAbs.class.getName() + " session) {" + "this.session = session;" + "}", aClass);
-				aClass.addMethod(method);
+			if (fields.size() < fieldsTypes.size()) {
+				/** Inicializacije UserSessino razreda */{
+					CtField field = CtField.make("private " + UserSessionAbs.class.getName() + " session;", aClass);
+					ConstPool constPool = field.getFieldInfo().getConstPool();
+					AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+					/** Dodajanje anoracije ManyToMany */{
+						Annotation anno = new Annotation(ManyToMany.class.getName(), constPool);
+						EnumMemberValue value = new EnumMemberValue(constPool);
+						value.setType(CascadeType.class.getName());
+						value.setValue(CascadeType.ALL.name());
+						anno.addMemberValue("cascade", value);
+						attr.addAnnotation(anno);
+					}
+					field.getFieldInfo().addAttribute(attr);
+					aClass.addField(field);
+				}
+				/** getter za Session */{
+					CtMethod method = CtMethod.make("public " + UserSessionAbs.class.getName() + " getSession() {" + "return this.session;" + "}", aClass);
+					aClass.addMethod(method);
+				}
+				/** setter za Session */{
+					CtMethod method = CtMethod.make("public void setSession(" + UserSessionAbs.class.getName() + " session) {" + "this.session = session;" + "}", aClass);
+					aClass.addMethod(method);
+				}
 			}
 			/** getKey() super razreda */{
 				StringBuilder builder = new StringBuilder();
@@ -195,6 +167,35 @@ public class DumpUserId {
 				builder.append("return res;").append('}');
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
+			}/** UserId() */{
+				StringBuilder builder = new StringBuilder();
+				builder.append("public UserId() {");
+				builder.append("super();");
+				builder.append("this.id = null;");
+				for (LogFieldType f : fields) {
+					builder.append("this." + f.getFieldName() + " = null;");
+				}
+				builder.append("session = null;");
+				builder.append('}');
+				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
+				aClass.addConstructor(constructor);
+			}
+			/** UserId(ParsedLine line) */{
+				StringBuilder builder = new StringBuilder();
+				builder.append("public UserId(" + ParsedLine.class.getName() + " line) {");
+				builder.append("super();");
+				builder.append("this.id = null;");
+				builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
+				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
+				for (LogFieldType f : fields) {
+					builder.append("if (f.getClass() == " + f.getClassE().getName() + ".class)");
+					builder.append("{ this." + f.getFieldName() + " = f; }");
+				}
+				builder.append('}');
+				builder.append("this.session = new " + pool.get(DumpUserSession.getName()).getName() + "(line);");
+				builder.append('}');
+				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
+				aClass.addConstructor(constructor);
 			}
 			return aClass.toClass(loader, DumpUserId.class.getProtectionDomain());
 		}
