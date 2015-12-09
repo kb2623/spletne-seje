@@ -147,10 +147,9 @@ public class DumpUserId {
 				StringBuilder builder = new StringBuilder();
 				builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
 				if (fields.size() < fieldsTypes.size()) {
-					builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
-					builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
-					// TODO: 12/9/15 preverjanje kljuca 
-					builder.append('}');
+					builder.append("if (getKey().equals(line.getKey())) {");
+					builder.append("return this.session.addParsedLine(line);");
+					builder.append(" } else { return false; }");
 				} else {
 					builder.append("return false;");
 				}
