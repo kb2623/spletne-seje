@@ -6,51 +6,21 @@ import java.util.*;
 
 public class ArrayMap<Key, Value> implements Map<Key, Value> {
 
-	private class Entry<Key, Value> implements Map.Entry<Key, Value> {
-
-		private Key key;
-		private Value value;
-
-		public Entry(Key key, Value value) throws NullPointerException {
-			if (key == null)
-				throw new NullPointerException("Can't create [" + Entry.class.getName() + "] with null key!!!");
-			if (value == null)
-				throw new NullPointerException("Can't create [" + Entry.class.getName() + "] with null value!!!");
-			this.key = key;
-			this.value = value;
-		}
-
-		@Override
-		public Key getKey() {
-			return key;
-		}
-
-		@Override
-		public Value getValue() {
-			return value;
-		}
-
-		@Override
-		public Value setValue(Value v) {
-			if (v == null) throw new NullPointerException("Can't set null value in [" + Entry.class.getName() + "]!!!");
-			Value ret = value;
-			value = v;
-			return ret;
-		}
-	}
-
 	private Entry<Key, Value>[] store;
 	private int size = 0;
 	private int maxSize = 50;
 	private float loadFactor = .75f;
-
 	public ArrayMap() {
 		store = new Entry[maxSize];
 	}
 
 	public ArrayMap(int size, float loadFactor) throws IllegalArgumentException {
-		if (size <= 0) throw new IllegalArgumentException();
-		if (loadFactor <= 0f || loadFactor > 1f) throw new IllegalArgumentException();
+		if (size <= 0) {
+			throw new IllegalArgumentException();
+		}
+		if (loadFactor <= 0f || loadFactor > 1f) {
+			throw new IllegalArgumentException();
+		}
 		store = new Entry[size];
 		this.loadFactor = loadFactor;
 	}
@@ -74,17 +44,21 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 
 	@Override
 	public boolean containsKey(Object o) throws ClassCastException, NullPointerException {
-		if (o == null) throw new NullPointerException();
-		if (isEmpty()) return false;
-		Key key = (Key) o;
-		int index = indexOf(key);
-		if (store[index] == null) {
+		if (o == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
 			return false;
 		} else {
-			if (store[index].getKey().equals(key)) {
-				return true;
-			} else {
+			Key key = (Key) o;
+			int index = indexOf(key);
+			if (store[index] == null) {
 				return false;
+			} else {
+				if (store[index].getKey().equals(key)) {
+					return true;
+				} else {
+					return false;
+				}
 			}
 		}
 	}
@@ -121,7 +95,9 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 
 	@Override
 	public Value put(Key key, Value value) throws NullPointerException, MapFullException {
-		if (key == null) throw new NullPointerException("Null keys not allowed in [" + ArrayMap.class.getName() + "]!!!");
+		if (key == null) {
+			throw new NullPointerException("Null keys not allowed in [" + ArrayMap.class.getName() + "]!!!");
+		}
 		if (size + 1 > store.length) {
 			if (loadFactor == 0) {
 				throw new MapFullException("Map is full, befor continuing remove some elements!!!");
@@ -234,5 +210,38 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 			}
 		}
 		return set;
+	}
+
+	private class Entry<Key, Value> implements Map.Entry<Key, Value> {
+
+		private Key key;
+		private Value value;
+
+		public Entry(Key key, Value value) throws NullPointerException {
+			if (key == null)
+				throw new NullPointerException("Can't create [" + Entry.class.getName() + "] with null key!!!");
+			if (value == null)
+				throw new NullPointerException("Can't create [" + Entry.class.getName() + "] with null value!!!");
+			this.key = key;
+			this.value = value;
+		}
+
+		@Override
+		public Key getKey() {
+			return key;
+		}
+
+		@Override
+		public Value getValue() {
+			return value;
+		}
+
+		@Override
+		public Value setValue(Value v) {
+			if (v == null) throw new NullPointerException("Can't set null value in [" + Entry.class.getName() + "]!!!");
+			Value ret = value;
+			value = v;
+			return ret;
+		}
 	}
 }
