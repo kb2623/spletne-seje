@@ -1,6 +1,6 @@
 package org.sessionization.parser.datastruct;
 
-import org.sessionization.fields.TimePoint;
+import org.sessionization.TimePoint;
 
 import javax.persistence.*;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package org.sessionization.fields;
+package org.sessionization;
 
 import java.time.Duration;
 import java.time.LocalDate;

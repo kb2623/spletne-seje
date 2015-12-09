@@ -86,7 +86,7 @@ public class HibernateUtil implements AutoCloseable {
 		}
 		Class c;
 		try {
-			c = DumpPageView.dump(list, loader);
+			c = DumpPageView.dump(loader);
 		} catch (IOException | CannotCompileException | NotFoundException e) {
 			c = null;
 		}

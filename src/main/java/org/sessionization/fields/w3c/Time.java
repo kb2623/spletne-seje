@@ -1,7 +1,7 @@
 package org.sessionization.fields.w3c;
 
+import org.sessionization.TimePoint;
 import org.sessionization.fields.LogField;
-import org.sessionization.fields.TimePoint;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;

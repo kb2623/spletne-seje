@@ -47,7 +47,18 @@ public class DumpUserSession {
 			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 			aClass.addConstructor(constructor);
 		}
-		// TODO: 12/9/15 dodaj metodo
+		/** boolean addParsedLine(ParsedLine line) super razreda */{
+			StringBuilder builder = new StringBuilder();
+			builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
+			builder.append("if (super.pages == null) return false;");
+			builder.append("if (!((" + DumpPageView.getName() + ") super.pages.get(pages.size() - 1)).addParsedLine(line)) {" +
+					" return super.pages.add(new " + DumpPageView.getName() + "(line));" +
+					"}");
+			builder.append("return true;");
+			builder.append('}');
+			CtMethod method = CtMethod.make(builder.toString(), aClass);
+			aClass.addMethod(method);
+		}
 		return aClass.toClass(loader, DumpUserSession.class.getProtectionDomain());
 	}
 

@@ -44,7 +44,7 @@ public class DumpPageView {
 		}
 		/** PageView(ParsedLine line) */{
 			StringBuilder builder = new StringBuilder();
-			builder.append("public PageView(ParsedLine line) {");
+			builder.append("public PageView(" + ParsedLine.class.getName() + " line) {");
 			builder.append("super(line);");
 			builder.append("addParsedLine(line);");
 			builder.append('}');

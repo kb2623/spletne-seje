@@ -1,6 +1,10 @@
 package org.sessionization.parser.datastruct;
 
-import org.sessionization.fields.*;
+import org.sessionization.TimePoint;
+import org.sessionization.fields.LogField;
+import org.sessionization.fields.Referer;
+import org.sessionization.fields.UriSteam;
+import org.sessionization.fields.UserAgent;
 import org.sessionization.fields.ncsa.DateTime;
 import org.sessionization.fields.ncsa.RequestLine;
 import org.sessionization.fields.w3c.Date;
@@ -19,10 +23,6 @@ public class ParsedLine implements Iterable<LogField> {
 	 *
 	 * @param array Seznam, ki vsebuje podatke o obdelani vrstici.
 	 */
-	public ParsedLine(LogField[] array) {
-		this.array = array;
-	}
-
 	public ParsedLine(Set<LogField> list) {
 		this.array = list.toArray(new LogField[list.size()]);
 	}

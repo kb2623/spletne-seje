@@ -31,7 +31,7 @@ public class DumpRequestTest {
 		File file = new File("Request.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);
-		byte[] bytes = loader.getPool().get(DumpPageView.getName()).toBytecode();
+		byte[] bytes = loader.getPool().get(DumpRequest.getName()).toBytecode();
 		fos.write(bytes);
 		fos.close();
 	}

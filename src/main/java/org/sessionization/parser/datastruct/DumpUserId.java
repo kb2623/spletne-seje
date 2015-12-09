@@ -145,7 +145,16 @@ public class DumpUserId {
 			}
 			/** boolean addParsedLine(ParsedLine line) super razreda */{
 				StringBuilder builder = new StringBuilder();
-				// TODO: 12/9/15
+				builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
+				if (fields.size() < fieldsTypes.size()) {
+					builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
+					builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
+					// TODO: 12/9/15 preverjanje kljuca 
+					builder.append('}');
+				} else {
+					builder.append("return false;");
+				}
+				builder.append('}');
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}

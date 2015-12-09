@@ -102,12 +102,12 @@ public class W3CParser extends AbsParser {
 		try {
 			String[] tokens = parse();
 			if (tokens[0].charAt(0) == '#') {
-				LogField[] metaData = new LogField[tokens.length];
+				Set<LogField> metaData = new HashSet<>(tokens.length);
 				if (tokens[0].equals("#Fields:")) {
 					super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens));
 				}
 				for (int i = 0; i < tokens.length; i++) {
-					metaData[i] = new MetaData(tokens[i]);
+					metaData.add(new MetaData(tokens[i]));
 				}
 				return new ParsedLine(metaData);
 			} else {
