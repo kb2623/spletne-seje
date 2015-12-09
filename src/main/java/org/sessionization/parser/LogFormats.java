@@ -88,7 +88,7 @@ public enum LogFormats {
 					case "%r":
 						list.add(LogFieldType.RequestLine);
 						break;
-				case "%s":
+					case "%s":
 					case "%>s":
 						list.add(LogFieldType.StatusCode);
 						break;
@@ -128,8 +128,8 @@ public enum LogFormats {
 					case "%^to":
 						list.add(LogFieldType.Unknown);
 						break;
-				case "%p":
-				case "%{local}p":
+					case "%p":
+					case "%{local}p":
 					case "%{canonical}p":
 						list.add(LogFieldType.ServerPort);
 						break;
@@ -142,7 +142,8 @@ public enum LogFormats {
 					case "%{User-agent}i":
 						list.add(LogFieldType.UserAgent);
 						break;
-				case "CUSTOM": break;
+					case "CUSTOM":
+						break;
 					default:
 						list.add(LogFieldType.Unknown);
 				}
@@ -225,8 +226,10 @@ public enum LogFormats {
 					case "time-taken":
 						list.add(LogFieldType.TimeTaken);
 						break;
-				case "#Fields:": break;
-				case "IIS": break;
+					case "#Fields:":
+						break;
+					case "IIS":
+						break;
 					default:
 						list.add(LogFieldType.Unknown);
 						break;
