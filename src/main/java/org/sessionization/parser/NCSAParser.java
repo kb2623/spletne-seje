@@ -130,11 +130,11 @@ public class NCSAParser extends AbsParser {
 		}
 	}
 
-	protected Set<LogField> process(String[] tokens) throws ParseException {
+	protected Collection<LogField> process(String[] tokens) throws ParseException {
 		if (super.fieldType == null) {
 			throw new ParseException("Field types are not set!!!", getPos());
 		}
-		Set<LogField> lineData = new HashSet<>(fieldType.size());
+		List<LogField> lineData = new ArrayList<>(fieldType.size());
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			LogFieldType type = fieldType.get(i);
 			if (ignore != null ? !ignore.contains(type) : true) {

@@ -118,10 +118,10 @@ public class W3CParser extends AbsParser {
 		}
 	}
 
-	protected Set<LogField> process(String[] tokens) throws ParseException {
+	protected Collection<LogField> process(String[] tokens) throws ParseException {
 		if(super.fieldType == null) throw new ParseException("Bad log format", super.getPos());
 		if(super.fieldType.size() != tokens.length) throw new ParseException("Can't parse a line", super.getPos());
-		Set<LogField> lineData = new HashSet<>(fieldType.size());
+		List<LogField> lineData = new ArrayList<>(fieldType.size());
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			LogFieldType type = fieldType.get(i);
 			if (ignore != null ? !ignore.contains(type) : true) {

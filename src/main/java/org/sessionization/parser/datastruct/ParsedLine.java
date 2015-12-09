@@ -10,9 +10,9 @@ import org.sessionization.fields.ncsa.RequestLine;
 import org.sessionization.fields.w3c.Date;
 import org.sessionization.fields.w3c.Time;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class ParsedLine implements Iterable<LogField> {
@@ -23,7 +23,7 @@ public class ParsedLine implements Iterable<LogField> {
 	 *
 	 * @param array Seznam, ki vsebuje podatke o obdelani vrstici.
 	 */
-	public ParsedLine(Set<LogField> list) {
+	public ParsedLine(Collection<LogField> list) {
 		this.array = list.toArray(new LogField[list.size()]);
 	}
 	/**
