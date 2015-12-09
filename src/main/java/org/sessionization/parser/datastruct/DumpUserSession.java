@@ -18,7 +18,7 @@ public class DumpUserSession {
 		ClassPool pool = loader.getPool();
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		/** Dodajanje super razreda */
-		aClass.setSuperclass(pool.get(UserSessionAbs.class.getName()));
+		aClass.setSuperclass(pool.get(AbsUserSession.class.getName()));
 		/** Dodaj anotacije */{
 			ConstPool constPool = aClass.getClassFile().getConstPool();
 			AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
@@ -32,6 +32,12 @@ public class DumpUserSession {
 			}
 			aClass.getClassFile().addAttribute(attr);
 		}
+		/** UserSession() */{
+			StringBuilder builder = new StringBuilder();
+			builder.append("public UserSession() { super(); }");
+			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
+			aClass.addConstructor(constructor);
+		}
 		/** UserSession(ParsedLine line) */{
 			StringBuilder builder = new StringBuilder();
 			builder.append("public UserSession(" + ParsedLine.class.getName() + " line) {");
@@ -41,6 +47,7 @@ public class DumpUserSession {
 			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 			aClass.addConstructor(constructor);
 		}
+		// TODO: 12/9/15 dodaj metodo
 		return aClass.toClass(loader, DumpUserSession.class.getProtectionDomain());
 	}
 

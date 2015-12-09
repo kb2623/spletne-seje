@@ -5,7 +5,7 @@ import javassist.NotFoundException;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.parser.*;
-import org.sessionization.parser.datastruct.UserIdAbs;
+import org.sessionization.parser.datastruct.AbsUserId;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -155,7 +155,7 @@ public class SpletneSeje {
 	}
 
 	public void run() throws InterruptedException {
-		BlockingQueue<Map<String, UserIdAbs>> qParserLearner = new LinkedBlockingQueue<>();
+		BlockingQueue<Map<String, AbsUserId>> qParserLearner = new LinkedBlockingQueue<>();
 		Thread parseThread = new ParserThread(qParserLearner, logParser, argsParser.getParseSize());
 		Thread learnThread = new LearnThread(qParserLearner);
 		parseThread.start();

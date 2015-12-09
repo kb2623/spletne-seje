@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-public class DumpUserSessionTest {
+public class DumpRequestTest {
 
 	private ClassPoolLoader loader;
 	private List<LogFieldType> allFieldTypes;
@@ -28,10 +28,10 @@ public class DumpUserSessionTest {
 
 	@After
 	public void endUp() throws IOException, NotFoundException, CannotCompileException {
-		File file = new File("UserSession.class");
+		File file = new File("Request.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);
-		byte[] bytes = loader.getPool().get(DumpUserSession.getName()).toBytecode();
+		byte[] bytes = loader.getPool().get(DumpPageView.getName()).toBytecode();
 		fos.write(bytes);
 		fos.close();
 	}
@@ -40,15 +40,11 @@ public class DumpUserSessionTest {
 	public void testCommon() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.create(null);
 		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
-		assertNotNull(DumpPageView.dump(loader));
-		assertNotNull(DumpUserSession.dump(loader));
 	}
 
 	@Test
 	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
 		allFieldTypes = LogFormats.CombinedLogFormat.create(null);
 		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
-		assertNotNull(DumpPageView.dump(loader));
-		assertNotNull(DumpUserSession.dump(loader));
 	}
 }

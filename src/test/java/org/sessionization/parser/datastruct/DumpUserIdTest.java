@@ -39,7 +39,8 @@ public class DumpUserIdTest {
 	@Test
 	public void testCommon() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.create(null);
-		assertNotNull(DumpPageView.dump(allFieldTypes, loader));
+		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
+		assertNotNull(DumpPageView.dump(loader));
 		assertNotNull(DumpUserSession.dump(loader));
 		assertNotNull(DumpUserId.dump(allFieldTypes, loader));
 	}
@@ -47,7 +48,8 @@ public class DumpUserIdTest {
 	@Test
 	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
 		allFieldTypes = LogFormats.CombinedLogFormat.create(null);
-		assertNotNull(DumpPageView.dump(allFieldTypes, loader));
+		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
+		assertNotNull(DumpPageView.dump(loader));
 		assertNotNull(DumpUserSession.dump(loader));
 		assertNotNull(DumpUserId.dump(allFieldTypes, loader));
 	}
