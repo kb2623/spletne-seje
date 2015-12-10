@@ -11,7 +11,7 @@ import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
 import org.sessionization.fields.LogFieldType;
-import org.sessionization.parser.AbsParser;
+import org.sessionization.parser.AbsWebLogParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.datastruct.DumpPageView;
 import org.sessionization.parser.datastruct.DumpUserId;
@@ -31,7 +31,7 @@ public class HibernateUtil implements AutoCloseable {
 	private ServiceRegistry serviceRegistry = null;
 	private ClassPoolLoader loader = null;
 
-	public HibernateUtil(ArgsParser argsParser, AbsParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
+	public HibernateUtil(ArgsParser argsParser, AbsWebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
 		/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
 		List<LogFieldType> list = logParser.getFieldType();
 		list.removeAll(logParser.getIgnoreFieldTypes());

@@ -20,16 +20,16 @@ import java.util.*;
  * Parser za formate: Common Log Format, Combined Log Format in Custom Log Formats
  * @author klemen
  */
-public class NCSAParser extends AbsParser {
+public class NCSAWebLogParser extends AbsWebLogParser {
 
 	private DateTimeFormatter formatter;
 	/**
 	 * Konstruktor ki nastavi polja na prevzete vrednosti
 	 *
 	 * @see ParserAbs#ParserAbs()
-	 * @see NCSAParser#setDefaultFields()
+	 * @see NCSAWebLogParser#setDefaultFields()
 	 */
-	public NCSAParser() {
+	public NCSAWebLogParser() {
 		super();
 		setDefaultFields(Locale.US);
 	}
@@ -38,7 +38,7 @@ public class NCSAParser extends AbsParser {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public NCSAParser(Locale locale, File[] file) throws FileNotFoundException {
+	public NCSAWebLogParser(Locale locale, File[] file) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 	}
@@ -46,7 +46,7 @@ public class NCSAParser extends AbsParser {
 	 *
 	 * @param list
 	 */
-	public NCSAParser(Locale locale, File[] file, List<LogFieldType> list) throws FileNotFoundException {
+	public NCSAWebLogParser(Locale locale, File[] file, List<LogFieldType> list) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 		setFieldType(list);

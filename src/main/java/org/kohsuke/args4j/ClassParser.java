@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
  */
 public class ClassParser {
 	public void parse(Object bean, CmdLineParser parser) {
-		// recursively process all the methods/fields.
+		// recursively process all the methods/ields.
 		for( Class c=bean.getClass(); c!=null; c=c.getSuperclass()) {
 			for( Method m : c.getDeclaredMethods() ) {
 				Option o = m.getAnnotation(Option.class);

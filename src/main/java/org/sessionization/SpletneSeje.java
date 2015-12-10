@@ -18,7 +18,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class SpletneSeje {
 
 	private ArgsParser argsParser;
-	private AbsParser logParser;
+	private AbsWebLogParser logParser;
 	private HibernateUtil db;
 
 	public SpletneSeje() {
@@ -45,13 +45,13 @@ public class SpletneSeje {
 				LogAnalyzer analyzer = new LogAnalyzer(argsParser.getInputFile());
 				switch (analyzer.getLogFileType()) {
 					case NCSA:
-						logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
+						logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
 						break;
 					case W3C:
-						logParser = new W3CParser(argsParser.getLocale(), argsParser.getInputFile());
+						logParser = new W3CWebLogParser(argsParser.getLocale(), argsParser.getInputFile());
 						break;
 					case IIS:
-						logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
+						logParser = new IISWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), analyzer.getFields());
 						break;
 					default:
 						throw new ParseException("Unknow format of input log file!!!", 0);
@@ -59,45 +59,45 @@ public class SpletneSeje {
 				logParser.openFile(argsParser.getInputFile());
 				break;
 			case "COMMON":
-				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+				logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
 				break;
 			case "COMBINED":
-				logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+				logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
 				break;
 			case "CUSTOM":
 				if (argsParser.getLogFormat().length > 1) {
-					logParser = new NCSAParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
+					logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
 				} else {
 					throw new ExceptionInInitializerError("Need more args!!!");
 				}
 				break;
 			case "EXTENDED":
-				logParser = new W3CParser(argsParser.getLocale(), argsParser.getInputFile());
+				logParser = new W3CWebLogParser(argsParser.getLocale(), argsParser.getInputFile());
 				break;
 			case "IIS":
-				logParser = new IISParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
+				logParser = new IISWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
 				break;
 			default:
 				throw new ExceptionInInitializerError("Unknown log format!!!");
 		}
 		/** Nastavi format datuma */
 		if(argsParser.getDateFormat() != null) {
-			if(logParser instanceof NCSAParser) {
-				((NCSAParser) logParser).setDateFormat(argsParser.getDateFormat(), argsParser.getLocale());
-			} else if(logParser instanceof W3CParser) {
-				((W3CParser) logParser).setDateFormat(argsParser.getDateFormat(), argsParser.getLocale());
+			if (logParser instanceof NCSAWebLogParser) {
+				((NCSAWebLogParser) logParser).setDateFormat(argsParser.getDateFormat(), argsParser.getLocale());
+			} else if (logParser instanceof W3CWebLogParser) {
+				((W3CWebLogParser) logParser).setDateFormat(argsParser.getDateFormat(), argsParser.getLocale());
 			} else {
-				((IISParser) logParser).setDateFormat(argsParser.getDateFormat(), argsParser.getLocale());
+				((IISWebLogParser) logParser).setDateFormat(argsParser.getDateFormat(), argsParser.getLocale());
 			}
 		}
 		/** Nastavi format ure */
 		if(argsParser.getTimeFormat() != null) {
-			if(logParser instanceof NCSAParser) {
+			if (logParser instanceof NCSAWebLogParser) {
 				System.err.println("ignoring -tf \"" + argsParser.getTimeFormat() + "\"");
-			} else if(logParser instanceof W3CParser) {
-				((W3CParser) logParser).setTimeFormat(argsParser.getDateFormat(), argsParser.getLocale());
+			} else if (logParser instanceof W3CWebLogParser) {
+				((W3CWebLogParser) logParser).setTimeFormat(argsParser.getDateFormat(), argsParser.getLocale());
 			} else {
-				((IISParser) logParser).setTimeFormat(argsParser.getDateFormat(), argsParser.getLocale());
+				((IISWebLogParser) logParser).setTimeFormat(argsParser.getDateFormat(), argsParser.getLocale());
 			}
 		}
 		/** Dodaj polja, ki jih ignoriramo */
@@ -172,5 +172,4 @@ public class SpletneSeje {
 			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in learning!!!");
 		}
 	}
-
 }

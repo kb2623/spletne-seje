@@ -10,15 +10,15 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 @SuppressWarnings("deprecation")
-public class IISParser extends W3CParser {
+public class IISWebLogParser extends W3CWebLogParser {
 
 	/**
 	 * Konstruktor ki uporabi prevzeti knstriktor razreda {@link ParserAbs}.
 	 *
 	 * @see parser.ParserAbs#ParserAbs()
-	 * @see IISParser#setDefaultFields()
+	 * @see IISWebLogParser#setDefaultFields()
 	 */
-	public IISParser() {
+	public IISWebLogParser() {
 		super();
 		setDefaultFields(Locale.US);
 	}
@@ -27,7 +27,7 @@ public class IISParser extends W3CParser {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
+	public IISWebLogParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
 		super(locale, file);
 	}
 	/**
@@ -36,7 +36,7 @@ public class IISParser extends W3CParser {
 	 * @param list
 	 * @throws FileNotFoundException
 	 */
-	public IISParser(Locale locale, File[] file, List<LogFieldType> list, List<LogFieldType> ignore) throws FileNotFoundException {
+	public IISWebLogParser(Locale locale, File[] file, List<LogFieldType> list, List<LogFieldType> ignore) throws FileNotFoundException {
 		super(locale, file);
 		super.setFieldType(list);
 	}

@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  *
  * @author klemen
  */
-public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
+public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoCloseable {
 
 	/**
 	 * Tabela, ki vsebuje vrste polji v log datoteki
@@ -53,7 +53,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * pozicija = 0<p>
 	 * datoteka = null
 	 */
-	public AbsParser() {
+	public AbsWebLogParser() {
 		readers = null;
 		fieldType = null;
 		pos = 0;
@@ -64,7 +64,7 @@ public abstract class AbsParser implements Iterable<ParsedLine>, AutoCloseable {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public AbsParser(File... file) throws FileNotFoundException {
+	public AbsWebLogParser(File... file) throws FileNotFoundException {
 		this();
 		openFile(file);
 	}

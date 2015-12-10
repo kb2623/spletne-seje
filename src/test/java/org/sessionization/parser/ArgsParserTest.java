@@ -3,7 +3,12 @@ package org.sessionization.parser;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
@@ -11,6 +16,49 @@ import static org.junit.Assert.*;
 public class ArgsParserTest {
 
 	private ArgsParser parser;
+
+	private static Class[] getClasses(String packageName, ClassLoader loader) throws ClassNotFoundException, IOException {
+		assert loader != null;
+		String path = packageName.replace('.', '/');
+		InputStreamReader reader = new InputStreamReader(loader.getResourceAsStream(path));
+		int c = (char) reader.read();
+		while (c != -1) {
+			System.out.print((char) c);
+			c = reader.read();
+		}
+		reader.close();
+		/*
+		Enumeration<URL> resources = loader.getResources(path);
+		List dirs = new ArrayList();
+		while (resources.hasMoreElements()) {
+			URL resource = resources.nextElement();
+			dirs.add(new File(resource.getFile()));
+		}
+		ArrayList classes = new ArrayList();
+		for (Object directory : dirs) {
+			classes.addAll(findClasses((File) directory, packageName, loader));
+		}
+		return (Class[]) classes.toArray(new Class[classes.size()]);
+		*/
+		return null;
+	}
+
+	private static List findClasses(File directory, String packageName, ClassLoader loader) throws ClassNotFoundException {
+		List classes = new ArrayList();
+		if (!directory.exists()) {
+			return classes;
+		}
+		File[] files = directory.listFiles();
+		for (File file : files) {
+			if (file.isDirectory()) {
+				assert !file.getName().contains(".");
+				classes.addAll(findClasses(file, packageName + "." + file.getName(), loader));
+			} else if (file.getName().endsWith(".class")) {
+				classes.add(loader.loadClass(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+			}
+		}
+		return classes;
+	}
 
 	@Test
 	public void testArgsParsingHelp() {
@@ -151,5 +199,10 @@ public class ArgsParserTest {
 			e.printStackTrace();
 			fail();
 		}
+	}
+
+	@Test
+	public void testSome() throws IOException, ClassNotFoundException {
+		Class[] cArray = getClasses("org.sessionization.parser", ClassLoader.getSystemClassLoader());
 	}
 }

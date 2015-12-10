@@ -21,17 +21,17 @@ import java.util.*;
  * @author klemen
  */
 @SuppressWarnings("deprecation")
-public class W3CParser extends AbsParser {
+public class W3CWebLogParser extends AbsWebLogParser {
 
 	private DateTimeFormatter timeFormat;
 	private DateTimeFormatter dateFormat;
 	/**
 	 * Konstruktor ki uporabi prevzeti oknstriktor razreda {@link ParserAbs}.
 	 *
-	 * @see AbsParser#AbsParser()
-	 * @see W3CParser#setDefaultFields()
+	 * @see AbsWebLogParser#AbsWebLogParser()
+	 * @see W3CWebLogParser#setDefaultFields()
 	 */
-	public W3CParser() {
+	public W3CWebLogParser() {
 		super();
 		setDefaultFields(Locale.US);
 	}
@@ -40,7 +40,7 @@ public class W3CParser extends AbsParser {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public W3CParser(Locale locale, File[] file) throws FileNotFoundException {
+	public W3CWebLogParser(Locale locale, File[] file) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 	}

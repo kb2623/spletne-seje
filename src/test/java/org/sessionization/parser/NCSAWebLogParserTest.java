@@ -17,15 +17,15 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
-public class NCSAParserTest {
+public class NCSAWebLogParserTest {
 
 	private String pathNCSACombined;
 	private String pathNCSACommon;
-	private NCSAParser parser;
+	private NCSAWebLogParser parser;
 
 	@Before
 	public void setUp() throws Exception {
-		parser = new NCSAParser();
+		parser = new NCSAWebLogParser();
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
 		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
 	}
@@ -45,7 +45,7 @@ public class NCSAParserTest {
 
 	@Test
 	public void testNCSAParserCommonTryResource() throws NullPointerException, IOException {
-		try (NCSAParser parser1 = new NCSAParser()) {
+		try (NCSAWebLogParser parser1 = new NCSAWebLogParser()) {
 			parser1.openFile(new File[]{new File(pathNCSACommon)});
 					parser1.setFieldType(LogFormats.CommonLogFormat.create(null));
 			for (ParsedLine list : parser1) list.forEach(Assert::assertNotNull);
@@ -122,7 +122,7 @@ public class NCSAParserTest {
 
 	@Test
 	public void testNCSAParserCombinedTryResource() {
-		try (NCSAParser parser1 = new NCSAParser()) {
+		try (NCSAWebLogParser parser1 = new NCSAWebLogParser()) {
 			parser1.openFile(new File[]{new File(pathNCSACombined)});
 			parser1.setFieldType(LogFormats.CombinedLogFormat.create(null));
 			parser1.forEach(Assert::assertNotNull);
@@ -135,7 +135,7 @@ public class NCSAParserTest {
 	@Test
 	public void testNCSAParserCombinedCookieTryResource() {
 		String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
-		try (NCSAParser parser1 = new NCSAParser()) {
+		try (NCSAWebLogParser parser1 = new NCSAWebLogParser()) {
 			parser1.openFile(new StringReader(testNiz));
 			String[] cookie = "%h %l %u %t %r %>s %b %{Referer}i %{User-agent}i %C".split(" ");
 			parser1.setFieldType(LogFormats.CustomLogFormat.create(cookie));
