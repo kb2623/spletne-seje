@@ -21,6 +21,7 @@ public class DumpPageView {
 	public static Class<?> dump(ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
 		ClassPool pool = loader.getPool();
 		CtClass aClass = pool.makeClass(CLASSNAME);
+		aClass.setModifiers(Modifier.PUBLIC);
 		/** Dodaj super Class */
 		aClass.setSuperclass(pool.get(AbsPageView.class.getName()));
 		/** Dodaj anoracije */{

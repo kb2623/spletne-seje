@@ -17,6 +17,7 @@ public class DumpUserSession {
 	public static Class<?> dump(ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
 		ClassPool pool = loader.getPool();
 		CtClass aClass = pool.makeClass(CLASSNAME);
+		aClass.setModifiers(Modifier.PUBLIC);
 		/** Dodajanje super razreda */
 		aClass.setSuperclass(pool.get(AbsUserSession.class.getName()));
 		/** Dodaj anotacije */{

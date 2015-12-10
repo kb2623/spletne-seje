@@ -28,6 +28,7 @@ public class DumpRequest {
 			List<LogFieldType> fields = getFields(fieldTypes);
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
+			aClass.setModifiers(Modifier.PUBLIC);
 			/** Dodaj super Class */
 			aClass.setSuperclass(pool.get(AbsRequest.class.getName()));
 			/** Dodaj anoracije */{

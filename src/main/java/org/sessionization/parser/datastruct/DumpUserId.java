@@ -27,6 +27,7 @@ public class DumpUserId {
 			List<LogFieldType> fields = getFields(fieldsTypes);
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
+			aClass.setModifiers(Modifier.PUBLIC);
 			/** Dodaj super class */
 			aClass.setSuperclass(pool.get(AbsUserId.class.getName()));
 			/** Dodaj anotacije */{
