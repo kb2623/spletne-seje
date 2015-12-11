@@ -91,7 +91,7 @@ public class ArgsParserTest {
 			assertEquals("org.sqlite.JDBC", parser.getDriverClass());
 			assertEquals("org.dialect.SQLiteDialect", parser.getDialectClass());
 			assertEquals(1, parser.getConnectoinPoolSize());
-			assertEquals("jdbc:sqlite:sqliteDB", parser.getDatabaseUrl().toASCIIString());
+			assertEquals("jdbc:sqlite:qliteDB", parser.getDatabaseUrl().toASCIIString());
 			assertEquals("test", parser.getInputFile()[0].getName());
 			assertEquals(Locale.US, parser.getLocale());
 			System.out.println();

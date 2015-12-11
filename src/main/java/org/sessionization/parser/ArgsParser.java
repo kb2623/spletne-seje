@@ -41,7 +41,7 @@ public class ArgsParser {
 		properties.setProperty("database.dialect.class", "org.dialect.SQLiteDialect");
 		properties.setProperty("database.ddl", String.valueOf(DdlOperation.Create));
 		properties.setProperty("database.connection.pool_size", "1");
-		properties.setProperty("database.url", "jdbc:sqlite:sqliteDB");
+		properties.setProperty("database.url", "jdbc:sqlite:qliteDB");
 		properties.setProperty("database.sql.show", String.valueOf(false));
 		properties.setProperty("database.sql.show.format", String.valueOf(false));
 		properties.setProperty("format.locale", Locale.US.toLanguageTag());
