@@ -12,15 +12,14 @@ public final class NamedOptionDef extends OptionDef {
 	private final String[] forbids;
 
 	/**
-	 * @deprecated
-	 *      multi-valuedness as option definition does not make sense. It's driven by the setter.
+	 * @deprecated multi-valuedness as option definition does not make sense. It's driven by the setter.
 	 */
 	public NamedOptionDef(Option o, boolean forceMultiValued) {
 		this(o);
 	}
 
 	public NamedOptionDef(Option o) {
-		super(o.usage(),o.metaVar(),o.required(),o.help(),o.hidden(),o.handler(),false);
+		super(o.usage(), o.metaVar(), o.required(), o.help(), o.hidden(), o.handler(), false);
 
 		this.name = o.name();
 		this.aliases = createZeroSizedArrayIfNull(o.aliases());

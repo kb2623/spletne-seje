@@ -18,6 +18,7 @@ import java.util.function.Consumer;
 public class ParsedLine implements Iterable<LogField> {
 
 	private LogField[] array;
+
 	/**
 	 * Konstruktor, ki kot parameter prejeme ze ustvarjeno tabelo. V primeru, ko uporabimo ta konstruktor je metoda add neuporabna, razen v primeru ko obstajajo v tabeli <code>null</code> vrednosti.
 	 *
@@ -26,6 +27,7 @@ public class ParsedLine implements Iterable<LogField> {
 	public ParsedLine(Collection<LogField> list) {
 		this.array = list.toArray(new LogField[list.size()]);
 	}
+
 	/**
 	 * Metoda, ki prevrja ali je zahtevo opravil uporabnik ali spletni robot.
 	 * Robota indentificiramo preko zahteve po resursu robots.txt ali pa po
@@ -36,18 +38,18 @@ public class ParsedLine implements Iterable<LogField> {
 	public boolean isCrawler() {
 		for (LogField f : array)
 			if (f instanceof UriSteam && !(f instanceof Referer)) {
-			return ((UriSteam) f).getFile().equals("robots.txt");
-		} else if (f instanceof UserAgent) {
-			return ((UserAgent) f).isCrawler();
-		}
+				return ((UriSteam) f).getFile().equals("robots.txt");
+			} else if (f instanceof UserAgent) {
+				return ((UserAgent) f).isCrawler();
+			}
 		return false;
 	}
+
 	/**
 	 * Metoda pove ali vrstica v zapisu vsebuje resurs
 	 *
-	 * @return
-	 * 		<code>true</code> -> Vrstica vsebuje resurs
-	 * 		<code>false</code> -> Vrstica ne vsebuje resursa li na ne vsebuje polja, ki identificira resurs
+	 * @return <code>true</code> -> Vrstica vsebuje resurs
+	 * <code>false</code> -> Vrstica ne vsebuje resursa li na ne vsebuje polja, ki identificira resurs
 	 */
 	public boolean isResource() {
 		for (LogField f : array) {
@@ -59,12 +61,12 @@ public class ParsedLine implements Iterable<LogField> {
 		}
 		return false;
 	}
+
 	/**
 	 * Vrne končnico zahtevane resursa
 	 *
-	 * @return
-	 * 		OK -> niz, ki vsebuje končnico
-	 * 		ERROR -> <code>null</code>
+	 * @return OK -> niz, ki vsebuje končnico
+	 * ERROR -> <code>null</code>
 	 */
 	public String getExtension() {
 		for (int i = 0; i < array.length; i++) {
@@ -72,6 +74,7 @@ public class ParsedLine implements Iterable<LogField> {
 		}
 		return null;
 	}
+
 	/**
 	 * Testna metoda za testiranje pravilnosti shranjevanja podatkov
 	 *
@@ -92,6 +95,7 @@ public class ParsedLine implements Iterable<LogField> {
 			return "[]";
 		}
 	}
+
 	/**
 	 * Getter za pridobivanje vrednosti v tabeli
 	 *
@@ -105,6 +109,7 @@ public class ParsedLine implements Iterable<LogField> {
 			return null;
 		}
 	}
+
 	/**
 	 * Getter za tabelo
 	 *
@@ -113,6 +118,7 @@ public class ParsedLine implements Iterable<LogField> {
 	public LogField[] getArray() {
 		return array;
 	}
+
 	/**
 	 * Getter za velikost tabele
 	 *
@@ -121,6 +127,7 @@ public class ParsedLine implements Iterable<LogField> {
 	public int size() {
 		return array.length;
 	}
+
 	/**
 	 * Metoda, ki ustvari kljuc za vrstico v log datoteki.
 	 *

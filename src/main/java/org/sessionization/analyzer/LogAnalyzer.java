@@ -14,8 +14,8 @@ public class LogAnalyzer {
 	private BufferedReader reader;
 	private LogFileType logFileType = LogFileType.UNKNOWN;
 	private List<LogFieldType> fields;
+
 	/**
-	 *
 	 * @param path
 	 * @throws FileNotFoundException
 	 */
@@ -30,13 +30,7 @@ public class LogAnalyzer {
 		}
 		fields = new ArrayList<>();
 	}
-	/**
-	 *
-	 * @return
-	 */
-	public List<LogFieldType> getFields() {
-		return fields;
-	}
+
 	/**
 	 * Metoda preveri ali se v combined log frmatu nahaja
 	 * polje s piskotkom
@@ -48,17 +42,8 @@ public class LogAnalyzer {
 		// Zacasna implementacija
 		return null;
 	}
+
 	/**
-	 *
-	 * @param field
-	 * @return
-	 * @throws IOException
-	 */
-	public boolean isCookie(String field) throws IOException {
-		return Pattern.compile(Cookie.patteren()).matcher(field).find();
-	}
-	/**
-	 *
 	 * @param input
 	 * @return
 	 */
@@ -66,8 +51,8 @@ public class LogAnalyzer {
 		// FIXME Implementiraj preverjanje niza za IP stevilko. Tukaj bodi pozoren saj imamo lahko IPv4 ali pa IPv6
 		return false;
 	}
+
 	/**
-	 *
 	 * @param input
 	 * @return
 	 */
@@ -75,14 +60,31 @@ public class LogAnalyzer {
 		// FIXME Implementiraj preverjanje niza za numericno vrednost
 		return false;
 	}
+
 	/**
-	 *
 	 * @param input
 	 * @return
 	 */
 	public static boolean isAlfa(String input) {
 		return !isNumber(input);
 	}
+
+	/**
+	 * @return
+	 */
+	public List<LogFieldType> getFields() {
+		return fields;
+	}
+
+	/**
+	 * @param field
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean isCookie(String field) throws IOException {
+		return Pattern.compile(Cookie.patteren()).matcher(field).find();
+	}
+
 	/**
 	 * Metoda, ki vrne razred za branje datoteke, pred tem
 	 * pa vrne pozicijo za branje na zacetek datoteke
@@ -93,8 +95,8 @@ public class LogAnalyzer {
 		stream.getChannel().position(0);
 		return new BufferedReader(new InputStreamReader(stream));
 	}
+
 	/**
-	 *
 	 * @return
 	 */
 	public LogFileType getLogFileType() {

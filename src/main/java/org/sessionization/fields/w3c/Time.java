@@ -23,8 +23,8 @@ public class Time implements LogField, TimePoint {
 	protected Time(LocalTime time) {
 		this.time = time;
 	}
+
 	/**
-	 * 
 	 * @param time
 	 * @param formatter
 	 */

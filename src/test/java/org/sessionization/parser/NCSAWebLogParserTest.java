@@ -47,7 +47,7 @@ public class NCSAWebLogParserTest {
 	public void testNCSAParserCommonTryResource() throws NullPointerException, IOException {
 		try (NCSAWebLogParser parser1 = new NCSAWebLogParser()) {
 			parser1.openFile(new File[]{new File(pathNCSACommon)});
-					parser1.setFieldType(LogFormats.CommonLogFormat.create(null));
+			parser1.setFieldType(LogFormats.CommonLogFormat.create(null));
 			for (ParsedLine list : parser1) list.forEach(Assert::assertNotNull);
 		}
 	}

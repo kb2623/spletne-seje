@@ -10,6 +10,7 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 	private int size = 0;
 	private int maxSize = 50;
 	private float loadFactor = .75f;
+
 	public ArrayMap() {
 		store = new Entry[maxSize];
 	}

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.kohsuke.args4j;
 

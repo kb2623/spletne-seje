@@ -34,12 +34,12 @@ public class Host implements LogField {
 		this.id = id;
 	}
 
-	public void setHost(String host) {
-		this.host = host;
-	}
-
 	public String getHost() {
 		return host != null ? host : "";
+	}
+
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 	@Override

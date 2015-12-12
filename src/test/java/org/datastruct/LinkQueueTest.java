@@ -50,7 +50,8 @@ public class LinkQueueTest {
 		try {
 			itQ.next();
 			fail();
-		} catch (NoSuchElementException e) {}
+		} catch (NoSuchElementException e) {
+		}
 	}
 
 	private void add(boolean test) {
@@ -121,7 +122,8 @@ public class LinkQueueTest {
 		try {
 			queue.element();
 			fail();
-		} catch (NoSuchElementException e) {}
+		} catch (NoSuchElementException e) {
+		}
 		add(true);
 		for (int i = 0; i < size; i++) {
 			assertEquals(tqueue.element(), queue.element());
@@ -131,7 +133,8 @@ public class LinkQueueTest {
 		try {
 			queue.element();
 			fail();
-		}  catch (NoSuchElementException e) {}
+		} catch (NoSuchElementException e) {
+		}
 	}
 
 	@Test

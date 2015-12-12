@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Partial {@link OptionHandler} implementation that takes a single value to the option,
  * which is then gets split into individual tokens using fixed delimiter.
- *
+ * <p>
  * <p>
  * This class is marked as {@code abstract} even though it has no abstract methods
  * to indicate that the class cannot be used by itself in {@link Option#handler()},
@@ -45,7 +45,7 @@ public abstract class DelimitedOptionHandler<T> extends OptionHandler<T> {
 	public String getDefaultMetaVariable() {
 		final String tMetaVar = individualOptionHandler.getDefaultMetaVariable();
 		if (tMetaVar == null || tMetaVar.trim().isEmpty()) return tMetaVar;
-		return "<" + tMetaVar  + delimiter + tMetaVar + delimiter + "...>";
+		return "<" + tMetaVar + delimiter + tMetaVar + delimiter + "...>";
 	}
 
 	/**
@@ -55,12 +55,12 @@ public abstract class DelimitedOptionHandler<T> extends OptionHandler<T> {
 	 */
 	public String printDefaultValue() {
 		if (setter instanceof Getter) {
-			Getter getter = (Getter)setter;
+			Getter getter = (Getter) setter;
 			List<T> defaultValues = getter.getValueList();
 
 			StringBuilder buf = new StringBuilder();
 			for (T v : defaultValues) {
-				if (buf.length()>0)     buf.append(delimiter);
+				if (buf.length() > 0) buf.append(delimiter);
 				buf.append(print(v));
 			}
 			return buf.toString();

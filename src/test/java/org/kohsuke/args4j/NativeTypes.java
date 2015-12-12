@@ -3,27 +3,27 @@ package org.kohsuke.args4j;
 @SuppressWarnings("unused")
 public class NativeTypes {
 
-	@Option(name="-boolean")
+	@Option(name = "-boolean")
 	public boolean _boolean;
-	
-	@Option(name="-byte")
+
+	@Option(name = "-byte")
 	public byte _byte;
 
-	@Option(name="-char")
+	@Option(name = "-char")
 	public char _char;
-	
-	@Option(name="-double")
+
+	@Option(name = "-double")
 	public double _double;
-	
-	@Option(name="-float")
+
+	@Option(name = "-float")
 	public float _float;
-	
-	@Option(name="-int")
+
+	@Option(name = "-int")
 	public int _int;
-	
-	@Option(name="-long")
+
+	@Option(name = "-long")
 	public long _long;
-	
-	@Option(name="-short")
+
+	@Option(name = "-short")
 	public short _short;
 }

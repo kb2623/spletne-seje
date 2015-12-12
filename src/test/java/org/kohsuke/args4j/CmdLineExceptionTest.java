@@ -24,38 +24,40 @@
 
 package org.kohsuke.args4j;
 
-import java.util.Locale;
 import junit.framework.TestCase;
+
+import java.util.Locale;
 
 /**
  * Test case for {@link CmdLineException}.
+ *
  * @author Stephan Fuhrmann <stephan@tynne.de>
  */
 public class CmdLineExceptionTest extends TestCase {
-    
-    private static class TestBean {
-        @Option(name = "-foo")
-        String foo;
-    }
-    
-    /***
-     * Test for {@link CmdLineException#CmdLineException(org.kohsuke.args4j.CmdLineParser, Localizable, java.lang.String...) }
-     * and {@link CmdLineException#getLocalizedMessage() }.
-     */
-    public void testGetLocalizedMessage() {
-        TestBean testBean = new TestBean();
 
-        Locale cur = Locale.getDefault();
-        Locale.setDefault(Locale.GERMANY);
-        try {
-            CmdLineParser parser = new CmdLineParser(testBean);
-            CmdLineException e = new CmdLineException(parser, Messages.NO_ARGUMENT_ALLOWED, "foofoo");
+	/***
+	 * Test for {@link CmdLineException#CmdLineException(org.kohsuke.args4j.CmdLineParser, Localizable, java.lang.String...) }
+	 * and {@link CmdLineException#getLocalizedMessage() }.
+	 */
+	public void testGetLocalizedMessage() {
+		TestBean testBean = new TestBean();
 
-            assertEquals("No argument is allowed: foofoo", e.getMessage());
-            assertEquals("Kein Argument erlaubt: foofoo", e.getLocalizedMessage());
-            assertSame(parser, e.getParser());
-        } catch (Exception e1) {
-            Locale.setDefault(cur);
-        }
-    }
+		Locale cur = Locale.getDefault();
+		Locale.setDefault(Locale.GERMANY);
+		try {
+			CmdLineParser parser = new CmdLineParser(testBean);
+			CmdLineException e = new CmdLineException(parser, Messages.NO_ARGUMENT_ALLOWED, "foofoo");
+
+			assertEquals("No argument is allowed: foofoo", e.getMessage());
+			assertEquals("Kein Argument erlaubt: foofoo", e.getLocalizedMessage());
+			assertSame(parser, e.getParser());
+		} catch (Exception e1) {
+			Locale.setDefault(cur);
+		}
+	}
+
+	private static class TestBean {
+		@Option(name = "-foo")
+		String foo;
+	}
 }

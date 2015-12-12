@@ -7,9 +7,9 @@ import java.util.ResourceBundle;
 
 /**
  * Selects {@link OptionHandler}.
- *
  * <p>
- * For example, we use this to let the caller specify which 
+ * <p>
+ * For example, we use this to let the caller specify which
  * options are printed, and which ones aren't.
  *
  * @author Kohsuke Kawaguchi
@@ -18,17 +18,6 @@ import java.util.ResourceBundle;
  */
 public interface OptionHandlerFilter {
 	/**
-	 *
-	 * @param o
-	 *      Never {@code null}. Internally options (like <code>-r</code>) and arguments (others)
-	 *      are treated uniformly as {@link OptionHandler}. 
-	 *      See {@link OptionDef#isArgument()} to distinguish them.
-	 * @return
-	 *      true to choose this option, false to ignore/discard/disregard it.
-	 */
-	boolean select(OptionHandler o);
-
-	/**
 	 * Print all defined options in the example.
 	 */
 	OptionHandlerFilter ALL = new OptionHandlerFilter() {
@@ -36,10 +25,9 @@ public interface OptionHandlerFilter {
 			return true;
 		}
 	};
-
 	/**
 	 * Print all {@linkplain Option#hidden() non-hidden} options.
-	 *
+	 * <p>
 	 * <p>
 	 * This would only be useful with a small number of options.
 	 */
@@ -48,7 +36,6 @@ public interface OptionHandlerFilter {
 			return !o.option.hidden();
 		}
 	};
-
 	/**
 	 * Print all {@linkplain Option#required() required} options.
 	 */
@@ -57,4 +44,12 @@ public interface OptionHandlerFilter {
 			return o.option.required();
 		}
 	};
+
+	/**
+	 * @param o Never {@code null}. Internally options (like <code>-r</code>) and arguments (others)
+	 *          are treated uniformly as {@link OptionHandler}.
+	 *          See {@link OptionDef#isArgument()} to distinguish them.
+	 * @return true to choose this option, false to ignore/discard/disregard it.
+	 */
+	boolean select(OptionHandler o);
 }

@@ -32,7 +32,7 @@ public class DateTime implements LogField, TimePoint {
 	}
 
 	/**
-	 * @param date Čas predstavljen z nizom
+	 * @param date      Čas predstavljen z nizom
 	 * @param formatter Objek, ki predstavlja format
 	 */
 	public DateTime(String date, DateTimeFormatter formatter) {

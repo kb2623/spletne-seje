@@ -3,7 +3,7 @@ package org.datastruct;
 import java.util.NoSuchElementException;
 
 public class Stack<T> {
-	
+
 	private StackNode top;
 
 	public Stack() {

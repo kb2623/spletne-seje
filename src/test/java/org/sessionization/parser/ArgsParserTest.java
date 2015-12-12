@@ -141,8 +141,8 @@ public class ArgsParserTest {
 	@Test
 	public void testArgsParsingThree() {
 		try {
-			parser = new ArgsParser("-xml", ClassLoader.getSystemResource("Test2.xml").toURI().getPath(), "test");
-			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
+			parser = new ArgsParser("-props", ClassLoader.getSystemResource("H2.properties").toURI().getPath(), "test");
+			assertEquals("org.dialect.SQLiteDialect", parser.getDialectClass());
 			assertEquals("org.h2.Driver", parser.getDriverClass());
 			assertEquals("test", parser.getInputFile()[0].getName());
 			assertEquals("jdbc:h2:./h2DB", parser.getDatabaseUrl().toString());

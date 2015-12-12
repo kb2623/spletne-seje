@@ -14,7 +14,7 @@ public class SizeOfResponse implements LogField {
 	public SizeOfResponse() {
 		size = 0;
 	}
-	
+
 	public SizeOfResponse(String size) {
 		this.size = Integer.valueOf(size);
 	}

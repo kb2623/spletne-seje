@@ -379,7 +379,7 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 	/**
 	 * Rekurzivna metoda za iskanje elementa
 	 *
-	 * @param node Vozlisce, ki ga pregledujemo
+	 * @param node  Vozlisce, ki ga pregledujemo
 	 * @param value Vrednost elementa
 	 * @return Ali element obstaja v strukturi
 	 */

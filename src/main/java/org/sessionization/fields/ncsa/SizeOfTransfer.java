@@ -21,12 +21,12 @@ public class SizeOfTransfer implements LogField {
 		size = Integer.valueOf(niz);
 	}
 
-	public void setSize(int size) {
-		this.size = size;
-	}
-
 	public int getSize() {
 		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 
 	@Override

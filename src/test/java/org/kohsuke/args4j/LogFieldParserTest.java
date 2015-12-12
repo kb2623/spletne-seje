@@ -5,10 +5,10 @@ import junit.framework.TestCase;
 public class LogFieldParserTest extends TestCase {
 
 	private void parse(Object bean, String... args) throws CmdLineException, ClassNotFoundException {
-        CmdLineParser p = new CmdLineParser(new Object());
+		CmdLineParser p = new CmdLineParser(new Object());
 		new FieldParser().parse(p, bean);
 		p.parseArgument(args);
-    }
+	}
 
 	public void testNoArgs() throws CmdLineException, ClassNotFoundException {
 		Bean bean = new Bean();

@@ -1,10 +1,10 @@
 package org.kohsuke.args4j;
 
+import junit.framework.TestCase;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -17,101 +17,108 @@ import junit.framework.TestCase;
  */
 public abstract class Args4JTestBase<T> extends TestCase {
 
-    CmdLineParser parser;
-    String[] args;
-    T testObject;
+	CmdLineParser parser;
+	String[] args;
+	T testObject;
 
-    /**
-     * Specifies which concrete object to return as test object.
-     * @return the test object
-     */
-    public abstract T getTestObject();
-    
-    /**
-     * Setter for args in a vararg manner.
-     * @param args
-     */
-    public void setArgs(String... args) {
-    	this.args = args;
-    }
-    
-    /**
-     * Initializes the testObject and the parser for that object.
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        testObject = getTestObject();
-        parser = createParser();
-    }
+	/**
+	 * Specifies which concrete object to return as test object.
+	 *
+	 * @return the test object
+	 */
+	public abstract T getTestObject();
 
-    protected CmdLineParser createParser() {
-        return new CmdLineParser(testObject);
-    }
+	/**
+	 * Setter for args in a vararg manner.
+	 *
+	 * @param args
+	 */
+	public void setArgs(String... args) {
+		this.args = args;
+	}
 
-    /**
-     * Checks the number of lines of the parsers usage message.
-     * @param expectedLength
-     * @see TestCase#assertEquals(String, int, int)
-     * @see Args4JTestBase#getUsageMessage()
-     */
-    public void assertUsageLength(int expectedLength) {
-        assertEquals("Wrong amount of lines in usage message", expectedLength, getUsageMessage().length);
-    }
-    
-    /**
-     * Asserts that a given text is part of the usage message.
-     * @param message Error message if the text is not found.
-     * @param containingText Text to search for.
-     */
-    public void assertUsageContains(String message, String containingText) {
-    	boolean contains = false;
-    	for (String line : getUsageMessage()) {
-    		if (line.contains(containingText)) {
-    			contains = true;
-    			break;
-    		}
-    	}
-    	if (!contains) {
-    		throw new AssertionError(message);
-    	}
-    }
+	/**
+	 * Initializes the testObject and the parser for that object.
+	 *
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		testObject = getTestObject();
+		parser = createParser();
+	}
 
-    /**
-     * Extracts the usage message from the parser as String array.
-     * @return the usage message
-     * @see CmdLineParser#printUsage(OutputStream)
-     */
-    public String[] getUsageMessage() {
-        Locale oldDefault = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
-        Stream2String s2s = new Stream2String();
-        parser.printUsage(s2s);
-        Locale.setDefault(oldDefault);
-        return s2s.getString().split(System.getProperty("line.separator"));
-    }
-    
-    protected void assertErrorMessagePrefix(String exectedPrefix, CmdLineException e) {
-        String errorMessage = e.getMessage();
-        assertTrue("Got wrong error message. Expected prefix: \""+exectedPrefix+"\", actual: \""+errorMessage+"\"", errorMessage.startsWith(exectedPrefix));
-    }
+	protected CmdLineParser createParser() {
+		return new CmdLineParser(testObject);
+	}
 
-    /**
-     * Utility class for capturing an OutputStream into a String.
-     * @author Jan Materne
-     */
-    private class Stream2String extends OutputStream {
-        private StringBuffer sb = new StringBuffer();
+	/**
+	 * Checks the number of lines of the parsers usage message.
+	 *
+	 * @param expectedLength
+	 * @see TestCase#assertEquals(String, int, int)
+	 * @see Args4JTestBase#getUsageMessage()
+	 */
+	public void assertUsageLength(int expectedLength) {
+		assertEquals("Wrong amount of lines in usage message", expectedLength, getUsageMessage().length);
+	}
 
-        @Override
-        public void write(int b) throws IOException {
-            sb.append((char)b);
-        }
+	/**
+	 * Asserts that a given text is part of the usage message.
+	 *
+	 * @param message        Error message if the text is not found.
+	 * @param containingText Text to search for.
+	 */
+	public void assertUsageContains(String message, String containingText) {
+		boolean contains = false;
+		for (String line : getUsageMessage()) {
+			if (line.contains(containingText)) {
+				contains = true;
+				break;
+			}
+		}
+		if (!contains) {
+			throw new AssertionError(message);
+		}
+	}
 
-        public String getString() {
-            return sb.toString();
-        }
-    }
+	/**
+	 * Extracts the usage message from the parser as String array.
+	 *
+	 * @return the usage message
+	 * @see CmdLineParser#printUsage(OutputStream)
+	 */
+	public String[] getUsageMessage() {
+		Locale oldDefault = Locale.getDefault();
+		Locale.setDefault(Locale.ENGLISH);
+		Stream2String s2s = new Stream2String();
+		parser.printUsage(s2s);
+		Locale.setDefault(oldDefault);
+		return s2s.getString().split(System.getProperty("line.separator"));
+	}
+
+	protected void assertErrorMessagePrefix(String exectedPrefix, CmdLineException e) {
+		String errorMessage = e.getMessage();
+		assertTrue("Got wrong error message. Expected prefix: \"" + exectedPrefix + "\", actual: \"" + errorMessage + "\"", errorMessage.startsWith(exectedPrefix));
+	}
+
+	/**
+	 * Utility class for capturing an OutputStream into a String.
+	 *
+	 * @author Jan Materne
+	 */
+	private class Stream2String extends OutputStream {
+		private StringBuffer sb = new StringBuffer();
+
+		@Override
+		public void write(int b) throws IOException {
+			sb.append((char) b);
+		}
+
+		public String getString() {
+			return sb.toString();
+		}
+	}
 
 }

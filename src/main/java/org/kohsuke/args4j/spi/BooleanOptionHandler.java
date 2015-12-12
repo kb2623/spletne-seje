@@ -1,11 +1,11 @@
 package org.kohsuke.args4j.spi;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.OptionDef;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Boolean {@link OptionHandler}.
@@ -13,8 +13,8 @@ import org.kohsuke.args4j.OptionDef;
  * @author Kohsuke Kawaguchi
  */
 public class BooleanOptionHandler extends OptionHandler<Boolean> {
-	private static final List<String> ACCEPTABLE_VALUES = Arrays.asList(new String[] { "true", "on", "yes", "1",
-			"false", "off", "no", "0" });
+	private static final List<String> ACCEPTABLE_VALUES = Arrays.asList(new String[]{"true", "on", "yes", "1",
+			"false", "off", "no", "0"});
 
 	public BooleanOptionHandler(CmdLineParser parser, OptionDef option, Setter<? super Boolean> setter) {
 		super(parser, option, setter);

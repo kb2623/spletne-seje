@@ -12,12 +12,11 @@ import static org.kohsuke.args4j.Utilities.checkNonNull;
 
 /**
  * Command line argument owner.
- *
+ * <p>
  * <p>
  * For typical usage, see <a href="https://args4j.dev.java.net/source/browse/args4j/args4j/examples/SampleMain.java?view=markup">this example</a>.
  *
- * @author
- *     Kohsuke Kawaguchi (kk@kohsuke.org)
+ * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
 public class CmdLineParser {
 
@@ -44,13 +43,10 @@ public class CmdLineParser {
 	 * parses arguments/options and set them into
 	 * the given object.
 	 *
-	 * @param bean
-	 *      instance of a class annotated by {@link Option} and {@link Argument}.
-	 *      this object will receive values. If this is {@code null}, the processing will
-	 *      be skipped, which is useful if you'd like to feed metadata from other sources.
-	 *
-	 * @throws IllegalAnnotationError
-	 *      if the option bean class is using args4j annotations incorrectly.
+	 * @param bean instance of a class annotated by {@link Option} and {@link Argument}.
+	 *             this object will receive values. If this is {@code null}, the processing will
+	 *             be skipped, which is useful if you'd like to feed metadata from other sources.
+	 * @throws IllegalAnnotationError if the option bean class is using args4j annotations incorrectly.
 	 */
 	public CmdLineParser(Object bean) {
 		// for display purposes, we like the arguments in argument order, but the options in alphabetical order
@@ -62,26 +58,22 @@ public class CmdLineParser {
 	 * parses arguments/options and set them into
 	 * the given object.
 	 *
-	 * @param bean
-	 *      instance of a class annotated by {@link Option} and {@link Argument}.
-	 *      this object will receive values. If this is {@code null}, the processing will
-	 *      be skipped, which is useful if you'd like to feed metadata from other sources.
-	 *
+	 * @param bean             instance of a class annotated by {@link Option} and {@link Argument}.
+	 *                         this object will receive values. If this is {@code null}, the processing will
+	 *                         be skipped, which is useful if you'd like to feed metadata from other sources.
 	 * @param parserProperties various settings for this class
-	 *
-	 * @throws IllegalAnnotationError
-	 *      if the option bean class is using args4j annotations incorrectly.
+	 * @throws IllegalAnnotationError if the option bean class is using args4j annotations incorrectly.
 	 */
 	public CmdLineParser(Object bean, ParserProperties parserProperties) {
 		this.parserProperties = parserProperties;
 		// A 'return' in the constructor just skips the rest of the implementation
 		// and returns the new object directly.
-		if (bean==null) return;
+		if (bean == null) return;
 
 		// Parse the metadata and create the setters
-		new ClassParser().parse(bean,this);
+		new ClassParser().parse(bean, this);
 
-		if (parserProperties.getOptionSorter()!=null) {
+		if (parserProperties.getOptionSorter() != null) {
 			Collections.sort(options, parserProperties.getOptionSorter());
 		}
 	}
@@ -133,7 +125,7 @@ public class CmdLineParser {
 	 * Programmatically defines an argument (instead of reading it from annotations as normal).
 	 *
 	 * @param setter the setter for the type
-	 * @param a the Argument
+	 * @param a      the Argument
 	 * @throws NullPointerException if {@code setter} or {@code a} is {@code null}.
 	 */
 	public void addArgument(Setter setter, Argument a) {
@@ -141,13 +133,13 @@ public class CmdLineParser {
 		checkNonNull(a, "Argument");
 
 		OptionHandler h = OptionHandlerRegistry.getRegistry().createOptionHandler(this,
-				new OptionDef(a,setter.isMultiValued()),setter);
+				new OptionDef(a, setter.isMultiValued()), setter);
 		int index = a.index();
 		// make sure the argument will fit in the list
 		while (index >= arguments.size()) {
 			arguments.add(null);
 		}
-		if(arguments.get(index)!=null) {
+		if (arguments.get(index) != null) {
 			throw new IllegalAnnotationError(Messages.MULTIPLE_USE_OF_ARGUMENT.format(index));
 		}
 		arguments.set(index, h);
@@ -157,8 +149,8 @@ public class CmdLineParser {
 	 * Programmatically defines an option (instead of reading it from annotations as normal).
 	 *
 	 * @param setter the setter for the type
-	 * @param o the {@code Option}
-	 * @throws NullPointerException if {@code setter} or {@code o} is {@code null}.
+	 * @param o      the {@code Option}
+	 * @throws NullPointerException   if {@code setter} or {@code o} is {@code null}.
 	 * @throws IllegalAnnotationError if the option name or one of the aliases is already taken.
 	 */
 	public void addOption(Setter setter, Option o) {
@@ -170,7 +162,7 @@ public class CmdLineParser {
 			checkOptionNotInMap(alias);
 		}
 		options.add(OptionHandlerRegistry.getRegistry().createOptionHandler(
-					this, new NamedOptionDef(o), setter));
+				this, new NamedOptionDef(o), setter));
 	}
 
 	/**
@@ -190,7 +182,7 @@ public class CmdLineParser {
 	private void checkOptionNotInMap(String name) throws IllegalAnnotationError {
 		checkNonNull(name, "name");
 
-		if(findOptionByName(name)!=null) {
+		if (findOptionByName(name) != null) {
 			throw new IllegalAnnotationError(Messages.MULTIPLE_USE_OF_OPTION.format(name));
 		}
 	}
@@ -198,6 +190,7 @@ public class CmdLineParser {
 	/**
 	 * Creates an {@link OptionHandler} that handles the given {@link Option} annotation
 	 * and the {@link Setter} instance.
+	 *
 	 * @deprecated You should use {@link OptionHandlerRegistry#createOptionHandler(org.kohsuke.args4j.CmdLineParser, org.kohsuke.args4j.OptionDef, org.kohsuke.args4j.spi.Setter) } instead.
 	 */
 	protected OptionHandler createOptionHandler(OptionDef o, Setter setter) {
@@ -208,21 +201,18 @@ public class CmdLineParser {
 
 	/**
 	 * Formats a command line example into a string.
-	 *
+	 * <p>
 	 * See {@link #printExample(OptionHandlerFilter, ResourceBundle)} for more details.
 	 *
-	 * @param filter
-	 *      must not be {@code null}.
-	 * @return
-	 *      always non-{@code null}.
+	 * @param filter must not be {@code null}.
+	 * @return always non-{@code null}.
 	 */
 	public String printExample(OptionHandlerFilter filter) {
 		return printExample(filter, null);
 	}
 
 	/**
-	 * @deprecated
-	 *      Use {@link #printExample(OptionHandlerFilter)}
+	 * @deprecated Use {@link #printExample(OptionHandlerFilter)}
 	 */
 	public String printExample(ExampleMode mode) {
 		return printExample(mode, null);
@@ -230,29 +220,25 @@ public class CmdLineParser {
 
 	/**
 	 * Formats a command line example into a string.
-	 *
+	 * <p>
 	 * <p>
 	 * This method produces a string like <code> -d &lt;dir&gt; -v -b</code>.
 	 * This is useful for printing a command line example (perhaps
 	 * as a part of the usage screen).
 	 *
-	 *
-	 * @param mode
-	 *      Determines which options will be a part of the returned string.
-	 *      Must not be {@code null}.
-	 * @param rb
-	 *      If non-{@code null}, meta variables (<code>&lt;dir&gt;</code> in the above example)
-	 *      is treated as a key to this resource bundle, and the associated
-	 *      value is printed. See {@link Option#metaVar()}. This is to support
-	 *      localization.
-	 *
-	 *      Passing {@code null} would print {@link Option#metaVar()} directly.
-	 * @return
-	 *      always non-{@code null}. If there's no option, this method returns
-	 *      just the empty string {@code ""}. Otherwise, this method returns a
-	 *      string that contains a space at the beginning (but not at the end).
-	 *      This allows you to do something like:
-	 *      <code>System.err.println("java -jar my.jar"+parser.printExample(REQUIRED)+" arg1 arg2");</code>
+	 * @param mode Determines which options will be a part of the returned string.
+	 *             Must not be {@code null}.
+	 * @param rb   If non-{@code null}, meta variables (<code>&lt;dir&gt;</code> in the above example)
+	 *             is treated as a key to this resource bundle, and the associated
+	 *             value is printed. See {@link Option#metaVar()}. This is to support
+	 *             localization.
+	 *             <p>
+	 *             Passing {@code null} would print {@link Option#metaVar()} directly.
+	 * @return always non-{@code null}. If there's no option, this method returns
+	 * just the empty string {@code ""}. Otherwise, this method returns a
+	 * string that contains a space at the beginning (but not at the end).
+	 * This allows you to do something like:
+	 * <code>System.err.println("java -jar my.jar"+parser.printExample(REQUIRED)+" arg1 arg2");</code>
 	 * @throws NullPointerException if {@code mode} is {@code null}.
 	 */
 	public String printExample(OptionHandlerFilter mode, ResourceBundle rb) {
@@ -262,8 +248,8 @@ public class CmdLineParser {
 
 		for (OptionHandler h : options) {
 			OptionDef option = h.option;
-			if(option.usage().length()==0)  continue;   // ignore
-			if(!mode.select(h))             continue;
+			if (option.usage().length() == 0) continue;   // ignore
+			if (!mode.select(h)) continue;
 
 			buf.append(' ');
 			buf.append(h.getNameAndMeta(rb, parserProperties));
@@ -273,8 +259,7 @@ public class CmdLineParser {
 	}
 
 	/**
-	 * @deprecated
-	 *      Use {@link #printExample(OptionHandlerFilter,ResourceBundle)}
+	 * @deprecated Use {@link #printExample(OptionHandlerFilter, ResourceBundle)}
 	 */
 	public String printExample(ExampleMode mode, ResourceBundle rb) {
 		return printExample((OptionHandlerFilter) mode, rb);
@@ -282,18 +267,18 @@ public class CmdLineParser {
 
 	/**
 	 * Prints the list of options and their usages to the screen.
-	 *
+	 * <p>
 	 * <p>
 	 * This is a convenience method for calling {@code printUsage(new OutputStreamWriter(out),null)}
 	 * so that you can do {@code printUsage(System.err)}.
 	 */
 	public void printUsage(OutputStream out) {
-		printUsage(new OutputStreamWriter(out),null);
+		printUsage(new OutputStreamWriter(out), null);
 	}
 
 	/**
 	 * Prints the list of all the non-hidden options and their usages to the screen.
-	 *
+	 * <p>
 	 * <p>
 	 * Short for {@code printUsage(out,rb,OptionHandlerFilter.PUBLIC)}
 	 */
@@ -304,11 +289,9 @@ public class CmdLineParser {
 	/**
 	 * Prints the list of all the non-hidden options and their usages to the screen.
 	 *
-	 * @param rb
-	 *      If non-{@code null}, {@link Option#usage()} is treated
-	 *      as a key to obtain the actual message from this resource bundle.
-	 * @param filter
-	 *      Controls which options to be printed.
+	 * @param rb     If non-{@code null}, {@link Option#usage()} is treated
+	 *               as a key to obtain the actual message from this resource bundle.
+	 * @param filter Controls which options to be printed.
 	 */
 	public void printUsage(Writer out, ResourceBundle rb, OptionHandlerFilter filter) {
 		PrintWriter w = new PrintWriter(out);
@@ -316,11 +299,11 @@ public class CmdLineParser {
 		int len = 0;
 		for (OptionHandler h : arguments) {
 			int curLen = getPrefixLen(h, rb);
-			len = Math.max(len,curLen);
+			len = Math.max(len, curLen);
 		}
-		for (OptionHandler h: options) {
+		for (OptionHandler h : options) {
 			int curLen = getPrefixLen(h, rb);
-			len = Math.max(len,curLen);
+			len = Math.max(len, curLen);
 		}
 
 		// then print
@@ -336,15 +319,15 @@ public class CmdLineParser {
 
 	/**
 	 * Prints usage information for a given option.
-	 *
+	 * <p>
 	 * <p>
 	 * Subtypes may override this method and determine which options et printed (or other things),
 	 * based on {@link OptionHandler} (perhaps by using {@code handler.setter.asAnnotatedElement()}).
 	 *
-	 * @param out      Writer to write into
-	 * @param handler  handler where to receive the information
-	 * @param len      Maximum length of metadata column
-	 * @param rb       {@code ResourceBundle} for I18N
+	 * @param out     Writer to write into
+	 * @param handler handler where to receive the information
+	 * @param len     Maximum length of metadata column
+	 * @param rb      {@code ResourceBundle} for I18N
 	 * @see Setter#asAnnotatedElement()
 	 */
 	protected void printOption(PrintWriter out, OptionHandler handler, int len, ResourceBundle rb, OptionHandlerFilter filter) {
@@ -353,12 +336,12 @@ public class CmdLineParser {
 				handler.option.usage().length() == 0 ||
 				!filter.select(handler)) {
 			return;
-				}
+		}
 
 		// What is the width of the two data columns
 		int totalUsageWidth = parserProperties.getUsageWidth();
 		int widthMetadata = Math.min(len, (totalUsageWidth - 4) / 2);
-		int widthUsage    = totalUsageWidth - 4 - widthMetadata;
+		int widthUsage = totalUsageWidth - 4 - widthMetadata;
 
 		String defaultValuePart = createDefaultValuePart(handler);
 
@@ -366,15 +349,15 @@ public class CmdLineParser {
 		// the 'left' side
 		List<String> namesAndMetas = wrapLines(handler.getNameAndMeta(rb, parserProperties), widthMetadata);
 		// the 'right' side
-		List<String> usages        = wrapLines(localize(handler.option.usage(),rb) + defaultValuePart, widthUsage);
+		List<String> usages = wrapLines(localize(handler.option.usage(), rb) + defaultValuePart, widthUsage);
 
 		// Output
-		for(int i=0; i<Math.max(namesAndMetas.size(), usages.size()); i++) {
+		for (int i = 0; i < Math.max(namesAndMetas.size(), usages.size()); i++) {
 			String nameAndMeta = (i >= namesAndMetas.size()) ? "" : namesAndMetas.get(i);
-			String usage       = (i >= usages.size())        ? "" : usages.get(i);
-			String format      = ((nameAndMeta.length() > 0) && (i == 0))
-				? " %1$-" + widthMetadata + "s : %2$-1s"
-				: " %1$-" + widthMetadata + "s   %2$-1s";
+			String usage = (i >= usages.size()) ? "" : usages.get(i);
+			String format = ((nameAndMeta.length() > 0) && (i == 0))
+					? " %1$-" + widthMetadata + "s : %2$-1s"
+					: " %1$-" + widthMetadata + "s   %2$-1s";
 			String output = String.format(format, nameAndMeta, usage);
 
 			out.println(output);
@@ -384,22 +367,22 @@ public class CmdLineParser {
 	private String createDefaultValuePart(OptionHandler handler) {
 		if (parserProperties.getShowDefaults() && !handler.option.required() && handler.setter instanceof Getter) {
 			String v = handler.printDefaultValue();
-			if (v!=null)
+			if (v != null)
 				return " " + Messages.DEFAULT_VALUE.format(v);
 		}
 		return "";
 	}
 
 	private String localize(String s, ResourceBundle rb) {
-		if(rb!= null) return rb.getString(s);
+		if (rb != null) return rb.getString(s);
 		return s;
 	}
 
 	/**
 	 * Wraps a line so that the resulting parts are not longer than a given maximum length.
 	 *
-	 * @param line       Line to wrap
-	 * @param maxLength  maximum length for the resulting parts
+	 * @param line      Line to wrap
+	 * @param maxLength maximum length for the resulting parts
 	 * @return list of all wrapped parts
 	 */
 	private List<String> wrapLines(String line, final int maxLength) {
@@ -443,10 +426,8 @@ public class CmdLineParser {
 	 * given in the constructor.
 	 *
 	 * @param args arguments to parse
-	 *
-	 * @throws CmdLineException
-	 *      if there's any error parsing arguments, or if
-	 *      {@link Option#required() required} option was not given.
+	 * @throws CmdLineException     if there's any error parsing arguments, or if
+	 *                              {@link Option#required() required} option was not given.
 	 * @throws NullPointerException if {@code args} is {@code null}.
 	 */
 	public void parseArgument(final String... args) throws CmdLineException {
@@ -510,6 +491,7 @@ public class CmdLineParser {
 	 * reading the file. The AT sign is used to reference
 	 * another file that contains command line options separated
 	 * by line breaks.
+	 *
 	 * @param args the command line arguments to be preprocessed.
 	 * @return args with the @ sequences replaced by the text files referenced
 	 * by the @ sequences, split around the line breaks.
@@ -537,21 +519,21 @@ public class CmdLineParser {
 	protected void checkRequiredOptionsAndArguments(Set<OptionHandler> present) throws CmdLineException {
 		// make sure that all mandatory options are present
 		for (OptionHandler handler : options) {
-			if(handler.option.required() && !present.contains(handler)) {
+			if (handler.option.required() && !present.contains(handler)) {
 				throw new CmdLineException(this, Messages.REQUIRED_OPTION_MISSING, handler.option.toString());
 			}
 		}
 		// make sure that all mandatory arguments are present
 		for (OptionHandler handler : arguments) {
-			if(handler.option.required() && !present.contains(handler)) {
+			if (handler.option.required() && !present.contains(handler)) {
 				throw new CmdLineException(this, Messages.REQUIRED_ARGUMENT_MISSING, handler.option.toString());
 			}
 		}
 		//make sure that all requires arguments are present
 		for (OptionHandler handler : present) {
-			if (handler.option instanceof NamedOptionDef && !isHandlerHasHisOptions((NamedOptionDef)handler.option, present)) {
+			if (handler.option instanceof NamedOptionDef && !isHandlerHasHisOptions((NamedOptionDef) handler.option, present)) {
 				throw new CmdLineException(this, Messages.REQUIRES_OPTION_MISSING,
-						handler.option.toString(), Arrays.toString(((NamedOptionDef)handler.option).depends()));
+						handler.option.toString(), Arrays.toString(((NamedOptionDef) handler.option).depends()));
 			}
 		}
 		//make sure that all forbids arguments are not present
@@ -599,12 +581,13 @@ public class CmdLineParser {
 
 	/**
 	 * Finds a registered {@code OptionHandler} by its name or its alias.
+	 *
 	 * @param name name
 	 * @return the {@code OptionHandler} or {@code null}
 	 */
 	protected OptionHandler findOptionByName(String name) {
 		for (OptionHandler h : options) {
-			NamedOptionDef option = (NamedOptionDef)h.option;
+			NamedOptionDef option = (NamedOptionDef) h.option;
 			if (name.equals(option.name())) {
 				return h;
 			}
@@ -620,6 +603,7 @@ public class CmdLineParser {
 	/**
 	 * Returns {@code true} if the given token is an option
 	 * (as opposed to an argument).
+	 *
 	 * @throws NullPointerException if {@code arg} is {@code null}.
 	 */
 	protected boolean isOption(String arg) {
@@ -629,10 +613,10 @@ public class CmdLineParser {
 
 	/**
 	 * Sets the width of the usage output.
+	 *
 	 * @param usageWidth the width of the usage output in columns.
 	 * @throws IllegalArgumentException if {@code usageWidth} is negative
-	 * @deprecated
-	 *      Use {@link ParserProperties#withUsageWidth(int)} instead.
+	 * @deprecated Use {@link ParserProperties#withUsageWidth(int)} instead.
 	 */
 	public void setUsageWidth(int usageWidth) {
 		parserProperties.withUsageWidth(usageWidth);
@@ -640,7 +624,7 @@ public class CmdLineParser {
 
 	/**
 	 * Signals the parser that parsing the options has finished.
-	 *
+	 * <p>
 	 * <p>
 	 * Everything seen after this call is treated as an argument
 	 * as opposed to an option.
@@ -651,10 +635,11 @@ public class CmdLineParser {
 
 	/**
 	 * Prints a single-line usage to the screen.
-	 *
+	 * <p>
 	 * <p>
 	 * This is a convenience method for calling {@code printUsage(new OutputStreamWriter(out),null)}
 	 * so that you can do {@code printUsage(System.err)}.
+	 *
 	 * @throws NullPointerException if {@code out} is {@code null}.
 	 */
 	public void printSingleLineUsage(OutputStream out) {
@@ -665,9 +650,8 @@ public class CmdLineParser {
 	/**
 	 * Prints a single-line usage to the screen.
 	 *
-	 * @param rb
-	 *      if this is non-{@code null}, {@link Option#usage()} is treated
-	 *      as a key to obtain the actual message from this resource bundle.
+	 * @param rb if this is non-{@code null}, {@link Option#usage()} is treated
+	 *           as a key to obtain the actual message from this resource bundle.
 	 * @throws NullPointerException if {@code w} is {@code null}.
 	 */
 	// TODO test this!
@@ -710,7 +694,7 @@ public class CmdLineParser {
 		}
 
 		CmdLineImpl(String arg) {
-			args = new String[] {
+			args = new String[]{
 					arg
 			};
 			pos = 0;

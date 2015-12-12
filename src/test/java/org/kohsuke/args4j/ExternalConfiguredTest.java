@@ -7,45 +7,46 @@ import java.util.List;
 public class ExternalConfiguredTest extends Args4JTestBase<ExternalConfiguredTest> {
 
 	boolean recursive = false;
-    File out;
-    String str = "default";
-    public void setStr(String s) {
-        str = s.toUpperCase();
-    }
-    boolean data = false;
-    List<String> arguments;
+	File out;
+	String str = "default";
+	boolean data = false;
+	List<String> arguments;
 
-    @Override
-    public ExternalConfiguredTest getTestObject() {
-        return this;
-    }
+	public void setStr(String s) {
+		str = s.toUpperCase();
+	}
 
-    @Override
-    protected CmdLineParser createParser() {
-        CmdLineParser p = new CmdLineParser(new Object());
-        new XmlParser().parse(getClass().getResource("ExternalConfiguredTest.xml"),p,this);
-        return p;
-    }
+	@Override
+	public ExternalConfiguredTest getTestObject() {
+		return this;
+	}
 
-    public void testNoArgsGiven() throws CmdLineException {
-		args = new String[] {};
+	@Override
+	protected CmdLineParser createParser() {
+		CmdLineParser p = new CmdLineParser(new Object());
+		new XmlParser().parse(getClass().getResource("ExternalConfiguredTest.xml"), p, this);
+		return p;
+	}
+
+	public void testNoArgsGiven() throws CmdLineException {
+		args = new String[]{};
 		parser.parseArgument(args);
 		assertTrue("Default value for 'str'.", "default".equals(str));
 		assertFalse("Default for 'recursive'.", recursive);
 		assertFalse("Default for 'data'.", data);
 	}
 
-    public void testFieldSetter() throws CmdLineException {
-		args = new String[] { "-o", "myfile.txt" };
+	public void testFieldSetter() throws CmdLineException {
+		args = new String[]{"-o", "myfile.txt"};
 		parser.parseArgument(args);
 		assertTrue("Default value for 'str'.", "default".equals(str));
 		assertFalse("Default for 'recursive'.", recursive);
 		assertFalse("Default for 'data'.", data);
 		assertEquals("myfile.txt", out.getName());
-    }
+	}
 
 	public void testMethodSetter() throws CmdLineException {
-		args = new String[] { "-str", "myvalue" };
+		args = new String[]{"-str", "myvalue"};
 		parser.parseArgument(args);
 		assertFalse("Default for 'recursive'.", recursive);
 		assertFalse("Default for 'data'.", data);
@@ -53,7 +54,7 @@ public class ExternalConfiguredTest extends Args4JTestBase<ExternalConfiguredTes
 	}
 
 	public void testCustomHandler() throws CmdLineException {
-		args = new String[] { "-custom" };
+		args = new String[]{"-custom"};
 		parser.parseArgument(args);
 		assertTrue("Default value set.", "default".equals(str));
 		assertFalse("Default for 'recursive'.", recursive);

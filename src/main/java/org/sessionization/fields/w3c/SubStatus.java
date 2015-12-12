@@ -16,7 +16,7 @@ public class SubStatus implements LogField {
 	public SubStatus() {
 		status = 0;
 	}
-	
+
 	public SubStatus(String status) {
 		this.status = Integer.valueOf(status);
 	}

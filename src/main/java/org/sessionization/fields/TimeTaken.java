@@ -16,19 +16,19 @@ public class TimeTaken implements LogField {
 	}
 
 	public TimeTaken(String time, Boolean milliseconds) {
-		if(milliseconds) {
+		if (milliseconds) {
 			this.time = Long.valueOf(time);
 		} else {
 			this.time = Long.valueOf(time) * 1000;
 		}
 	}
 
-	public void setTime(long time) {
-		this.time = time;
-	}
-
 	public long getTime() {
 		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
 	}
 
 	@Override

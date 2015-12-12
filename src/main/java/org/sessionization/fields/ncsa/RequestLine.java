@@ -29,11 +29,12 @@ public class RequestLine implements LogField {
 		uri = null;
 		protocol = null;
 	}
+
 	/**
 	 * Konstruktor
 	 *
-	 * @param method Uporabljena metoda
-	 * @param url Uporabljen URL naslov
+	 * @param method   Uporabljena metoda
+	 * @param url      Uporabljen URL naslov
 	 * @param protocol Uporabljen protokol
 	 * @throws MalformedURLException Podan nepravilen URL naslov
 	 */
@@ -52,10 +53,6 @@ public class RequestLine implements LogField {
 		this.id = id;
 	}
 
-	public void setMethod(Method method) {
-		this.method = method;
-	}
-
 	public UriSteamQuery getUri() {
 		return uri;
 	}
@@ -64,9 +61,6 @@ public class RequestLine implements LogField {
 		this.uri = uri;
 	}
 
-	public void setProtocol(Protocol protocol) {
-		this.protocol = protocol;
-	}
 	/**
 	 * Getter za resurs
 	 *
@@ -76,6 +70,7 @@ public class RequestLine implements LogField {
 	public UriSteam getFile() {
 		return uri;
 	}
+
 	/**
 	 * Getter metoda za method
 	 *
@@ -85,6 +80,11 @@ public class RequestLine implements LogField {
 	public Method getMethod() {
 		return this.method;
 	}
+
+	public void setMethod(Method method) {
+		this.method = method;
+	}
+
 	/**
 	 * Getter za protokol
 	 *
@@ -92,6 +92,10 @@ public class RequestLine implements LogField {
 	 */
 	public Protocol getProtocol() {
 		return protocol;
+	}
+
+	public void setProtocol(Protocol protocol) {
+		this.protocol = protocol;
 	}
 
 	@Override

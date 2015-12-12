@@ -9,42 +9,43 @@ import org.kohsuke.args4j.spi.SubCommands;
  */
 public class SubCommandTest extends Args4JTestBase<SubCommandTest.Foo> {
 
-    public static class Foo {
-        @Argument(handler= SubCommandHandler.class)
-        @SubCommands({
-                @SubCommand(name="cmd1",impl=Cmd1.class),
-                @SubCommand(name="cmd2",impl=Cmd2.class)
-        })
-        SubCmd value;
+	@Override
+	public Foo getTestObject() {
+		return new Foo();
+	}
 
-        @Option(name="-r")
-        String globalOption1;
-    }
+	public void testCmd1() throws Exception {
+		parser.parseArgument("-r", "a", "cmd1", "-r", "b");
+		assertEquals("a", testObject.globalOption1);
+		assertEquals("b", ((Cmd1) testObject.value).localOption);
+	}
 
-    public static abstract class SubCmd {}
+	public void testCmd2() throws Exception {
+		parser.parseArgument("cmd2");
+		assertTrue(testObject.value instanceof Cmd2);
+	}
 
-    public static class Cmd1 extends SubCmd {
-        @Option(name="-r")
-        String localOption;
-    }
-    public static class Cmd2 extends SubCmd {}
+	public static class Foo {
+		@Argument(handler = SubCommandHandler.class)
+		@SubCommands({
+				@SubCommand(name = "cmd1", impl = Cmd1.class),
+				@SubCommand(name = "cmd2", impl = Cmd2.class)
+		})
+		SubCmd value;
 
+		@Option(name = "-r")
+		String globalOption1;
+	}
 
+	public static abstract class SubCmd {
+	}
 
-    @Override
-    public Foo getTestObject() {
-        return new Foo();
-    }
+	public static class Cmd1 extends SubCmd {
+		@Option(name = "-r")
+		String localOption;
+	}
 
-    public void testCmd1() throws Exception {
-        parser.parseArgument("-r","a","cmd1","-r","b");
-        assertEquals("a",testObject.globalOption1);
-        assertEquals("b",((Cmd1)testObject.value).localOption);
-    }
-
-    public void testCmd2() throws Exception {
-        parser.parseArgument("cmd2");
-        assertTrue(testObject.value instanceof Cmd2);
-    }
+	public static class Cmd2 extends SubCmd {
+	}
 }
 

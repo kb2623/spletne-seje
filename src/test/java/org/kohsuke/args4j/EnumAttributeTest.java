@@ -8,19 +8,19 @@ public class EnumAttributeTest extends Args4JTestBase<EnumAttribute> {
 	public EnumAttribute getTestObject() {
 		return new EnumAttribute();
 	}
-	
+
 	public void testSetEnum() throws CmdLineException {
 		args = new String[]{"-animal", "HORSE"};
 		parser.parseArgument(args);
 		assertEquals(Animal.HORSE, testObject.myAnimal);
 	}
-	
+
 	public void testSetEnumCaseInsensitive() throws CmdLineException {
 		args = new String[]{"-animal", "horse"};
 		parser.parseArgument(args);
 		assertEquals(Animal.HORSE, testObject.myAnimal);
 	}
-	
+
 	public void testIllegalEnum() {
 		args = new String[]{"-animal", "ILLEGAL_ANIMAL"};
 		try {
@@ -30,7 +30,7 @@ public class EnumAttributeTest extends Args4JTestBase<EnumAttribute> {
 			// exptected
 		}
 	}
-	
+
 	public void testUsage() {
 		args = new String[]{"-wrong"};
 		try {

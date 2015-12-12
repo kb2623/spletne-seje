@@ -5,7 +5,7 @@ import org.kohsuke.args4j.spi.OptionHandler;
 /**
  * Run-time copy of the Option or Argument annotation. By definition, unnamed options
  * are arguments (and instances of this class). Named options are actually a subclass.
- * 
+ *
  * @author Mark Sinke
  */
 public class OptionDef {
@@ -22,9 +22,9 @@ public class OptionDef {
 	}
 
 	protected OptionDef(String usage, String metaVar, boolean required,
-			boolean help, boolean hidden, 
-			Class<? extends OptionHandler> handler,
-			boolean multiValued) {
+							  boolean help, boolean hidden,
+							  Class<? extends OptionHandler> handler,
+							  boolean multiValued) {
 		this.usage = usage;
 		this.metaVar = metaVar;
 		this.required = required;

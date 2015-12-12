@@ -22,9 +22,12 @@ public class RadixTreeTest {
 
 	@Test
 	public void testAdd() {
-		testAddOK(); setUp();
-		testAddMoreOK(); setUp();
-		testAddNullArgumentExceptions(); setUp();
+		testAddOK();
+		setUp();
+		testAddMoreOK();
+		setUp();
+		testAddNullArgumentExceptions();
+		setUp();
 		testAddDuplicateKeyException();
 	}
 
@@ -53,18 +56,21 @@ public class RadixTreeTest {
 	}
 
 	private void testAddNullArgumentExceptions() {
-		try{
+		try {
 			this.intRTree.add(null, null);
 			assert false;
-		} catch(NullPointerException e) {}
+		} catch (NullPointerException e) {
+		}
 		try {
 			this.intRTree.add(null, "hello");
 			assert false;
-		} catch(NullPointerException e) {}
+		} catch (NullPointerException e) {
+		}
 		try {
 			this.intRTree.add(12, null);
 			assert false;
-		} catch(NullPointerException e) {}
+		} catch (NullPointerException e) {
+		}
 	}
 
 	private void testAddDuplicateKeyException() {
@@ -98,7 +104,8 @@ public class RadixTreeTest {
 
 	@Test
 	public void testRemove() {
-		testRemoveOK(); setUp();
+		testRemoveOK();
+		setUp();
 		testRemoveMore();
 	}
 
@@ -127,7 +134,8 @@ public class RadixTreeTest {
 
 	@Test
 	public void testRemoveObject() {
-		testRemoveOKObject(); setUp();
+		testRemoveOKObject();
+		setUp();
 		testRemoveMoreObject();
 	}
 
@@ -156,8 +164,10 @@ public class RadixTreeTest {
 
 	@Test
 	public void testCount() {
-		testCountOne(); setUp();
-		testCountTwo(); setUp();
+		testCountOne();
+		setUp();
+		testCountTwo();
+		setUp();
 		testCountThree();
 	}
 
@@ -180,8 +190,10 @@ public class RadixTreeTest {
 	@Test
 	public void testKeySet() {
 		testKeySetOne();
-		setUp(); testKeySetTwo();
-		setUp(); testKeySetThree();
+		setUp();
+		testKeySetTwo();
+		setUp();
+		testKeySetThree();
 	}
 
 	private void testKeySetOne() {
@@ -203,8 +215,10 @@ public class RadixTreeTest {
 	@Test
 	public void testAsList() {
 		testAsListOne();
-		setUp(); testAsListTwo();
-		setUp(); testAsListThree();
+		setUp();
+		testAsListTwo();
+		setUp();
+		testAsListThree();
 	}
 
 	private void testAsListOne() {
@@ -482,8 +496,10 @@ public class RadixTreeTest {
 
 	@Test
 	public void testIterator() {
-		testIteratorOne(); setUp();
-		testIteratorTwo(); setUp();
+		testIteratorOne();
+		setUp();
+		testIteratorTwo();
+		setUp();
 		testIteratorThree();
 	}
 
@@ -516,8 +532,10 @@ public class RadixTreeTest {
 	@Test
 	public void testEntrySet() {
 		testEntrySetOne();
-		setUp(); testEntrySetTwo();
-		setUp(); testEntrySetThree();
+		setUp();
+		testEntrySetTwo();
+		setUp();
+		testEntrySetThree();
 	}
 
 	private void testEntrySetOne() {
@@ -540,7 +558,8 @@ public class RadixTreeTest {
 	}
 
 	private void testEntrySetThree() {
-		testAddMoreOK(); testAddOK();
+		testAddMoreOK();
+		testAddOK();
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
 		intRTree.entrySet().forEach(e -> builder.append('[').append(e.getKey()).append(',').append(e.getValue()).append(']'));

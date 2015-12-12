@@ -23,18 +23,18 @@ jar {
 }
 
 test {
-  testLogging.showStandardStreams = true
+	testLogging.showStandardStreams = true
 }
 
 task fatJar(type: Jar) {
 	manifest {
 		attributes 'Implementation-Version': version, 'Main-Class': projectMainClass
-   }
-   baseName = project.name + '-all'
-   from { 
-		configurations.compile.collect { 
-			it.isDirectory() ? it : zipTree(it) 
-		} 
+	}
+	baseName = project.name + '-all'
+	from {
+		configurations.compile.collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
 	}
 	with jar
 }

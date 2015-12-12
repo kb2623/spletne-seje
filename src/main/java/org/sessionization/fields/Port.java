@@ -36,20 +36,20 @@ public class Port implements LogField {
 		this.id = id;
 	}
 
-	public void setPortNumber(int portNumber) {
-		this.portNumber = portNumber;
-	}
-
 	public void setIsServer(boolean isServer) {
 		this.isServer = isServer;
 	}
 
 	public boolean isServer() {
-        return isServer;
-    }
+		return isServer;
+	}
 
 	public int getPortNumber() {
 		return portNumber;
+	}
+
+	public void setPortNumber(int portNumber) {
+		this.portNumber = portNumber;
 	}
 
 	@Override

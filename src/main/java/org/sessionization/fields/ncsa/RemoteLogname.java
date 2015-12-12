@@ -37,12 +37,12 @@ public class RemoteLogname implements LogField {
 		this.id = id;
 	}
 
-	public void setLogname(String logname) {
-		this.logname = logname;
-	}
-
 	public String getLogname() {
 		return logname != null ? logname : "";
+	}
+
+	public void setLogname(String logname) {
+		this.logname = logname;
 	}
 
 	@Override

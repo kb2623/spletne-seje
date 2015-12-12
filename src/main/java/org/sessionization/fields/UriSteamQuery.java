@@ -22,6 +22,7 @@ public class UriSteamQuery extends UriSteam {
 		String query = uri.getQuery();
 		this.query = new UriQuery(query != null ? query : "-");
 	}
+
 	/**
 	 * Metoda vrne query
 	 *

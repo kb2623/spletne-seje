@@ -16,7 +16,7 @@ public class Win32Status implements LogField {
 	public Win32Status() {
 		status = 0;
 	}
-	
+
 	public Win32Status(String status) {
 		this.status = Integer.valueOf(status);
 	}

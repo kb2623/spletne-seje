@@ -1,8 +1,7 @@
 package org.kohsuke.args4j;
 
-import org.kohsuke.args4j.EnumAttribute.Animal;
-
 import junit.framework.Assert;
+import org.kohsuke.args4j.EnumAttribute.Animal;
 
 
 public class EnumArgumentTest extends Args4JTestBase<EnumArgument> {
@@ -27,7 +26,7 @@ public class EnumArgumentTest extends Args4JTestBase<EnumArgument> {
 	}
 
 	public void testIllegalArgumentOption() {
-		args = new String[] { "ILLEGAL_ANIMAL" };
+		args = new String[]{"ILLEGAL_ANIMAL"};
 		try {
 			parser.parseArgument(args);
 			Assert.fail();

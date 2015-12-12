@@ -23,7 +23,8 @@ public class PropretiesCmdParser extends CmdLineParser {
 			Field f = this.getClass().getDeclaredField("popsFile");
 			Option o = f.getAnnotation(Option.class);
 			addOption(Setters.create(f, this), o);
-		} catch (NoSuchFieldException ignore) {}
+		} catch (NoSuchFieldException ignore) {
+		}
 	}
 
 	private String getOptionName() {
@@ -35,7 +36,7 @@ public class PropretiesCmdParser extends CmdLineParser {
 		Set<OptionHandler> present = parseArgumentCmd(args);
 		boolean helpSet = false;
 		for (OptionHandler handler : getOptions()) {
-			if(handler.option.help() && present.contains(handler)) {
+			if (handler.option.help() && present.contains(handler)) {
 				helpSet = true;
 			}
 		}
@@ -117,7 +118,7 @@ public class PropretiesCmdParser extends CmdLineParser {
 
 	protected OptionHandler findOptionByAliasName(String name) {
 		for (OptionHandler h : getOptions()) {
-			NamedOptionDef option = (NamedOptionDef)h.option;
+			NamedOptionDef option = (NamedOptionDef) h.option;
 			for (String alias : option.aliases()) {
 				if (name.equals(alias)) {
 					return h;

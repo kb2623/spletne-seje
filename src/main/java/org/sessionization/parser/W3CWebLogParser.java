@@ -18,6 +18,7 @@ import java.util.*;
 
 /**
  * Parser za formate: Extended Log Format
+ *
  * @author klemen
  */
 @SuppressWarnings("deprecation")
@@ -25,6 +26,7 @@ public class W3CWebLogParser extends AbsWebLogParser {
 
 	private DateTimeFormatter timeFormat;
 	private DateTimeFormatter dateFormat;
+
 	/**
 	 * Konstruktor ki uporabi prevzeti oknstriktor razreda {@link ParserAbs}.
 	 *
@@ -35,8 +37,8 @@ public class W3CWebLogParser extends AbsWebLogParser {
 		super();
 		setDefaultFields(Locale.US);
 	}
+
 	/**
-	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
@@ -44,6 +46,7 @@ public class W3CWebLogParser extends AbsWebLogParser {
 		super(file);
 		setDefaultFields(locale);
 	}
+
 	/**
 	 * Metoda nastavi prevzete vrednosti poljem razreda:
 	 * <p><code>fieldType = null</code></p>
@@ -55,6 +58,7 @@ public class W3CWebLogParser extends AbsWebLogParser {
 		dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(locale);
 		timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(locale);
 	}
+
 	/**
 	 * Nastavljanje formata za parsanje datuma
 	 *
@@ -64,6 +68,7 @@ public class W3CWebLogParser extends AbsWebLogParser {
 	public void setDateFormat(String format, Locale locale) {
 		this.dateFormat = DateTimeFormatter.ofPattern(format == null ? "yyyy-MM-dd" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
+
 	/**
 	 * Nastavljanje formata za parsanje &#x10d;asa
 	 *
@@ -81,17 +86,17 @@ public class W3CWebLogParser extends AbsWebLogParser {
 		StringBuffer buff = new StringBuffer();
 		for (char c : logline.toCharArray()) {
 			switch (c) {
-			case ' ':
-				if (buff.length() > 0) {
-					tokens.add(buff.toString());
-					buff = new StringBuffer();
-				}
-				break;
-			default:
-				buff.append(c);
+				case ' ':
+					if (buff.length() > 0) {
+						tokens.add(buff.toString());
+						buff = new StringBuffer();
+					}
+					break;
+				default:
+					buff.append(c);
 			}
 		}
-		if(buff.length() > 0) {
+		if (buff.length() > 0) {
 			tokens.add(buff.toString());
 		}
 		return tokens.toArray(new String[tokens.size()]);
@@ -102,7 +107,7 @@ public class W3CWebLogParser extends AbsWebLogParser {
 		try {
 			String[] tokens = parse();
 			if (tokens[0].charAt(0) == '#') {
-				Set<LogField> metaData = new HashSet<>(tokens.length);
+				List<LogField> metaData = new ArrayList<>(tokens.length);
 				if (tokens[0].equals("#Fields:")) {
 					super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens));
 				}
@@ -119,8 +124,8 @@ public class W3CWebLogParser extends AbsWebLogParser {
 	}
 
 	protected Collection<LogField> process(String[] tokens) throws ParseException {
-		if(super.fieldType == null) throw new ParseException("Bad log format", super.getPos());
-		if(super.fieldType.size() != tokens.length) throw new ParseException("Can't parse a line", super.getPos());
+		if (super.fieldType == null) throw new ParseException("Bad log format", super.getPos());
+		if (super.fieldType.size() != tokens.length) throw new ParseException("Can't parse a line", super.getPos());
 		List<LogField> lineData = new ArrayList<>(fieldType.size());
 		for (int i = 0; i < super.fieldType.size(); i++) {
 			LogFieldType type = fieldType.get(i);

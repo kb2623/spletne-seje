@@ -26,20 +26,19 @@ public enum LogType {
 				if (data.charAt(i) == '+') {
 					if (i > 0 && data.charAt(i - 1) != '+') builder.append(' ');
 					else builder.append('+');
-				}
-				else builder.append(data.charAt(i));
+				} else builder.append(data.charAt(i));
 			}
 			return builder.toString();
 		}
 	};
+
 	/**
-	 *
 	 * @param data
 	 * @return
 	 */
 	protected abstract String parseCooki(String data);
+
 	/**
-	 *
 	 * @param data
 	 * @return
 	 */

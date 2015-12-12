@@ -1,14 +1,15 @@
 package org.kohsuke.args4j.spi;
 
+import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.OptionDef;
-import org.kohsuke.args4j.CmdLineException;
 
 
 /**
  * {@link Character}
  * {@link OptionHandler}
  * {@link OneArgumentOptionHandler}
+ *
  * @author Jan Materne
  * @since 2.0.9
  */

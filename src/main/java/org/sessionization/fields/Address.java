@@ -45,12 +45,12 @@ public class Address implements LogField {
 		this.serverAddress = serverAddress;
 	}
 
-	public void setAddress(InetAddress address) {
-		this.address = address;
-	}
-
 	public InetAddress getAddress() {
 		return address;
+	}
+
+	public void setAddress(InetAddress address) {
+		this.address = address;
 	}
 
 	@Override

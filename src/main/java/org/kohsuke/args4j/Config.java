@@ -1,9 +1,5 @@
 package org.kohsuke.args4j;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.kohsuke.args4j.spi.ConfigElement;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -11,6 +7,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -21,29 +21,51 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class Config {
 
-	/** All @Options. */
-	public List<ConfigElement> options = new ArrayList<ConfigElement>();;
+	/**
+	 * All @Options.
+	 */
+	public List<ConfigElement> options = new ArrayList<ConfigElement>();
+	;
 
-	/** All @Arguments. */
+	/**
+	 * All @Arguments.
+	 */
 	public List<ConfigElement> arguments = new ArrayList<ConfigElement>();
 
+	/**
+	 * Parses a XML file and returns a Config object holding the information.
+	 *
+	 * @param xml source of the xml data
+	 * @return
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	public static Config parse(InputSource xml) throws IOException, SAXException {
+		Config rv = new Config();
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+		ConfigHandler handler = rv.new ConfigHandler(rv);
+		reader.setContentHandler(handler);
+		reader.parse(xml);
+		return rv;
+	}
 
 	/**
 	 * SAX-Handler for reading the configuration file.
+	 *
 	 * @author Jan Materne
 	 */
 	public class ConfigHandler extends DefaultHandler {
+		Config config;
+		ConfigElement currentCE;
+
 		public ConfigHandler(Config config) {
 			super();
 			this.config = config;
 		}
 
-		Config config;
-		ConfigElement currentCE;
-
 		@Override
 		public void startElement(String uri, String localName, String qName,
-				Attributes attributes) throws SAXException {
+										 Attributes attributes) throws SAXException {
 			if (qName.equals("option") || qName.equals("argument")) {
 				currentCE = new ConfigElement();
 				currentCE.field = attributes.getValue("field");
@@ -62,22 +84,6 @@ public class Config {
 				(qName.equals("option") ? config.options : config.arguments).add(currentCE);
 			}
 		}
-	}
-
-	/**
-	 * Parses a XML file and returns a Config object holding the information.
-	 * @param xml source of the xml data
-	 * @return
-	 * @throws IOException
-	 * @throws SAXException
-	 */
-	public static Config parse(InputSource xml) throws IOException, SAXException {
-		Config rv = new Config();
-		XMLReader reader = XMLReaderFactory.createXMLReader();
-		ConfigHandler handler = rv.new ConfigHandler(rv);
-		reader.setContentHandler(handler);
-		reader.parse(xml);
-		return rv;
 	}
 
 }

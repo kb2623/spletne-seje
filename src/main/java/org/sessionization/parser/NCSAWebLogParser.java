@@ -18,11 +18,13 @@ import java.util.*;
 
 /**
  * Parser za formate: Common Log Format, Combined Log Format in Custom Log Formats
+ *
  * @author klemen
  */
 public class NCSAWebLogParser extends AbsWebLogParser {
 
 	private DateTimeFormatter formatter;
+
 	/**
 	 * Konstruktor ki nastavi polja na prevzete vrednosti
 	 *
@@ -33,8 +35,8 @@ public class NCSAWebLogParser extends AbsWebLogParser {
 		super();
 		setDefaultFields(Locale.US);
 	}
+
 	/**
-	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
@@ -42,8 +44,8 @@ public class NCSAWebLogParser extends AbsWebLogParser {
 		super(file);
 		setDefaultFields(locale);
 	}
+
 	/**
-	 *
 	 * @param list
 	 */
 	public NCSAWebLogParser(Locale locale, File[] file, List<LogFieldType> list) throws FileNotFoundException {
@@ -51,6 +53,7 @@ public class NCSAWebLogParser extends AbsWebLogParser {
 		setDefaultFields(locale);
 		setFieldType(list);
 	}
+
 	/**
 	 * Metoda ki nastavi polja na prevzete vrednosti.
 	 * <p><code>formatter = dd/MMM/yyyy:HH:mm:ss Z</code></p>
@@ -59,14 +62,15 @@ public class NCSAWebLogParser extends AbsWebLogParser {
 	private void setDefaultFields(Locale locale) {
 		formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z").withLocale(locale);
 	}
+
 	/**
 	 * Nastavljanje formata za parsanje datuma.
 	 * Ce je vhodni parameter <code>format</code> null, se nastavi format na prevzeti format.
 	 * Ce je vhodni parameter <code>locale</code> null, se nastavi lokalnost na prevzeti format.
 	 *
-	 * @see DateTimeFormatter#ofPattern(String, Locale)
-	 * @param format Format datuma
+	 * @param format       Format datuma
 	 * @param localeString Niz, ki pove v katerem jeziku je zapisan datum
+	 * @see DateTimeFormatter#ofPattern(String, Locale)
 	 */
 	public void setDateFormat(String format, Locale locale) {
 		this.formatter = DateTimeFormatter.ofPattern(format == null ? "dd/MMM/yyyy:HH:mm:ss Z" : format).withLocale(locale == null ? Locale.getDefault() : locale);

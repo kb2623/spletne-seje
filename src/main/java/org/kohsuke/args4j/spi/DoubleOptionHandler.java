@@ -7,6 +7,7 @@ import org.kohsuke.args4j.OptionDef;
  * {@link Double}
  * {@link OptionHandler}.
  * {@link OneArgumentOptionHandler}
+ *
  * @author Leif Wickland
  */
 public class DoubleOptionHandler extends OneArgumentOptionHandler<Double> {

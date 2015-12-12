@@ -9,10 +9,10 @@ package org.kohsuke.args4j;
 @SuppressWarnings("unused")
 public class LongUsage {
 
-    @Option(name="-LongNamedStringOption",usage="set a string",metaVar="USE_A_NICE_STRING")
-    private String s;
+	@Option(name = "-LongNamedStringOption", usage = "set a string", metaVar = "USE_A_NICE_STRING")
+	private String s;
 
-    @Option(name="-i",usage="set an int")
-    private int i;
+	@Option(name = "-i", usage = "set an int")
+	private int i;
 
 }

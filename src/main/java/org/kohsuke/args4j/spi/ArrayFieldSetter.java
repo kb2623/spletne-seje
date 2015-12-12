@@ -11,11 +11,11 @@ import java.util.List;
 
 /**
  * {@link Setter} that allows multiple values to be stored into one array field.
- *
+ * <p>
  * <p>
  * Because of the {@link CmdLineParser} abstractions of allowing incremental parsing of options,
  * this implementation creates a whole new array each time a new value is found.
- *
+ * <p>
  * This is also why we don't support a setter method that takes list/array as arguments.
  *
  * @author Kohsuke Kawaguchi
@@ -30,13 +30,14 @@ final class ArrayFieldSetter implements Getter, Setter {
 		this.bean = bean;
 		this.f = f;
 
-		if(!f.getType().isArray())
+		if (!f.getType().isArray())
 			throw new IllegalAnnotationError(Messages.ILLEGAL_FIELD_SIGNATURE.format(f.getType()));
 
 		trySetDefault(bean);
 	}
 
-	/** Remember default so we throw away the default when adding user values.
+	/**
+	 * Remember default so we throw away the default when adding user values.
 	 */
 	private void trySetDefault(Object bean1) throws IllegalAccessError {
 		try {
@@ -46,7 +47,7 @@ final class ArrayFieldSetter implements Getter, Setter {
 				// try again
 				f.setAccessible(true);
 				doSetDefault(bean1);
-			}catch (IllegalAccessException ex1) {
+			} catch (IllegalAccessException ex1) {
 				throw new IllegalAccessError(ex1.getMessage());
 			}
 		}
@@ -57,7 +58,7 @@ final class ArrayFieldSetter implements Getter, Setter {
 	}
 
 	public FieldSetter asFieldSetter() {
-		return new FieldSetter(bean,f);
+		return new FieldSetter(bean, f);
 	}
 
 	public AnnotatedElement asAnnotatedElement() {
@@ -79,7 +80,7 @@ final class ArrayFieldSetter implements Getter, Setter {
 			// try again
 			f.setAccessible(true);
 			try {
-				doAddValue(bean,value);
+				doAddValue(bean, value);
 			} catch (IllegalAccessException e) {
 				throw new IllegalAccessError(e.getMessage());
 			}
@@ -93,7 +94,7 @@ final class ArrayFieldSetter implements Getter, Setter {
 			Array.set(ary, 0, value);
 		} else {
 			int len = Array.getLength(ary);
-			Object newAry = Array.newInstance(ary.getClass().getComponentType(), len +1);
+			Object newAry = Array.newInstance(ary.getClass().getComponentType(), len + 1);
 			System.arraycopy(ary, 0, newAry, 0, len);
 			Array.set(newAry, len, value);
 			ary = newAry;
@@ -111,7 +112,7 @@ final class ArrayFieldSetter implements Getter, Setter {
 			// array element might be primitive, so Arrays.asList() won't always work
 			Object array = f.get(bean);
 			int len = Array.getLength(array);
-			for (int i=0; i<len; i++)
+			for (int i = 0; i < len; i++)
 				r.add(Array.get(array, i));
 
 			return r;

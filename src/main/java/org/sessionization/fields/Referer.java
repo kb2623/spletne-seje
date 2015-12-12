@@ -27,12 +27,12 @@ public class Referer extends UriSteamQuery implements LogField {
 		}
 	}
 
-	public void setHost(Host host) {
-		this.host = host;
-	}
-
 	public Host getHost() {
 		return host;
+	}
+
+	public void setHost(Host host) {
+		this.host = host;
 	}
 
 	@Override

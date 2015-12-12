@@ -9,7 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public enum LogFieldType {
-	/** Apache atribut, lahko je IP ali pa niz */
+	/**
+	 * Apache atribut, lahko je IP ali pa niz
+	 */
 	RemoteHost {
 		@Override
 		public boolean isKey() {
@@ -21,7 +23,9 @@ public enum LogFieldType {
 			return org.sessionization.fields.ncsa.RemoteHost.class;
 		}
 	},
-	/** RFC 1413 */
+	/**
+	 * RFC 1413
+	 */
 	RemoteLogname {
 		@Override
 		public boolean isKey() {
@@ -33,7 +37,9 @@ public enum LogFieldType {
 			return org.sessionization.fields.ncsa.RemoteLogname.class;
 		}
 	},
-	/** Oseba ki zahteva resurs */
+	/**
+	 * Oseba ki zahteva resurs
+	 */
 	RemoteUser {
 		@Override
 		public boolean isKey() {
@@ -45,14 +51,18 @@ public enum LogFieldType {
 			return org.sessionization.fields.RemoteUser.class;
 		}
 	},
-	/** Datum in čas */
+	/**
+	 * Datum in čas
+	 */
 	DateTime {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.ncsa.DateTime.class;
 		}
 	},
-	/** Metoda, url in protokol */
+	/**
+	 * Metoda, url in protokol
+	 */
 	RequestLine {
 		@Override
 		public Class getClassE() {
@@ -73,28 +83,36 @@ public enum LogFieldType {
 			return list.toArray(new Class[list.size()]);
 		}
 	},
-	/** Status zahteve */
+	/**
+	 * Status zahteve
+	 */
 	StatusCode {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.StatusCode.class;
 		}
 	},
-	/** Preneseno število bytov od strežnika do klienta */
+	/**
+	 * Preneseno število bytov od strežnika do klienta
+	 */
 	SizeOfResponse {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.SizeOfResponse.class;
 		}
 	},
-	/** Preneseno število bytov od klienta do strežnika */
+	/**
+	 * Preneseno število bytov od klienta do strežnika
+	 */
 	SizeOfRequest {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.SizeOfRequest.class;
 		}
 	},
-	/** Stran s katere je prišel na našo stran */
+	/**
+	 * Stran s katere je prišel na našo stran
+	 */
 	Referer {
 		@Override
 		public Class getClassE() {
@@ -114,7 +132,9 @@ public enum LogFieldType {
 			return list.toArray(new Class[list.size()]);
 		}
 	},
-	/** Identifikacija brskalnika in botov */
+	/**
+	 * Identifikacija brskalnika in botov
+	 */
 	UserAgent {
 		@Override
 		public boolean isKey() {
@@ -126,7 +146,9 @@ public enum LogFieldType {
 			return org.sessionization.fields.UserAgent.class;
 		}
 	},
-	/** Pi�kot (name = value;) */
+	/**
+	 * Pi�kot (name = value;)
+	 */
 	Cookie {
 		@Override
 		public boolean isKey() {
@@ -140,13 +162,15 @@ public enum LogFieldType {
 
 		@Override
 		public Class[] getDependencies() {
-			return new Class[] {
+			return new Class[]{
 					CookiePair.class,
 					CookieKey.class
 			};
 		}
 	},
-	/** W3C metoda */
+	/**
+	 * W3C metoda
+	 */
 	Method {
 		@Override
 		public Class getClassE() {
@@ -155,40 +179,50 @@ public enum LogFieldType {
 
 		@Override
 		public Class[] getDependencies() {
-			return new Class[] {
+			return new Class[]{
 					MethodConverter.class
 			};
 		}
 	},
-	/** W3C datum */
+	/**
+	 * W3C datum
+	 */
 	Date {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.w3c.Date.class;
 		}
 	},
-	/** W3C �as */
+	/**
+	 * W3C �as
+	 */
 	Time {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.w3c.Time.class;
 		}
 	},
-	/** �tevilka port na strežniku */
+	/**
+	 * �tevilka port na strežniku
+	 */
 	ServerPort {
 		@Override
 		public Class getClassE() {
 			return Port.class;
 		}
 	},
-	/** �tevilka port na klientu */
+	/**
+	 * �tevilka port na klientu
+	 */
 	ClientPort {
 		@Override
 		public Class getClassE() {
 			return Port.class;
 		}
 	},
-	/** IP strežnika */
+	/**
+	 * IP strežnika
+	 */
 	ServerIP {
 		@Override
 		public Class getClassE() {
@@ -197,12 +231,14 @@ public enum LogFieldType {
 
 		@Override
 		public Class[] getDependencies() {
-			return new Class[] {
+			return new Class[]{
 					InetAddressConverter.class
 			};
 		}
 	},
-	/** IP klienta */
+	/**
+	 * IP klienta
+	 */
 	ClientIP {
 		@Override
 		public boolean isKey() {
@@ -216,61 +252,77 @@ public enum LogFieldType {
 
 		@Override
 		public Class[] getDependencies() {
-			return new Class[] {
+			return new Class[]{
 					InetAddressConverter.class
 			};
 		}
 	},
-	/**	Čas porabljen za obdelavo zahteve (pri W3C v sekundah, pri Apache v milisekunah) */
+	/**
+	 * Čas porabljen za obdelavo zahteve (pri W3C v sekundah, pri Apache v milisekunah)
+	 */
 	TimeTaken {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.TimeTaken.class;
 		}
 	},
-	/** Pod status protokola */
+	/**
+	 * Pod status protokola
+	 */
 	SubStatus {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.w3c.SubStatus.class;
 		}
 	},
-	/** Status akcije, vezan na Windows */
+	/**
+	 * Status akcije, vezan na Windows
+	 */
 	Win32Status {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.w3c.Win32Status.class;
 		}
 	},
-	/** Ime gostovanja */
+	/**
+	 * Ime gostovanja
+	 */
 	Host {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.Host.class;
 		}
 	},
-	/** Verija uporabljenega protokola in ime protokola */
+	/**
+	 * Verija uporabljenega protokola in ime protokola
+	 */
 	ProtocolVersion {
 		@Override
 		public Class getClassE() {
 			return Protocol.class;
 		}
 	},
-	/** Ime strani */
+	/**
+	 * Ime strani
+	 */
 	SiteName {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.w3c.SiteName.class;
 		}
 	},
-	/** Ime Računalnika */
+	/**
+	 * Ime Računalnika
+	 */
 	ComputerName {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.fields.w3c.ComputerName.class;
 		}
 	},
-	/** Atributi zahteve */
+	/**
+	 * Atributi zahteve
+	 */
 	UriQuery {
 		@Override
 		public Class getClassE() {
@@ -279,13 +331,15 @@ public enum LogFieldType {
 
 		@Override
 		public Class[] getDependencies() {
-			return new Class[] {
+			return new Class[]{
 					UriQueryPair.class,
 					UriQueryKey.class
 			};
 		}
 	},
-	/** Ime zahtevanega resursa */
+	/**
+	 * Ime zahtevanega resursa
+	 */
 	UriSteam {
 		@Override
 		public Class getClassE() {
@@ -315,9 +369,9 @@ public enum LogFieldType {
 	/**
 	 * NCSA
 	 * Connection status when response is completed:
-	 * 		X = connection aborted before the response completed.
-	 * 		+ =	connection may be kept alive after the response is sent.
-	 * 		- =	connection will be closed after the response is sent.
+	 * X = connection aborted before the response completed.
+	 * + =	connection may be kept alive after the response is sent.
+	 * - =	connection will be closed after the response is sent.
 	 */
 	ConnectionStatus {
 		@Override
@@ -327,21 +381,27 @@ public enum LogFieldType {
 
 		@Override
 		public Class[] getDependencies() {
-			return new Class[] {
+			return new Class[]{
 					ConnectionStatusConverter.class
 			};
 		}
 	},
-	/** ID procesa, ki je obdelal zahtevo */
+	/**
+	 * ID procesa, ki je obdelal zahtevo
+	 */
 	ProcessID {
 		@Override
 		public Class getClassE() {
 			return ProcessID.class;
 		}
 	},
-	/** Neznano polje */
+	/**
+	 * Neznano polje
+	 */
 	Unknown,
-	/** Tip polja ki predstavlja opis polja v W3C formatu */
+	/**
+	 * Tip polja ki predstavlja opis polja v W3C formatu
+	 */
 	MetaData;
 
 	public boolean isKey() {

@@ -26,8 +26,8 @@ public class SpletneSeje {
 		logParser = null;
 		db = null;
 	}
+
 	/**
-	 *
 	 * @param args
 	 * @throws CmdLineException
 	 * @throws URISyntaxException
@@ -81,7 +81,7 @@ public class SpletneSeje {
 				throw new ExceptionInInitializerError("Unknown log format!!!");
 		}
 		/** Nastavi format datuma */
-		if(argsParser.getDateFormat() != null) {
+		if (argsParser.getDateFormat() != null) {
 			if (logParser instanceof NCSAWebLogParser) {
 				((NCSAWebLogParser) logParser).setDateFormat(argsParser.getDateFormat(), argsParser.getLocale());
 			} else if (logParser instanceof W3CWebLogParser) {
@@ -91,7 +91,7 @@ public class SpletneSeje {
 			}
 		}
 		/** Nastavi format ure */
-		if(argsParser.getTimeFormat() != null) {
+		if (argsParser.getTimeFormat() != null) {
 			if (logParser instanceof NCSAWebLogParser) {
 				System.err.println("ignoring -tf \"" + argsParser.getTimeFormat() + "\"");
 			} else if (logParser instanceof W3CWebLogParser) {
@@ -106,7 +106,7 @@ public class SpletneSeje {
 			logParser.setIgnoreFieldType(LogFormats.CustomLogFormat.create(ignore));
 		}
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
-		db = new HibernateUtil(argsParser, logParser);
+//		db = new HibernateUtil(argsParser, logParser);
 	}
 
 	/**

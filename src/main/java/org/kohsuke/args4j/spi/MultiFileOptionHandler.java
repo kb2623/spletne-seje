@@ -11,8 +11,9 @@ import java.io.File;
  * @author kmahoney
  */
 public class MultiFileOptionHandler extends DelimitedOptionHandler<File> {
-    protected static String sysPathSeperator = System.getProperty("path.separator");
-    public MultiFileOptionHandler(CmdLineParser parser, OptionDef option, Setter<? super File> setter) {
-        super(parser, option, setter, sysPathSeperator, new FileOptionHandler(parser, option, setter));
-    }
+	protected static String sysPathSeperator = System.getProperty("path.separator");
+
+	public MultiFileOptionHandler(CmdLineParser parser, OptionDef option, Setter<? super File> setter) {
+		super(parser, option, setter, sysPathSeperator, new FileOptionHandler(parser, option, setter));
+	}
 }

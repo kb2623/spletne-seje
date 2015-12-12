@@ -45,20 +45,20 @@ public class Protocol implements LogField {
 		this.id = id;
 	}
 
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
-
-	public void setVersion(float version) {
-		this.version = version;
-	}
-
 	public String getProtocol() {
 		return protocol != null ? protocol : "";
 	}
 
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
 	public float getVersion() {
 		return version;
+	}
+
+	public void setVersion(float version) {
+		this.version = version;
 	}
 
 	@Override

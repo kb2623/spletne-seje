@@ -13,7 +13,7 @@ import java.util.Locale;
 public class ExampleTest extends TestCase {
 	// DOr sort test, start with these not in alphabetical order
 
-	@Option(name = "-h", usage = "this is H", forbids={"-b", "-c"})
+	@Option(name = "-h", usage = "this is H", forbids = {"-b", "-c"})
 	boolean h;
 
 	@Option(required = true, name = "-a", usage = "this is X")

@@ -46,7 +46,7 @@ public class SpletneSejeTest {
 			}
 			parser.closeFile();
 			assertEquals(269, testMap.size());
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
 			fail();
 		}
 	}
@@ -98,7 +98,7 @@ public class SpletneSejeTest {
 				}
 			}
 			assertEquals(269, testMap.size());
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
 			fail();
 		}
 	}
@@ -135,7 +135,7 @@ public class SpletneSejeTest {
 			}
 			radixMap.keySet().forEach(e -> hashMap.remove(e));
 			assertTrue(hashMap.isEmpty());
-		} catch(NullPointerException | IOException e) {
+		} catch (NullPointerException | IOException e) {
 			fail();
 		}
 	}

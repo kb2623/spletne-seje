@@ -19,12 +19,12 @@ public class SizeOfRequest implements LogField {
 		this.size = Integer.valueOf(size);
 	}
 
-	public void setSize(int size) {
-		this.size = size;
-	}
-
 	public int getSize() {
 		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 
 	@Override

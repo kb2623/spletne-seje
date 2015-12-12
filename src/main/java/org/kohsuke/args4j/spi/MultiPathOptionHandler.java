@@ -11,8 +11,9 @@ import java.nio.file.Path;
  * @author kmahoney
  */
 public class MultiPathOptionHandler extends DelimitedOptionHandler<Path> {
-    protected static String sysPathSeperator = System.getProperty("path.separator");
-    public MultiPathOptionHandler(CmdLineParser parser, OptionDef option, Setter<? super Path> setter) {
-        super(parser, option, setter, sysPathSeperator, new PathOptionHandler(parser, option, setter));
-    }
+	protected static String sysPathSeperator = System.getProperty("path.separator");
+
+	public MultiPathOptionHandler(CmdLineParser parser, OptionDef option, Setter<? super Path> setter) {
+		super(parser, option, setter, sysPathSeperator, new PathOptionHandler(parser, option, setter));
+	}
 }

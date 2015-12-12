@@ -6,10 +6,10 @@ import org.kohsuke.args4j.OptionDef;
 
 /**
  * {@link OptionHandler} that parses MAC address to byte[] of length 6.
- *
+ * <p>
  * <p>
  * The string representation of a MAC address can be of different forms, e.g.
- *
+ * <p>
  * <pre>
  * XXXXXXXXXXXX
  * XX XX XX XX XX XX
@@ -20,10 +20,10 @@ import org.kohsuke.args4j.OptionDef;
  * @author Tobias Stolzmann
  */
 public class MacAddressOptionHandler extends OptionHandler<byte[]> {
-    public MacAddressOptionHandler(CmdLineParser parser, OptionDef option,
-	    Setter<? super byte[]> setter) {
+	public MacAddressOptionHandler(CmdLineParser parser, OptionDef option,
+											 Setter<? super byte[]> setter) {
 		super(parser, option, setter);
-    }
+	}
 
 	@Override
 	public int parseArguments(Parameters params) throws CmdLineException {
@@ -31,12 +31,12 @@ public class MacAddressOptionHandler extends OptionHandler<byte[]> {
 		String[] macStringArray = null;
 
 		if (macString.matches("[0-9a-fA-F]{12}"))
-		    /*
-		     * When entering this clause our MAC address is a hexadecimal string
+			 /*
+			  * When entering this clause our MAC address is a hexadecimal string
 		     * with 12 digit. Hence we have no delimiter to split. So we simply
 		     * split after each two characters.
 		     */
-		    macStringArray = macString.split("(?<=\\G.{2})");
+			macStringArray = macString.split("(?<=\\G.{2})");
 		else if (macString.matches("([0-9a-fA-F]{1,2}[^0-9a-fA-F]+){5}[0-9a-fA-F]{1,2}"))
 		    /*
 		     * When entering this clause our MAC address is a in the form
@@ -45,10 +45,10 @@ public class MacAddressOptionHandler extends OptionHandler<byte[]> {
 		     * In most cases # is a dash (-), a colon (:) or a space ( ).
 		     * We just need to split by our delimiter.
 		     */
-		    macStringArray = macString.split("[^0-9a-fA-F]+");
+			macStringArray = macString.split("[^0-9a-fA-F]+");
 		else
-		    throw new CmdLineException(owner,
-			    Messages.ILLEGAL_MAC_ADDRESS, macString);
+			throw new CmdLineException(owner,
+					Messages.ILLEGAL_MAC_ADDRESS, macString);
 
 		byte[] mac = new byte[6];
 		for (int i = 0; i < 6; i++)
@@ -63,24 +63,24 @@ public class MacAddressOptionHandler extends OptionHandler<byte[]> {
 		     * is done best by parsing short (or int or long) and casting to
 		     * byte.
 		     */
-		    mac[i] = (byte) Short.parseShort(macStringArray[i], 16);
+			mac[i] = (byte) Short.parseShort(macStringArray[i], 16);
 
-		setter.asFieldSetter().addValue(mac);		
+		setter.asFieldSetter().addValue(mac);
 		return 1;
 	}
 
-    @Override
-    public String getDefaultMetaVariable() {
-        return Messages.DEFAULT_META_MAC_ADDRESS_OPTION_HANDLER.format();
-    }
+	@Override
+	public String getDefaultMetaVariable() {
+		return Messages.DEFAULT_META_MAC_ADDRESS_OPTION_HANDLER.format();
+	}
 
-    @Override
-    public String print(byte[] v) {
-        StringBuilder buf = new StringBuilder();
-        for (byte b : v) {
-            if (buf.length()>0) buf.append(':');
-            buf.append(Integer.toHexString(((int)b)&0xFF));
-        }
-        return buf.toString();
-    }
+	@Override
+	public String print(byte[] v) {
+		StringBuilder buf = new StringBuilder();
+		for (byte b : v) {
+			if (buf.length() > 0) buf.append(':');
+			buf.append(Integer.toHexString(((int) b) & 0xFF));
+		}
+		return buf.toString();
+	}
 }

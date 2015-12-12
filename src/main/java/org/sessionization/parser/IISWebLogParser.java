@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
+
 @SuppressWarnings("deprecation")
 public class IISWebLogParser extends W3CWebLogParser {
 
@@ -22,16 +23,16 @@ public class IISWebLogParser extends W3CWebLogParser {
 		super();
 		setDefaultFields(Locale.US);
 	}
+
 	/**
-	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
 	public IISWebLogParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
 		super(locale, file);
 	}
+
 	/**
-	 *
 	 * @param file
 	 * @param list
 	 * @throws FileNotFoundException
@@ -40,6 +41,7 @@ public class IISWebLogParser extends W3CWebLogParser {
 		super(locale, file);
 		super.setFieldType(list);
 	}
+
 	/**
 	 * Metoda nastavi prevzete vrednosti poljem razreda:
 	 * <p><code>dateFormat = dd/MM/yyyy</code></p>
@@ -59,16 +61,16 @@ public class IISWebLogParser extends W3CWebLogParser {
 		StringBuilder buff = new StringBuilder();
 		for (char c : logline.toCharArray()) {
 			switch (c) {
-			case ' ':
-				if (buff.length() > 0) {
-					tokens[++i] = buff.toString();
-					buff = new StringBuilder();
-				}
-				break;
-			case ',':
-				break;
-			default:
-				buff.append(c);
+				case ' ':
+					if (buff.length() > 0) {
+						tokens[++i] = buff.toString();
+						buff = new StringBuilder();
+					}
+					break;
+				case ',':
+					break;
+				default:
+					buff.append(c);
 			}
 		}
 		if (buff.length() > 0) {

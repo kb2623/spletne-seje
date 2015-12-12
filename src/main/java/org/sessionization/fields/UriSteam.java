@@ -35,6 +35,7 @@ public class UriSteam implements LogField {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	/**
 	 * Getter metoda za URL
 	 *
@@ -44,6 +45,11 @@ public class UriSteam implements LogField {
 	public String getFile() {
 		return file != null ? file : "";
 	}
+
+	public void setFile(String file) {
+		this.file = file;
+	}
+
 	/**
 	 * Metoda, ki vrne koncnico zahtevanega resursa.
 	 *
@@ -54,6 +60,7 @@ public class UriSteam implements LogField {
 		int indexOfLastSeparator = file.lastIndexOf('/');
 		return (indexOfExtension < indexOfLastSeparator) ? null : file.substring(indexOfExtension + 1);
 	}
+
 	/**
 	 * Metoda, ki preverja ali je zahteva po spletni strani ali po resursu za spletno stran.
 	 *
@@ -75,10 +82,6 @@ public class UriSteam implements LogField {
 			default:
 				return false;
 		}
-	}
-
-	public void setFile(String file) {
-		this.file = file;
 	}
 
 	public String izpis() {

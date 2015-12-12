@@ -17,7 +17,7 @@ public class RemoteUser implements LogField {
 	}
 
 	public RemoteUser(String user) {
-		if(!user.equalsIgnoreCase("-")) this.user = user;
+		if (!user.equalsIgnoreCase("-")) this.user = user;
 	}
 
 	public Integer getId() {
@@ -28,12 +28,12 @@ public class RemoteUser implements LogField {
 		this.id = id;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
-	}
-
 	public String getUser() {
 		return user != null ? user : "";
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	@Override

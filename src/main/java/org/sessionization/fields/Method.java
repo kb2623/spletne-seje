@@ -58,10 +58,17 @@ public enum Method implements LogField {
 	};
 
 	/**
+	 * Getter za uporabljeno metodo HTTP protokola.
+	 *
+	 * @return Niz, ki predstavlja uporabljeno metodo HTTP protokola
+	 */
+	public abstract String getMethod();
+
+	/**
 	 * Staticna metoda, ki ustvari nov objekt tipa Method.
 	 *
 	 * @param protocol Niz, ki vsebuje protokol
-	 * @param method Niz, ki predstavlja uporabljeno metodo protokola
+	 * @param method   Niz, ki predstavlja uporabljeno metodo protokola
 	 * @return Objekt, ki predstavlja metodo
 	 * @throws IllegalArgumentException
 	 * @see Method
@@ -90,12 +97,7 @@ public enum Method implements LogField {
 				throw new IllegalArgumentException("Neznana metoda");
 		}
 	}
-	/**
-	 * Getter za uporabljeno metodo HTTP protokola.
-	 *
-	 * @return Niz, ki predstavlja uporabljeno metodo HTTP protokola
-	 */
-	public abstract String getMethod();
+
 	/**
 	 * Getter za protokol metode
 	 *

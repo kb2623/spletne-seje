@@ -1,13 +1,13 @@
 package org.kohsuke.args4j;
 
-import java.lang.reflect.AccessibleObject;
-import java.net.URL;
-
 import org.kohsuke.args4j.spi.ArgumentImpl;
 import org.kohsuke.args4j.spi.ConfigElement;
 import org.kohsuke.args4j.spi.OptionImpl;
 import org.kohsuke.args4j.spi.Setters;
 import org.xml.sax.InputSource;
+
+import java.lang.reflect.AccessibleObject;
+import java.net.URL;
 
 /**
  * Parses an XML-file specifying the 'annotations'.
@@ -20,7 +20,7 @@ import org.xml.sax.InputSource;
  * </pre>
  * Exactly one of the attributes 'field' or 'method' must be set.
  * The 'handler' value specifies a full qualified class name.
- *
+ * <p>
  * <h3>Example</h3>
  * <pre>
  * &lt;args&gt;
@@ -36,19 +36,19 @@ import org.xml.sax.InputSource;
  */
 public class XmlParser {
 	public void parse(URL xml, CmdLineParser parser, Object bean) {
-		parse(new InputSource(xml.toExternalForm()),parser,bean);
+		parse(new InputSource(xml.toExternalForm()), parser, bean);
 	}
 
 	public void parse(InputSource xml, CmdLineParser parser, Object bean) {
 		try {
 			Config config = Config.parse(xml);
-			for(ConfigElement ce : config.options) {
+			for (ConfigElement ce : config.options) {
 				Option option = new OptionImpl(ce);
-				parser.addOption(Setters.create(parser, findMethodOrField(bean, ce.field, ce.method),bean), option);
+				parser.addOption(Setters.create(parser, findMethodOrField(bean, ce.field, ce.method), bean), option);
 			}
 			for (ConfigElement ce : config.arguments) {
 				Argument argument = new ArgumentImpl(ce);
-				parser.addArgument(Setters.create(parser, findMethodOrField(bean, ce.field, ce.method),bean), argument);
+				parser.addArgument(Setters.create(parser, findMethodOrField(bean, ce.field, ce.method), bean), argument);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(Messages.METADATA_ERROR.format(), e);
@@ -59,9 +59,10 @@ public class XmlParser {
 	/**
 	 * Finds a {@link java.lang.reflect.Method} or {@link java.lang.reflect.Method} in the bean
 	 * instance with the requested name.
-	 * @param bean    bean instance
-	 * @param field   name of the field (field XOR method must be specified)
-	 * @param method  name of the method (field XOR method must be specified)
+	 *
+	 * @param bean   bean instance
+	 * @param field  name of the field (field XOR method must be specified)
+	 * @param method name of the method (field XOR method must be specified)
 	 * @return the reflection reference
 	 * @throws SecurityException
 	 * @throws NoSuchFieldException
@@ -74,9 +75,9 @@ public class XmlParser {
 			rv = bean.getClass().getDeclaredField(field);
 		} else {
 			String methodName = method.substring(0, method.indexOf("("));
-			String[] params = method.substring(method.indexOf("(")+1, method.indexOf(")")).split(",");
+			String[] params = method.substring(method.indexOf("(") + 1, method.indexOf(")")).split(",");
 			Class[] paramTypes = new Class[params.length];
-			for(int i=0; i<params.length; i++) {
+			for (int i = 0; i < params.length; i++) {
 				String className = params[i];
 				if (className.indexOf('.') < 0) {
 					className = "java.lang." + className;

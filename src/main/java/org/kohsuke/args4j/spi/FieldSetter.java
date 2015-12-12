@@ -30,7 +30,7 @@ public final class FieldSetter implements Getter, Setter {
 	}
 
 	public FieldSetter asFieldSetter() {
-		return new FieldSetter(bean,f);
+		return new FieldSetter(bean, f);
 	}
 
 	public AnnotatedElement asAnnotatedElement() {
@@ -39,12 +39,12 @@ public final class FieldSetter implements Getter, Setter {
 
 	public void addValue(Object value) {
 		try {
-			f.set(bean,value);
+			f.set(bean, value);
 		} catch (IllegalAccessException ex) {
 			// try again
 			f.setAccessible(true);
 			try {
-				f.set(bean,value);
+				f.set(bean, value);
 			} catch (IllegalAccessException e) {
 				throw new IllegalAccessError(e.getMessage());
 			}
@@ -70,7 +70,7 @@ public final class FieldSetter implements Getter, Setter {
 	}
 
 	private List<Object> asList(Object o) {
-		if (o!=null)    return Collections.singletonList(o);
+		if (o != null) return Collections.singletonList(o);
 		return Collections.emptyList();
 	}
 }

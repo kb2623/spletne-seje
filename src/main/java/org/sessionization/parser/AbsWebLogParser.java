@@ -60,7 +60,6 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 *
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
@@ -70,7 +69,6 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 *
 	 * @param path
 	 * @throws FileNotFoundException
 	 */
@@ -129,7 +127,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * Metoda ki vrne celotno vrstico, ki jo je potrebno še parsati
 	 *
 	 * @return List of <code>Strings</code>
-	 * @throws IOException Napaka pri branju vrstice
+	 * @throws IOException  Napaka pri branju vrstice
 	 * @throws EOFException Konec datoteke ali strima
 	 * @see String
 	 */
@@ -152,7 +150,6 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 *
 	 * @return
 	 * @throws ArrayIndexOutOfBoundsException
 	 * @throws IOException
@@ -163,8 +160,8 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
 	 *
 	 * @return Obdelano vrstico
-	 * @throws ParseException Napaka pri obdelavi datoteke
-	 * @throws IOException Napaka pri branju datoeke
+	 * @throws ParseException       Napaka pri obdelavi datoteke
+	 * @throws IOException          Napaka pri branju datoeke
 	 * @throws NullPointerException Lastnosti niso pravilno nstavljene
 	 * @see LogField
 	 * @see ParsedLine
@@ -199,7 +196,6 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public Set<LogFieldType> getIgnoreFieldTypes() {
@@ -207,7 +203,6 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 *
 	 * @param pool
 	 */
 	public void setPool(ObjectPool pool) {
@@ -288,7 +283,8 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	public void close() {
 		try {
 			closeFile();
-		} catch (IOException ignore) {}
+		} catch (IOException ignore) {
+		}
 		pos = 0;
 	}
 }

@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 /**
  * Collection of {@link SubCommand}s that define possible sub-commands.
  *
- * @see SubCommandHandler
  * @author Kohsuke Kawaguchi
+ * @see SubCommandHandler
  */
-@Target({ElementType.FIELD,ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SubCommands {
-    SubCommand[] value();
+	SubCommand[] value();
 }

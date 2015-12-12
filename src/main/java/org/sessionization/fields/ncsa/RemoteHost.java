@@ -28,12 +28,12 @@ public class RemoteHost implements LogField {
 		}
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getName() {
 		return name != null ? name : "";
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Integer getId() {

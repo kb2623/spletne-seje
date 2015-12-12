@@ -31,12 +31,12 @@ public class UserAgent implements LogField {
 		this.id = id;
 	}
 
-	public void setUserAgentString(String userAgentString) {
-		this.userAgentString = userAgentString;
-	}
-
 	public String getUserAgentString() {
 		return userAgentString != null ? userAgentString : "";
+	}
+
+	public void setUserAgentString(String userAgentString) {
+		this.userAgentString = userAgentString;
 	}
 
 	public boolean isCrawler() {

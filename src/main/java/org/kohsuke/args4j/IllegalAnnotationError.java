@@ -2,10 +2,10 @@ package org.kohsuke.args4j;
 
 /**
  * Signals an incorrect use of args4j annotations.
- *
+ * <p>
  * <p>
  * This only happens when there's something wrong with the way you use
- * args4j in your code--<em>not</em> when the user's arguments are wrong. 
+ * args4j in your code--<em>not</em> when the user's arguments are wrong.
  * Therefore, this class is an {@link Error}.
  *
  * @author Kohsuke Kawaguchi
