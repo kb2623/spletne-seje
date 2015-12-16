@@ -34,11 +34,11 @@ public class DumpRequest {
 			/** Dodaj anoracije */{
 				ConstPool constPool = aClass.getClassFile().getConstPool();
 				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-				{
+				/** dodajanje anotacije Entry */{
 					Annotation anno = new Annotation(Entity.class.getName(), constPool);
 					attr.addAnnotation(anno);
 				}
-				{
+				/** Doajanje anotacije Cacheable */{
 					Annotation anno = new Annotation(Cacheable.class.getName(), constPool);
 					attr.addAnnotation(anno);
 				}

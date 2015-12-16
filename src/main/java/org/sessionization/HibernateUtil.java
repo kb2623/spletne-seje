@@ -1,6 +1,5 @@
 package org.sessionization;
 
-import com.sun.org.apache.bcel.internal.util.ClassLoader;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import org.hibernate.Session;

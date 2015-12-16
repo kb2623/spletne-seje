@@ -16,7 +16,6 @@ import java.util.Properties;
 public class ArgsParser {
 
 	private Properties properties;
-
 	private CmdLineParser parser;
 
 	@Option(name = "-h", aliases = {"--help", "-?"}, usage = "Prints this message", hidden = true, help = true)
@@ -46,6 +45,7 @@ public class ArgsParser {
 		properties.setProperty("database.sql.show.format", String.valueOf(false));
 		properties.setProperty("format.locale", Locale.US.toLanguageTag());
 		properties.setProperty("parse.size", "500");
+		properties.setProperty("session.time", "7200");
 	}
 
 	public String[] getLogFormat() {
@@ -59,6 +59,15 @@ public class ArgsParser {
 	@Option(name = "-fl", aliases = "format.log", usage = "Log file format. Check NCSA or W3C log formats.", metaVar = "<log format>")
 	public void setLogFormat(String format) {
 		properties.setProperty("format.log", format);
+	}
+
+	public int getSessionTime() {
+		return Integer.valueOf(properties.getProperty("session.time"));
+	}
+
+	@Option(name = "-st", aliases = "session.time", usage = "Time until session is over. Time is represented in seconds.", metaVar = "<int>")
+	public void setSessionTime(int timeInSecons) {
+		properties.setProperty("session.time", String.valueOf(timeInSecons));
 	}
 
 	public int getParseSize() {

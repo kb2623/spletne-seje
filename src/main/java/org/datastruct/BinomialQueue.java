@@ -53,15 +53,18 @@ public class BinomialQueue<E> implements Queue<E> {
 		while (curr != null || !stack.isEmpty()) {
 			if (curr == null) {
 				curr = stack.pop();
-			} else if (cmp.cmp.compare(curr.data, e) == 0) {
-				break;
-			} else if (cmp.cmp.compare(curr.data, e) < 0) {
-				if (curr.sibling != null) {
-					stack.push(curr.sibling);
-				}
-				curr = curr.chield;
 			} else {
-				curr = curr.sibling;
+				int cmp = this.cmp.compare(curr.data, e);
+				if (cmp == 0) {
+					break;
+				} else if (cmp < 0) {
+					if (curr.sibling != null) {
+						stack.push(curr.sibling);
+					}
+					curr = curr.chield;
+				} else {
+					curr = curr.sibling;
+				}
 			}
 		}
 		return curr != null;
@@ -127,7 +130,7 @@ public class BinomialQueue<E> implements Queue<E> {
 	}
 
 	private Node merge(Node prev, Node next) {
-		if (cmp.compare(next, prev) < 0) {
+		if (cmp.compare(next.data, prev.data) < 0) {
 			prev.sibling = next.chield;
 			next.chield = prev;
 			next.updateDepth();
@@ -198,7 +201,7 @@ public class BinomialQueue<E> implements Queue<E> {
 			Node min = root, minPrev = null;
 			Node curr = root.sibling, prev = root;
 			while (curr != null) {
-				if (cmp.compare(min, curr) > 0) {
+				if (cmp.compare(min.data, curr.data) > 0) {
 					minPrev = prev;
 					min = curr;
 				}
@@ -307,7 +310,7 @@ public class BinomialQueue<E> implements Queue<E> {
 		} else {
 			Node ret = root, curr = root;
 			while (curr != null) {
-				if (cmp.compare(ret, curr) < 0) {
+				if (cmp.compare(ret.data, curr.data) < 0) {
 					ret = curr;
 				}
 				curr = curr.sibling;
@@ -388,7 +391,7 @@ public class BinomialQueue<E> implements Queue<E> {
 		}
 	}
 
-	private class NodeComparator implements Comparator<Node> {
+	private class NodeComparator implements Comparator<E> {
 
 		private Comparator<E> cmp;
 
@@ -397,10 +400,10 @@ public class BinomialQueue<E> implements Queue<E> {
 		}
 
 		@Override
-		public int compare(Node n1, Node n2) {
-			int cmp = this.cmp.compare(n1.data, n2.data);
+		public int compare(E n1, E n2) {
+			int cmp = this.cmp.compare(n1, n2);
 			if (cmp == 0) {
-				if (n1.data.equals(n2.data)) {
+				if (n1.equals(n2)) {
 					return 0;
 				} else {
 					return 1;

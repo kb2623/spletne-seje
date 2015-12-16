@@ -54,25 +54,14 @@ public class BinomialQueueTest {
 
 	@Test
 	public void testIterator() throws Exception {
-		queue.offer(23);
-		queue.offer(45);
-		queue.offer(67);
-		queue.offer(89);
-		queue.offer(90);
-		queue.offer(12);
-		queue.offer(34);
-		queue.offer(56);
-		assertEquals(8, queue.size());
 	}
 
 	@Test
 	public void testToArray() throws Exception {
-
 	}
 
 	@Test
 	public void testToArray1() throws Exception {
-
 	}
 
 	@Test
@@ -158,7 +147,17 @@ public class BinomialQueueTest {
 
 	@Test
 	public void testRemove1() throws Exception {
-
+		queue.add(23);
+		queue.add(53);
+		queue.add(32);
+		queue.add(55);
+		queue.add(12);
+		queue.add(44);
+		queue.add(99);
+		queue.add(2);
+		assertTrue(queue.contains(55));
+		assertTrue(queue.contains(53));
+		assertEquals(new Integer(99), queue.remove(99));
 	}
 
 	@Test

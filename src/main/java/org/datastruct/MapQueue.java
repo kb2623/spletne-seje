@@ -107,10 +107,8 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 		K key = (K) o;
 		Entry<K, V> e = (Entry<K, V>) getEnrty(key);
 		if (e != null) {
-			if (sentinel.next != sentinel.prev) {
-				if (sentinel.next == e) {
-					sentinel.next = sentinel.next.prev;
-				}
+			if (sentinel.next != sentinel.prev && sentinel.next == e) {
+				sentinel.next = sentinel.next.prev;
 			}
 			if (e.lowerPriority()) {
 				sentinel.prev = e;
