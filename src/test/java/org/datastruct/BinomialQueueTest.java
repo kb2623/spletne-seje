@@ -16,7 +16,7 @@ public class BinomialQueueTest {
 	private Queue<Integer> queue;
 	private Queue<Integer> tqueue;
 
-	private int size = 1000;
+	private int size = 20;
 
 	@Before
 	public void setUp() throws Exception {
@@ -32,7 +32,7 @@ public class BinomialQueueTest {
 		assertTrue(queue.isEmpty());
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testContains() throws Exception {
 		assertFalse(queue.contains(23));
 		add(true);
@@ -64,7 +64,7 @@ public class BinomialQueueTest {
 	public void testToArray1() throws Exception {
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testAdd() throws Exception {
 		add(true);
 		try {
@@ -89,7 +89,7 @@ public class BinomialQueueTest {
 		}
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testRemove() throws Exception {
 		try {
 			queue.remove();
@@ -104,27 +104,27 @@ public class BinomialQueueTest {
 		assertEquals(tqueue.isEmpty(), queue.isEmpty());
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testContainsAll() throws Exception {
 
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testAddAll() throws Exception {
 
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testRemoveAll() throws Exception {
 
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testRetainAll() throws Exception {
 
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testOffer() throws Exception {
 		offer(true);
 		assertFalse(queue.offer(null));
@@ -145,22 +145,19 @@ public class BinomialQueueTest {
 		}
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testRemove1() throws Exception {
-		queue.add(23);
-		queue.add(53);
-		queue.add(32);
-		queue.add(55);
-		queue.add(12);
-		queue.add(44);
-		queue.add(99);
-		queue.add(2);
-		assertTrue(queue.contains(55));
-		assertTrue(queue.contains(53));
-		assertEquals(new Integer(99), queue.remove(99));
+		add(true);
+		int size = queue.size();
+		for (Object o : queue.toArray()) {
+			assertTrue(queue.remove(o));
+			size--;
+			assertEquals(size, queue.size());
+		}
+		assertTrue(queue.isEmpty());
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testPoll() throws Exception {
 		assertNull(queue.poll());
 		offer(true);
@@ -175,7 +172,7 @@ public class BinomialQueueTest {
 
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testPeek() throws Exception {
 
 	}

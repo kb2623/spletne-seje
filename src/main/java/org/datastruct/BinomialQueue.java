@@ -121,9 +121,9 @@ public class BinomialQueue<E> implements IQueue<E> {
 		if (e == null) {
 			throw new NullPointerException();
 		} else if (isEmpty()) {
-			root = new Node(e, null, null);
+			root = new Node(e, null, null, null);
 		} else {
-			root = new Node(e, root, null);
+			root = new Node(e, null, root, null);
 			while (root.sibling != null && root.depth == root.sibling.depth) {
 				root = merge(root, root.sibling);
 			}
@@ -135,20 +135,57 @@ public class BinomialQueue<E> implements IQueue<E> {
 		if (cmp.compare(next.data, prev.data) < 0) {
 			prev.sibling = next.chield;
 			next.chield = prev;
+			next.parent = prev.parent;
+			prev.parent = next;
 			next.updateDepth();
 			return next;
 		} else {
 			prev.sibling = next.sibling;
 			next.sibling = prev.chield;
 			prev.chield = next;
+			next.parent = prev;
 			prev.updateDepth();
 			return prev;
 		}
 	}
 
 	@Override
-	public boolean remove(Object o) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+	public boolean remove(Object o) throws NullPointerException, ClassCastException {
+		if (o == null) {
+			throw new NullPointerException();
+		}
+		E e = (E) o;
+		Stack<Node> stack = new Stack<>();
+		Node curr = root;
+		while (curr != null || !stack.isEmpty()) {
+			if (curr == null) {
+				curr = stack.pop();
+			} else {
+				int cmp = this.cmp.compare(curr.data, e);
+				if (cmp == 0) {
+					break;
+				} else if (cmp < 0) {
+					if (curr.sibling != null) {
+						stack.push(curr.sibling);
+					}
+					curr = curr.chield;
+				} else {
+					curr = curr.sibling;
+				}
+			}
+		}
+		if (curr != null) {
+			while (curr.parent != null) {
+				E tmpData = curr.parent.data;
+				curr.parent.data = curr.data;
+				curr.data = tmpData;
+				curr = curr.parent;
+			}
+			removeNode(curr);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -189,54 +226,56 @@ public class BinomialQueue<E> implements IQueue<E> {
 		}
 	}
 
-	private void removeNode(Node node) {
-		if (null != node.chield) {
-			node.sibling = null;
-			Node curr, prev;
-			Stack<Node> stack = new Stack<>();
-			curr = node.chield;
-			while (curr != null) {
-				stack.push(curr);
-				curr = curr.sibling;
-			}
-			curr = root;
-			prev = null;
-			while (curr != null && !stack.isEmpty()) {
-				if (curr.depth == stack.peek().depth) {
-					if (prev != null) {
-						prev.sibling = merge(stack.pop(), curr);
-						curr = prev.sibling.sibling;
-						prev = prev.sibling;
-					} else {
-						root = this.merge(stack.pop(), root);
-						prev = root;
-						curr = root.sibling;
-					}
+	private void removeNode(final Node node) {
+		if (node == root) {
+			root = root.sibling;
+		}
+		node.sibling = null;
+		Node curr, prev;
+		Stack<Node> stack = new Stack<>();
+		curr = node.chield;
+		while (curr != null) {
+			curr.parent = null;
+			stack.push(curr);
+			curr = curr.sibling;
+		}
+		curr = root;
+		prev = null;
+		while (curr != null && !stack.isEmpty()) {
+			if (curr.depth == stack.peek().depth) {
+				if (prev != null) {
+					prev.sibling = merge(stack.pop(), curr);
+					curr = prev.sibling.sibling;
+					prev = prev.sibling;
 				} else {
-					if (prev != null) {
-						prev.sibling = stack.pop();
-						prev.sibling.sibling = curr;
-						prev = prev.sibling;
-					} else {
-						root = stack.pop();
-						root.sibling = curr;
-						prev = root;
-					}
+					root = this.merge(stack.pop(), root);
+					prev = root;
+					curr = root.sibling;
 				}
-			}
-			while (!stack.isEmpty()) {
+			} else {
 				if (prev != null) {
 					prev.sibling = stack.pop();
-					prev.sibling.sibling = null;
+					prev.sibling.sibling = curr;
 					prev = prev.sibling;
 				} else {
 					root = stack.pop();
-					root.sibling = null;
+					root.sibling = curr;
 					prev = root;
 				}
 			}
-			fixAll();
 		}
+		while (!stack.isEmpty()) {
+			if (prev != null) {
+				prev.sibling = stack.pop();
+				prev.sibling.sibling = null;
+				prev = prev.sibling;
+			} else {
+				root = stack.pop();
+				root.sibling = null;
+				prev = root;
+			}
+		}
+		fixAll();
 	}
 
 	private void fixAll() {
@@ -337,19 +376,21 @@ public class BinomialQueue<E> implements IQueue<E> {
 	private class Node {
 
 		E data;
+		Node parent;
 		Node sibling;
 		Node chield;
 		int depth;
 
-		Node(E data, Node sibling, Node chield, int depth) {
+		Node(E data, Node parent, Node sibling, Node chield, int depth) {
 			this.data = data;
+			this.parent = parent;
 			this.sibling = sibling;
 			this.chield = chield;
 			this.depth = depth;
 		}
 
-		Node(E data, Node sibling, Node chield) {
-			this(data, sibling, chield, 0);
+		Node(E data, Node parnt, Node sibling, Node chield) {
+			this(data, parnt, sibling, chield, 0);
 			updateDepth();
 		}
 
