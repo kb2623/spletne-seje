@@ -16,7 +16,7 @@ public class BinomialQueueTest {
 	private Queue<Integer> queue;
 	private Queue<Integer> tqueue;
 
-	private int size = 20;
+	private int size = 1000;
 
 	@Before
 	public void setUp() throws Exception {
@@ -148,13 +148,19 @@ public class BinomialQueueTest {
 	@Test(timeout = 10000)
 	public void testRemove1() throws Exception {
 		add(true);
-		int size = queue.size();
 		for (Object o : queue.toArray()) {
-			assertTrue(queue.remove(o));
-			size--;
-			assertEquals(size, queue.size());
+			assertEquals(tqueue.remove(o), queue.remove(o));
+			assertEquals(tqueue.size(), queue.size());
 		}
 		assertTrue(queue.isEmpty());
+	}
+
+	@Test
+	public void testSome() {
+		queue.add(23);
+		queue.add(32);
+		queue.add(20);
+		queue.remove(20);
 	}
 
 	@Test(timeout = 10000)

@@ -175,12 +175,6 @@ public class BinomialQueue<E> implements IQueue<E> {
 			}
 		}
 		if (curr != null) {
-			while (curr.parent != null) {
-				E tmpData = curr.parent.data;
-				curr.parent.data = curr.data;
-				curr.data = tmpData;
-				curr = curr.parent;
-			}
 			removeNode(curr);
 			return true;
 		} else {
@@ -206,20 +200,13 @@ public class BinomialQueue<E> implements IQueue<E> {
 		if (isEmpty()) {
 			return null;
 		} else {
-			Node min = root, minPrev = null;
-			Node curr = root.sibling, prev = root;
+			Node min = root;
+			Node curr = root.sibling;
 			while (curr != null) {
 				if (cmp.compare(min.data, curr.data) > 0) {
-					minPrev = prev;
 					min = curr;
 				}
-				prev = curr;
 				curr = curr.sibling;
-			}
-			if (minPrev != null) {
-				minPrev.sibling = min.sibling;
-			} else {
-				root = root.sibling;
 			}
 			removeNode(min);
 			return min.data;
@@ -227,12 +214,27 @@ public class BinomialQueue<E> implements IQueue<E> {
 	}
 
 	private void removeNode(final Node node) {
-		if (node == root) {
-			root = root.sibling;
-		}
-		node.sibling = null;
-		Node curr, prev;
+		Node curr = node, prev;
 		Stack<Node> stack = new Stack<>();
+		while (curr.parent != null) {
+			E pVal = curr.parent.data;
+			curr.parent.data = curr.data;
+			curr.data = pVal;
+			curr = curr.parent;
+		}
+		if (curr == root) {
+			root = root.sibling;
+		} else {
+			prev = root;
+			while (root.sibling != null) {
+				if (prev.sibling == curr) {
+					break;
+				} else {
+					prev = prev.sibling;
+				}
+			}
+			prev.sibling = curr.sibling;
+		}
 		curr = node.chield;
 		while (curr != null) {
 			curr.parent = null;
@@ -275,7 +277,9 @@ public class BinomialQueue<E> implements IQueue<E> {
 				prev = root;
 			}
 		}
-		fixAll();
+		if (root != null) {
+			fixAll();
+		}
 	}
 
 	private void fixAll() {
