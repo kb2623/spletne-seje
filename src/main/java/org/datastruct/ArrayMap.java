@@ -4,7 +4,7 @@ import org.datastruct.exception.MapFullException;
 
 import java.util.*;
 
-public class ArrayMap<Key, Value> implements Map<Key, Value> {
+public class ArrayMap<Key, Value> implements IMap<Key, Value> {
 
 	private Entry<Key, Value>[] store;
 	private int size = 0;
@@ -158,13 +158,6 @@ public class ArrayMap<Key, Value> implements Map<Key, Value> {
 			}
 		} else {
 			return null;
-		}
-	}
-
-	@Override
-	public void putAll(Map<? extends Key, ? extends Value> map) throws NullPointerException {
-		for (Map.Entry<? extends Key, ? extends Value> e : map.entrySet()) {
-			put(e.getKey(), e.getValue());
 		}
 	}
 

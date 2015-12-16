@@ -2,7 +2,7 @@ package org.datastruct;
 
 import java.util.*;
 
-public class SkipMap<K, V> implements Map<K, V> {
+public class SkipMap<K, V> implements IMap<K, V> {
 
 	protected Entry<K, V> sentinel;
 	private CompareKey<K> keyCmp;
@@ -247,13 +247,6 @@ public class SkipMap<K, V> implements Map<K, V> {
 			return null;
 		} else {
 			return found;
-		}
-	}
-
-	@Override
-	public void putAll(Map<? extends K, ? extends V> map) throws NullPointerException {
-		for (Map.Entry e : map.entrySet()) {
-			this.put((K) e.getKey(), (V) e.getValue());
 		}
 	}
 

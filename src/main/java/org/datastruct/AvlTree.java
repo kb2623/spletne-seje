@@ -2,7 +2,7 @@ package org.datastruct;
 
 import java.util.*;
 
-public class AvlTree<K, V> implements Map<K, V> {
+public class AvlTree<K, V> implements IMap<K, V> {
 
 	private AVLEntry<K, V> root;
 	private CompareKey<K> keyCmp;
@@ -300,13 +300,6 @@ public class AvlTree<K, V> implements Map<K, V> {
 			}
 			found.key = minNode.key;
 			return found.setValue(minNode.value);
-		}
-	}
-
-	@Override
-	public void putAll(Map<? extends K, ? extends V> map) throws NullPointerException {
-		for (Map.Entry<? extends K, ? extends V> e : map.entrySet()) {
-			put(e.getKey(), e.getValue());
 		}
 	}
 

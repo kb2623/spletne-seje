@@ -1,11 +1,9 @@
 package org.datastruct;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Queue;
 
-public class LinkQueue<E> implements Queue<E> {
+public class LinkQueue<E> implements IQueue<E> {
 
 	private Node<E> first;
 	private Node<E> last;
@@ -131,59 +129,8 @@ public class LinkQueue<E> implements Queue<E> {
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends E> collection) throws NullPointerException, IllegalStateException {
-		for (E e : collection) {
-			if (!add(e)) {
-				throw new IllegalStateException();
-			}
-		}
-		return true;
-	}
-
-	@Override
 	public void clear() {
 		first = last = null;
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> collection) throws NullPointerException {
-		Node<E> curr = first;
-		Node<E> prev = null;
-		while (curr != null) {
-			if (!collection.contains(curr.data)) {
-				if (prev == null) {
-					first = first.prev;
-				} else {
-					prev.prev = curr.prev;
-				}
-			}
-			prev = curr;
-			curr = curr.prev;
-		}
-		if (first == null) {
-			last = null;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> collection) throws NullPointerException {
-		if (!isEmpty()) {
-			for (Object o : collection) {
-				remove(o);
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> collection) throws NullPointerException {
-		for (Object o : collection) {
-			if (!contains(o)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	@Override

@@ -1,8 +1,10 @@
 package org.datastruct;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-public class BinomialQueue<E> implements Queue<E> {
+public class BinomialQueue<E> implements IQueue<E> {
 
 	private Node root;
 	private NodeComparator cmp;
@@ -146,37 +148,6 @@ public class BinomialQueue<E> implements Queue<E> {
 
 	@Override
 	public boolean remove(Object o) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> collection) {
-		for (Object e : collection) {
-			if (!contains(e)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends E> collection) throws NullPointerException {
-		boolean ret = true;
-		for (E e : collection) {
-			if (!add(e)) {
-				ret = false;
-			}
-		}
-		return ret;
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> collection) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> collection) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}
 

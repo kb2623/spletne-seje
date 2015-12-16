@@ -3,7 +3,7 @@ package org.datastruct;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class RadixTree<V> implements Map<String, V>, Iterable<V> {
+public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 
 	private RadixEntry rootNode;
 
@@ -422,11 +422,6 @@ public class RadixTree<V> implements Map<String, V>, Iterable<V> {
 		String sKey = (String) key;
 		return !isEmpty() ? delete(sKey) : null;
 //		return !isEmpty() ? delete(sKey, null, rootNode) : null;
-	}
-
-	@Override
-	public void putAll(Map<? extends String, ? extends V> map) throws NullPointerException {
-		map.entrySet().forEach(e -> put(e.getKey(), e.getValue()));
 	}
 
 	@Override
