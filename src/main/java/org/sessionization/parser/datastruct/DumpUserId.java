@@ -47,7 +47,9 @@ public class DumpUserId {
 				aClass.getClassFile().addAttribute(attr);
 			}
 			/** Inicializacije ID poja */{
-				CtField field = CtField.make("private " + Integer.class.getName() + " id;", aClass);
+				builder.setLength(0);
+				builder.append("private " + Integer.class.getName() + " id;");
+				CtField field = CtField.make(builder.toString(), aClass);
 				ConstPool constPool = field.getFieldInfo().getConstPool();
 				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 				{
@@ -67,7 +69,9 @@ public class DumpUserId {
 			}
 			/** Inicializacija polji */
 			for (LogFieldType f : fields) {
-				CtField field = CtField.make("private " + f.getClassE().getName() + " " + f.getFieldName() + ";", aClass);
+				builder.setLength(0);
+				builder.append("private " + f.getClassE().getName() + " " + f.getFieldName() + ";");
+				CtField field = CtField.make(builder.toString(), aClass);
 				ConstPool constPool = field.getFieldInfo().getConstPool();
 				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 				Class c = f.getClassE();
@@ -89,28 +93,38 @@ public class DumpUserId {
 				aClass.addField(field);
 			}
 			/** Integer getId() */{
-				CtMethod method = CtMethod.make("public " + Integer.class.getName() + " getId() { return this.id; }", aClass);
+				builder.setLength(0);
+				builder.append("public " + Integer.class.getName() + " getId() { return this.id; }");
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
 			/** void setId(Integer id) */{
-				CtMethod method = CtMethod.make("public void setId(" + Integer.class.getName() + " id) { this.id = id; }", aClass);
+				builder.setLength(0);
+				builder.append("public void setId(" + Integer.class.getName() + " id) { this.id = id; }");
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
 			/** setterji in getterji za ostala polja */
 			for (LogFieldType f : fields) {
 				/** setter */{
-					CtMethod method = CtMethod.make("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}", aClass);
+					builder.setLength(0);
+					builder.append("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
 				/** getter */{
-					CtMethod method = CtMethod.make("public " + f.getClassE().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}", aClass);
+					builder.setLength(0);
+					builder.append("public " + f.getClassE().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
 			}
 			/** Dodajanje polja UserSession, ter getterj in setterja za to polje */
 			if (fields.size() < fieldsTypes.size()) {
 				/** Inicializacije UserSessino razreda */{
-					CtField field = CtField.make("private " + AbsUserSession.class.getName() + " session;", aClass);
+					builder.setLength(0);
+					builder.append("private " + AbsUserSession.class.getName() + " session;");
+					CtField field = CtField.make(builder.toString(), aClass);
 					ConstPool constPool = field.getFieldInfo().getConstPool();
 					AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 					/** Dodajanje anoracije ManyToMany */{
@@ -125,11 +139,15 @@ public class DumpUserId {
 					aClass.addField(field);
 				}
 				/** getter za Session */{
-					CtMethod method = CtMethod.make("public " + AbsUserSession.class.getName() + " getSession() {" + "return this.session;" + "}", aClass);
+					builder.setLength(0);
+					builder.append("public " + AbsUserSession.class.getName() + " getSession() {" + "return this.session;" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
 				/** setter za Session */{
-					CtMethod method = CtMethod.make("public void setSession(" + AbsUserSession.class.getName() + " session) {" + "this.session = session;" + "}", aClass);
+					builder.setLength(0);
+					builder.append("public void setSession(" + AbsUserSession.class.getName() + " session) {" + "this.session = session;" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
 				/** getLocalTime() */{

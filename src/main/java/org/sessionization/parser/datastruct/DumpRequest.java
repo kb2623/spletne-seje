@@ -47,7 +47,9 @@ public class DumpRequest {
 				aClass.getClassFile().addAttribute(attr);
 			}
 			/** Inicializacija ID polja */{
-				CtField field = CtField.make("private " + Integer.class.getName() + " id;", aClass);
+				builder.setLength(0);
+				builder.append("private " + Integer.class.getName() + " id;");
+				CtField field = CtField.make(builder.toString(), aClass);
 				ConstPool constPool = field.getFieldInfo().getConstPool();
 				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 				{
@@ -67,7 +69,9 @@ public class DumpRequest {
 			}
 			/** Inicializacija polji */
 			for (LogFieldType f : fields) {
-				CtField field = CtField.make("private " + f.getClassE().getName() + " " + f.getFieldName() + ";", aClass);
+				builder.setLength(0);
+				builder.append("private " + f.getClassE().getName() + " " + f.getFieldName() + ";");
+				CtField field = CtField.make(builder.toString(), aClass);
 				ConstPool constPool = field.getFieldInfo().getConstPool();
 				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 				Class c = f.getClassE();
@@ -116,21 +120,29 @@ public class DumpRequest {
 				aClass.addConstructor(constructor);
 			}
 			/** getId() */{
-				CtMethod method = CtMethod.make("public " + Integer.class.getName() + " getId() { return this.id; }", aClass);
+				builder.setLength(0);
+				builder.append("public " + Integer.class.getName() + " getId() { return this.id; }");
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
 			/** setId(Integer id) */{
-				CtMethod method = CtMethod.make("public void setId(" + Integer.class.getName() + " id) { this.id = id; }", aClass);
+				builder.setLength(0);
+				builder.append("public void setId(" + Integer.class.getName() + " id) { this.id = id; }");
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
 			/** setterji in getterji za ostala polja */
 			for (LogFieldType f : fields) {
 				/** setter */{
-					CtMethod method = CtMethod.make("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}", aClass);
+					builder.setLength(0);
+					builder.append("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
 				/** getter */{
-					CtMethod method = CtMethod.make("public " + f.getClassE().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}", aClass);
+					builder.setLength(0);
+					builder.append("public " + f.getClassE().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
 			}
