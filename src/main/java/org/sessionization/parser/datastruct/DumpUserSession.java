@@ -15,6 +15,7 @@ public class DumpUserSession {
 	private static String CLASSNAME = "org.sessionization.parser.datastuct.UserSession";
 
 	public static Class<?> dump(ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
+		final StringBuilder builder = new StringBuilder();
 		ClassPool pool = loader.getPool();
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		aClass.setModifiers(Modifier.PUBLIC);
@@ -34,13 +35,13 @@ public class DumpUserSession {
 			aClass.getClassFile().addAttribute(attr);
 		}
 		/** UserSession() */{
-			StringBuilder builder = new StringBuilder();
+			builder.setLength(0);
 			builder.append("public UserSession() { super(); }");
 			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 			aClass.addConstructor(constructor);
 		}
 		/** UserSession(ParsedLine line) */{
-			StringBuilder builder = new StringBuilder();
+			builder.setLength(0);
 			builder.append("public UserSession(" + ParsedLine.class.getName() + " line) {");
 			builder.append("super(line);");
 			builder.append("super.addPageView(new " + pool.get(DumpPageView.getName()).getName() + "(line));");
@@ -49,7 +50,7 @@ public class DumpUserSession {
 			aClass.addConstructor(constructor);
 		}
 		/** boolean addParsedLine(ParsedLine line) super razreda */{
-			StringBuilder builder = new StringBuilder();
+			builder.setLength(0);
 			builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
 			builder.append("if (super.pages == null) return false;");
 			builder.append("if (!((" + DumpPageView.getName() + ") super.pages.get(pages.size() - 1)).addParsedLine(line)) {" +

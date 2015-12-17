@@ -19,6 +19,7 @@ public class DumpPageView {
 	private static String CLASSNAME = "org.sessionization.parser.datastruct.PageView";
 
 	public static Class<?> dump(ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
+		final StringBuilder builder = new StringBuilder();
 		ClassPool pool = loader.getPool();
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		aClass.setModifiers(Modifier.PUBLIC);
@@ -38,13 +39,13 @@ public class DumpPageView {
 			aClass.getClassFile().addAttribute(attr);
 		}
 		/** PageView() */{
-			StringBuilder builder = new StringBuilder();
+			builder.setLength(0);
 			builder.append("public PageView() { super(); }");
 			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 			aClass.addConstructor(constructor);
 		}
 		/** PageView(ParsedLine line) */{
-			StringBuilder builder = new StringBuilder();
+			builder.setLength(0);
 			builder.append("public PageView(" + ParsedLine.class.getName() + " line) {");
 			builder.append("super(line);");
 			builder.append("super.requests.add(new " + DumpRequest.getName() + "(line));");
@@ -53,7 +54,7 @@ public class DumpPageView {
 			aClass.addConstructor(constructor);
 		}
 		/** boolean addParsedLine(ParsedLine line) */{
-			StringBuilder builder = new StringBuilder();
+			builder.setLength(0);
 			builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
 			builder.append("if (line == null || super.requests == null) { return false; }");
 			builder.append("if (line.isResource()) " +

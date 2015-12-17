@@ -27,6 +27,7 @@ public class DumpRequest {
 			return null;
 		} else {
 			List<LogFieldType> fields = getFields(fieldTypes);
+			final StringBuilder builder = new StringBuilder();
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
 			aClass.setModifiers(Modifier.PUBLIC);
@@ -88,7 +89,7 @@ public class DumpRequest {
 				aClass.addField(field);
 			}
 			/** Request() */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public Request() {");
 				builder.append("super();");
 				builder.append("this.id = null;");
@@ -100,7 +101,7 @@ public class DumpRequest {
 				aClass.addConstructor(constructor);
 			}
 			/** Request(ParsedLine line) */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public Request(" + ParsedLine.class.getName() + " line) {");
 				builder.append("super();");
 				builder.append("this.id = null;");
@@ -134,33 +135,41 @@ public class DumpRequest {
 				}
 			}
 			/** getLocalTime() super razreda interface */{
-				StringBuilder builder = new StringBuilder();
+				boolean has = false;
+				builder.setLength(0);
 				builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
 				for (LogFieldType f : fields) {
 					if (f == LogFieldType.DateTime || f == LogFieldType.Time) {
 						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getTime() : null);");
+						has = true;
 						break;
 					}
 				}
 				builder.append('}');
-				CtMethod method = CtMethod.make(builder.toString(), aClass);
-				aClass.addMethod(method);
+				if (has) {
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
 			}
 			/** getLocalDate() super razreda interface */{
-				StringBuilder builder = new StringBuilder();
+				boolean has = false;
+				builder.setLength(0);
 				builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
 				for (LogFieldType f : fields) {
 					if (f == LogFieldType.DateTime || f == LogFieldType.Date) {
 						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getDate() : null);");
+						has = true;
 						break;
 					}
 				}
 				builder.append('}');
-				CtMethod method = CtMethod.make(builder.toString(), aClass);
-				aClass.addMethod(method);
+				if (has) {
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
 			}
 			/** equals(Object o) */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public boolean equals(" + Object.class.getName() + " o) {");
 				builder.append("if (this == o) { return true; }\n");
 				builder.append("else if (o == null || getClass() != o.getClass()) { return false; }");
@@ -175,7 +184,7 @@ public class DumpRequest {
 				aClass.addMethod(method);
 			}
 			/** hashCode() */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public " + int.class.getName() + " hashCode() {");
 				builder.append(int.class.getName() + " res = this.id != null ? id.hashCode() : 0;");
 				for (LogFieldType f : fields) {

@@ -27,6 +27,7 @@ public class DumpUserId {
 			return null;
 		} else {
 			List<LogFieldType> fields = getFields(fieldsTypes);
+			final StringBuilder builder = new StringBuilder();
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
 			aClass.setModifiers(Modifier.PUBLIC);
@@ -132,7 +133,7 @@ public class DumpUserId {
 					aClass.addMethod(method);
 				}
 				/** getLocalTime() */{
-					StringBuilder builder = new StringBuilder();
+					builder.setLength(0);
 					builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
 					builder.append("if (session != null ) { return this.session.getLocalTime(); }");
 					builder.append("else {return " + LocalTime.class.getName() + ".MIDNIGHT; }");
@@ -141,7 +142,7 @@ public class DumpUserId {
 					aClass.addMethod(method);
 				}
 				/** getLocalDate() */{
-					StringBuilder builder = new StringBuilder();
+					builder.setLength(0);
 					builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
 					builder.append("if (session != null) { return this.session.getLocalDate(); }");
 					builder.append("else { return " + LocalDate.class.getName() + ".MIN; }");
@@ -151,7 +152,7 @@ public class DumpUserId {
 				}
 			}
 			/** String getKey() super razreda */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public " + String.class.getName() + " getKey() {");
 				builder.append("return ");
 				for (LogFieldType f : fields) {
@@ -165,7 +166,7 @@ public class DumpUserId {
 				aClass.addMethod(method);
 			}
 			/** boolean addParsedLine(ParsedLine line) super razreda */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
 				if (fields.size() < fieldsTypes.size()) {
 					builder.append("if (getKey().equals(line.getKey())) {");
@@ -179,7 +180,7 @@ public class DumpUserId {
 				aClass.addMethod(method);
 			}
 			/** equals(Object o) */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public boolean equals(" + Object.class.getName() + " o) {");
 				builder.append("if (this == o) { return true; }");
 				builder.append("else if (o == null || getClass() != o.getClass()) { return false; }");
@@ -194,7 +195,7 @@ public class DumpUserId {
 				aClass.addMethod(method);
 			}
 			/** hashCode() */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public " + int.class.getName() + " hashCode() {");
 				builder.append(int.class.getName() + " res = this.id != null ? id.hashCode() : 0;");
 				for (LogFieldType f : fields) {
@@ -204,7 +205,7 @@ public class DumpUserId {
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}/** UserId() */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public UserId() {");
 				builder.append("super();");
 				builder.append("this.id = null;");
@@ -219,7 +220,7 @@ public class DumpUserId {
 				aClass.addConstructor(constructor);
 			}
 			/** UserId(ParsedLine line) */{
-				StringBuilder builder = new StringBuilder();
+				builder.setLength(0);
 				builder.append("public UserId(" + ParsedLine.class.getName() + " line) {");
 				builder.append("super();");
 				builder.append("this.id = null;");
