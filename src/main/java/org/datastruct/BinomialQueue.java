@@ -200,14 +200,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 		if (isEmpty()) {
 			return null;
 		} else {
-			Node min = root;
-			Node curr = root.sibling;
-			while (curr != null) {
-				if (cmp.compare(min.data, curr.data) > 0) {
-					min = curr;
-				}
-				curr = curr.sibling;
-			}
+			Node min = getFirst();
 			removeNode(min);
 			return min.data;
 		}
@@ -322,14 +315,15 @@ public class BinomialQueue<E> implements IQueue<E> {
 		if (isEmpty()) {
 			return null;
 		} else {
-			Node ret = root, curr = root;
+			Node min = root;
+			Node curr = root.sibling;
 			while (curr != null) {
-				if (cmp.compare(ret.data, curr.data) < 0) {
-					ret = curr;
+				if (cmp.compare(min.data, curr.data) > 0) {
+					min = curr;
 				}
 				curr = curr.sibling;
 			}
-			return ret;
+			return min;
 		}
 	}
 

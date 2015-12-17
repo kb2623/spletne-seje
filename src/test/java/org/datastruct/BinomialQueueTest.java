@@ -105,26 +105,6 @@ public class BinomialQueueTest {
 	}
 
 	@Test(timeout = 10000)
-	public void testContainsAll() throws Exception {
-
-	}
-
-	@Test(timeout = 10000)
-	public void testAddAll() throws Exception {
-
-	}
-
-	@Test(timeout = 10000)
-	public void testRemoveAll() throws Exception {
-
-	}
-
-	@Test(timeout = 10000)
-	public void testRetainAll() throws Exception {
-
-	}
-
-	@Test(timeout = 10000)
 	public void testOffer() throws Exception {
 		offer(true);
 		assertFalse(queue.offer(null));
@@ -155,14 +135,6 @@ public class BinomialQueueTest {
 		assertTrue(queue.isEmpty());
 	}
 
-	@Test
-	public void testSome() {
-		queue.add(23);
-		queue.add(32);
-		queue.add(20);
-		queue.remove(20);
-	}
-
 	@Test(timeout = 10000)
 	public void testPoll() throws Exception {
 		assertNull(queue.poll());
@@ -173,14 +145,29 @@ public class BinomialQueueTest {
 		assertEquals(tqueue.isEmpty(), queue.isEmpty());
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testElement() throws Exception {
-
+		try {
+			queue.element();
+			fail();
+		} catch (NoSuchElementException e) {
+		}
+		add(true);
+		while (!tqueue.isEmpty()) {
+			assertEquals(tqueue.element(), queue.element());
+			assertEquals(tqueue.remove(), queue.remove());
+		}
+		assertEquals(tqueue.isEmpty(), queue.isEmpty());
 	}
 
 	@Test(timeout = 10000)
 	public void testPeek() throws Exception {
-
+		assertNull(queue.peek());
+		add(true);
+		while (!tqueue.isEmpty()) {
+			assertEquals(tqueue.peek(), queue.peek());
+			assertEquals(tqueue.poll(), queue.poll());
+		}
 	}
 
 	private class CmpInt implements Comparator<Integer> {
