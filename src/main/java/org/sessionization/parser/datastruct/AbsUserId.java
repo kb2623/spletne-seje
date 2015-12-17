@@ -1,6 +1,8 @@
 package org.sessionization.parser.datastruct;
 
-public abstract class AbsUserId {
+import org.sessionization.TimePoint;
+
+public abstract class AbsUserId implements TimePoint {
 	/**
 	 * @return
 	 */

@@ -11,6 +11,8 @@ import org.sessionization.fields.LogFieldType;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -127,6 +129,24 @@ public class DumpUserId {
 				}
 				/** setter za Session */{
 					CtMethod method = CtMethod.make("public void setSession(" + AbsUserSession.class.getName() + " session) {" + "this.session = session;" + "}", aClass);
+					aClass.addMethod(method);
+				}
+				/** getLocalTime() */{
+					StringBuilder builder = new StringBuilder();
+					builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
+					builder.append("if (session != null ) { return this.session.getLocalTime(); }");
+					builder.append("else {return " + LocalTime.class.getName() + ".MIDNIGHT; }");
+					builder.append('}');
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+				/** getLocalDate() */{
+					StringBuilder builder = new StringBuilder();
+					builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
+					builder.append("if (session != null) { return this.session.getLocalDate(); }");
+					builder.append("else { return " + LocalDate.class.getName() + ".of(0, 0, 0); }");
+					builder.append('}');
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
 			}

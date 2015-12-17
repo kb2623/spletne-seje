@@ -6,9 +6,7 @@ import org.sessionization.fields.ncsa.RequestLine;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
 
 import static org.junit.Assert.*;
 
@@ -123,28 +121,9 @@ public class TestLogField {
 	}
 
 	@Test
-	public void testTimePointDateTime() {
-		DateTime dateTime1 = new DateTime(LocalDateTime.of(2015, 1, 24, 3, 30, 34)),
-				dateTime2 = new DateTime(LocalDateTime.of(2015, 1, 24, 3, 30, 45));
-		Period p = dateTime1.minusDate(dateTime2);
-		Duration d = dateTime1.minusTime(dateTime2);
-		System.out.println(d.isNegative());
-		System.out.println(d.toString());
-		System.out.println(d.abs().getSeconds());
-		System.out.println(d.toNanos());
-		System.out.println(p.toString());
-		System.out.println(dateTime2.getLocalTime().plus(d).toString());
-		System.out.println(dateTime2.getLocalDate().minus(p).toString());
-		System.out.println(dateTime2.getLocalTime().minus(p).toString());
-	}
-
-	@Test
-	public void testTimePointTime() {
-
-	}
-
-	@Test
-	public void testTimePointDate() {
+	public void testTimePoint() {
+		DateTime dt1 = new DateTime(LocalDateTime.of(2015, 12, 17, 0, 0, 12)), dt2 = new DateTime(LocalDateTime.of(2015, 12, 18, 0, 0, 12));
+		assertEquals(24 * 3600, dt1.secBetwene(dt2));
 
 	}
 }

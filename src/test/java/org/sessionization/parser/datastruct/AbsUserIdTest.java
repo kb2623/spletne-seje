@@ -11,6 +11,7 @@ import org.sessionization.parser.NCSAWebLogParser;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class AbsUserIdTest {
@@ -28,8 +29,11 @@ public class AbsUserIdTest {
 	public void testGetKey() throws Exception {
 		parser.setFieldType(LogFormats.CommonLogFormat.create(null));
 		parser.setPool(new ObjectPool());
-		parser.openFile(new StringReader("157.55.39.19 - - [26/Jun/2014:04:44:51 +0200] \"GET /jope-puloverji/moski-pulover-b74-red?limit=18 HTTP/1.1\" 200 9545"));
-		ParsedLine line = parser.parseLine();
+		parser.openFile(new StringReader(
+				"157.55.39.19 - - [26/Jun/2014:04:44:51 +0200] \"GET /jope-puloverji/moski-pulover-b74-red?limit=18 HTTP/1.1\" 200 9545\n" +
+						"157.55.39.19 - - [28/Jun/2014:04:44:51 +0200] \"GET /jope-puloverji/moski-pulover-b74-black?limit=18 HTTP/1.1\" 200 9545"
+		));
+		ParsedLine line1 = parser.parseLine(), line2 = parser.parseLine();
 		DumpRequest.dump(parser.getFieldType(), (ClassPoolLoader) loader);
 		DumpPageView.dump((ClassPoolLoader) loader);
 		DumpUserSession.dump((ClassPoolLoader) loader);
@@ -37,8 +41,11 @@ public class AbsUserIdTest {
 		Class userId = loader.loadClass(DumpUserId.getName());
 		assertNotNull(userId);
 		Constructor init = userId.getConstructor(ParsedLine.class);
-		AbsUserId o = (AbsUserId) init.newInstance(line);
-		System.out.println(o.getKey() + " <----> " + line.getKey());
+		AbsUserId u1 = (AbsUserId) init.newInstance(line1);
+		assertEquals(line1.getKey(), u1.getKey());
+		AbsUserId u2 = (AbsUserId) init.newInstance(line2);
+		assertEquals(line2.getKey(), u2.getKey());
+		System.out.println(u1.secBetwene(u2));
 	}
 
 	@Test
