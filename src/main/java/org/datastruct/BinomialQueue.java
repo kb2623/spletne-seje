@@ -226,7 +226,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 			root = root.sibling;
 		} else {
 			prev = root;
-			while (root.sibling != null) {
+			while (prev.sibling != null) {
 				if (prev.sibling == curr) {
 					break;
 				} else {
@@ -235,7 +235,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 			}
 			prev.sibling = curr.sibling;
 		}
-		curr = node.chield;
+		curr = curr.chield;
 		while (curr != null) {
 			curr.parent = null;
 			stack.push(curr);
