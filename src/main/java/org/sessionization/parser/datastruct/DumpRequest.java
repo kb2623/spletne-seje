@@ -107,7 +107,7 @@ public class DumpRequest {
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
 				for (LogFieldType f : fields) {
 					builder.append("if (f.getClass() == " + f.getClassE().getName() + ".class)").append('\n');
-					builder.append("{ this." + f.getFieldName() + " = f; }");
+					builder.append("{ this." + f.getFieldName() + " = (" + f.getClassE().getName() + ") f; }");
 				}
 				builder.append('}').append('}');
 				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);

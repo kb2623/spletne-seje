@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class AbsPageView implements TimePoint {
 
 	@OneToMany(cascade = CascadeType.ALL)
-	List<AbsRequest> requests;
+	protected List<AbsRequest> requests;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

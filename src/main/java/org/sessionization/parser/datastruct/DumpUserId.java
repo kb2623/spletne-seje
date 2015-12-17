@@ -20,7 +20,7 @@ public class DumpUserId {
 
 	private static String CLASSNAME = "org.sessionization.parser.datastuct.UserId";
 
-	public static Class<?> dump(Collection<LogFieldType> fieldsTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
+	public static Class<?> dump(final Collection<LogFieldType> fieldsTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
 		if (fieldsTypes.size() < 1) {
 			return null;
 		} else {
@@ -207,7 +207,7 @@ public class DumpUserId {
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
 				for (LogFieldType f : fields) {
 					builder.append("if (f.getClass() == " + f.getClassE().getName() + ".class)");
-					builder.append("{ this." + f.getFieldName() + " = f; }");
+					builder.append("{ this." + f.getFieldName() + " = (" + f.getClassE().getName() + ") f; }");
 				}
 				builder.append('}');
 				if (fields.size() < fieldsTypes.size()) {

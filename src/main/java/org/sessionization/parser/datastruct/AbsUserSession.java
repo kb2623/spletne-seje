@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class AbsUserSession implements TimePoint {
 
 	@OneToMany(cascade = CascadeType.ALL)
-	List<AbsPageView> pages;
+	protected List<AbsPageView> pages;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -45,7 +45,7 @@ public abstract class AbsUserSession implements TimePoint {
 		this.pages = pages;
 	}
 
-	boolean addPageView(AbsPageView loadedPage) {
+	protected boolean addPageView(AbsPageView loadedPage) {
 		if (pages != null) {
 			return pages.add(loadedPage);
 		} else {
