@@ -111,7 +111,7 @@ public class DumpUserId {
 					ConstPool constPool = field.getFieldInfo().getConstPool();
 					AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 					/** Dodajanje anoracije ManyToMany */{
-						Annotation anno = new Annotation(ManyToMany.class.getName(), constPool);
+						Annotation anno = new Annotation(OneToMany.class.getName(), constPool);
 						EnumMemberValue value = new EnumMemberValue(constPool);
 						value.setType(CascadeType.class.getName());
 						value.setValue(CascadeType.ALL.name());
