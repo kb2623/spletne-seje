@@ -144,7 +144,7 @@ public class DumpUserId {
 					StringBuilder builder = new StringBuilder();
 					builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
 					builder.append("if (session != null) { return this.session.getLocalDate(); }");
-					builder.append("else { return " + LocalDate.class.getName() + ".of(0, 0, 0); }");
+					builder.append("else { return " + LocalDate.class.getName() + ".MIN; }");
 					builder.append('}');
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
@@ -226,7 +226,7 @@ public class DumpUserId {
 				builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
 				for (LogFieldType f : fields) {
-					builder.append("if (f.getClass() == " + f.getClassE().getName() + ".class)");
+					builder.append("if (f instanceof " + f.getClassE().getName() + ")");
 					builder.append("{ this." + f.getFieldName() + " = (" + f.getClassE().getName() + ") f; }");
 				}
 				builder.append('}');

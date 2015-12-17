@@ -11,7 +11,7 @@ public interface TimePoint {
 	static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
 
 	default LocalDate getLocalDate() {
-		return LocalDate.of(0, 0, 0);
+		return LocalDate.MIN;
 	}
 
 	default LocalTime getLocalTime() {

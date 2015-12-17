@@ -11,6 +11,7 @@ import org.sessionization.fields.LogFieldType;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,9 +87,9 @@ public class DumpRequest {
 				field.getFieldInfo().addAttribute(attr);
 				aClass.addField(field);
 			}
-			/** PageView() */{
+			/** Request() */{
 				StringBuilder builder = new StringBuilder();
-				builder.append("public PageView() {");
+				builder.append("public Request() {");
 				builder.append("super();");
 				builder.append("this.id = null;");
 				for (LogFieldType f : fields) {
@@ -98,15 +99,15 @@ public class DumpRequest {
 				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 				aClass.addConstructor(constructor);
 			}
-			/** PageView(ParsedLine line) */{
+			/** Request(ParsedLine line) */{
 				StringBuilder builder = new StringBuilder();
-				builder.append("public PageView(" + ParsedLine.class.getName() + " line) {");
+				builder.append("public Request(" + ParsedLine.class.getName() + " line) {");
 				builder.append("super();");
 				builder.append("this.id = null;");
 				builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
 				for (LogFieldType f : fields) {
-					builder.append("if (f.getClass() == " + f.getClassE().getName() + ".class)").append('\n');
+					builder.append("if (f instanceof " + f.getClassE().getName() + ")").append('\n');
 					builder.append("{ this." + f.getFieldName() + " = (" + f.getClassE().getName() + ") f; }");
 				}
 				builder.append('}').append('}');
@@ -147,10 +148,11 @@ public class DumpRequest {
 			}
 			/** getLocalDate() super razreda interface */{
 				StringBuilder builder = new StringBuilder();
-				builder.append("public " + LocalTime.class.getName() + " getLocaDate() {");
+				builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
 				for (LogFieldType f : fields) {
 					if (f == LogFieldType.DateTime || f == LogFieldType.Date) {
 						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getDate() : null);");
+						break;
 					}
 				}
 				builder.append('}');

@@ -10,9 +10,9 @@ import org.sessionization.parser.NCSAWebLogParser;
 
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.time.LocalDate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class AbsUserIdTest {
 
@@ -46,6 +46,8 @@ public class AbsUserIdTest {
 		AbsUserId u2 = (AbsUserId) init.newInstance(line2);
 		assertEquals(line2.getKey(), u2.getKey());
 		System.out.println(u1.secBetwene(u2));
+		System.out.println(u2.printDate() + "\t" + u1.printDate());
+		assertFalse(u1.getLocalDate().equals(LocalDate.MIN));
 	}
 
 	@Test
