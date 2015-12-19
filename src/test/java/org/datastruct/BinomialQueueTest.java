@@ -52,8 +52,8 @@ public class BinomialQueueTest {
 	@Test
 	public void testIterator() throws Exception {
 		add(true);
-		for (Iterator<Integer> itt = tqueue.iterator(), itq = queue.iterator(); itt.hasNext() && itq.hasNext(); ) {
-			assertEquals(itt.next(), itq.next());
+		for (Iterator<Integer> it = queue.iterator(); it.hasNext(); ) {
+			assertEquals(tqueue.remove(), it.next());
 		}
 	}
 
