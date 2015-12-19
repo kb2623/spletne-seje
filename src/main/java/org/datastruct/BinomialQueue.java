@@ -8,7 +8,6 @@ public class BinomialQueue<E> implements IQueue<E> {
 
 	private Node root;
 	private NodeComparator cmp;
-
 	public BinomialQueue(Comparator<E> cmp) {
 		this.cmp = new NodeComparator(cmp);
 		root = null;
@@ -73,8 +72,12 @@ public class BinomialQueue<E> implements IQueue<E> {
 	}
 
 	@Override
-	public Iterator<E> iterator() throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+	public Iterator<E> iterator() {
+		try {
+			return new IteratorBQ<E>((BinomialQueue<E>) clone());
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -371,6 +374,52 @@ public class BinomialQueue<E> implements IQueue<E> {
 		return builder.toString();
 	}
 
+	public BinomialQueue<E> copy() {
+		try {
+			return (BinomialQueue<E>) clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		BinomialQueue<E> clone = new BinomialQueue<>(cmp.cmp);
+		clone.root = clone(root, null);
+		return clone;
+	}
+
+	private Node clone(final Node node, final Node parent) throws CloneNotSupportedException {
+		if (node != null) {
+			Node nNode = (Node) node.clone();
+			nNode.chield = clone(node.chield, node);
+			nNode.sibling = clone(node.sibling, parent);
+			nNode.parent = parent;
+			return nNode;
+		} else {
+			return null;
+		}
+	}
+
+	class IteratorBQ<E> implements Iterator<E> {
+
+		private BinomialQueue<E> queue;
+
+		IteratorBQ(BinomialQueue<E> queue) {
+			this.queue = queue;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !queue.isEmpty();
+		}
+
+		@Override
+		public E next() {
+			return (E) queue.remove();
+		}
+	}
+
 	private class Node {
 
 		E data;
@@ -398,6 +447,11 @@ public class BinomialQueue<E> implements IQueue<E> {
 			} else {
 				depth = 1;
 			}
+		}
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException {
+			return new Node(this.data, null, null, null, this.depth);
 		}
 	}
 

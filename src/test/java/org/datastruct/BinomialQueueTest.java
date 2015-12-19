@@ -4,10 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Comparator;
-import java.util.NoSuchElementException;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -54,6 +51,10 @@ public class BinomialQueueTest {
 
 	@Test
 	public void testIterator() throws Exception {
+		add(true);
+		for (Iterator<Integer> itt = tqueue.iterator(), itq = queue.iterator(); itt.hasNext() && itq.hasNext(); ) {
+			assertEquals(itt.next(), itq.next());
+		}
 	}
 
 	@Test
@@ -167,6 +168,18 @@ public class BinomialQueueTest {
 		while (!tqueue.isEmpty()) {
 			assertEquals(tqueue.peek(), queue.peek());
 			assertEquals(tqueue.poll(), queue.poll());
+		}
+	}
+
+	@Test(timeout = 10000)
+	public void testCopy() {
+		add(false);
+		BinomialQueue<Integer> cqueue = ((BinomialQueue<Integer>) queue).copy();
+		while (!queue.isEmpty()) {
+			assertEquals(queue.poll(), cqueue.poll());
+		}
+		if (!cqueue.isEmpty()) {
+			fail();
 		}
 	}
 
