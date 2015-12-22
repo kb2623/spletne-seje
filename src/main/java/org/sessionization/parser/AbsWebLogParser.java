@@ -144,7 +144,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 */
 	protected Queue<String> parse() throws IOException {
 		LinkQueue<String> queue = new LinkQueue<>();
-		boolean inQuotes = false, inB1 = false, inB2 = false, inB3 = false;
+		boolean inQuotes = false, inB1 = false, inB2 = false;
 		final StringBuilder builder = new StringBuilder();
 		for (char c : getLine().toCharArray()) {
 			switch (c) {
@@ -158,7 +158,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 					inQuotes = !inQuotes;
 					break;
 				case '[':
-					if (!inQuotes && !inB1 && !inB2 && !inB3) {
+					if (!inQuotes && !inB1 && !inB2) {
 						inB1 = true;
 					}
 					break;
@@ -170,7 +170,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 					}
 					break;
 				case '{':
-					if (!inQuotes && !inB1 && !inB2 && !inB3) {
+					if (!inQuotes && !inB1 && !inB2) {
 						inB2 = true;
 					}
 					break;
@@ -180,29 +180,21 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 						builder.setLength(0);
 						inB2 = false;
 					}
-				case '(':
-					if (!inQuotes && !inB1 && !inB2 && !inB3) {
-						inB3 = true;
-					}
-					break;
-				case ')':
-					if (inB3) {
-						queue.add(builder.toString());
-						builder.setLength(0);
-						inB3 = false;
-					}
 					break;
 				case ' ':
-					if (!inQuotes && !inB1 && !inB2 && !inB3 && builder.length() > 0) {
+					if (!inQuotes && !inB1 && !inB2 && builder.length() > 0) {
 						queue.offer(builder.toString());
 						builder.setLength(0);
-					} else if (inQuotes || inB1 || inB2 || inB3) {
+					} else if (inQuotes || inB1 || inB2) {
 						builder.append(c);
 					}
 					break;
 				default:
 					builder.append(c);
 			}
+		}
+		if (builder.length() > 0) {
+			queue.add(builder.toString());
 		}
 		return queue;
 	}
@@ -228,8 +220,8 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 					lineData.add(ft.parse(queue, this));
 				}
 			}
+			return new ParsedLine(lineData);
 		}
-		return null;
 	}
 
 	/**
@@ -372,8 +364,10 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 				}
 			};
 		} catch (ParseException e) {
+			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
