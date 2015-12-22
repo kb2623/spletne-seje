@@ -35,6 +35,22 @@ public class RequestLine implements LogField {
 	}
 
 	/**
+	 *
+	 * @param line
+	 * @throws URISyntaxException
+	 */
+	public RequestLine(String line) throws URISyntaxException {
+		String[] tab = line.split(" ");
+		if (tab.length < 3) {
+			throw new IllegalArgumentException();
+		} else {
+			method = Method.setMethod(tab[0]);
+			uri = new UriSteamQuery(new URI(tab[1]));
+			protocol = new Protocol(tab[2]);
+		}
+	}
+
+	/**
 	 * Konstruktor
 	 *
 	 * @param method   Uporabljena metoda

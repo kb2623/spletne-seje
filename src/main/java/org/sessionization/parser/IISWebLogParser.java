@@ -1,11 +1,7 @@
 package org.sessionization.parser;
 
-import org.sessionization.parser.datastruct.ParsedLine;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,43 +46,5 @@ public class IISWebLogParser extends W3CWebLogParser {
 	private void setDefaultFields(Locale locale) {
 		super.setDateFormat("dd/MM/yyyy", locale);
 		super.setTimeFormat("HH:mm:ss", locale);
-	}
-
-	@Override
-	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
-		int i = -1;
-		String logline = super.getLine();
-		String[] tokens = new String[super.fieldType.size()];
-		StringBuilder buff = new StringBuilder();
-		for (char c : logline.toCharArray()) {
-			switch (c) {
-				case ' ':
-					if (buff.length() > 0) {
-						tokens[++i] = buff.toString();
-						buff = new StringBuilder();
-					}
-					break;
-				case ',':
-					break;
-				default:
-					buff.append(c);
-			}
-		}
-		if (buff.length() > 0) {
-			tokens[++i] = buff.toString();
-		}
-		if (tokens.length != i + 1) {
-			throw new IOException();
-		}
-		return tokens;
-	}
-
-	@Override
-	public ParsedLine parseLine() throws ParseException {
-		try {
-			return new ParsedLine(process(parse()));
-		} catch (ArrayIndexOutOfBoundsException | IOException e) {
-			throw new ParseException("Bad line!!!", getPos());
-		}
 	}
 }

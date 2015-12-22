@@ -12,7 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SpletneSejeTest {
 
@@ -29,115 +30,103 @@ public class SpletneSejeTest {
 	}
 
 	@Test
-	public void testNCSAParserCommonResHashMap() {
+	public void testNCSAParserCommonResHashMap() throws IOException {
 		Map<String, List<ParsedLine>> testMap = new HashMap<>();
-		try {
-			parser.openFile(new File[]{new File(pathNCSACommon)});
-			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-			for (ParsedLine line : parser) {
-				List<ParsedLine> list = testMap.get(line.getKey());
-				if (list == null) {
-					list = new ArrayList<>();
-					list.add(line);
-					testMap.put(line.getKey(), list);
-				} else {
-					list.add(line);
-				}
+		parser.openFile(new File[]{new File(pathNCSACommon)});
+		parser.setFieldType(LogFormats.CommonLogFormat.create(null));
+		for (ParsedLine line : parser) {
+			List<ParsedLine> list = testMap.get(line.getKey());
+			if (list == null) {
+				list = new ArrayList<>();
+				list.add(line);
+				testMap.put(line.getKey(), list);
+			} else {
+				list.add(line);
 			}
-			parser.closeFile();
-			assertEquals(269, testMap.size());
-		} catch (NullPointerException | IOException e) {
-			fail();
 		}
+		parser.closeFile();
+		assertEquals(269, testMap.size());
 	}
 
 	@Test
-	public void testNCSAParserCommonResRadixTree() {
+	public void testNCSAParserCommonResRadixTree() throws IOException {
 		Map<String, List<ParsedLine>> testMap = new RadixTree<>();
-		try {
-			parser.openFile(new File[]{new File(pathNCSACommon)});
-			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-			for (ParsedLine line : parser) {
-				List<ParsedLine> list = testMap.get(line.getKey());
-				if (list == null) {
-					list = new ArrayList<>();
-					list.add(line);
-					testMap.put(line.getKey(), list);
-				} else {
-					list.add(line);
-				}
+		parser.openFile(new File[]{new File(pathNCSACommon)});
+		parser.setFieldType(LogFormats.CommonLogFormat.create(null));
+		for (ParsedLine line : parser) {
+			List<ParsedLine> list = testMap.get(line.getKey());
+			if (list == null) {
+				list = new ArrayList<>();
+				list.add(line);
+				testMap.put(line.getKey(), list);
+			} else {
+				list.add(line);
 			}
-			parser.closeFile();
-			boolean run = true;
-			Scanner sc = new Scanner(System.in);
-			Iterator<List<ParsedLine>> listIt = testMap.values().iterator();
-			Iterator<ParsedLine> line = listIt.next().iterator();
-			while (run) {
-				int select = sc.nextInt();
-				System.out.println();
-				switch (select) {
-					case 1:
-						System.out.println("Skiping: " + line.next().getKey());
-						line = listIt.next().iterator();
-						break;
-					case 2:
-						System.out.println("Skiping: " + line.next().toString());
-						while (!line.next().isResource()) {
-						}
-						break;
-					case 3:
-						ParsedLine l = null;
-						do {
-							l = line.next();
-							System.out.println(line.next().toString());
-						} while (l.isResource());
-						break;
-					default:
-						run = false;
-
-				}
-			}
-			assertEquals(269, testMap.size());
-		} catch (NullPointerException | IOException e) {
-			fail();
 		}
+		parser.closeFile();
+		boolean run = true;
+		Scanner sc = new Scanner(System.in);
+		Iterator<List<ParsedLine>> listIt = testMap.values().iterator();
+		Iterator<ParsedLine> line = listIt.next().iterator();
+		while (run) {
+			int select = sc.nextInt();
+			System.out.println();
+			switch (select) {
+				case 1:
+					System.out.println("Skiping: " + line.next().getKey());
+					line = listIt.next().iterator();
+					break;
+				case 2:
+					System.out.println("Skiping: " + line.next().toString());
+					while (!line.next().isResource()) {
+					}
+					break;
+				case 3:
+					ParsedLine l = null;
+					do {
+						l = line.next();
+						System.out.println(line.next().toString());
+					} while (l.isResource());
+					break;
+				default:
+					run = false;
+
+			}
+		}
+		assertEquals(269, testMap.size());
 	}
 
 	@Test
-	public void testNCSAParserCommonResRadixTreeHashMap() {
+	public void testNCSAParserCommonResRadixTreeHashMap() throws IOException {
 		Map<String, List<ParsedLine>> radixMap = new RadixTree<>();
 		Map<String, List<ParsedLine>> hashMap = new HashMap<>();
-		try {
-			parser.openFile(new File[]{new File(pathNCSACommon)});
-			parser.setFieldType(LogFormats.CommonLogFormat.create(null));
-			for (ParsedLine line : parser) {
-				List<ParsedLine> list = radixMap.get(line.getKey());
-				if (list == null) {
-					list = new ArrayList<>();
-					list.add(line);
-					radixMap.put(line.getKey(), list);
-				} else {
-					list.add(line);
-				}
-				list = hashMap.get(line.getKey());
-				if (list == null) {
-					list = new ArrayList<>();
-					list.add(line);
-					hashMap.put(line.getKey(), list);
-				} else {
-					list.add(line);
-				}
+		parser.openFile(new File[]{new File(pathNCSACommon)});
+		parser.setFieldType(LogFormats.CommonLogFormat.create(null));
+		for (ParsedLine line : parser) {
+			List<ParsedLine> list = radixMap.get(line.getKey());
+			if (list == null) {
+				list = new ArrayList<>();
+				list.add(line);
+				radixMap.put(line.getKey(), list);
+			} else {
+				list.add(line);
 			}
-			parser.closeFile();
-			assertEquals(hashMap.size(), radixMap.size());
-			for (Map.Entry<String, List<ParsedLine>> entry : hashMap.entrySet()) {
-				assertEquals(entry.getValue().size(), radixMap.get(entry.getKey()).size());
+			list = hashMap.get(line.getKey());
+			if (list == null) {
+				list = new ArrayList<>();
+				list.add(line);
+				hashMap.put(line.getKey(), list);
+			} else {
+				list.add(line);
 			}
-			radixMap.keySet().forEach(e -> hashMap.remove(e));
-			assertTrue(hashMap.isEmpty());
-		} catch (NullPointerException | IOException e) {
-			fail();
 		}
+		parser.closeFile();
+		assertEquals(hashMap.size(), radixMap.size());
+		for (Map.Entry<String, List<ParsedLine>> entry : hashMap.entrySet()) {
+			assertEquals(entry.getValue().size(), radixMap.get(entry.getKey()).size());
+		}
+		radixMap.keySet().forEach(e -> hashMap.remove(e));
+		assertTrue(hashMap.isEmpty());
 	}
 /*
 	@Test

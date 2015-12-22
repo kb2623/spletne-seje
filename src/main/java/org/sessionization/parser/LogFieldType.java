@@ -6,8 +6,12 @@ import org.sessionization.database.MethodConverter;
 import org.sessionization.parser.fields.*;
 import org.sessionization.parser.fields.ncsa.ProcessID;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public enum LogFieldType {
 	/**
@@ -24,6 +28,7 @@ public enum LogFieldType {
 		public Class getClassE() {
 			return org.sessionization.parser.fields.ncsa.RemoteHost.class;
 		}
+
 	},
 	/**
 	 * RFC 1413
@@ -60,6 +65,16 @@ public enum LogFieldType {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.parser.fields.ncsa.DateTime.class;
+		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			if (parser instanceof NCSAWebLogParser) {
+				NCSAWebLogParser p = (NCSAWebLogParser) parser;
+				return p.getTokenInstance(getClassE(), queue.poll(), ((NCSAWebLogParser) parser).getDateTimeFormatter());
+			} else {
+				throw new ParseException("Very bad warning!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -133,6 +148,16 @@ public enum LogFieldType {
 			list.add(org.sessionization.parser.fields.Host.class);
 			return list.toArray(new Class[list.size()]);
 		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			try {
+				URI uri = new URI(queue.poll());
+				return parser.getTokenInstance(getClassE(), uri);
+			} catch (URISyntaxException e) {
+				throw new ParseException("Bad referer!!!", parser.getPos());
+			}
+		}
 	},
 	/**
 	 * Identifikacija brskalnika in botov
@@ -146,6 +171,17 @@ public enum LogFieldType {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.parser.fields.UserAgent.class;
+		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			LogType f;
+			if (parser instanceof NCSAWebLogParser) {
+				f = LogType.NCSA;
+			} else {
+				f = LogType.W3C;
+			}
+			return parser.getTokenInstance(getClassE(), queue.poll(), f);
 		}
 	},
 	/**
@@ -169,6 +205,17 @@ public enum LogFieldType {
 					CookieKey.class
 			};
 		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			LogType f;
+			if (parser instanceof NCSAWebLogParser) {
+				f = LogType.NCSA;
+			} else {
+				f = LogType.W3C;
+			}
+			return parser.getTokenInstance(getClassE(), queue.poll(), f);
+		}
 	},
 	/**
 	 * W3C metoda
@@ -185,6 +232,11 @@ public enum LogFieldType {
 					MethodConverter.class
 			};
 		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			return org.sessionization.parser.fields.Method.setMethod(queue.poll());
+		}
 	},
 	/**
 	 * W3C datum
@@ -193,6 +245,16 @@ public enum LogFieldType {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.parser.fields.w3c.Date.class;
+		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			if (parser instanceof W3CWebLogParser) {
+				W3CWebLogParser p = (W3CWebLogParser) parser;
+				return parser.getTokenInstance(getClassE(), queue.poll(), p.getDateFormat());
+			} else {
+				throw new ParseException("Very bad error!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -203,6 +265,16 @@ public enum LogFieldType {
 		public Class getClassE() {
 			return org.sessionization.parser.fields.w3c.Time.class;
 		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			if (parser instanceof W3CWebLogParser) {
+				W3CWebLogParser p = (W3CWebLogParser) parser;
+				return p.getTokenInstance(getClassE(), queue.poll(), p.getTimeFormat());
+			} else {
+				throw new ParseException("Very bad error!!!", parser.getPos());
+			}
+		}
 	},
 	/**
 	 * �tevilka port na strežniku
@@ -212,6 +284,11 @@ public enum LogFieldType {
 		public Class getClassE() {
 			return Port.class;
 		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			return parser.getTokenInstance(getClassE(), queue.poll(), true);
+		}
 	},
 	/**
 	 * �tevilka port na klientu
@@ -220,6 +297,11 @@ public enum LogFieldType {
 		@Override
 		public Class getClassE() {
 			return Port.class;
+		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			return parser.getTokenInstance(getClassE(), queue.poll(), false);
 		}
 	},
 	/**
@@ -236,6 +318,11 @@ public enum LogFieldType {
 			return new Class[]{
 					InetAddressConverter.class
 			};
+		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			return parser.getTokenInstance(getClassE(), queue.poll(), true);
 		}
 	},
 	/**
@@ -258,6 +345,11 @@ public enum LogFieldType {
 					InetAddressConverter.class
 			};
 		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			return parser.getTokenInstance(getClassE(), queue.poll(), false);
+		}
 	},
 	/**
 	 * Čas porabljen za obdelavo zahteve (pri W3C v sekundah, pri Apache v milisekunah)
@@ -266,6 +358,11 @@ public enum LogFieldType {
 		@Override
 		public Class getClassE() {
 			return org.sessionization.parser.fields.TimeTaken.class;
+		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			return parser.getTokenInstance(getClassE(), queue.poll(), true);
 		}
 	},
 	/**
@@ -387,6 +484,11 @@ public enum LogFieldType {
 					ConnectionStatusConverter.class
 			};
 		}
+
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			return org.sessionization.parser.fields.ncsa.ConnectionStatus.getConnectionStatus(queue.poll());
+		}
 	},
 	/**
 	 * ID procesa, ki je obdelal zahtevo
@@ -428,4 +530,7 @@ public enum LogFieldType {
 		return new Class[0];
 	}
 
+	public LogField parse(final Queue<String> queue, final AbsWebLogParser parser) throws ParseException {
+		return parser.getTokenInstance(getClassE(), queue.poll());
+	}
 }

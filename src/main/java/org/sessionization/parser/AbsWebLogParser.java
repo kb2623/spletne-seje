@@ -1,5 +1,6 @@
 package org.sessionization.parser;
 
+import org.datastruct.LinkQueue;
 import org.datastruct.ObjectPool;
 import org.sessionization.parser.datastruct.ParsedLine;
 
@@ -35,16 +36,11 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	protected ObjectPool pool;
 
 	/**
-	 * Vrstica v datotekah
-	 */
-	private int pos;
-
-	/**
 	 * Datoteke za branje
 	 *
 	 * @see BufferedReader
 	 */
-	private BufferedReader[] readers;
+	private LineNumberReader[] readers;
 
 	/**
 	 * Osnovni konstruktor, za prevzete nastavitve:<p>
@@ -54,7 +50,6 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	public AbsWebLogParser() {
 		readers = null;
 		fieldType = null;
-		pos = 0;
 	}
 
 	/**
@@ -71,16 +66,15 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * @throws FileNotFoundException
 	 */
 	public void openFile(File... files) throws FileNotFoundException {
-		readers = new BufferedReader[files.length];
+		readers = new LineNumberReader[files.length];
 		for (int i = 0, j = 0; i < files.length; i++) {
 			if (files[i].isFile()) {
-				readers[j] = new BufferedReader(new InputStreamReader(new FileInputStream(files[i])));
+				readers[j] = new LineNumberReader(new InputStreamReader(new FileInputStream(files[i])));
 				j++;
 			} else {
 				System.err.println("Bad file [" + files[i].getAbsolutePath() + "]!!!");
 			}
 		}
-		pos = 0;
 	}
 
 	/**
@@ -89,16 +83,15 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * @param reader Vhodni tok
 	 */
 	public void openFile(BufferedReader... reader) {
-		readers = new BufferedReader[reader.length];
+		readers = new LineNumberReader[reader.length];
 		for (int i = 0, j = 0; i < reader.length; i++) {
 			if (reader[i] == null) {
 				System.err.println("Bad reader at " + i + "!!!");
 			} else {
-				readers[j] = reader[i];
+				readers[j] = new LineNumberReader(reader[i]);
 				j++;
 			}
 		}
-		pos = 0;
 	}
 
 	/**
@@ -110,15 +103,14 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 */
 	@Deprecated
 	public void openFile(StringReader... input) {
-		readers = new BufferedReader[input.length];
+		readers = new LineNumberReader[input.length];
 		for (int i = 0, j = 0; i < input.length; i++) {
 			if (input[i] == null) {
 				System.err.println("Bad StringReader at " + i + "!!!");
 			} else {
-				readers[j] = new BufferedReader(input[i]);
+				readers[j] = new LineNumberReader(input[i]);
 			}
 		}
-		pos = 0;
 	}
 
 	/**
@@ -143,16 +135,77 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 				break;
 			}
 		}
-		pos++;
 		return builder.toString();
 	}
 
 	/**
 	 * @return
-	 * @throws ArrayIndexOutOfBoundsException
 	 * @throws IOException
 	 */
-	protected abstract String[] parse() throws ArrayIndexOutOfBoundsException, IOException;
+	protected Queue<String> parse() throws IOException {
+		LinkQueue<String> queue = new LinkQueue<>();
+		boolean inQuotes = false, inB1 = false, inB2 = false, inB3 = false;
+		final StringBuilder builder = new StringBuilder();
+		for (char c : getLine().toCharArray()) {
+			switch (c) {
+				case '%':
+					break;
+				case '"':
+					if (inQuotes) {
+						queue.add(builder.toString());
+						builder.setLength(0);
+					}
+					inQuotes = !inQuotes;
+					break;
+				case '[':
+					if (!inQuotes && !inB1 && !inB2 && !inB3) {
+						inB1 = true;
+					}
+					break;
+				case ']':
+					if (inB1) {
+						queue.add(builder.toString());
+						builder.setLength(0);
+						inB1 = false;
+					}
+					break;
+				case '{':
+					if (!inQuotes && !inB1 && !inB2 && !inB3) {
+						inB2 = true;
+					}
+					break;
+				case '}':
+					if (inB2) {
+						queue.add(builder.toString());
+						builder.setLength(0);
+						inB2 = false;
+					}
+				case '(':
+					if (!inQuotes && !inB1 && !inB2 && !inB3) {
+						inB3 = true;
+					}
+					break;
+				case ')':
+					if (inB3) {
+						queue.add(builder.toString());
+						builder.setLength(0);
+						inB3 = false;
+					}
+					break;
+				case ' ':
+					if (!inQuotes && !inB1 && !inB2 && !inB3 && builder.length() > 0) {
+						queue.offer(builder.toString());
+						builder.setLength(0);
+					} else if (inQuotes || inB1 || inB2 || inB3) {
+						builder.append(c);
+					}
+					break;
+				default:
+					builder.append(c);
+			}
+		}
+		return queue;
+	}
 
 	/**
 	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
@@ -164,7 +217,20 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * @see LogField
 	 * @see ParsedLine
 	 */
-	public abstract ParsedLine parseLine() throws ParseException;
+	public ParsedLine parseLine() throws ParseException, IOException {
+		if (fieldType == null) {
+			throw new ParseException("Set log format!!!", getPos());
+		} else {
+			Queue<String> queue = parse();
+			List<LogField> lineData = new ArrayList<>(fieldType.size());
+			for (LogFieldType ft : fieldType) {
+				if (ignore != null ? !ignore.contains(ft) : true) {
+					lineData.add(ft.parse(queue, this));
+				}
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Metoda za zapiranje datoteke
@@ -179,7 +245,6 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 				break;
 			}
 		}
-		pos = 0;
 	}
 
 	/**
@@ -241,15 +306,15 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * @return
 	 * @throws ParseException
 	 */
-	protected LogField getTokenInstance(LogFieldType type, Object... args) throws ParseException {
-		if (type.getClassE() != null) {
+	protected LogField getTokenInstance(Class type, Object... args) throws ParseException {
+		if (type != null) {
 			if (pool != null) {
-				return (LogField) pool.getObject(type.getClassE(), args);
+				return (LogField) pool.getObject(type, args);
 			} else {
-				return (LogField) ObjectPool.makeObject(type.getClassE(), args);
+				return (LogField) ObjectPool.makeObject(type, args);
 			}
 		} else {
-			throw new ParseException("Unknown field", pos);
+			throw new ParseException("Unknown field", readers[0].getLineNumber());
 		}
 	}
 
@@ -259,7 +324,11 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * @return Vrstica v kateri se nahaja parser
 	 */
 	public int getPos() {
-		return pos;
+		if (readers != null) {
+			return readers[0].getLineNumber();
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
@@ -269,8 +338,45 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 		}
 	}
 
+
 	@Override
-	public abstract Iterator<ParsedLine> iterator();
+	public Iterator<ParsedLine> iterator() {
+		try {
+			return new Iterator<ParsedLine>() {
+
+				private ParsedLine next;
+
+				{
+					next = parseLine();
+				}
+
+				@Override
+				public boolean hasNext() {
+					return next != null;
+				}
+
+				@Override
+				public ParsedLine next() throws NoSuchElementException {
+					if (next == null) {
+						throw new NoSuchElementException();
+					}
+					ParsedLine tmp = next;
+					try {
+						next = parseLine();
+					} catch (ParseException e) {
+						next = null;
+					} catch (IOException e) {
+						next = null;
+					}
+					return tmp;
+				}
+			};
+		} catch (ParseException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+	}
 
 	@Override
 	public Spliterator<ParsedLine> spliterator() {
@@ -283,6 +389,5 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 			closeFile();
 		} catch (IOException ignore) {
 		}
-		pos = 0;
 	}
 }

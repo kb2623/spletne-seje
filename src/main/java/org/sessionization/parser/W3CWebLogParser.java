@@ -1,18 +1,17 @@
 package org.sessionization.parser;
 
 import org.sessionization.parser.datastruct.ParsedLine;
-import org.sessionization.parser.fields.LogType;
-import org.sessionization.parser.fields.Method;
 import org.sessionization.parser.fields.w3c.MetaData;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Queue;
 
 /**
  * Parser za formate: Extended Log Format
@@ -67,6 +66,10 @@ public class W3CWebLogParser extends AbsWebLogParser {
 		this.dateFormat = DateTimeFormatter.ofPattern(format == null ? "yyyy-MM-dd" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 
+	public DateTimeFormatter getDateFormat() {
+		return dateFormat;
+	}
+
 	/**
 	 * Nastavljanje formata za parsanje &#x10d;asa
 	 *
@@ -77,128 +80,28 @@ public class W3CWebLogParser extends AbsWebLogParser {
 		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 
-	@Override
-	protected String[] parse() throws ArrayIndexOutOfBoundsException, IOException {
-		String logline = super.getLine();
-		List<String> tokens = new ArrayList<>();
-		StringBuffer buff = new StringBuffer();
-		for (char c : logline.toCharArray()) {
-			switch (c) {
-				case ' ':
-					if (buff.length() > 0) {
-						tokens.add(buff.toString());
-						buff = new StringBuffer();
-					}
-					break;
-				default:
-					buff.append(c);
-			}
-		}
-		if (buff.length() > 0) {
-			tokens.add(buff.toString());
-		}
-		return tokens.toArray(new String[tokens.size()]);
+	public DateTimeFormatter getTimeFormat() {
+		return timeFormat;
 	}
 
 	@Override
 	public ParsedLine parseLine() throws ParseException {
 		try {
-			String[] tokens = parse();
-			if (tokens[0].charAt(0) == '#') {
-				List<LogField> metaData = new ArrayList<>(tokens.length);
-				if (tokens[0].equals("#Fields:")) {
-					super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens));
+			Queue<String> tokens = parse();
+			if (tokens.element().charAt(0) == '#') {
+				List<LogField> metaData = new ArrayList<>(tokens.size());
+				if (tokens.element().equals("#Fields:")) {
+					super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens.toArray(new String[tokens.size()])));
 				}
-				for (int i = 0; i < tokens.length; i++) {
-					metaData.add(new MetaData(tokens[i]));
+				for (String s : tokens) {
+					metaData.add(new MetaData(s));
 				}
 				return new ParsedLine(metaData);
 			} else {
-				return new ParsedLine(process(tokens));
+				return super.parseLine();
 			}
 		} catch (ArrayIndexOutOfBoundsException | IOException e) {
 			throw new ParseException("Bad line!!!", getPos());
-		}
-	}
-
-	protected Collection<LogField> process(String[] tokens) throws ParseException {
-		if (super.fieldType == null) throw new ParseException("Bad log format", super.getPos());
-		if (super.fieldType.size() != tokens.length) throw new ParseException("Can't parse a line", super.getPos());
-		List<LogField> lineData = new ArrayList<>(fieldType.size());
-		for (int i = 0; i < super.fieldType.size(); i++) {
-			LogFieldType type = fieldType.get(i);
-			if (ignore != null ? !ignore.contains(type) : true) {
-				LogField field = null;
-				switch (type) {
-					case Referer:
-						try {
-							field = getTokenInstance(type, new URI(tokens[i]));
-						} catch (URISyntaxException e) {
-							throw new ParseException("Bad referer!!!", getPos());
-						}
-						break;
-					case Cookie:
-					case UserAgent:
-						field = getTokenInstance(type, tokens[i], LogType.W3C);
-						break;
-					case Method:
-						field = Method.setMethod(tokens[i]);
-						break;
-					case Date:
-						field = getTokenInstance(type, tokens[i], dateFormat);
-						break;
-					case Time:
-						field = getTokenInstance(type, tokens[i], timeFormat);
-						break;
-					case ServerIP:
-					case ServerPort:
-						field = getTokenInstance(type, tokens[i], true);
-						break;
-					case TimeTaken:
-					case ClientIP:
-					case ClientPort:
-						field = getTokenInstance(type, tokens[i], false);
-						break;
-					default:
-						field = getTokenInstance(type, tokens[i]);
-				}
-				lineData.add(field);
-			}
-		}
-		return lineData;
-	}
-
-	@Override
-	public Iterator<ParsedLine> iterator() {
-		try {
-			return new Iterator<ParsedLine>() {
-
-				private ParsedLine next;
-
-				{
-					next = parseLine();
-				}
-
-				@Override
-				public boolean hasNext() {
-					return next != null;
-				}
-
-				@Override
-				public ParsedLine next() throws NoSuchElementException {
-					if (next == null) throw new NoSuchElementException();
-					ParsedLine tmp = next;
-					try {
-						next = parseLine();
-						return tmp;
-					} catch (ParseException e) {
-						next = null;
-						return tmp;
-					}
-				}
-			};
-		} catch (ParseException e) {
-			return null;
 		}
 	}
 }
