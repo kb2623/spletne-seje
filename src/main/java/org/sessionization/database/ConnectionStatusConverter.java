@@ -1,6 +1,6 @@
 package org.sessionization.database;
 
-import org.sessionization.fields.ncsa.ConnectionStatus;
+import org.sessionization.parser.fields.ncsa.ConnectionStatus;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

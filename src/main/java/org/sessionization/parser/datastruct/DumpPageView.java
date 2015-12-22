@@ -5,7 +5,7 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.fields.LogFieldType;
+import org.sessionization.parser.LogFieldType;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;

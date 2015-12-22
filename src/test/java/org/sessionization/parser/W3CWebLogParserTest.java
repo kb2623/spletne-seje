@@ -3,9 +3,9 @@ package org.sessionization.parser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.sessionization.fields.w3c.Date;
-import org.sessionization.fields.w3c.MetaData;
 import org.sessionization.parser.datastruct.ParsedLine;
+import org.sessionization.parser.fields.w3c.Date;
+import org.sessionization.parser.fields.w3c.MetaData;
 
 import java.io.File;
 import java.io.IOException;

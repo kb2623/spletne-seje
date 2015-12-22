@@ -1,11 +1,9 @@
 package org.sessionization.parser;
 
-import org.sessionization.fields.LogField;
-import org.sessionization.fields.LogFieldType;
-import org.sessionization.fields.LogType;
-import org.sessionization.fields.Method;
-import org.sessionization.fields.w3c.MetaData;
 import org.sessionization.parser.datastruct.ParsedLine;
+import org.sessionization.parser.fields.LogType;
+import org.sessionization.parser.fields.Method;
+import org.sessionization.parser.fields.w3c.MetaData;
 
 import java.io.File;
 import java.io.FileNotFoundException;

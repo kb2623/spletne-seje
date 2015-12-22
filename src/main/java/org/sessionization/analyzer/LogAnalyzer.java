@@ -1,7 +1,7 @@
 package org.sessionization.analyzer;
 
-import org.sessionization.fields.Cookie;
-import org.sessionization.fields.LogFieldType;
+import org.sessionization.parser.LogFieldType;
+import org.sessionization.parser.fields.Cookie;
 
 import java.io.*;
 import java.util.ArrayList;

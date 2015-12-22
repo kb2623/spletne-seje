@@ -1,14 +1,14 @@
 package org.sessionization.parser.datastruct;
 
 import org.sessionization.TimePoint;
-import org.sessionization.fields.LogField;
-import org.sessionization.fields.Referer;
-import org.sessionization.fields.UriSteam;
-import org.sessionization.fields.UserAgent;
-import org.sessionization.fields.ncsa.DateTime;
-import org.sessionization.fields.ncsa.RequestLine;
-import org.sessionization.fields.w3c.Date;
-import org.sessionization.fields.w3c.Time;
+import org.sessionization.parser.LogField;
+import org.sessionization.parser.fields.Referer;
+import org.sessionization.parser.fields.UriSteam;
+import org.sessionization.parser.fields.UserAgent;
+import org.sessionization.parser.fields.ncsa.DateTime;
+import org.sessionization.parser.fields.ncsa.RequestLine;
+import org.sessionization.parser.fields.w3c.Date;
+import org.sessionization.parser.fields.w3c.Time;
 
 import java.util.Collection;
 import java.util.Iterator;

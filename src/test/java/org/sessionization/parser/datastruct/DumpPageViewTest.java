@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.fields.LogFieldType;
+import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.LogFormats;
 
 import java.io.File;

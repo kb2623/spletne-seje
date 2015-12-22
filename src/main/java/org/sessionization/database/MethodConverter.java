@@ -1,6 +1,6 @@
 package org.sessionization.database;
 
-import org.sessionization.fields.Method;
+import org.sessionization.parser.fields.Method;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

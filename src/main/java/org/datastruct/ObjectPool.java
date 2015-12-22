@@ -28,11 +28,7 @@ public class ObjectPool {
 		for (int i = 0; i < initArgsType.length; i++) {
 			Class ca = null;
 			if (args[i] instanceof Enum<?>) {
-				if (args[i].getClass().getSuperclass().getSimpleName().equals("Enum")) {
-					ca = args[i].getClass();
-				} else {
-					ca = args[i].getClass().getSuperclass();
-				}
+				ca = ((Enum<?>) args[i]).getDeclaringClass();
 			} else {
 				ca = args[i].getClass();
 			}

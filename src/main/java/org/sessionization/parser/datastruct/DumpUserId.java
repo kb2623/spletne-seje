@@ -6,8 +6,8 @@ import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.EnumMemberValue;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.fields.LogField;
-import org.sessionization.fields.LogFieldType;
+import org.sessionization.parser.LogField;
+import org.sessionization.parser.LogFieldType;
 
 import javax.persistence.*;
 import java.io.IOException;

@@ -1,8 +1,6 @@
 package org.sessionization.parser;
 
 import org.datastruct.ObjectPool;
-import org.sessionization.fields.LogField;
-import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;

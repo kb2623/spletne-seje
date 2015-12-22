@@ -1,7 +1,5 @@
 package org.sessionization.parser;
 
-import org.sessionization.fields.LogFieldType;
-
 import java.util.ArrayList;
 import java.util.List;
 

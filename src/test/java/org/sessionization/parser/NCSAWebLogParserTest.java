@@ -3,7 +3,6 @@ package org.sessionization.parser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.sessionization.fields.LogFieldType;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.File;
