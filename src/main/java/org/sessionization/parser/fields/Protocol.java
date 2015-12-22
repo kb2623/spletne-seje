@@ -39,7 +39,7 @@ public class Protocol implements LogField {
 		}
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

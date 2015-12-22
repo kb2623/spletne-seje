@@ -65,7 +65,7 @@ public class RequestLine implements LogField {
 		this.method = Method.setMethod(method);
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

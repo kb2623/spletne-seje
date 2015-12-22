@@ -31,7 +31,7 @@ public class Address implements LogField {
 		this.address = InetAddress.getByName(address);
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

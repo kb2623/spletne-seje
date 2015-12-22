@@ -28,7 +28,7 @@ public class Host implements LogField {
 		}
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

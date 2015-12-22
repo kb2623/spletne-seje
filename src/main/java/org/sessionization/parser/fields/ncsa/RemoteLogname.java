@@ -29,7 +29,7 @@ public class RemoteLogname implements LogField {
 		}
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

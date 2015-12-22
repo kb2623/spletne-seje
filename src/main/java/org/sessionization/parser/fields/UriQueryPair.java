@@ -27,7 +27,7 @@ public class UriQueryPair {
 		this.key = new UriQueryKey(key);
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

@@ -22,7 +22,7 @@ public class RemoteUser implements LogField {
 		if (!user.equalsIgnoreCase("-")) this.user = user;
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

@@ -27,7 +27,7 @@ public class CookiePair {
 		this.key = new CookieKey(key);
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

@@ -25,7 +25,7 @@ public class UserAgent implements LogField {
 		userAgentString = type.parseUserAgent(info);
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

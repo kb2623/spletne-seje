@@ -24,7 +24,7 @@ public class SiteName implements LogField {
 		this.name = name;
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

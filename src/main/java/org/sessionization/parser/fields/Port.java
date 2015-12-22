@@ -30,7 +30,7 @@ public class Port implements LogField {
 		portNumber = Integer.valueOf(number);
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 
