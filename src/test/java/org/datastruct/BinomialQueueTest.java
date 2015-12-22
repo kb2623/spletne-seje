@@ -59,6 +59,13 @@ public class BinomialQueueTest {
 
 	@Test
 	public void testToArray() throws Exception {
+		add(true);
+		Object[] aq = queue.toArray();
+		assertEquals(tqueue.size(), aq.length);
+		for (Object o : aq) {
+			assertTrue(tqueue.contains(o));
+
+		}
 	}
 
 	@Test
