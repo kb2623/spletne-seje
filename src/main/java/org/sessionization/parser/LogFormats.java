@@ -118,7 +118,7 @@ public enum LogFormats {
 						list.add(LogFieldType.SizeOfResponse);
 						break;
 					case "%S":
-						list.add(LogFieldType.SizeOfTransfer);
+//						list.add(LogFieldType.SizeOfTransfer);
 						break;
 					case "%^ti":
 						list.add(LogFieldType.Unknown);
