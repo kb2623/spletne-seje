@@ -121,7 +121,7 @@ public class DumpRequest {
 			}
 			/** getId() */{
 				builder.setLength(0);
-				builder.append("public " + Integer.class.getName() + " getId() { return this.id; }");
+				builder.append("public synchronized " + Integer.class.getName() + " getId() { return this.id; }");
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}

@@ -29,7 +29,7 @@ public abstract class AbsPageView implements TimePoint {
 		requests = new LinkedList<>();
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 

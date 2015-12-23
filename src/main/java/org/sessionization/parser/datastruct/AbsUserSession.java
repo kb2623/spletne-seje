@@ -29,7 +29,7 @@ public abstract class AbsUserSession implements TimePoint {
 		pages = new LinkedList<>();
 	}
 
-	public Integer getId() {
+	public synchronized Integer getId() {
 		return id;
 	}
 
