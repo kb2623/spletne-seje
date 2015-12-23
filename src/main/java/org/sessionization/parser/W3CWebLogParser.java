@@ -36,6 +36,8 @@ public class W3CWebLogParser extends AbsWebLogParser {
 	}
 
 	/**
+	 *
+	 * @param locale
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
@@ -50,6 +52,8 @@ public class W3CWebLogParser extends AbsWebLogParser {
 	 * <p><code>dateFormat = dd/MM/yyyy</code></p>
 	 * <p><code>timeFormat = HH:mm:ss</code></p>
 	 * <p><code>locale = Locale.US</code></p>
+	 *
+	 * @param locale
 	 */
 	private void setDefaultFields(Locale locale) {
 		dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(locale);
@@ -80,6 +84,9 @@ public class W3CWebLogParser extends AbsWebLogParser {
 		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 
+	/**
+	 * @return
+	 */
 	public DateTimeFormatter getTimeFormat() {
 		return timeFormat;
 	}

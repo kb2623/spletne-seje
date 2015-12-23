@@ -36,7 +36,11 @@ public class NCSAWebLogParser extends AbsWebLogParser {
 	}
 
 	/**
+	 *
+	 * @param locale
+	 * @param file
 	 * @param list
+	 * @throws FileNotFoundException
 	 */
 	public NCSAWebLogParser(Locale locale, File[] file, List<LogFieldType> list) throws FileNotFoundException {
 		super(file);
@@ -66,6 +70,9 @@ public class NCSAWebLogParser extends AbsWebLogParser {
 		this.formatter = DateTimeFormatter.ofPattern(format == null ? "dd/MMM/yyyy:HH:mm:ss Z" : format).withLocale(locale == null ? Locale.getDefault() : locale);
 	}
 
+	/**
+	 * @return
+	 */
 	public DateTimeFormatter getDateTimeFormatter() {
 		return formatter;
 	}

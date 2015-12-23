@@ -33,7 +33,7 @@ public class RemoteLogname implements LogField {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public synchronized void setId(Integer id) {
 		this.id = id;
 	}
 

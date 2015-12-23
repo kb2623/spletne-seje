@@ -62,7 +62,8 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 * @param path
+	 *
+	 * @param files
 	 * @throws FileNotFoundException
 	 */
 	public void openFile(File... files) throws FileNotFoundException {
@@ -95,11 +96,8 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 * Metoda namenjena testiranju, ki spremeni niz
-	 * v vhodni tok
 	 *
 	 * @param input
-	 * @throws FileNotFoundException
 	 */
 	@Deprecated
 	public void openFile(StringReader... input) {
@@ -114,12 +112,9 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 * Metoda ki vrne celotno vrstico, ki jo je potrebno še parsati
 	 *
-	 * @return List of <code>Strings</code>
-	 * @throws IOException  Napaka pri branju vrstice
-	 * @throws EOFException Konec datoteke ali strima
-	 * @see String
+	 * @return
+	 * @throws IOException
 	 */
 	public String getLine() throws IOException {
 		StringBuilder builder = new StringBuilder();
@@ -200,14 +195,10 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	}
 
 	/**
-	 * Metoda za obdelavo vrstice do take mere da se vsi nizi shranjeni v instancah razredov
 	 *
-	 * @return Obdelano vrstico
-	 * @throws ParseException       Napaka pri obdelavi datoteke
-	 * @throws IOException          Napaka pri branju datoeke
-	 * @throws NullPointerException Lastnosti niso pravilno nstavljene
-	 * @see LogField
-	 * @see ParsedLine
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
 	 */
 	public ParsedLine parseLine() throws ParseException, IOException {
 		if (fieldType == null) {

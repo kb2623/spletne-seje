@@ -502,13 +502,19 @@ public enum LogFieldType {
 	/**
 	 * Tip polja ki predstavlja opis polja v W3C formatu
 	 */
-	MetaData {},
+	MetaData,
 	Unknown;
 
+	/**
+	 * @return
+	 */
 	public boolean isKey() {
 		return false;
 	}
 
+	/**
+	 * @return
+	 */
 	public Class<LogField> getClassE() {
 		return null;
 	}
@@ -518,18 +524,33 @@ public enum LogFieldType {
 		return Character.toLowerCase(s.charAt(0)) + s.substring(1);
 	}
 
+	/**
+	 * @return
+	 */
 	public String getSetterName() {
 		return "set" + getClassE().getSimpleName();
 	}
 
+	/**
+	 * @return
+	 */
 	public String getGetterName() {
 		return "get" + getClassE().getSimpleName();
 	}
 
+	/**
+	 * @return
+	 */
 	public Class[] getDependencies() {
 		return new Class[0];
 	}
 
+	/**
+	 * @param queue
+	 * @param parser
+	 * @return
+	 * @throws ParseException
+	 */
 	public LogField parse(final Queue<String> queue, final AbsWebLogParser parser) throws ParseException {
 		return parser.getTokenInstance(getClassE(), queue.poll());
 	}
