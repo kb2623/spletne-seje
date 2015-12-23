@@ -100,7 +100,7 @@ public class DumpUserId {
 			}
 			/** void setId(Integer id) */{
 				builder.setLength(0);
-				builder.append("public void setId(" + Integer.class.getName() + " id) { this.id = id; }");
+				builder.append("public synchronized void setId(" + Integer.class.getName() + " id) { this.id = id; }");
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
