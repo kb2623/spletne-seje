@@ -1,36 +1,29 @@
 package org.sessionization.parser;
 
+import org.datastruct.RadixTree;
+
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 public enum LogFormats {
 
 	CommonLogFormat {
 		@Override
-		public List<LogFieldType> create(String[] args) {
-			List<LogFieldType> list = new ArrayList<>();
-			list.add(LogFieldType.RemoteHost);
-			list.add(LogFieldType.RemoteLogname);
-			list.add(LogFieldType.RemoteUser);
-			list.add(LogFieldType.DateTime);
-			list.add(LogFieldType.RequestLine);
-			list.add(LogFieldType.StatusCode);
-			list.add(LogFieldType.SizeOfResponse);
-			return list;
+		public List<LogFieldType> create(String... args) {
+			return super.create("%h", "%l", "%u", "%t", "%r", "%s", "%b");
 		}
 	},
 	CombinedLogFormat {
 		@Override
-		public List<LogFieldType> create(String[] args) {
-			List<LogFieldType> list = LogFormats.CommonLogFormat.create(null);
-			list.add(LogFieldType.Referer);
-			list.add(LogFieldType.UserAgent);
-			return list;
+		public List<LogFieldType> create(String... args) {
+			return super.create("%h", "%l", "%u", "%t", "%r", "%s", "%b", "%{Referer}i", "%{User-agent}i");
 		}
 	},
 	CustomLogFormat {
 		@Override
-		public List<LogFieldType> create(String[] args) {
+		public List<LogFieldType> create(String... args) {
 			List<LogFieldType> list = new ArrayList<>();
 			for (String symbol : args) {
 				// Fixme: Dolocena polja nimajo tipa, kar privede do napake pri obdelavi datoeke
@@ -118,7 +111,7 @@ public enum LogFormats {
 						list.add(LogFieldType.SizeOfResponse);
 						break;
 					case "%S":
-//						list.add(LogFieldType.SizeOfTransfer);
+						list.add(LogFieldType.SizeOfTransfer);
 						break;
 					case "%^ti":
 						list.add(LogFieldType.Unknown);
@@ -151,7 +144,7 @@ public enum LogFormats {
 	},
 	ExtendedLogFormat {
 		@Override
-		public List<LogFieldType> create(String[] args) {
+		public List<LogFieldType> create(String... args) {
 			List<LogFieldType> list = new ArrayList<>();
 			for (String fieldName : args) {
 				switch (fieldName) {
@@ -236,13 +229,35 @@ public enum LogFormats {
 			return list;
 		}
 	},
-	IISLogFormat {
-		@Override
-		public List<LogFieldType> create(String[] args) {
-			return ExtendedLogFormat.create(args);
-		}
-	};
+	ParseCmdArgs;
 
-	public abstract List<LogFieldType> create(String[] args);
+	private static final Map<String, LogFieldType> enumMaper = initMap();
+
+	private static Map<String, LogFieldType> initMap() {
+		Map<String, LogFieldType> map = new RadixTree<>();
+		for (LogFieldType type : EnumSet.allOf(LogFieldType.class)) {
+			for (String s : type.getFormatString()) {
+				map.put(s, type);
+			}
+		}
+		return map;
+	}
+
+	public List<LogFieldType> create(String... args) {
+		List<LogFieldType> list = new ArrayList<>(args.length);
+		for (String s : args) {
+			if (!s.endsWith(":")) {
+				LogFieldType type = enumMaper.get(s);
+				if (type == null) {
+					list.add(LogFieldType.Unknown);
+				} else {
+					list.add(type);
+				}
+			}
+		}
+		return list;
+	}
+
+	;
 
 }

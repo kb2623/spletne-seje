@@ -75,7 +75,7 @@ public class SpletneSeje {
 				logParser = new W3CWebLogParser(argsParser.getLocale(), argsParser.getInputFile());
 				break;
 			case "IIS":
-				logParser = new IISWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.IISLogFormat.create(argsParser.getLogFormat()));
+				logParser = new IISWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.ParseCmdArgs.create(argsParser.getLogFormat()));
 				break;
 			default:
 				throw new ExceptionInInitializerError("Unknown log format!!!");

@@ -463,13 +463,13 @@ public enum LogFieldType {
 	 * NCSA:
 	 * Filename.
 	 *
-	 * Format string: <code>%f</code>
+	 * Format string: <code>%f</code>, <code>%U</code>
 	 *
 	 * W3C:
 	 *
 	 * Format string: <code>cs-uri-stem</code>
 	 */
-	UriSteam(new String[]{"%f", "cs-uri-stem"}, UriSteam.class),
+	UriSteam(new String[]{"%f", "%U", "cs-uri-stem"}, UriSteam.class),
 	/**
 	 * NCSA;
 	 * Bytes transferred (received and sent), including request and headers, cannot be
@@ -522,10 +522,14 @@ public enum LogFieldType {
 	 */
 	ProcessID(new String[]{"%P"}, org.sessionization.parser.fields.ncsa.ProcessID.class),
 	/**
-	 * Tip polja ki predstavlja opis polja v W3C formatu
+	 * W3C:
+	 * The directives Version and Fields are required and should precede all entries in the log.
+	 * The Fields directive specifies the data recorded in the fields of each entry.
+	 *
+	 * Format string: <code>#Version</code>, <code>#Fields</code>, <code>#Software</code>, <code>#Start-Date</code>, <code>#End-Date</code>, <code>#Date</code>, <code>#Remark</code>
 	 */
-	MetaData(null, null),
-	Unknown(null, null);
+	MetaData(new String[]{"#Version", "#Fields", "#Software", "#Start-Date", "#End-Date", "#Date", "#Remark"}, null),
+	Unknown(new String[]{""}, null);
 
 	private final String[] format;
 	private final Class classType;
