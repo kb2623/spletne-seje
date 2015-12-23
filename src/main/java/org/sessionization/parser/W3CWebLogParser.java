@@ -98,7 +98,7 @@ public class W3CWebLogParser extends AbsWebLogParser {
 			if (tokens.element().charAt(0) == '#') {
 				List<LogField> metaData = new ArrayList<>(tokens.size());
 				if (tokens.element().equals("#Fields:")) {
-					super.setFieldType(LogFormats.ExtendedLogFormat.create(tokens.toArray(new String[tokens.size()])));
+					super.setFieldType(LogFormats.ParseCmdArgs.create(tokens.toArray(new String[tokens.size()])));
 				}
 				for (String s : tokens) {
 					metaData.add(new MetaData(s));

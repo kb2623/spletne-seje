@@ -27,7 +27,7 @@ public class AbsUserIdTest {
 
 	@Test
 	public void testGetKey() throws Exception {
-		parser.setFieldType(LogFormats.CommonLogFormat.create(null));
+		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		parser.setPool(new ObjectPool());
 		parser.openFile(new StringReader(
 				"157.55.39.19 - - [26/Jun/2014:04:44:51 +0200] \"GET /jope-puloverji/moski-pulover-b74-red?limit=18 HTTP/1.1\" 200 9545\n" +

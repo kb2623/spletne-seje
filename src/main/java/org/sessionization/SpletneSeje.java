@@ -59,14 +59,14 @@ public class SpletneSeje {
 				logParser.openFile(argsParser.getInputFile());
 				break;
 			case "COMMON":
-				logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CommonLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+				logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CommonLogFormat.make());
 				break;
 			case "COMBINED":
-				logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CombinedLogFormat.create(LogAnalyzer.hasCombinedCookie()));
+				logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CombinedLogFormat.make());
 				break;
 			case "CUSTOM":
 				if (argsParser.getLogFormat().length > 1) {
-					logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.CustomLogFormat.create(argsParser.getLogFormat()));
+					logParser = new NCSAWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.ParseCmdArgs.make(argsParser.getLogFormat()));
 				} else {
 					throw new ExceptionInInitializerError("Need more args!!!");
 				}
@@ -75,7 +75,7 @@ public class SpletneSeje {
 				logParser = new W3CWebLogParser(argsParser.getLocale(), argsParser.getInputFile());
 				break;
 			case "IIS":
-				logParser = new IISWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.ParseCmdArgs.create(argsParser.getLogFormat()));
+				logParser = new IISWebLogParser(argsParser.getLocale(), argsParser.getInputFile(), LogFormats.ParseCmdArgs.make(argsParser.getLogFormat()));
 				break;
 			default:
 				throw new ExceptionInInitializerError("Unknown log format!!!");
@@ -103,7 +103,7 @@ public class SpletneSeje {
 		/** Dodaj polja, ki jih ignoriramo */
 		String[] ignore = argsParser.getIgnoreFields();
 		if (ignore.length > 0) {
-			logParser.setIgnoreFieldType(LogFormats.CustomLogFormat.create(ignore));
+			logParser.setIgnoreFieldType(LogFormats.ParseCmdArgs.make(ignore));
 		}
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
 //		db = new HibernateUtil(argsParser, logParser);

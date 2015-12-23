@@ -138,7 +138,7 @@ public enum LogFieldType {
 	SizeOfRequest(new String[]{"%I", "cs-bytes"}, org.sessionization.parser.fields.SizeOfRequest.class),
 	/**
 	 * NCSA:
-	 * Logs Referer on all requests. If no Referer then "-".
+	 * Logs Referrer on all requests. If no Referer then "-".
 	 *
 	 * Format string: <code>%{Referer}i</code>
 	 *
@@ -146,7 +146,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs(Referer)</code>
 	 */
-	Referer(new String[]{"%{Referer}i", "cs(Referer)"}, org.sessionization.parser.fields.Referer.class) {
+	Referer(new String[]{"%{Referrer}i", "cs(Referrer)"}, org.sessionization.parser.fields.Referer.class) {
 		@Override
 		public Class[] getDependencies() {
 			List<Class> list = new LinkedList<>();
@@ -528,7 +528,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>#Version</code>, <code>#Fields</code>, <code>#Software</code>, <code>#Start-Date</code>, <code>#End-Date</code>, <code>#Date</code>, <code>#Remark</code>
 	 */
-	MetaData(new String[]{"#Version", "#Fields", "#Software", "#Start-Date", "#End-Date", "#Date", "#Remark"}, null),
+	MetaData(new String[]{"#Version:", "#Fields:", "#Software:", "#Start-Date:", "#End-Date:", "#Date:", "#Remark:"}, null),
 	Unknown(new String[]{""}, null);
 
 	private final String[] format;

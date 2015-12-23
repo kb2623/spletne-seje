@@ -33,7 +33,7 @@ public class SpletneSejeTest {
 	public void testNCSAParserCommonResHashMap() throws IOException {
 		Map<String, List<ParsedLine>> testMap = new HashMap<>();
 		parser.openFile(new File[]{new File(pathNCSACommon)});
-		parser.setFieldType(LogFormats.CommonLogFormat.create(null));
+		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		for (ParsedLine line : parser) {
 			List<ParsedLine> list = testMap.get(line.getKey());
 			if (list == null) {
@@ -52,7 +52,7 @@ public class SpletneSejeTest {
 	public void testNCSAParserCommonResRadixTree() throws IOException {
 		Map<String, List<ParsedLine>> testMap = new RadixTree<>();
 		parser.openFile(new File[]{new File(pathNCSACommon)});
-		parser.setFieldType(LogFormats.CommonLogFormat.create(null));
+		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		for (ParsedLine line : parser) {
 			List<ParsedLine> list = testMap.get(line.getKey());
 			if (list == null) {
@@ -101,7 +101,7 @@ public class SpletneSejeTest {
 		Map<String, List<ParsedLine>> radixMap = new RadixTree<>();
 		Map<String, List<ParsedLine>> hashMap = new HashMap<>();
 		parser.openFile(new File[]{new File(pathNCSACommon)});
-		parser.setFieldType(LogFormats.CommonLogFormat.create(null));
+		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		for (ParsedLine line : parser) {
 			List<ParsedLine> list = radixMap.get(line.getKey());
 			if (list == null) {

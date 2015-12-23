@@ -38,7 +38,7 @@ public class DumpUserSessionTest {
 
 	@Test
 	public void testCommon() throws Exception {
-		allFieldTypes = LogFormats.CommonLogFormat.create(null);
+		allFieldTypes = LogFormats.CommonLogFormat.make();
 		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
 		assertNotNull(DumpPageView.dump(loader));
 		assertNotNull(DumpUserSession.dump(loader));
@@ -46,7 +46,7 @@ public class DumpUserSessionTest {
 
 	@Test
 	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
-		allFieldTypes = LogFormats.CombinedLogFormat.create(null);
+		allFieldTypes = LogFormats.CombinedLogFormat.make();
 		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
 		assertNotNull(DumpPageView.dump(loader));
 		assertNotNull(DumpUserSession.dump(loader));

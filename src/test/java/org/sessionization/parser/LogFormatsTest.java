@@ -11,7 +11,7 @@ public class LogFormatsTest {
 
 	@Test
 	public void testCommonLogFormat() {
-		List<LogFieldType> list = LogFormats.CommonLogFormat.create(null);
+		List<LogFieldType> list = LogFormats.CommonLogFormat.make();
 		assertEquals(7, list.size());
 		assertTrue(list.contains(LogFieldType.RemoteHost));
 		assertTrue(list.contains(LogFieldType.DateTime));
@@ -24,7 +24,7 @@ public class LogFormatsTest {
 
 	@Test
 	public void testCombinedLogFormat() {
-		List<LogFieldType> list = LogFormats.CombinedLogFormat.create(null);
+		List<LogFieldType> list = LogFormats.CombinedLogFormat.make();
 		assertEquals(9, list.size());
 		assertTrue(list.contains(LogFieldType.RemoteHost));
 		assertTrue(list.contains(LogFieldType.DateTime));
@@ -41,18 +41,25 @@ public class LogFormatsTest {
 	public void testExtendedLogF1() {
 		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "cs(User-Agent)");
 		assertEquals(10, list.size());
-		// TODO: 12/23/15  
+		assertTrue(list.contains(LogFieldType.UserAgent));
 	}
 
 	@Test
 	public void testExtendedLogF2() {
-		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields: date time c-ip cs-username s-ip s-port cs-method cs-uri-stem cs-uri-query sc-status sc-bytes cs-bytes time-taken cs(User-Agent) cs(Referrer) ");
-		// TODO: 12/23/15  
+		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip", "s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "sc-bytes", "cs-bytes", "time-taken", "cs(User-Agent)", "cs(Referrer)");
+		assertEquals(15, list.size());
+		assertTrue(list.contains(LogFieldType.UserAgent));
+		assertTrue(list.contains(LogFieldType.Referer));
 	}
 
 	@Test
 	public void testExtendedLogF3() {
-		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields: time c-ip cs-method cs-uri-stem sc-status ");
-		// TODO: 12/23/15
+		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields:", "time", "c-ip", "cs-method", "cs-uri-stem", "sc-status");
+		assertEquals(5, list.size());
+		assertTrue(list.contains(LogFieldType.Time));
+		assertTrue(list.contains(LogFieldType.ClientIP));
+		assertTrue(list.contains(LogFieldType.Method));
+		assertTrue(list.contains(LogFieldType.UriSteam));
+		assertTrue(list.contains(LogFieldType.StatusCode));
 	}
 }

@@ -38,14 +38,14 @@ public class DumpPageViewTest {
 
 	@Test
 	public void testCommon() throws Exception {
-		allFieldTypes = LogFormats.CommonLogFormat.create(null);
+		allFieldTypes = LogFormats.CommonLogFormat.make();
 		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
 		assertNotNull(DumpPageView.dump(loader));
 	}
 
 	@Test
 	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
-		allFieldTypes = LogFormats.CombinedLogFormat.create(null);
+		allFieldTypes = LogFormats.CombinedLogFormat.make();
 		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
 		assertNotNull(DumpPageView.dump(loader));
 	}

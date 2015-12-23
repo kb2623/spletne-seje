@@ -137,7 +137,7 @@ public class NCSAWebLogParserTest {
 		try (NCSAWebLogParser parser1 = new NCSAWebLogParser()) {
 			parser1.openFile(new StringReader(testNiz));
 			String[] cookie = "%h %l %u %t %r %>s %b %{Referer}i %{User-agent}i %C".split(" ");
-			parser1.setFieldType(LogFormats.CustomLogFormat.create(cookie));
+			parser1.setFieldType(LogFormats.ParseCmdArgs.create(cookie));
 			ParsedLine line = parser1.parseLine();
 			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", line.toString());
 			assertFalse(line.isResource());
@@ -153,7 +153,7 @@ public class NCSAWebLogParserTest {
 		try {
 			parser.openFile(new StringReader(testNiz));
 			String[] cookie = "%h %l %u %t %r %>s %b %{Referer}i %{User-agent}i %C".split(" ");
-			List<LogFieldType> listType = LogFormats.CustomLogFormat.create(cookie);
+			List<LogFieldType> listType = LogFormats.ParseCmdArgs.create(cookie);
 			parser.setFieldType(listType);
 			ParsedLine list = parser.parseLine();
 			assertEquals("[216.67.1.91 | - | leon | 2002-07-01T12:11:52 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 en (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", list.toString());
