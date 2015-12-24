@@ -17,7 +17,7 @@ public enum LogFormats {
 	},
 	CombinedLogFormat {
 		public List<LogFieldType> make(String... args) {
-			return create("%h", "%l", "%u", "%t", "%r", "%s", "%b", "%{Referrer}i", "%{User-agent}i");
+			return create("%h", "%l", "%u", "%t", "%r", "%s", "%b", "%{Referer}i", "%{User-agent}i");
 		}
 	},
 	ParseCmdArgs {

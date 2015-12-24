@@ -143,8 +143,6 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 		final StringBuilder builder = new StringBuilder();
 		for (char c : getLine().toCharArray()) {
 			switch (c) {
-				case '%':
-					break;
 				case '"':
 					if (inQuotes) {
 						queue.add(builder.toString());
@@ -204,15 +202,18 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 		if (fieldType == null) {
 			throw new ParseException("Set log format!!!", getPos());
 		} else {
-			Queue<String> queue = parse();
-			List<LogField> lineData = new ArrayList<>(fieldType.size());
-			for (LogFieldType ft : fieldType) {
-				if (ignore != null ? !ignore.contains(ft) : true) {
-					lineData.add(ft.parse(queue, this));
-				}
-			}
-			return new ParsedLine(lineData);
+			return parseLine(parse());
 		}
+	}
+
+	ParsedLine parseLine(Queue<String> tokens) throws ParseException {
+		List<LogField> lineData = new ArrayList<>(fieldType.size());
+		for (LogFieldType ft : fieldType) {
+			if (ignore != null ? !ignore.contains(ft) : true) {
+				lineData.add(ft.parse(tokens, this));
+			}
+		}
+		return new ParsedLine(lineData);
 	}
 
 	/**

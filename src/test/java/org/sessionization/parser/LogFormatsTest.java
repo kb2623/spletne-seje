@@ -1,5 +1,6 @@
 package org.sessionization.parser;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -50,6 +51,13 @@ public class LogFormatsTest {
 		assertEquals(15, list.size());
 		assertTrue(list.contains(LogFieldType.UserAgent));
 		assertTrue(list.contains(LogFieldType.Referer));
+	}
+
+	@Test
+	public void tesetCLF1() {
+		List<LogFieldType> list = LogFormats.ParseCmdArgs.make("%h %l %u %t %r %s %b %{Referrer}i %{User-agent}i %C".split(" "));
+		assertEquals(10, list.size());
+		list.forEach(Assert::assertNotNull);
 	}
 
 	@Test

@@ -146,7 +146,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs(Referer)</code>
 	 */
-	Referer(new String[]{"%{Referrer}i", "cs(Referrer)"}, org.sessionization.parser.fields.Referer.class) {
+	Referer(new String[]{"%{Referer}i", "cs(Referer)"}, org.sessionization.parser.fields.Referer.class) {
 		@Override
 		public Class[] getDependencies() {
 			List<Class> list = new LinkedList<>();
@@ -208,7 +208,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs(Cookie)</code>
 	 */
-	Cookie(new String[]{"%C", "ca(Cookie)"}, org.sessionization.parser.fields.Cookie.class) {
+	Cookie(new String[]{"%C", "cs(Cookie)"}, org.sessionization.parser.fields.Cookie.class) {
 		@Override
 		public boolean isKey() {
 			return true;
@@ -387,12 +387,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>time-taken</code>
 	 */
-	TimeTaken(new String[]{"%D", "time-taken"}, org.sessionization.parser.fields.TimeTaken.class) {
-		@Override
-		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
-			return parser.getTokenInstance(getClassE(), queue.poll(), true);
-		}
-	},
+	TimeTaken(new String[]{"%D", "time-taken"}, org.sessionization.parser.fields.TimeTaken.class),
 	/**
 	 * W3C:
 	 *

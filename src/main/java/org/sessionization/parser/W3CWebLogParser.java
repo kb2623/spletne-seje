@@ -97,17 +97,19 @@ public class W3CWebLogParser extends AbsWebLogParser {
 			Queue<String> tokens = parse();
 			if (tokens.element().charAt(0) == '#') {
 				List<LogField> metaData = new ArrayList<>(tokens.size());
-				if (tokens.element().equals("#Fields:")) {
-					super.setFieldType(LogFormats.ParseCmdArgs.create(tokens.toArray(new String[tokens.size()])));
+				if (tokens.peek().equals("#Fields:")) {
+					String[] tab = tokens.toArray(new String[tokens.size()]);
+					super.setFieldType(LogFormats.ParseCmdArgs.make(tab));
 				}
 				for (String s : tokens) {
 					metaData.add(new MetaData(s));
 				}
 				return new ParsedLine(metaData);
 			} else {
-				return super.parseLine();
+				return super.parseLine(tokens);
 			}
-		} catch (ArrayIndexOutOfBoundsException | IOException e) {
+		} catch (IOException e) {
+			e.printStackTrace();
 			throw new ParseException("Bad line!!!", getPos());
 		}
 	}

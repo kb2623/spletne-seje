@@ -17,12 +17,8 @@ public class TimeTaken implements LogField {
 		time = 0;
 	}
 
-	public TimeTaken(String time, Boolean milliseconds) {
-		if (milliseconds) {
-			this.time = Long.valueOf(time);
-		} else {
-			this.time = Long.valueOf(time) * 1000;
-		}
+	public TimeTaken(String time) {
+		this.time = Long.valueOf(time);
 	}
 
 	public long getTime() {
