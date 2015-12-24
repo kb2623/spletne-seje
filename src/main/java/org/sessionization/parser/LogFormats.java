@@ -9,18 +9,18 @@ import java.util.Map;
 
 public enum LogFormats {
 
-	CommonLogFormat {
+	CommonLogFormat(0) {
 		@Override
 		public List<LogFieldType> make(String... args) {
 			return create("%h", "%l", "%u", "%t", "%r", "%s", "%b");
 		}
 	},
-	CombinedLogFormat {
+	CombinedLogFormat(0) {
 		public List<LogFieldType> make(String... args) {
 			return create("%h", "%l", "%u", "%t", "%r", "%s", "%b", "%{Referer}i", "%{User-agent}i");
 		}
 	},
-	ParseCmdArgs {
+	ParseCmdArgs(2) {
 		@Override
 		public List<LogFieldType> make(String... args) throws NullPointerException {
 			if (args == null) {
@@ -31,16 +31,30 @@ public enum LogFormats {
 		}
 	};
 
-	private static final Map<String, LogFieldType> enumMaper = initMap();
+	private Map<String, LogFieldType> enumMaper;
 
-	private static Map<String, LogFieldType> initMap() {
+	LogFormats(int n) {
 		Map<String, LogFieldType> map = new RadixTree<>();
 		for (LogFieldType type : EnumSet.allOf(LogFieldType.class)) {
 			for (String s : type.getFormatString()) {
-				map.put(s, type);
+				switch (s.isEmpty() ? 3 : n) {
+					case 0:
+						if (s.charAt(0) == '%') {
+							map.put(s, type);
+						}
+						break;
+					case 1:
+						if (s.charAt(0) != '%') {
+							map.put(s, type);
+						}
+						break;
+					case 2:
+						map.put(s, type);
+						break;
+				}
 			}
 		}
-		return map;
+		enumMaper = map;
 	}
 
 	List<LogFieldType> create(String... args) {

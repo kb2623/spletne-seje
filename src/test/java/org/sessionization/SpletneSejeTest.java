@@ -1,5 +1,6 @@
 package org.sessionization;
 
+import org.atteo.classindex.ClassIndex;
 import org.datastruct.RadixTree;
 import org.junit.Before;
 import org.junit.Test;
@@ -127,6 +128,13 @@ public class SpletneSejeTest {
 		}
 		radixMap.keySet().forEach(e -> hashMap.remove(e));
 		assertTrue(hashMap.isEmpty());
+	}
+
+	@Test
+	public void testSome() {
+		for (Class c : ClassIndex.getPackageClasses("org", ClassLoader.getSystemClassLoader())) {
+			System.out.println(c.getName());
+		}
 	}
 /*
 	@Test

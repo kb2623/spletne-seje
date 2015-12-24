@@ -380,14 +380,40 @@ public enum LogFieldType {
 	 * NCSA:
 	 * The time taken to serve the request, in microseconds.
 	 *
-	 * Format string: <code>%D</code>
+	 * Format string: <code>%D</code>, <code>%{us}T</code>
+	 */
+	TimeTaken(new String[]{"%D", "%{us}T"}, org.sessionization.parser.fields.TimeTaken.class),
+	/**
+	 * NCSA:
+	 * The time taken to serve the request in millisecondsl
+	 *
+	 * Format string: <code>%{ms}T</code>
 	 *
 	 * W3C:
 	 * The time taken to serve the request, in miliseconds.
 	 *
 	 * Format string: <code>time-taken</code>
 	 */
-	TimeTaken(new String[]{"%D", "time-taken"}, org.sessionization.parser.fields.TimeTaken.class),
+	TimeTakenM(new String[]{"%{ms}T", "time-taken"}, org.sessionization.parser.fields.TimeTaken.class) {
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			long val = TimeUnit.Milliseconds.getMicroSeconds(Integer.valueOf(queue.poll()));
+			return parser.getTokenInstance(getClassE(), val);
+		}
+	},
+	/**
+	 * NCSA:
+	 * The time taken to serve the request in seconds.
+	 *
+	 * Format string; <code>%{s}T</code>, <code>%T</code>
+	 */
+	TiemTakenS(new String[]{"%{s}T", "%T"}, org.sessionization.parser.fields.TimeTaken.class) {
+		@Override
+		public LogField parse(Queue<String> queue, AbsWebLogParser parser) throws ParseException {
+			long val = TimeUnit.Seconds.getMicroSeconds(Integer.valueOf(queue.poll()));
+			return parser.getTokenInstance(getClassE(), val);
+		}
+	},
 	/**
 	 * W3C:
 	 *
@@ -593,4 +619,21 @@ public enum LogFieldType {
 	public String[] getFormatString() {
 		return format;
 	}
+}
+
+enum TimeUnit {
+	Seconds {
+		@Override
+		public long getMicroSeconds(int value) {
+			return value * 1000000;
+		}
+	},
+	Milliseconds {
+		@Override
+		public long getMicroSeconds(int value) {
+			return value * 1000;
+		}
+	};
+
+	public abstract long getMicroSeconds(int value);
 }

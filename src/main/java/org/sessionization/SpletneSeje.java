@@ -4,6 +4,7 @@ import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
+import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.*;
 import org.sessionization.parser.datastruct.AbsUserId;
 

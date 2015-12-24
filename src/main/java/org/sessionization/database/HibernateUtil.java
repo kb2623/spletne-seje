@@ -1,4 +1,4 @@
-package org.sessionization;
+package org.sessionization.database;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
@@ -9,6 +9,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
+import org.sessionization.ClassPoolLoader;
 import org.sessionization.parser.AbsWebLogParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.LogFieldType;

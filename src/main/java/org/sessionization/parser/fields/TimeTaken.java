@@ -21,6 +21,10 @@ public class TimeTaken implements LogField {
 		this.time = Long.valueOf(time);
 	}
 
+	public TimeTaken(Long time) {
+		this.time = time;
+	}
+
 	public long getTime() {
 		return time;
 	}
