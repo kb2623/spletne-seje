@@ -116,7 +116,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * @return
 	 * @throws IOException
 	 */
-	public String getLine() throws IOException {
+	protected String getLine() throws IOException {
 		StringBuilder builder = new StringBuilder();
 		for (BufferedReader br : readers) {
 			if (br != null) {
