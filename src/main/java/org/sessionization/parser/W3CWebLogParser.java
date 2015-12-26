@@ -11,7 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Queue;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * Parser za formate: Extended Log Format
@@ -23,6 +24,9 @@ public class W3CWebLogParser extends AbsWebLogParser {
 
 	private DateTimeFormatter timeFormat;
 	private DateTimeFormatter dateFormat;
+
+	private Pattern metaDataPattern = Pattern.compile("#(Version|Fields|Software|Start-Date|End-Date|Date|Remark):");
+	private Pattern fieldsPattern = Pattern.compile("#Fields:");
 
 	/**
 	 * Konstruktor ki uporabi prevzeti oknstriktor razreda {@link ParserAbs}.
@@ -94,15 +98,15 @@ public class W3CWebLogParser extends AbsWebLogParser {
 	@Override
 	public ParsedLine parseLine() throws ParseException {
 		try {
-			Queue<String> tokens = parse();
-			if (tokens.element().charAt(0) == '#') {
-				List<LogField> metaData = new ArrayList<>(tokens.size());
-				if (tokens.peek().equals("#Fields:")) {
-					String[] tab = tokens.toArray(new String[tokens.size()]);
-					super.setFieldType(LogFormats.ParseCmdArgs.make(tab));
+			Scanner tokens = getLine();
+			if (tokens.hasNext(metaDataPattern)) {
+				List<LogField> metaData = new ArrayList<>(fieldType.size());
+				while (tokens.hasNext()) {
+					metaData.add(new MetaData(tokens.next()));
 				}
-				for (String s : tokens) {
-					metaData.add(new MetaData(s));
+				if (tokens.hasNext("#Fields:")) {
+					String[] tab = metaData.toArray(new String[metaData.size()]);
+					super.setFieldType(LogFormats.ParseCmdArgs.make(tab));
 				}
 				return new ParsedLine(metaData);
 			} else {

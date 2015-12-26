@@ -1,6 +1,5 @@
 package org.sessionization.parser;
 
-import org.datastruct.LinkQueue;
 import org.datastruct.ObjectPool;
 import org.sessionization.parser.datastruct.ParsedLine;
 
@@ -116,7 +115,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * @return
 	 * @throws IOException
 	 */
-	protected String getLine() throws IOException {
+	protected Scanner getLine() throws IOException {
 		StringBuilder builder = new StringBuilder();
 		for (BufferedReader br : readers) {
 			if (br != null) {
@@ -130,66 +129,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 				break;
 			}
 		}
-		return builder.toString();
-	}
-
-	/**
-	 * @return
-	 * @throws IOException
-	 */
-	protected Queue<String> parse() throws IOException {
-		LinkQueue<String> queue = new LinkQueue<>();
-		boolean inQuotes = false, inB1 = false, inB2 = false;
-		final StringBuilder builder = new StringBuilder();
-		for (char c : getLine().toCharArray()) {
-			switch (c) {
-				case '"':
-					if (inQuotes) {
-						queue.add(builder.toString());
-						builder.setLength(0);
-					}
-					inQuotes = !inQuotes;
-					break;
-				case '[':
-					if (!inQuotes && !inB1 && !inB2) {
-						inB1 = true;
-					}
-					break;
-				case ']':
-					if (inB1) {
-						queue.add(builder.toString());
-						builder.setLength(0);
-						inB1 = false;
-					}
-					break;
-				case '{':
-					if (!inQuotes && !inB1 && !inB2) {
-						inB2 = true;
-					}
-					break;
-				case '}':
-					if (inB2) {
-						queue.add(builder.toString());
-						builder.setLength(0);
-						inB2 = false;
-					}
-					break;
-				case ' ':
-					if (!inQuotes && !inB1 && !inB2 && builder.length() > 0) {
-						queue.offer(builder.toString());
-						builder.setLength(0);
-					} else if (inQuotes || inB1 || inB2) {
-						builder.append(c);
-					}
-					break;
-				default:
-					builder.append(c);
-			}
-		}
-		if (builder.length() > 0) {
-			queue.add(builder.toString());
-		}
-		return queue;
+		return new Scanner(builder.toString());
 	}
 
 	/**
@@ -202,15 +142,15 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 		if (fieldType == null) {
 			throw new ParseException("Set log format!!!", getPos());
 		} else {
-			return parseLine(parse());
+			return parseLine(getLine());
 		}
 	}
 
-	ParsedLine parseLine(Queue<String> tokens) throws ParseException {
+	ParsedLine parseLine(Scanner scanner) throws ParseException {
 		List<LogField> lineData = new ArrayList<>(fieldType.size());
 		for (LogFieldType ft : fieldType) {
 			if (ignore != null ? !ignore.contains(ft) : true) {
-				lineData.add(ft.parse(tokens, this));
+				lineData.add(ft.parse(scanner, this));
 			}
 		}
 		return new ParsedLine(lineData);

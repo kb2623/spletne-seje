@@ -4,9 +4,13 @@ import org.junit.Test;
 import org.sessionization.parser.fields.ncsa.DateTime;
 import org.sessionization.parser.fields.ncsa.RequestLine;
 
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -125,5 +129,32 @@ public class TestLogField {
 		DateTime dt1 = new DateTime(LocalDateTime.of(2015, 12, 17, 0, 0, 12)), dt2 = new DateTime(LocalDateTime.of(2015, 12, 18, 0, 0, 12));
 		assertEquals(24 * 3600, dt1.secBetwene(dt2));
 
+	}
+
+	@Test
+	public void testInetAddress() throws UnknownHostException {
+		InetAddress address = InetAddress.getByName("www.google.com");
+		System.out.println(address.getHostAddress());
+		System.out.println(address.getHostName());
+		InetAddress address1 = InetAddress.getByName("8.8.8.8");
+		System.out.println(address1.getHostAddress());
+		System.out.println(address1.getHostName());
+	}
+
+	@Test
+	public void testPatternMetaData() {
+		Pattern p1 = Pattern.compile("#(Version|Fields|Software|Start-Date|End-Date|Date|Remark):");
+		Pattern p2 = Pattern.compile("#Fields:");
+		Scanner s = new Scanner("#Fields: ip ipv4 ipv6");
+		System.out.println(s.hasNext(p1));
+		System.out.println(s.hasNext(p2));
+	}
+
+	@Test
+	public void testPatternDateTime() {
+		Pattern p1 = Pattern.compile("\\[(.|\\p{Space})+");
+		Scanner s = new Scanner("[12/Jan/2014 12:23:00 +0010]");
+		System.out.println(s.hasNext(p1));
+		System.out.println(s.next(p1));
 	}
 }

@@ -31,6 +31,12 @@ public class Address implements LogField {
 		this.address = InetAddress.getByName(address);
 	}
 
+	public Address(InetAddress address, Boolean isServerAddress) {
+		id = null;
+		this.serverAddress = isServerAddress;
+		this.address = address;
+	}
+
 	public synchronized Integer getId() {
 		return id;
 	}
