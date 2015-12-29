@@ -75,26 +75,13 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>%t</code>
 	 */
-	DateTime(new String[]{"%t"}, org.sessionization.parser.fields.ncsa.DateTime.class, null) {
+	DateTime(new String[]{"%t"}, org.sessionization.parser.fields.ncsa.DateTime.class, "(\\[)([^\\]]+?)(\\])") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder();
-			String s = scanner.next();
-			if (s.startsWith("[")) {
-				builder.append(s.substring(1));
-				do {
-					s = scanner.next();
-					if (s.endsWith("]")) {
-						builder.append(s.substring(0, s.length() - 1));
-						break;
-					} else {
-						builder.append(s);
-					}
-				} while (true);
-				return parser.getTokenInstance(getClassE(), builder.toString());
-			} else {
-				throw new ParseException("Bad time format!!!", parser.getPos());
-			}
+			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
+			scanner.skip(" ");
+			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+			return parser.getTokenInstance(getClassE(), builder.toString(), ((NCSAWebLogParser) parser).getDateTimeFormatter());
 		}
 	},
 	/**
@@ -103,7 +90,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>%r</code>
 	 */
-	RequestLine(new String[]{"%r"}, org.sessionization.parser.fields.ncsa.RequestLine.class, null) {
+	RequestLine(new String[]{"%r"}, org.sessionization.parser.fields.ncsa.RequestLine.class, "(\")([^\"]+?)(\")") {
 		@Override
 		public Class[] getDependencies() {
 			List<Class> list = new LinkedList<>();
@@ -120,23 +107,10 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder();
-			String s = scanner.next();
-			if (s.startsWith("\"")) {
-				builder.append(s.substring(1));
-				do {
-					s = scanner.next();
-					if (s.endsWith("\"")) {
-						builder.append(s.substring(0, s.length() - 1));
-						break;
-					} else {
-						builder.append(s);
-					}
-				} while (true);
-				return parser.getTokenInstance(getClassE(), builder.toString());
-			} else {
-				throw new ParseException("Dad first line of request!!!", parser.getPos());
-			}
+			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
+			scanner.skip(" ");
+			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+			return parser.getTokenInstance(getClassE(), builder.toString());
 		}
 	},
 	/**
