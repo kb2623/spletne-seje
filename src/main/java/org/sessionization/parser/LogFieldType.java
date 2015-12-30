@@ -22,7 +22,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>%h</code>
 	 */
-	RemoteHost(new String[]{"%h"}, org.sessionization.parser.fields.Address.class, null) {
+	RemoteHost(new String[]{"%h"}, Address.class, null) {
 		@Override
 		public boolean isKey() {
 			return true;
@@ -32,7 +32,7 @@ public enum LogFieldType {
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
 			try {
 				InetAddress address = InetAddress.getByName(scanner.next());
-				return parser.getTokenInstance(getClassE(), address, false);
+				return parser.getTokenInstance(classType, address, false);
 			} catch (UnknownHostException e) {
 				throw new ParseException("Bad remote hostname!!!", parser.getPos());
 			}
@@ -81,7 +81,7 @@ public enum LogFieldType {
 			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
 			scanner.skip(" ");
 			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
-			return parser.getTokenInstance(getClassE(), builder.toString(), ((NCSAWebLogParser) parser).getDateTimeFormatter());
+			return parser.getTokenInstance(classType, builder.toString(), ((NCSAWebLogParser) parser).getDateTimeFormatter());
 		}
 	},
 	/**
@@ -110,7 +110,7 @@ public enum LogFieldType {
 			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
 			scanner.skip(" ");
 			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
-			return parser.getTokenInstance(getClassE(), builder.toString());
+			return parser.getTokenInstance(classType, builder.toString());
 		}
 	},
 	/**
@@ -163,7 +163,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs(Referer)</code>
 	 */
-	Referer(new String[]{"%{Referer}i", "cs(Referer)"}, org.sessionization.parser.fields.Referer.class, "") {
+	RefererNCSA(new String[]{"%{Referer}i"}, Referer.class, "(\")([^\"]+?)(\")") {
 		@Override
 		public Class[] getDependencies() {
 			List<Class> list = new LinkedList<>();
@@ -179,16 +179,29 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			try {
-				URI uri = new URI(queue.poll());
-				return parser.getTokenInstance(getClassE(), uri);
-			} catch (URISyntaxException e) {
-				throw new ParseException("Bad referer!!!", parser.getPos());
+			StringBuilder builder = new StringBuilder(scanner.next(pattern));
+			scanner.skip(" ");
+			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+			return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
+		}
+	},
+	RefererW3C(new String[]{"cs(Referer)"}, Referer.class, null) {
+		@Override
+		public Class[] getDependencies() {
+			List<Class> list = new LinkedList<>();
+			list.add(org.sessionization.parser.fields.UriSteam.class);
+			list.add(UriSteamQuery.class);
+			list.add(org.sessionization.parser.fields.UriQuery.class);
+			for (Class c : UriQuery.getDependencies()) {
+				list.add(c);
 			}
-			*/
-			// TODO: 12/26/15
-			return null;
+			list.add(org.sessionization.parser.fields.Host.class);
+			return list.toArray(new Class[list.size()]);
+		}
+
+		@Override
+		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+			return parser.getTokenInstance(classType, scanner.next(), LogType.W3C);
 		}
 	},
 	/**
@@ -201,7 +214,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs(User-Agent)</code>
 	 */
-	UserAgent(new String[]{"%{User-agent}i", "cs(User-Agent)"}, org.sessionization.parser.fields.UserAgent.class, "") {
+	UserAgentNCSA(new String[]{"%{User-agent}i"}, UserAgent.class, "(\")([^\'])(\")") {
 		@Override
 		public boolean isKey() {
 			return true;
@@ -209,17 +222,21 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			LogType f;
-			if (parser instanceof NCSAWebLogParser) {
-				f = LogType.NCSA;
-			} else {
-				f = LogType.W3C;
-			}
-			return parser.getTokenInstance(getClassE(), queue.poll(), f);
-			*/
-			// TODO: 12/26/15
-			return null;
+			StringBuilder builder = new StringBuilder(scanner.next(pattern));
+			scanner.skip(" ");
+			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+			return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
+		}
+	},
+	UserAgentW3C(new String[]{"cs(User-Agent)"}, UserAgent.class, null) {
+		@Override
+		public boolean isKey() {
+			return true;
+		}
+
+		@Override
+		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+			return parser.getTokenInstance(classType, scanner.next(), LogType.W3C);
 		}
 	},
 	/**
@@ -233,7 +250,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs(Cookie)</code>
 	 */
-	Cookie(new String[]{"%C", "cs(Cookie)"}, org.sessionization.parser.fields.Cookie.class, "") {
+	CookieNCSA(new String[]{"%C"}, Cookie.class, "(\")([^\"]+?)(\")") {
 		@Override
 		public boolean isKey() {
 			return true;
@@ -249,17 +266,29 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			LogType f;
-			if (parser instanceof NCSAWebLogParser) {
-				f = LogType.NCSA;
-			} else {
-				f = LogType.W3C;
-			}
-			return parser.getTokenInstance(getClassE(), queue.poll(), f);
-			*/
-			// TODO: 12/26/15
-			return null;
+			StringBuilder builder = new StringBuilder(scanner.next(pattern));
+			scanner.skip(" ");
+			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+			return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
+		}
+	},
+	CookieW3C(new String[]{"cs(Cookie)"}, Cookie.class, null) {
+		@Override
+		public boolean isKey() {
+			return true;
+		}
+
+		@Override
+		public Class[] getDependencies() {
+			return new Class[]{
+					CookiePair.class,
+					CookieKey.class
+			};
+		}
+
+		@Override
+		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+			return parser.getTokenInstance(classType, scanner.next(), LogType.W3C);
 		}
 	},
 	/**
@@ -272,7 +301,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs-method</code>
 	 */
-	Method(new String[]{"%m", "cs-method"}, org.sessionization.parser.fields.Method.class, "") {
+	Method(new String[]{"%m", "cs-method"}, org.sessionization.parser.fields.Method.class, null) {
 		@Override
 		public Class[] getDependencies() {
 			return new Class[]{
@@ -282,11 +311,7 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			return org.sessionization.parser.fields.Method.setMethod(queue.poll());
-			*/
-			// TODO: 12/26/15
-			return null;
+			return org.sessionization.parser.fields.Method.setMethod(scanner.next());
 		}
 	},
 	/**
@@ -295,19 +320,10 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>date</code>
 	 */
-	Date(new String[]{"date"}, org.sessionization.parser.fields.w3c.Date.class, "") {
+	Date(new String[]{"date"}, org.sessionization.parser.fields.w3c.Date.class, null) {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			if (parser instanceof W3CWebLogParser) {
-				W3CWebLogParser p = (W3CWebLogParser) parser;
-				return parser.getTokenInstance(getClassE(), queue.poll(), p.getDateFormat());
-			} else {
-				throw new ParseException("Very bad error!!!", parser.getPos());
-			}
-			*/
-			// TODO: 12/26/15
-			return null;
+			return parser.getTokenInstance(classType, scanner.next(), ((W3CWebLogParser) parser).getDateFormat());
 		}
 	},
 	/**
@@ -316,19 +332,10 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>time</code>
 	 */
-	Time(new String[]{"time"}, org.sessionization.parser.fields.w3c.Time.class, "") {
+	Time(new String[]{"time"}, org.sessionization.parser.fields.w3c.Time.class, null) {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			if (parser instanceof W3CWebLogParser) {
-				W3CWebLogParser p = (W3CWebLogParser) parser;
-				return p.getTokenInstance(getClassE(), queue.poll(), p.getTimeFormat());
-			} else {
-				throw new ParseException("Very bad error!!!", parser.getPos());
-			}
-			*/
-			// TODO: 12/26/15
-			return null;
+			return parser.getTokenInstance(classType, scanner.next(), ((W3CWebLogParser) parser).getTimeFormat());
 		}
 	},
 	/**
@@ -343,14 +350,10 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>s-port</code>
 	 */
-	ServerPort(new String[]{"%p", "%{local}p", "%{canonical}p", "s-port"}, Port.class, "") {
+	ServerPort(new String[]{"%p", "%{local}p", "%{canonical}p", "s-port"}, Port.class, "[0-9]+") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			return parser.getTokenInstance(getClassE(), queue.poll(), true);
-			*/
-			// TODO: 12/26/15
-			return null;
+			return parser.getTokenInstance(classType, scanner.next(pattern), true);
 		}
 	},
 	/**
@@ -364,14 +367,10 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>c-port</code>
 	 */
-	ClientPort(new String[]{"%{remote}p", "c-port"}, Port.class, "") {
+	ClientPort(new String[]{"%{remote}p", "c-port"}, Port.class, "[0-9]+") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			return parser.getTokenInstance(getClassE(), queue.poll(), false);
-			*/
-			// TODO: 12/26/15
-			return null;
+			return parser.getTokenInstance(classType, scanner.next(pattern), false);
 		}
 	},
 	/**
@@ -384,7 +383,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>s-ip</code>
 	 */
-	ServerIP(new String[]{"%A", "s-ip"}, Address.class, "") {
+	ServerIP(new String[]{"%A", "s-ip"}, Address.class, null) {
 		@Override
 		public Class[] getDependencies() {
 			return new Class[]{
@@ -394,11 +393,12 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			return parser.getTokenInstance(getClassE(), queue.poll(), true);
-			*/
-			// TODO: 12/26/15
-			return null;
+			try {
+				InetAddress address = InetAddress.getByName(scanner.next());
+				return parser.getTokenInstance(classType, address, true);
+			} catch (UnknownHostException e) {
+				throw new ParseException("Bad server IP!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -411,7 +411,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>c-ip</code>
 	 */
-	ClientIP(new String[]{"%a", "c-ip"}, Address.class, "") {
+	ClientIP(new String[]{"%a", "c-ip"}, Address.class, null) {
 		@Override
 		public boolean isKey() {
 			return true;
@@ -426,11 +426,12 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			return parser.getTokenInstance(getClassE(), queue.poll(), false);
-			*/
-			// TODO: 12/26/15
-			return null;
+			try {
+				InetAddress address = InetAddress.getByName(scanner.next());
+				return parser.getTokenInstance(classType, address, false);
+			} catch (UnknownHostException e) {
+				throw new ParseException("Bad client IP!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -439,7 +440,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>%D</code>, <code>%{us}T</code>
 	 */
-	TimeTaken(new String[]{"%D", "%{us}T"}, org.sessionization.parser.fields.TimeTaken.class, ""),
+	TimeTaken(new String[]{"%D", "%{us}T"}, org.sessionization.parser.fields.TimeTaken.class, "[0-9]+"),
 	/**
 	 * NCSA:
 	 * The time taken to serve the request in millisecondsl
@@ -451,15 +452,11 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>time-taken</code>
 	 */
-	TimeTakenM(new String[]{"%{ms}T", "time-taken"}, org.sessionization.parser.fields.TimeTaken.class, "") {
+	TimeTakenM(new String[]{"%{ms}T", "time-taken"}, org.sessionization.parser.fields.TimeTaken.class, "[0-9]+") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			long val = TimeUnit.Milliseconds.getMicroSeconds(Integer.valueOf(queue.poll()));
-			return parser.getTokenInstance(getClassE(), val);
-			*/
-			// TODO: 12/26/15
-			return null;
+			long val = TimeUnit.Milliseconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
+			return parser.getTokenInstance(classType, val);
 		}
 	},
 	/**
@@ -471,12 +468,8 @@ public enum LogFieldType {
 	TiemTakenS(new String[]{"%{s}T", "%T"}, org.sessionization.parser.fields.TimeTaken.class, "") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			long val = TimeUnit.Seconds.getMicroSeconds(Integer.valueOf(queue.poll()));
-			return parser.getTokenInstance(getClassE(), val);
-			*/
-			// TODO: 12/26/15
-			return null;
+			long val = TimeUnit.Seconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
+			return parser.getTokenInstance(classType, val);
 		}
 	},
 	/**
@@ -484,13 +477,13 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>sc-substatus</code>
 	 */
-	SubStatus(new String[]{"sc-substatus"}, org.sessionization.parser.fields.w3c.SubStatus.class, ""),
+	SubStatus(new String[]{"sc-substatus"}, org.sessionization.parser.fields.w3c.SubStatus.class, "[0-9]+"),
 	/**
 	 * W3C:
 	 *
 	 * Format string: <code>sc-win32-status</code>
 	 */
-	Win32Status(new String[]{"sc-win32-status"}, org.sessionization.parser.fields.w3c.Win32Status.class, ""),
+	Win32Status(new String[]{"sc-win32-status"}, org.sessionization.parser.fields.w3c.Win32Status.class, "[0-9]+"),
 	/**
 	 * NCSA:
 	 * The canonical ServerName of the server serving the request.
@@ -501,19 +494,19 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs-host</code>
 	 */
-	Host(new String[]{"%v", "cs-host"}, org.sessionization.parser.fields.Host.class, ""),
+	Host(new String[]{"%v", "cs-host"}, org.sessionization.parser.fields.Host.class, null),
 	/**
 	 * W3C:
 	 *
 	 * Format string: <code>cs-version</code>
 	 */
-	ProtocolVersion(new String[]{"cs-version"}, Protocol.class, ""),
+	ProtocolVersion(new String[]{"cs-version"}, Protocol.class, null),
 	/**
 	 * W3C:
 	 *
 	 * Format string: <code>s-sitename</code>
 	 */
-	SiteName(new String[]{"s-sitename"}, org.sessionization.parser.fields.w3c.SiteName.class, ""),
+	SiteName(new String[]{"s-sitename"}, org.sessionization.parser.fields.w3c.SiteName.class, null),
 	/**
 	 * NCSA:
 	 * The server name according to the UseCanonicalName setting.
@@ -536,7 +529,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs-uri-query</code>
 	 */
-	UriQuery(new String[]{"%q", "cs-uri-query"}, org.sessionization.parser.fields.UriQuery.class, "") {
+	UriQuery(new String[]{"%q", "cs-uri-query"}, org.sessionization.parser.fields.UriQuery.class, null) {
 		@Override
 		public Class[] getDependencies() {
 			return new Class[]{
@@ -555,7 +548,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs-uri-stem</code>
 	 */
-	UriSteam(new String[]{"%f", "%U", "cs-uri-stem"}, UriSteam.class, ""),
+	UriSteam(new String[]{"%f", "%U", "cs-uri-stem"}, UriSteam.class, null),
 	/**
 	 * NCSA;
 	 * Bytes transferred (received and sent), including request and headers, cannot be
@@ -567,7 +560,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code></code>
 	 */
-	SizeOfTransfer(new String[]{"%S"}, org.sessionization.parser.fields.ncsa.SizeOfTransfer.class, ""),
+	SizeOfTransfer(new String[]{"%S"}, org.sessionization.parser.fields.ncsa.SizeOfTransfer.class, "[0-9]+"),
 	/**
 	 * NCSA:
 	 * Number of keepalive requests handled on this connection. Interesting if KeepAlive is
@@ -577,7 +570,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>%k</code>
 	 */
-	KeepAliveNumber(new String[]{"%k"}, org.sessionization.parser.fields.ncsa.KeepAliveNumber.class, ""),
+	KeepAliveNumber(new String[]{"%k"}, org.sessionization.parser.fields.ncsa.KeepAliveNumber.class, "[0-9]+"),
 	/**
 	 * NCSA:
 	 * Connection status when response is completed:
@@ -587,7 +580,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>%X</code>
 	 */
-	ConnectionStatus(new String[]{"%X"}, org.sessionization.parser.fields.ncsa.ConnectionStatus.class, "") {
+	ConnectionStatus(new String[]{"%X"}, org.sessionization.parser.fields.ncsa.ConnectionStatus.class, "(X|\\+|\\-)") {
 		@Override
 		public Class[] getDependencies() {
 			return new Class[]{
@@ -597,11 +590,7 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			/*
-			return org.sessionization.parser.fields.ncsa.ConnectionStatus.getConnectionStatus(queue.poll());
-			*/
-			// TODO: 12/26/15
-			return null;
+			return org.sessionization.parser.fields.ncsa.ConnectionStatus.getConnectionStatus(scanner.next(pattern));
 		}
 	},
 	/**
@@ -610,7 +599,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>%P</code>
 	 */
-	ProcessID(new String[]{"%P"}, org.sessionization.parser.fields.ncsa.ProcessID.class, ""),
+	ProcessID(new String[]{"%P"}, org.sessionization.parser.fields.ncsa.ProcessID.class, "[0-9]+"),
 	/**
 	 * W3C:
 	 * The directives Version and Fields are required and should precede all entries in the log.
@@ -618,12 +607,12 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>#Version</code>, <code>#Fields</code>, <code>#Software</code>, <code>#Start-Date</code>, <code>#End-Date</code>, <code>#Date</code>, <code>#Remark</code>
 	 */
-	MetaData(new String[]{"#Version:", "#Fields:", "#Software:", "#Start-Date:", "#End-Date:", "#Date:", "#Remark:"}, null, ""),
-	Unknown(new String[]{""}, null, "");
+	MetaData(new String[]{"#Version:", "#Fields:", "#Software:", "#Start-Date:", "#End-Date:", "#Date:", "#Remark:"}, null, "(#)(.+)"),
+	Unknown(new String[]{""}, null, null);
 
+	final Class classType;
 	private final String[] format;
-	private final Class classType;
-	private final Pattern pattern;
+	Pattern pattern;
 
 	LogFieldType(String[] format, Class classType, String pattern) {
 		this.format = format;
@@ -653,7 +642,7 @@ public enum LogFieldType {
 	 * @return
 	 */
 	public String getFieldName() {
-		String s = getClassE().getSimpleName();
+		String s = classType.getSimpleName();
 		return Character.toLowerCase(s.charAt(0)) + s.substring(1);
 	}
 
@@ -661,14 +650,14 @@ public enum LogFieldType {
 	 * @return
 	 */
 	public String getSetterName() {
-		return "set" + getClassE().getSimpleName();
+		return "set" + classType.getSimpleName();
 	}
 
 	/**
 	 * @return
 	 */
 	public String getGetterName() {
-		return "get" + getClassE().getSimpleName();
+		return "get" + classType.getSimpleName();
 	}
 
 	/**
@@ -685,7 +674,11 @@ public enum LogFieldType {
 	 * @throws ParseException
 	 */
 	public LogField parse(final Scanner scanner, final AbsWebLogParser parser) throws ParseException {
-		return parser.getTokenInstance(getClassE(), scanner.next(pattern));
+		if (pattern != null) {
+			return parser.getTokenInstance(classType, scanner.next(pattern));
+		} else {
+			return parser.getTokenInstance(classType, scanner.next());
+		}
 	}
 
 	/**

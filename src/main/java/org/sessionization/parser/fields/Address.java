@@ -3,6 +3,8 @@ package org.sessionization.parser.fields;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -31,10 +33,16 @@ public class Address implements LogField {
 		this.address = InetAddress.getByName(address);
 	}
 
-	public Address(InetAddress address, Boolean isServerAddress) {
+	public Address(Inet4Address address, Boolean isServerAddress) {
 		id = null;
 		this.serverAddress = isServerAddress;
 		this.address = address;
+	}
+
+	public Address(Inet6Address address, Boolean isServerAddress) {
+		id = null;
+		this.address = address;
+		this.serverAddress = isServerAddress;
 	}
 
 	public synchronized Integer getId() {

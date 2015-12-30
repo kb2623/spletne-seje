@@ -34,23 +34,23 @@ public class LogFormatsTest {
 		assertTrue(list.contains(LogFieldType.RemoteUser));
 		assertTrue(list.contains(LogFieldType.StatusCode));
 		assertTrue(list.contains(LogFieldType.SizeOfResponse));
-		assertTrue(list.contains(LogFieldType.Referer));
-		assertTrue(list.contains(LogFieldType.UserAgent));
+		assertTrue(list.contains(LogFieldType.RefererNCSA));
+		assertTrue(list.contains(LogFieldType.UserAgentNCSA));
 	}
 
 	@Test
 	public void testExtendedLogF1() {
 		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "cs(User-Agent)");
 		assertEquals(10, list.size());
-		assertTrue(list.contains(LogFieldType.UserAgent));
+		assertTrue(list.contains(LogFieldType.UserAgentNCSA));
 	}
 
 	@Test
 	public void testExtendedLogF2() {
 		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip", "s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "sc-bytes", "cs-bytes", "time-taken", "cs(User-Agent)", "cs(Referrer)");
 		assertEquals(15, list.size());
-		assertTrue(list.contains(LogFieldType.UserAgent));
-		assertTrue(list.contains(LogFieldType.Referer));
+		assertTrue(list.contains(LogFieldType.UserAgentNCSA));
+		assertTrue(list.contains(LogFieldType.RefererNCSA));
 	}
 
 	@Test

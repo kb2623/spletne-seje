@@ -35,6 +35,9 @@ public class ObjectPool {
 			initArgsType[i] = ca;
 		}
 		try {
+			for (Class ca : initArgsType) {
+				System.out.println(ca.getName());
+			}
 			Constructor init = c.getConstructor(initArgsType);
 			Object newObject = init.newInstance(args);
 			return c.cast(newObject);
