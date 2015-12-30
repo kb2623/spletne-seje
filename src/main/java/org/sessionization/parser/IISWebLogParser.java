@@ -1,7 +1,11 @@
 package org.sessionization.parser;
 
+import org.sessionization.parser.datastruct.ParsedLine;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -48,5 +52,14 @@ public class IISWebLogParser extends W3CWebLogParser {
 		super.setDateFormat("dd/MM/yyyy", locale);
 		super.setTimeFormat("HH:mm:ss", locale);
 		super.delimiter = Pattern.compile(", ");
+	}
+
+	@Override
+	public ParsedLine parseLine() throws ParseException {
+		try {
+			return parseLine(getLine());
+		} catch (IOException e) {
+			return null;
+		}
 	}
 }
