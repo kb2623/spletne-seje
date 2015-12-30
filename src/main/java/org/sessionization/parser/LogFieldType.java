@@ -82,12 +82,16 @@ public enum LogFieldType {
 	DateTime(new String[]{"%t"}, org.sessionization.parser.fields.ncsa.DateTime.class, "(\\[)([^\\]]+?)(\\])") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
-			if (scanner.hasNext()) {
-				scanner.skip(scanner.delimiter());
+			try {
+				StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
+				if (scanner.hasNext()) {
+					scanner.skip(scanner.delimiter());
+				}
+				builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+				return parser.getTokenInstance(classType, builder.toString(), ((NCSAWebLogParser) parser).getDateTimeFormatter());
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad date time!!!", parser.getPos());
 			}
-			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
-			return parser.getTokenInstance(classType, builder.toString(), ((NCSAWebLogParser) parser).getDateTimeFormatter());
 		}
 	},
 	/**
@@ -113,12 +117,16 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
-			if (scanner.hasNext()) {
-				scanner.skip(scanner.delimiter());
+			try {
+				StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
+				if (scanner.hasNext()) {
+					scanner.skip(scanner.delimiter());
+				}
+				builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+				return parser.getTokenInstance(classType, builder.toString());
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad first line of request!!!", parser.getPos());
 			}
-			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
-			return parser.getTokenInstance(classType, builder.toString());
 		}
 	},
 	/**
@@ -187,15 +195,15 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder(scanner.next(pattern));
-			if (scanner.hasNext()) {
-				scanner.skip(scanner.delimiter());
-			}
-			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
 			try {
+				StringBuilder builder = new StringBuilder(scanner.next(pattern));
+				if (scanner.hasNext()) {
+					scanner.skip(scanner.delimiter());
+				}
+				builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
 				URI uri = new URI(builder.toString());
 				return parser.getTokenInstance(classType, uri);
-			} catch (URISyntaxException e) {
+			} catch (InputMismatchException | URISyntaxException e) {
 				throw new ParseException("Bad referer!!!", parser.getPos());
 			}
 		}
@@ -242,12 +250,16 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(pattern, 0));
-			if (scanner.hasNext()) {
-				scanner.skip(scanner.delimiter());
+			try {
+				StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(pattern, 0));
+				if (scanner.hasNext()) {
+					scanner.skip(scanner.delimiter());
+				}
+				builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+				return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad user agent string!!!", parser.getPos());
 			}
-			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
-			return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
 		}
 	},
 	UserAgentW3C(new String[]{"cs(User-Agent)"}, UserAgent.class, null) {
@@ -288,12 +300,16 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(pattern, 0));
-			if (scanner.hasNext()) {
-				scanner.skip(scanner.delimiter());
+			try {
+				StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(pattern, 0));
+				if (scanner.hasNext()) {
+					scanner.skip(scanner.delimiter());
+				}
+				builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
+				return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad cookie!!!", parser.getPos());
 			}
-			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
-			return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
 		}
 	},
 	CookieW3C(new String[]{"cs(Cookie)"}, Cookie.class, null) {
@@ -377,7 +393,11 @@ public enum LogFieldType {
 	ServerPort(new String[]{"%p", "%{local}p", "%{canonical}p", "s-port"}, Port.class, "[0-9]+") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			return parser.getTokenInstance(classType, scanner.next(pattern), true);
+			try {
+				return parser.getTokenInstance(classType, scanner.next(pattern), true);
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad port!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -394,7 +414,11 @@ public enum LogFieldType {
 	ClientPort(new String[]{"%{remote}p", "c-port"}, Port.class, "[0-9]+") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			return parser.getTokenInstance(classType, scanner.next(pattern), false);
+			try {
+				return parser.getTokenInstance(classType, scanner.next(pattern), false);
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad port!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -479,8 +503,12 @@ public enum LogFieldType {
 	TimeTakenM(new String[]{"%{ms}T", "time-taken"}, org.sessionization.parser.fields.TimeTaken.class, "[0-9]+") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			long val = TimeUnit.Milliseconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
-			return parser.getTokenInstance(classType, val);
+			try {
+				long val = TimeUnit.Milliseconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
+				return parser.getTokenInstance(classType, val);
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad time taken!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -492,8 +520,12 @@ public enum LogFieldType {
 	TiemTakenS(new String[]{"%{s}T", "%T"}, org.sessionization.parser.fields.TimeTaken.class, "[0-9]+") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			long val = TimeUnit.Seconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
-			return parser.getTokenInstance(classType, val);
+			try {
+				long val = TimeUnit.Seconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
+				return parser.getTokenInstance(classType, val);
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad time taken!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -614,7 +646,11 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			return org.sessionization.parser.fields.ncsa.ConnectionStatus.getConnectionStatus(scanner.next(pattern));
+			try {
+				return org.sessionization.parser.fields.ncsa.ConnectionStatus.getConnectionStatus(scanner.next(pattern));
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad connection status!!!", parser.getPos());
+			}
 		}
 	},
 	/**

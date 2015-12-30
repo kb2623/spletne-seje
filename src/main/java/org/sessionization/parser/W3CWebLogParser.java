@@ -103,7 +103,6 @@ public class W3CWebLogParser extends AbsWebLogParser {
 				return super.parseLine(tokens);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new ParseException("Bad line!!!", getPos());
 		}
 	}
