@@ -4,10 +4,14 @@ import org.sessionization.database.ConnectionStatusConverter;
 import org.sessionization.database.InetAddressConverter;
 import org.sessionization.database.MethodConverter;
 import org.sessionization.parser.fields.*;
+import org.sessionization.parser.fields.w3c.MetaData;
 
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.text.ParseException;
+import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -79,7 +83,9 @@ public enum LogFieldType {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
 			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
-			scanner.skip(" ");
+			if (scanner.hasNext()) {
+				scanner.skip(scanner.delimiter());
+			}
 			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
 			return parser.getTokenInstance(classType, builder.toString(), ((NCSAWebLogParser) parser).getDateTimeFormatter());
 		}
@@ -108,7 +114,9 @@ public enum LogFieldType {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
 			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
-			scanner.skip(" ");
+			if (scanner.hasNext()) {
+				scanner.skip(scanner.delimiter());
+			}
 			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
 			return parser.getTokenInstance(classType, builder.toString());
 		}
@@ -180,9 +188,16 @@ public enum LogFieldType {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
 			StringBuilder builder = new StringBuilder(scanner.next(pattern));
-			scanner.skip(" ");
+			if (scanner.hasNext()) {
+				scanner.skip(scanner.delimiter());
+			}
 			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
-			return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
+			try {
+				URI uri = new URI(builder.toString());
+				return parser.getTokenInstance(classType, uri);
+			} catch (URISyntaxException e) {
+				throw new ParseException("Bad referer!!!", parser.getPos());
+			}
 		}
 	},
 	RefererW3C(new String[]{"cs(Referer)"}, Referer.class, null) {
@@ -201,7 +216,12 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			return parser.getTokenInstance(classType, scanner.next(), LogType.W3C);
+			try {
+				URI uri = new URI(scanner.next());
+				return parser.getTokenInstance(classType, uri);
+			} catch (URISyntaxException e) {
+				throw new ParseException("Bad referer!!!", parser.getPos());
+			}
 		}
 	},
 	/**
@@ -214,7 +234,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs(User-Agent)</code>
 	 */
-	UserAgentNCSA(new String[]{"%{User-agent}i"}, UserAgent.class, "(\")([^\'])(\")") {
+	UserAgentNCSA(new String[]{"%{User-agent}i"}, UserAgent.class, "(((\")([^\"]+?)(\"))|\\-)") {
 		@Override
 		public boolean isKey() {
 			return true;
@@ -222,8 +242,10 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder(scanner.next(pattern));
-			scanner.skip(" ");
+			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(pattern, 0));
+			if (scanner.hasNext()) {
+				scanner.skip(scanner.delimiter());
+			}
 			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
 			return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
 		}
@@ -250,7 +272,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>cs(Cookie)</code>
 	 */
-	CookieNCSA(new String[]{"%C"}, Cookie.class, "(\")([^\"]+?)(\")") {
+	CookieNCSA(new String[]{"%C"}, Cookie.class, "(((\")([^\"]+?)(\"))|\\-)") {
 		@Override
 		public boolean isKey() {
 			return true;
@@ -266,8 +288,10 @@ public enum LogFieldType {
 
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
-			StringBuilder builder = new StringBuilder(scanner.next(pattern));
-			scanner.skip(" ");
+			StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(pattern, 0));
+			if (scanner.hasNext()) {
+				scanner.skip(scanner.delimiter());
+			}
 			builder.deleteCharAt(0).deleteCharAt(builder.length() - 1);
 			return parser.getTokenInstance(classType, builder.toString(), LogType.NCSA);
 		}
@@ -465,7 +489,7 @@ public enum LogFieldType {
 	 *
 	 * Format string; <code>%{s}T</code>, <code>%T</code>
 	 */
-	TiemTakenS(new String[]{"%{s}T", "%T"}, org.sessionization.parser.fields.TimeTaken.class, "") {
+	TiemTakenS(new String[]{"%{s}T", "%T"}, org.sessionization.parser.fields.TimeTaken.class, "[0-9]+") {
 		@Override
 		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
 			long val = TimeUnit.Seconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
@@ -517,7 +541,7 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>s-computername</code>
 	 */
-	ComputerName(new String[]{"%V", "s-computername"}, org.sessionization.parser.fields.w3c.ComputerName.class, ""),
+	ComputerName(new String[]{"%V", "s-computername"}, org.sessionization.parser.fields.w3c.ComputerName.class, null),
 	/**
 	 * NCSA:
 	 * The query string (prepended with a ? if a query string exists, otherwise an empty
@@ -607,7 +631,21 @@ public enum LogFieldType {
 	 *
 	 * Format string: <code>#Version</code>, <code>#Fields</code>, <code>#Software</code>, <code>#Start-Date</code>, <code>#End-Date</code>, <code>#Date</code>, <code>#Remark</code>
 	 */
-	MetaData(new String[]{"#Version:", "#Fields:", "#Software:", "#Start-Date:", "#End-Date:", "#Date:", "#Remark:"}, null, "(#)(.+)"),
+	MetaData(new String[]{"#Version:", "#Fields:", "#Software:", "#Start-Date:", "#End-Date:", "#Date:", "#Remark:"}, null, "(#)(.+?)") {
+		@Override
+		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+			try {
+				String data = scanner.next(pattern);
+				List<String> list = new LinkedList<>();
+				while (scanner.hasNext()) {
+					list.add(scanner.next());
+				}
+				return new MetaData(data, list);
+			} catch (InputMismatchException e) {
+				throw new ParseException("Bad meta data!!!", parser.getPos());
+			}
+		}
+	},
 	Unknown(new String[]{""}, null, null);
 
 	final Class classType;
@@ -674,10 +712,15 @@ public enum LogFieldType {
 	 * @throws ParseException
 	 */
 	public LogField parse(final Scanner scanner, final AbsWebLogParser parser) throws ParseException {
-		if (pattern != null) {
-			return parser.getTokenInstance(classType, scanner.next(pattern));
-		} else {
-			return parser.getTokenInstance(classType, scanner.next());
+		try {
+			if (pattern != null) {
+				return parser.getTokenInstance(classType, scanner.next(pattern));
+			} else {
+				return parser.getTokenInstance(classType, scanner.next());
+			}
+		} catch (InputMismatchException e) {
+			System.out.println(getClassE().getName());
+			throw new ParseException(e.getMessage(), parser.getPos());
 		}
 	}
 
@@ -686,6 +729,10 @@ public enum LogFieldType {
 	 */
 	public String[] getFormatString() {
 		return format;
+	}
+
+	public Pattern getPattern() {
+		return pattern;
 	}
 }
 

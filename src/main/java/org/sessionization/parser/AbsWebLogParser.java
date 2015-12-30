@@ -7,6 +7,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * Razred za parsanje log datoteke
@@ -35,6 +36,11 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	protected ObjectPool pool;
 
 	/**
+	 *
+	 */
+	protected Pattern delimiter;
+
+	/**
 	 * Datoteke za branje
 	 *
 	 * @see BufferedReader
@@ -49,6 +55,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	public AbsWebLogParser() {
 		readers = null;
 		fieldType = null;
+		delimiter = Pattern.compile(" ");
 	}
 
 	/**
@@ -129,7 +136,9 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 				break;
 			}
 		}
-		return new Scanner(builder.toString());
+		Scanner s = new Scanner(builder.toString());
+		s.useDelimiter(delimiter);
+		return s;
 	}
 
 	/**

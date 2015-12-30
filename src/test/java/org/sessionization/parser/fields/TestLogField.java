@@ -1,6 +1,7 @@
 package org.sessionization.parser.fields;
 
 import org.junit.Test;
+import org.sessionization.parser.LogType;
 import org.sessionization.parser.fields.ncsa.DateTime;
 import org.sessionization.parser.fields.ncsa.RequestLine;
 

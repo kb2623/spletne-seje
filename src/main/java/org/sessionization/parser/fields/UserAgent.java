@@ -1,6 +1,7 @@
 package org.sessionization.parser.fields;
 
 import org.sessionization.parser.LogField;
+import org.sessionization.parser.LogType;
 
 import javax.persistence.*;
 
@@ -22,6 +23,7 @@ public class UserAgent implements LogField {
 
 	public UserAgent(String info, LogType type) {
 		id = null;
+		;
 		userAgentString = type.parseUserAgent(info);
 	}
 

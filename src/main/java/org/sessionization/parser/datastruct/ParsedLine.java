@@ -29,6 +29,13 @@ public class ParsedLine implements Iterable<LogField> {
 	}
 
 	/**
+	 * @param array
+	 */
+	public ParsedLine(LogField[] array) {
+		this.array = array;
+	}
+
+	/**
 	 * Metoda, ki prevrja ali je zahtevo opravil uporabnik ali spletni robot.
 	 * Robota indentificiramo preko zahteve po resursu robots.txt ali pa po
 	 * <code>user agetn stringu</code>

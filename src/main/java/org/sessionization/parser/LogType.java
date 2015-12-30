@@ -1,26 +1,26 @@
-package org.sessionization.parser.fields;
+package org.sessionization.parser;
 
 public enum LogType {
 	NCSA {
 		@Override
-		protected String parseCooki(String data) {
+		public String parseCooki(String data) {
 			return data.replace(';', ' ');
 		}
 
 		@Override
-		protected String parseUserAgent(String data) {
+		public String parseUserAgent(String data) {
 			return data;
 		}
 	},
 	W3C {
 		@Override
-		protected String parseCooki(String data) {
+		public String parseCooki(String data) {
 			data = data.replace(';', ' ');
 			return data.replaceAll("\\+", "");
 		}
 
 		@Override
-		protected String parseUserAgent(String data) {
+		public String parseUserAgent(String data) {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < data.length(); i++) {
 				if (data.charAt(i) == '+') {
@@ -36,11 +36,11 @@ public enum LogType {
 	 * @param data
 	 * @return
 	 */
-	protected abstract String parseCooki(String data);
+	public abstract String parseCooki(String data);
 
 	/**
 	 * @param data
 	 * @return
 	 */
-	protected abstract String parseUserAgent(String data);
+	public abstract String parseUserAgent(String data);
 }

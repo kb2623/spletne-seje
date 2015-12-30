@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("deprecation")
 public class IISWebLogParser extends W3CWebLogParser {
@@ -46,5 +47,6 @@ public class IISWebLogParser extends W3CWebLogParser {
 	private void setDefaultFields(Locale locale) {
 		super.setDateFormat("dd/MM/yyyy", locale);
 		super.setTimeFormat("HH:mm:ss", locale);
+		super.delimiter = Pattern.compile(", ");
 	}
 }

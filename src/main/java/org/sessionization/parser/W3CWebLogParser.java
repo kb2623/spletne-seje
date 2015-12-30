@@ -8,11 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 /**
  * Parser za formate: Extended Log Format
@@ -24,9 +21,6 @@ public class W3CWebLogParser extends AbsWebLogParser {
 
 	private DateTimeFormatter timeFormat;
 	private DateTimeFormatter dateFormat;
-
-	private Pattern metaDataPattern = Pattern.compile("#(Version|Fields|Software|Start-Date|End-Date|Date|Remark):");
-	private Pattern fieldsPattern = Pattern.compile("#Fields:");
 
 	/**
 	 * Konstruktor ki uporabi prevzeti oknstriktor razreda {@link ParserAbs}.
@@ -99,16 +93,12 @@ public class W3CWebLogParser extends AbsWebLogParser {
 	public ParsedLine parseLine() throws ParseException {
 		try {
 			Scanner tokens = getLine();
-			if (tokens.hasNext(metaDataPattern)) {
-				List<LogField> metaData = new ArrayList<>(fieldType.size());
-				while (tokens.hasNext()) {
-					metaData.add(new MetaData(tokens.next()));
+			if (tokens.hasNext(LogFieldType.MetaData.getPattern())) {
+				MetaData metadata = (MetaData) LogFieldType.MetaData.parse(tokens, this);
+				if (metadata.getMetaData().equals("Fields")) {
+					super.setFieldType(LogFormats.ParseCmdArgs.create(metadata.getValues()));
 				}
-				if (tokens.hasNext("#Fields:")) {
-					String[] tab = metaData.toArray(new String[metaData.size()]);
-					super.setFieldType(LogFormats.ParseCmdArgs.make(tab));
-				}
-				return new ParsedLine(metaData);
+				return new ParsedLine(new LogField[]{metadata});
 			} else {
 				return super.parseLine(tokens);
 			}

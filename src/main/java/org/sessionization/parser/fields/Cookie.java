@@ -1,6 +1,7 @@
 package org.sessionization.parser.fields;
 
 import org.sessionization.parser.LogField;
+import org.sessionization.parser.LogType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
