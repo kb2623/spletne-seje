@@ -48,7 +48,6 @@ public class DumpPageView {
 			builder.setLength(0);
 			builder.append("public PageView(" + ParsedLine.class.getName() + " line) {");
 			builder.append("super(line);");
-			builder.append("super.requests.add(new " + DumpRequest.getName() + "(line));");
 			builder.append('}');
 			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 			aClass.addConstructor(constructor);

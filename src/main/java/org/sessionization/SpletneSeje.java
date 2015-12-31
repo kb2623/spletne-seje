@@ -107,7 +107,7 @@ public class SpletneSeje {
 			logParser.setIgnoreFieldType(LogFormats.ParseCmdArgs.make(ignore));
 		}
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
-//		db = new HibernateUtil(argsParser, logParser);
+		db = new HibernateUtil(argsParser, logParser);
 	}
 
 	/**
@@ -126,33 +126,29 @@ public class SpletneSeje {
 			}
 			System.exit(1);
 		} catch (ParseException e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(2);
+			printError(e.getLocalizedMessage(), 2);
 		} catch (FileNotFoundException e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(3);
+			printError(e.getLocalizedMessage(), 3);
 		} catch (IOException e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(4);
+			printError(e.getLocalizedMessage(), 4);
 		} catch (URISyntaxException e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(5);
+			printError(e.getLocalizedMessage(), 5);
 		} catch (ClassNotFoundException e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(6);
+			printError(e.getLocalizedMessage(), 6);
 		} catch (ExceptionInInitializerError e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(7);
+			printError(e.getCause().getMessage(), 7);
 		} catch (InterruptedException e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(8);
+			printError(e.getLocalizedMessage(), 8);
 		} catch (CannotCompileException e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(9);
+			printError(e.getLocalizedMessage(), 9);
 		} catch (NotFoundException e) {
-			System.err.println(e.getLocalizedMessage());
-			System.exit(10);
+			printError(e.getLocalizedMessage(), 10);
 		}
+	}
+
+	private static void printError(String message, int exit) {
+		System.err.println("Error: " + message);
+		System.exit(exit);
 	}
 
 	public void run() throws InterruptedException {

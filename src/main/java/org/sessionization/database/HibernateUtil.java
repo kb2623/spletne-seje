@@ -13,9 +13,7 @@ import org.sessionization.ClassPoolLoader;
 import org.sessionization.parser.AbsWebLogParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.LogFieldType;
-import org.sessionization.parser.datastruct.DumpPageView;
-import org.sessionization.parser.datastruct.DumpUserId;
-import org.sessionization.parser.datastruct.DumpUserSession;
+import org.sessionization.parser.datastruct.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,7 +32,9 @@ public class HibernateUtil implements AutoCloseable {
 	public HibernateUtil(ArgsParser argsParser, AbsWebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
 		/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
 		List<LogFieldType> list = logParser.getFieldType();
-		list.removeAll(logParser.getIgnoreFieldTypes());
+		if (logParser.getIgnoreFieldTypes() != null) {
+			list.removeAll(logParser.getIgnoreFieldTypes());
+		}
 		/** Inicializacija ClassLoaderja */
 		this.loader = initClassLoader(argsParser);
 		Properties props = initProperties(argsParser);
@@ -76,7 +76,7 @@ public class HibernateUtil implements AutoCloseable {
 		return props;
 	}
 
-	private Set<Class> initClasses(List<LogFieldType> list, ClassPoolLoader loader) throws ExceptionInInitializerError {
+	private Set<Class> initClasses(List<LogFieldType> list, ClassPoolLoader loader) throws ExceptionInInitializerError, NotFoundException, CannotCompileException, IOException {
 		Set<Class> classes = new HashSet<>();
 		for (LogFieldType f : list) {
 			for (Class c : f.getDependencies()) {
@@ -84,27 +84,14 @@ public class HibernateUtil implements AutoCloseable {
 			}
 			classes.add(f.getClassE());
 		}
-		Class c;
-		try {
-			c = DumpPageView.dump(loader);
-		} catch (IOException | CannotCompileException | NotFoundException e) {
-			c = null;
-		}
-		if (c != null) {
-			classes.add(c);
-			try {
-				classes.add(DumpUserSession.dump(loader));
-			} catch (IOException | CannotCompileException | NotFoundException e) {
-				throw new ExceptionInInitializerError(e);
-			}
-		}
-		try {
-			c = DumpUserId.dump(list, loader);
-		} catch (IOException | CannotCompileException | NotFoundException e) {
-		}
-		if (c != null) {
-			classes.add(c);
-		}
+		classes.add(DumpRequest.dump(list, loader));
+		classes.add(AbsRequest.class);
+		classes.add(DumpPageView.dump(loader));
+		classes.add(AbsPageView.class);
+		classes.add(DumpUserSession.dump(loader));
+		classes.add(AbsUserSession.class);
+		classes.add(DumpUserId.dump(list, loader));
+		classes.add(AbsUserId.class);
 		return classes;
 	}
 
@@ -117,9 +104,13 @@ public class HibernateUtil implements AutoCloseable {
 		if (argsParser.getDialect() != null) {
 			set.add(argsParser.getDialect());
 		}
-		URLClassLoader urlLoader = new URLClassLoader(set.toArray(new URL[set.size()]), ClassLoader.getSystemClassLoader());
-		/** Ustvari dinamicne razrede */
-		return new ClassPoolLoader(urlLoader);
+		if (set.size() > 0) {
+			URLClassLoader urlLoader = new URLClassLoader(set.toArray(new URL[set.size()]), ClassLoader.getSystemClassLoader());
+			/** Ustvari dinamicne razrede */
+			return new ClassPoolLoader(urlLoader);
+		} else {
+			return new ClassPoolLoader();
+		}
 	}
 
 	public ClassPoolLoader getLoader() {

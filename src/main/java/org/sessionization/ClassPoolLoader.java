@@ -1,10 +1,6 @@
 package org.sessionization;
 
-import javassist.CannotCompileException;
 import javassist.ClassPool;
-import javassist.NotFoundException;
-
-import java.io.IOException;
 
 public class ClassPoolLoader extends ClassLoader {
 
@@ -34,17 +30,4 @@ public class ClassPoolLoader extends ClassLoader {
 		return pool;
 	}
 
-	@Override
-	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		try {
-			return super.findClass(name);
-		} catch (ClassNotFoundException e) {
-			try {
-				byte[] bytes = pool.get(name).toBytecode();
-				return defineClass(name, bytes);
-			} catch (NotFoundException | CannotCompileException | IOException e1) {
-				throw e;
-			}
-		}
-	}
 }

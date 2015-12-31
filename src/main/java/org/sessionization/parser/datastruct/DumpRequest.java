@@ -4,7 +4,9 @@ import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.ArrayMemberValue;
 import javassist.bytecode.annotation.EnumMemberValue;
+import javassist.bytecode.annotation.MemberValue;
 import org.sessionization.ClassPoolLoader;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.LogFieldType;
@@ -46,27 +48,6 @@ public class DumpRequest {
 				}
 				aClass.getClassFile().addAttribute(attr);
 			}
-			/** Inicializacija ID polja */{
-				builder.setLength(0);
-				builder.append("private " + Integer.class.getName() + " id;");
-				CtField field = CtField.make(builder.toString(), aClass);
-				ConstPool constPool = field.getFieldInfo().getConstPool();
-				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-				{
-					Annotation anno = new Annotation(Id.class.getName(), constPool);
-					attr.addAnnotation(anno);
-				}
-				{
-					Annotation anno = new Annotation(GeneratedValue.class.getName(), constPool);
-					EnumMemberValue value = new EnumMemberValue(constPool);
-					value.setType(GenerationType.class.getName());
-					value.setValue(GenerationType.IDENTITY.name());
-					anno.addMemberValue("strategy", value);
-					attr.addAnnotation(anno);
-				}
-				field.getFieldInfo().addAttribute(attr);
-				aClass.addField(field);
-			}
 			/** Inicializacija polji */
 			for (LogFieldType f : fields) {
 				builder.setLength(0);
@@ -80,7 +61,9 @@ public class DumpRequest {
 					EnumMemberValue member = new EnumMemberValue(constPool);
 					member.setType(CascadeType.class.getName());
 					member.setValue(CascadeType.ALL.name());
-					anno.addMemberValue("cascade", member);
+					ArrayMemberValue array = new ArrayMemberValue(constPool);
+					array.setValue(new MemberValue[]{member});
+					anno.addMemberValue("cascade", array);
 					attr.addAnnotation(anno);
 				} else if (c.isAnnotationPresent(Embeddable.class)) {
 					Annotation anno = new Annotation(Embeddable.class.getName(), constPool);
@@ -96,7 +79,6 @@ public class DumpRequest {
 				builder.setLength(0);
 				builder.append("public Request() {");
 				builder.append("super();");
-				builder.append("this.id = null;");
 				for (LogFieldType f : fields) {
 					builder.append("this." + f.getFieldName() + " = null;");
 				}
@@ -108,7 +90,6 @@ public class DumpRequest {
 				builder.setLength(0);
 				builder.append("public Request(" + ParsedLine.class.getName() + " line) {");
 				builder.append("super();");
-				builder.append("this.id = null;");
 				builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
 				for (LogFieldType f : fields) {
@@ -118,18 +99,6 @@ public class DumpRequest {
 				builder.append('}').append('}');
 				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 				aClass.addConstructor(constructor);
-			}
-			/** getId() */{
-				builder.setLength(0);
-				builder.append("public synchronized " + Integer.class.getName() + " getId() { return this.id; }");
-				CtMethod method = CtMethod.make(builder.toString(), aClass);
-				aClass.addMethod(method);
-			}
-			/** setId(Integer id) */{
-				builder.setLength(0);
-				builder.append("public synchronized void setId(" + Integer.class.getName() + " id) { this.id = id; }");
-				CtMethod method = CtMethod.make(builder.toString(), aClass);
-				aClass.addMethod(method);
 			}
 			/** setterji in getterji za ostala polja */
 			for (LogFieldType f : fields) {
@@ -186,19 +155,18 @@ public class DumpRequest {
 				builder.append("if (this == o) { return true; }\n");
 				builder.append("else if (o == null || getClass() != o.getClass()) { return false; }");
 				builder.append("else {" + CLASSNAME + " v = (" + CLASSNAME + ") o;");
-				builder.append("return ");
-				builder.append("(this.id != null ? this.id.equals(v.getId()) : v.getId() == null)");
+				builder.append("return super.equals(o)");
 				for (LogFieldType f : fields) {
 					builder.append(" && (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".equals(v." + f.getGetterName() + "()) : v." + f.getGetterName() + "() == null)");
 				}
-				builder.append(";}}");
+				builder.append(';').append("}}");
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
 			/** hashCode() */{
 				builder.setLength(0);
 				builder.append("public " + int.class.getName() + " hashCode() {");
-				builder.append(int.class.getName() + " res = this.id != null ? id.hashCode() : 0;");
+				builder.append(int.class.getName() + " res = super.hashCode();");
 				for (LogFieldType f : fields) {
 					builder.append("res = 31 * res + (" + f.getFieldName() + " != null ? this." + f.getFieldName() + ".hashCode() : 0);");
 				}

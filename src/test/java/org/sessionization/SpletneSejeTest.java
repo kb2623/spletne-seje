@@ -1,6 +1,5 @@
 package org.sessionization;
 
-import org.atteo.classindex.ClassIndex;
 import org.datastruct.RadixTree;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,10 +10,10 @@ import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class SpletneSejeTest {
 
@@ -131,13 +130,6 @@ public class SpletneSejeTest {
 	}
 
 	@Test
-	public void testSome() {
-		for (Class c : ClassIndex.getPackageClasses("org", ClassLoader.getSystemClassLoader())) {
-			System.out.println(c.getName());
-		}
-	}
-/*
-	@Test
 	public void testRunZero() {
 		SpletneSeje.main("-h");
 	}
@@ -160,5 +152,4 @@ public class SpletneSejeTest {
 		properties.storeToXML(System.out, null, "UTF-8");
 		properties.storeToXML(System.out, null);
 	}
-*/
 }

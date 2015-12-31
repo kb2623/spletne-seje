@@ -45,8 +45,7 @@ public class AbsUserIdTest {
 		assertEquals(line1.getKey(), u1.getKey());
 		AbsUserId u2 = (AbsUserId) init.newInstance(line2);
 		assertEquals(line2.getKey(), u2.getKey());
-		System.out.println(u1.secBetwene(u2));
-		System.out.println(u2.printDate() + "\t" + u1.printDate());
+		assertEquals(172800, u1.secBetwene(u2));
 		assertFalse(u1.getLocalDate().equals(LocalDate.MIN));
 	}
 

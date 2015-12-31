@@ -40,7 +40,7 @@ public class ArgsParser {
 		properties.setProperty("database.dialect.class", "org.dialect.SQLiteDialect");
 		properties.setProperty("database.ddl", String.valueOf(DdlOperation.Create));
 		properties.setProperty("database.connection.pool_size", "1");
-		properties.setProperty("database.url", "jdbc:sqlite:qliteDB");
+		properties.setProperty("database.url", "jdbc:sqlite:sqliteDB");
 		properties.setProperty("database.sql.show", String.valueOf(false));
 		properties.setProperty("database.sql.show.format", String.valueOf(false));
 		properties.setProperty("format.locale", Locale.US.toLanguageTag());
@@ -228,10 +228,15 @@ public class ArgsParser {
 
 	public String[] getIgnoreFields() {
 		List<String> tmp = new ArrayList<>();
-		for (String s : properties.getProperty("log.ignore").split(" ")) {
-			tmp.add(s);
+		String ignore = properties.getProperty("log.ignore");
+		if (ignore != null) {
+			for (String s : properties.getProperty("log.ignore").split(" ")) {
+				tmp.add(s);
+			}
+			return tmp.toArray(new String[tmp.size()]);
+		} else {
+			return new String[0];
 		}
-		return tmp.toArray(new String[tmp.size()]);
 	}
 
 	@Option(name = "li", aliases = "log.ignore", usage = "Fields to ignore", metaVar = "<string>")
