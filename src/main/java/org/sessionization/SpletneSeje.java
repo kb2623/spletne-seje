@@ -6,7 +6,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.*;
-import org.sessionization.parser.datastruct.AbsUserId;
+import org.sessionization.parser.datastruct.AUserId;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class SpletneSeje {
 
 	private ArgsParser argsParser;
-	private AbsWebLogParser logParser;
+	private AWebLogParser logParser;
 	private HibernateUtil db;
 
 	public SpletneSeje() {
@@ -152,7 +152,7 @@ public class SpletneSeje {
 	}
 
 	public void run() throws InterruptedException {
-		BlockingQueue<Map<String, AbsUserId>> qParserLearner = new LinkedBlockingQueue<>();
+		BlockingQueue<Map<String, AUserId>> qParserLearner = new LinkedBlockingQueue<>();
 		Thread parseThread = new ParserThread(qParserLearner, logParser, argsParser.getParseSize());
 		Thread learnThread = new LearnThread(qParserLearner);
 		parseThread.start();

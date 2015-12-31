@@ -11,20 +11,15 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Cacheable
-public abstract class AbsPageView implements TimePoint {
+public abstract class APageView implements TimePoint {
 
 	@OneToMany(cascade = CascadeType.ALL)
-	protected List<AbsRequest> requests;
+	protected List<ARequest> requests;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	public AbsPageView() {
-		id = null;
-		requests = null;
-	}
-
-	public AbsPageView(ParsedLine line) {
+	public APageView() {
 		id = null;
 		requests = new LinkedList<>();
 	}
@@ -37,11 +32,11 @@ public abstract class AbsPageView implements TimePoint {
 		this.id = id;
 	}
 
-	public List<AbsRequest> getRequests() {
+	public List<ARequest> getRequests() {
 		return requests;
 	}
 
-	public void setRequests(List<AbsRequest> requests) {
+	public void setRequests(List<ARequest> requests) {
 		this.requests = requests;
 	}
 
@@ -68,8 +63,8 @@ public abstract class AbsPageView implements TimePoint {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AbsPageView)) return false;
-		AbsPageView that = (AbsPageView) o;
+		if (!(o instanceof APageView)) return false;
+		APageView that = (APageView) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getRequests() != null ? !getRequests().equals(that.getRequests()) : that.getRequests() != null) return false;
 		return true;

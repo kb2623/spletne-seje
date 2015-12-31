@@ -4,7 +4,7 @@ import org.datastruct.ObjectPool;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.AbsWebLogParser;
+import org.sessionization.parser.AWebLogParser;
 import org.sessionization.parser.LogFormats;
 import org.sessionization.parser.NCSAWebLogParser;
 
@@ -14,10 +14,10 @@ import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 
-public class AbsUserIdTest {
+public class AUserIdTest {
 
 	private ClassLoader loader;
-	private AbsWebLogParser parser;
+	private AWebLogParser parser;
 
 	@Before
 	public void setUp() {
@@ -34,16 +34,16 @@ public class AbsUserIdTest {
 						"157.55.39.19 - - [28/Jun/2014:04:44:51 +0200] \"GET /jope-puloverji/moski-pulover-b74-black?limit=18 HTTP/1.1\" 200 9545"
 		));
 		ParsedLine line1 = parser.parseLine(), line2 = parser.parseLine();
-		DumpRequest.dump(parser.getFieldType(), (ClassPoolLoader) loader);
-		DumpPageView.dump((ClassPoolLoader) loader);
-		DumpUserSession.dump((ClassPoolLoader) loader);
-		DumpUserId.dump(parser.getFieldType(), (ClassPoolLoader) loader);
-		Class userId = loader.loadClass(DumpUserId.getName());
+		DRequest.dump(parser.getFieldType(), (ClassPoolLoader) loader);
+		DPageView.dump((ClassPoolLoader) loader);
+		DUserSession.dump((ClassPoolLoader) loader);
+		DUserId.dump(parser.getFieldType(), (ClassPoolLoader) loader);
+		Class userId = loader.loadClass(DUserId.getName());
 		assertNotNull(userId);
 		Constructor init = userId.getConstructor(ParsedLine.class);
-		AbsUserId u1 = (AbsUserId) init.newInstance(line1);
+		AUserId u1 = (AUserId) init.newInstance(line1);
 		assertEquals(line1.getKey(), u1.getKey());
-		AbsUserId u2 = (AbsUserId) init.newInstance(line2);
+		AUserId u2 = (AUserId) init.newInstance(line2);
 		assertEquals(line2.getKey(), u2.getKey());
 		assertEquals(172800, u1.secBetwene(u2));
 		assertFalse(u1.getLocalDate().equals(LocalDate.MIN));

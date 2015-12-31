@@ -11,20 +11,15 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Cacheable
-public abstract class AbsUserSession implements TimePoint {
+public abstract class AUserSession implements TimePoint {
 
 	@OneToMany(cascade = CascadeType.ALL)
-	protected List<AbsPageView> pages;
+	protected List<APageView> pages;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	public AbsUserSession() {
-		id = null;
-		pages = null;
-	}
-
-	public AbsUserSession(ParsedLine line) {
+	public AUserSession() {
 		id = null;
 		pages = new LinkedList<>();
 	}
@@ -37,15 +32,15 @@ public abstract class AbsUserSession implements TimePoint {
 		this.id = id;
 	}
 
-	public List<AbsPageView> getPages() {
+	public List<APageView> getPages() {
 		return pages;
 	}
 
-	public void setPages(List<AbsPageView> pages) {
+	public void setPages(List<APageView> pages) {
 		this.pages = pages;
 	}
 
-	protected boolean addPageView(AbsPageView loadedPage) {
+	protected boolean addPageView(APageView loadedPage) {
 		if (pages != null) {
 			return pages.add(loadedPage);
 		} else {
@@ -76,8 +71,8 @@ public abstract class AbsUserSession implements TimePoint {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AbsUserSession)) return false;
-		AbsUserSession that = (AbsUserSession) o;
+		if (!(o instanceof AUserSession)) return false;
+		AUserSession that = (AUserSession) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getPages() != null ? !getPages().equals(that.getPages()) : that.getPages() != null) return false;
 		return true;

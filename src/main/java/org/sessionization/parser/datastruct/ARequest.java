@@ -7,13 +7,13 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Cacheable
-public abstract class AbsRequest implements TimePoint {
+public abstract class ARequest implements TimePoint {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	public AbsRequest() {
+	public ARequest() {
 		this.id = null;
 	}
 
@@ -28,8 +28,8 @@ public abstract class AbsRequest implements TimePoint {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AbsRequest)) return false;
-		AbsRequest that = (AbsRequest) o;
+		if (!(o instanceof ARequest)) return false;
+		ARequest that = (ARequest) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		return true;
 	}

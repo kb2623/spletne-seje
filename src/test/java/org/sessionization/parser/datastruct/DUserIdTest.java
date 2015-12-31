@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-public class DumpUserIdTest {
+public class DUserIdTest {
 
 	private ClassPoolLoader loader;
 	private List<LogFieldType> allFieldTypes;
@@ -31,7 +31,7 @@ public class DumpUserIdTest {
 		File file = new File("UserId.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);
-		byte[] bytes = loader.getPool().get(DumpUserId.getName()).toBytecode();
+		byte[] bytes = loader.getPool().get(DUserId.getName()).toBytecode();
 		fos.write(bytes);
 		fos.close();
 	}
@@ -39,18 +39,18 @@ public class DumpUserIdTest {
 	@Test
 	public void testCommon() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.make();
-		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
-		assertNotNull(DumpPageView.dump(loader));
-		assertNotNull(DumpUserSession.dump(loader));
-		assertNotNull(DumpUserId.dump(allFieldTypes, loader));
+		assertNotNull(DRequest.dump(allFieldTypes, loader));
+		assertNotNull(DPageView.dump(loader));
+		assertNotNull(DUserSession.dump(loader));
+		assertNotNull(DUserId.dump(allFieldTypes, loader));
 	}
 
 	@Test
 	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
 		allFieldTypes = LogFormats.CombinedLogFormat.make();
-		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
-		assertNotNull(DumpPageView.dump(loader));
-		assertNotNull(DumpUserSession.dump(loader));
-		assertNotNull(DumpUserId.dump(allFieldTypes, loader));
+		assertNotNull(DRequest.dump(allFieldTypes, loader));
+		assertNotNull(DPageView.dump(loader));
+		assertNotNull(DUserSession.dump(loader));
+		assertNotNull(DUserId.dump(allFieldTypes, loader));
 	}
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-public class DumpRequestTest {
+public class DPageViewTest {
 
 	private ClassPoolLoader loader;
 	private List<LogFieldType> allFieldTypes;
@@ -28,10 +28,10 @@ public class DumpRequestTest {
 
 	@After
 	public void endUp() throws IOException, NotFoundException, CannotCompileException {
-		File file = new File("Request.class");
+		File file = new File("PageView.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);
-		byte[] bytes = loader.getPool().get(DumpRequest.getName()).toBytecode();
+		byte[] bytes = loader.getPool().get(DPageView.getName()).toBytecode();
 		fos.write(bytes);
 		fos.close();
 	}
@@ -39,12 +39,14 @@ public class DumpRequestTest {
 	@Test
 	public void testCommon() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.make();
-		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
+		assertNotNull(DRequest.dump(allFieldTypes, loader));
+		assertNotNull(DPageView.dump(loader));
 	}
 
 	@Test
 	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
 		allFieldTypes = LogFormats.CombinedLogFormat.make();
-		assertNotNull(DumpRequest.dump(allFieldTypes, loader));
+		assertNotNull(DRequest.dump(allFieldTypes, loader));
+		assertNotNull(DPageView.dump(loader));
 	}
 }

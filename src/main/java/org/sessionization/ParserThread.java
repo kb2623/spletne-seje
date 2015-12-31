@@ -1,7 +1,7 @@
 package org.sessionization;
 
 import org.datastruct.RadixTree;
-import org.sessionization.parser.AbsWebLogParser;
+import org.sessionization.parser.AWebLogParser;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.util.LinkedList;
@@ -12,10 +12,10 @@ import java.util.concurrent.BlockingQueue;
 public class ParserThread extends Thread {
 
 	private BlockingQueue<Map<String, List<List<ParsedLine>>>> queue;
-	private AbsWebLogParser parser;
+	private AWebLogParser parser;
 	private int segmentSize;
 
-	public ParserThread(BlockingQueue queue, AbsWebLogParser parser, int segmentSize) {
+	public ParserThread(BlockingQueue queue, AWebLogParser parser, int segmentSize) {
 		super();
 		this.queue = queue;
 		this.parser = parser;

@@ -17,7 +17,7 @@ import java.util.Scanner;
  * @author klemen
  */
 @SuppressWarnings("deprecation")
-public class W3CWebLogParser extends AbsWebLogParser {
+public class W3CWebLogParser extends AWebLogParser {
 
 	private DateTimeFormatter timeFormat;
 	private DateTimeFormatter dateFormat;
@@ -25,7 +25,7 @@ public class W3CWebLogParser extends AbsWebLogParser {
 	/**
 	 * Konstruktor ki uporabi prevzeti oknstriktor razreda {@link ParserAbs}.
 	 *
-	 * @see AbsWebLogParser#AbsWebLogParser()
+	 * @see AWebLogParser#AWebLogParser()
 	 * @see W3CWebLogParser#setDefaultFields()
 	 */
 	public W3CWebLogParser() {

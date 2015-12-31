@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *
  * @author klemen
  */
-public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoCloseable {
+public abstract class AWebLogParser implements Iterable<ParsedLine>, AutoCloseable {
 
 	/**
 	 * Tabela, ki vsebuje vrste polji v log datoteki
@@ -52,7 +52,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * pozicija = 0<p>
 	 * datoteka = null
 	 */
-	public AbsWebLogParser() {
+	public AWebLogParser() {
 		readers = null;
 		fieldType = null;
 		delimiter = Pattern.compile(" ");
@@ -62,7 +62,7 @@ public abstract class AbsWebLogParser implements Iterable<ParsedLine>, AutoClose
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public AbsWebLogParser(File... file) throws FileNotFoundException {
+	public AWebLogParser(File... file) throws FileNotFoundException {
 		this();
 		openFile(file);
 	}

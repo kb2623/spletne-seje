@@ -3,7 +3,7 @@ package org.sessionization;
 import org.datastruct.RadixTree;
 import org.junit.Before;
 import org.junit.Test;
-import org.sessionization.parser.AbsWebLogParser;
+import org.sessionization.parser.AWebLogParser;
 import org.sessionization.parser.LogFormats;
 import org.sessionization.parser.NCSAWebLogParser;
 import org.sessionization.parser.datastruct.ParsedLine;
@@ -20,7 +20,7 @@ public class SpletneSejeTest {
 	private String pathNCSACombined;
 	private String pathNCSACommon;
 
-	private AbsWebLogParser parser;
+	private AWebLogParser parser;
 
 	@Before
 	public void setUp() throws IOException {

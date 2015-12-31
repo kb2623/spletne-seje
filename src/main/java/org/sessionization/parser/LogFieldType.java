@@ -33,7 +33,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				InetAddress address = InetAddress.getByName(scanner.next());
 				return parser.getTokenInstance(classType, address, false);
@@ -81,7 +81,7 @@ public enum LogFieldType {
 	 */
 	DateTime(new String[]{"%t"}, org.sessionization.parser.fields.ncsa.DateTime.class, "(\\[)([^\\]]+?)(\\])") {
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
 				if (scanner.hasNext()) {
@@ -116,7 +116,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(this.pattern, 0));
 				if (scanner.hasNext()) {
@@ -194,7 +194,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				StringBuilder builder = new StringBuilder(scanner.next(pattern));
 				if (scanner.hasNext()) {
@@ -223,7 +223,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				URI uri = new URI(scanner.next());
 				return parser.getTokenInstance(classType, uri);
@@ -249,7 +249,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(pattern, 0));
 				if (scanner.hasNext()) {
@@ -269,7 +269,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			return parser.getTokenInstance(classType, scanner.next(), LogType.W3C);
 		}
 	},
@@ -299,7 +299,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				StringBuilder builder = new StringBuilder(scanner.findWithinHorizon(pattern, 0));
 				if (scanner.hasNext()) {
@@ -327,7 +327,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			return parser.getTokenInstance(classType, scanner.next(), LogType.W3C);
 		}
 	},
@@ -350,7 +350,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			return org.sessionization.parser.fields.Method.setMethod(scanner.next());
 		}
 	},
@@ -362,7 +362,7 @@ public enum LogFieldType {
 	 */
 	Date(new String[]{"date"}, org.sessionization.parser.fields.w3c.Date.class, null) {
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			return parser.getTokenInstance(classType, scanner.next(), ((W3CWebLogParser) parser).getDateFormat());
 		}
 	},
@@ -374,7 +374,7 @@ public enum LogFieldType {
 	 */
 	Time(new String[]{"time"}, org.sessionization.parser.fields.w3c.Time.class, null) {
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			return parser.getTokenInstance(classType, scanner.next(), ((W3CWebLogParser) parser).getTimeFormat());
 		}
 	},
@@ -392,7 +392,7 @@ public enum LogFieldType {
 	 */
 	ServerPort(new String[]{"%p", "%{local}p", "%{canonical}p", "s-port"}, Port.class, "[0-9]+") {
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				return parser.getTokenInstance(classType, scanner.next(pattern), true);
 			} catch (InputMismatchException e) {
@@ -413,7 +413,7 @@ public enum LogFieldType {
 	 */
 	ClientPort(new String[]{"%{remote}p", "c-port"}, Port.class, "[0-9]+") {
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				return parser.getTokenInstance(classType, scanner.next(pattern), false);
 			} catch (InputMismatchException e) {
@@ -440,7 +440,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				InetAddress address = InetAddress.getByName(scanner.next());
 				return parser.getTokenInstance(classType, address, true);
@@ -473,7 +473,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				InetAddress address = InetAddress.getByName(scanner.next());
 				return parser.getTokenInstance(classType, address, false);
@@ -502,7 +502,7 @@ public enum LogFieldType {
 	 */
 	TimeTakenM(new String[]{"%{ms}T", "time-taken"}, org.sessionization.parser.fields.TimeTaken.class, "[0-9]+") {
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				long val = TimeUnit.Milliseconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
 				return parser.getTokenInstance(classType, val);
@@ -519,7 +519,7 @@ public enum LogFieldType {
 	 */
 	TiemTakenS(new String[]{"%{s}T", "%T"}, org.sessionization.parser.fields.TimeTaken.class, "[0-9]+") {
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				long val = TimeUnit.Seconds.getMicroSeconds(Integer.valueOf(scanner.next(this.pattern)));
 				return parser.getTokenInstance(classType, val);
@@ -645,7 +645,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				return org.sessionization.parser.fields.ncsa.ConnectionStatus.getConnectionStatus(scanner.next(pattern));
 			} catch (InputMismatchException e) {
@@ -669,7 +669,7 @@ public enum LogFieldType {
 	 */
 	MetaData(new String[]{"#Version:", "#Fields:", "#Software:", "#Start-Date:", "#End-Date:", "#Date:", "#Remark:"}, null, "(#)(.+?)") {
 		@Override
-		public LogField parse(Scanner scanner, AbsWebLogParser parser) throws ParseException {
+		public LogField parse(Scanner scanner, AWebLogParser parser) throws ParseException {
 			try {
 				String data = scanner.next(pattern);
 				List<String> list = new LinkedList<>();
@@ -747,7 +747,7 @@ public enum LogFieldType {
 	 * @return
 	 * @throws ParseException
 	 */
-	public LogField parse(final Scanner scanner, final AbsWebLogParser parser) throws ParseException {
+	public LogField parse(final Scanner scanner, final AWebLogParser parser) throws ParseException {
 		try {
 			if (pattern != null) {
 				return parser.getTokenInstance(classType, scanner.next(pattern));

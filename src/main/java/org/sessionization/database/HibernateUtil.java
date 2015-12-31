@@ -10,7 +10,7 @@ import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.AbsWebLogParser;
+import org.sessionization.parser.AWebLogParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.datastruct.*;
@@ -29,7 +29,7 @@ public class HibernateUtil implements AutoCloseable {
 	private ServiceRegistry serviceRegistry = null;
 	private ClassPoolLoader loader = null;
 
-	public HibernateUtil(ArgsParser argsParser, AbsWebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
+	public HibernateUtil(ArgsParser argsParser, AWebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
 		/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
 		List<LogFieldType> list = logParser.getFieldType();
 		if (logParser.getIgnoreFieldTypes() != null) {
@@ -84,14 +84,14 @@ public class HibernateUtil implements AutoCloseable {
 			}
 			classes.add(f.getClassE());
 		}
-		classes.add(DumpRequest.dump(list, loader));
-		classes.add(AbsRequest.class);
-		classes.add(DumpPageView.dump(loader));
-		classes.add(AbsPageView.class);
-		classes.add(DumpUserSession.dump(loader));
-		classes.add(AbsUserSession.class);
-		classes.add(DumpUserId.dump(list, loader));
-		classes.add(AbsUserId.class);
+		classes.add(DRequest.dump(list, loader));
+		classes.add(ARequest.class);
+		classes.add(DPageView.dump(loader));
+		classes.add(APageView.class);
+		classes.add(DUserSession.dump(loader));
+		classes.add(AUserSession.class);
+		classes.add(DUserId.dump(list, loader));
+		classes.add(AUserId.class);
 		return classes;
 	}
 

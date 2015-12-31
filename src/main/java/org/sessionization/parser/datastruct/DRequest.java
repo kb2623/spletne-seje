@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class DumpRequest {
+public class DRequest {
 
 	private static String CLASSNAME = "org.sessionization.parser.datastruct.Request";
 
@@ -34,7 +34,7 @@ public class DumpRequest {
 			CtClass aClass = pool.makeClass(CLASSNAME);
 			aClass.setModifiers(Modifier.PUBLIC);
 			/** Dodaj super Class */
-			aClass.setSuperclass(pool.get(AbsRequest.class.getName()));
+			aClass.setSuperclass(pool.get(ARequest.class.getName()));
 			/** Dodaj anoracije */{
 				ConstPool constPool = aClass.getClassFile().getConstPool();
 				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
@@ -174,7 +174,7 @@ public class DumpRequest {
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
-			return aClass.toClass(loader, DumpPageView.class.getProtectionDomain());
+			return aClass.toClass(loader, DPageView.class.getProtectionDomain());
 		}
 	}
 

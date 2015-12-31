@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class DumpUserId {
+public class DUserId {
 
 	private static String CLASSNAME = "org.sessionization.parser.datastuct.UserId";
 
@@ -31,7 +31,7 @@ public class DumpUserId {
 			CtClass aClass = pool.makeClass(CLASSNAME);
 			aClass.setModifiers(Modifier.PUBLIC);
 			/** Dodaj super class */
-			aClass.setSuperclass(pool.get(AbsUserId.class.getName()));
+			aClass.setSuperclass(pool.get(AUserId.class.getName()));
 			/** Dodaj anotacije */{
 				ConstPool constPool = aClass.getClassFile().getConstPool();
 				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
@@ -109,7 +109,7 @@ public class DumpUserId {
 						}
 						{
 							ClassMemberValue cMember = new ClassMemberValue(constPool);
-							cMember.setValue(AbsUserSession.class.getName());
+							cMember.setValue(AUserSession.class.getName());
 							anno.addMemberValue("targetEntity", cMember);
 						}
 						attr.addAnnotation(anno);
@@ -132,7 +132,7 @@ public class DumpUserId {
 				/** getLocalTime() */{
 					builder.setLength(0);
 					builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
-					builder.append("if (session != null ) { return ((" + DumpUserSession.getName() + ") this.session.get(this.session.size() - 1)).getLocalTime(); }");
+					builder.append("if (session != null ) { return ((" + DUserSession.getName() + ") this.session.get(this.session.size() - 1)).getLocalTime(); }");
 					builder.append("else {return " + LocalTime.class.getName() + ".MIDNIGHT; }");
 					builder.append('}');
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
@@ -141,7 +141,7 @@ public class DumpUserId {
 				/** getLocalDate() */{
 					builder.setLength(0);
 					builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
-					builder.append("if (session != null) { return ((" + DumpUserSession.getName() + ") this.session.get(this.session.size() - 1)).getLocalDate(); }");
+					builder.append("if (session != null) { return ((" + DUserSession.getName() + ") this.session.get(this.session.size() - 1)).getLocalDate(); }");
 					builder.append("else { return " + LocalDate.class.getName() + ".MIN; }");
 					builder.append('}');
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
@@ -167,7 +167,7 @@ public class DumpUserId {
 				builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
 				if (fields.size() < fieldsTypes.size()) {
 					builder.append("if (getKey().equals(line.getKey())) {");
-					builder.append("return ((" + DumpUserSession.getName() + ") this.session.get(this.session.size() - 1)).addParsedLine(line);");
+					builder.append("return ((" + DUserSession.getName() + ") this.session.get(this.session.size() - 1)).addParsedLine(line);");
 					builder.append(" } else { return false; }");
 				} else {
 					builder.append("return false;");
@@ -227,13 +227,13 @@ public class DumpUserId {
 				builder.append('}');
 				if (fields.size() < fieldsTypes.size()) {
 					builder.append("this.session = new " + ArrayList.class.getName() + "();");
-					builder.append("this.session.add(new " + DumpUserSession.getName() + "(line));");
+					builder.append("this.session.add(new " + DUserSession.getName() + "(line));");
 				}
 				builder.append('}');
 				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 				aClass.addConstructor(constructor);
 			}
-			return aClass.toClass(loader, DumpUserId.class.getProtectionDomain());
+			return aClass.toClass(loader, DUserId.class.getProtectionDomain());
 		}
 	}
 
