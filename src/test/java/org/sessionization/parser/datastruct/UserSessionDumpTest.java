@@ -1,6 +1,5 @@
 package org.sessionization.parser.datastruct;
 
-import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +10,6 @@ import org.sessionization.parser.LogFormats;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
@@ -22,13 +20,20 @@ public class UserSessionDumpTest {
 	private ClassPoolLoader loader;
 	private List<LogFieldType> allFieldTypes;
 
+	private PageViewDumpTest viewDumpTest = new PageViewDumpTest();
+	private UserIdDumpTest idDumpTest = new UserIdDumpTest();
+
 	@Before
 	public void startUp() {
 		loader = new ClassPoolLoader();
+		viewDumpTest.setLoader(loader);
+		idDumpTest.setLoader(loader);
 	}
 
 	@After
-	public void endUp() throws IOException, NotFoundException, CannotCompileException {
+	public void endUp() throws Exception {
+		viewDumpTest.endUp();
+		idDumpTest.endUp();
 		try {
 			byte[] bytes = loader.getPool().get(UserSessionDump.getName()).toBytecode();
 			File file = new File("UserSession.class");
@@ -43,9 +48,8 @@ public class UserSessionDumpTest {
 	@Test
 	public void testCommon() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.make();
-		assertNotNull(RequestDump.dump(allFieldTypes, loader));
-		assertNotNull(PageViewDump.dump(loader));
-		assertNotNull(UserIdDump.dump(allFieldTypes, loader));
+		viewDumpTest.testCommon();
+		idDumpTest.testCommon();
 		assertNotNull(UserSessionDump.dump(loader));
 	}
 
@@ -58,24 +62,22 @@ public class UserSessionDumpTest {
 	@Test
 	public void testNoUserId() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.make();
-		assertNotNull(RequestDump.dump(allFieldTypes, loader));
-		assertNotNull(PageViewDump.dump(loader));
+		viewDumpTest.testCommon();
 		assertNotNull(UserSessionDump.dump(loader));
 	}
 
 	@Test
 	public void testNoPageView() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.make();
-		assertNotNull(UserIdDump.dump(allFieldTypes, loader));
+		idDumpTest.testCommon();
 		assertNotNull(UserSessionDump.dump(loader));
 	}
 
 	@Test
 	public void testCombined() throws Exception {
 		allFieldTypes = LogFormats.CombinedLogFormat.make();
-		assertNotNull(RequestDump.dump(allFieldTypes, loader));
-		assertNotNull(PageViewDump.dump(loader));
-		assertNotNull(UserIdDump.dump(allFieldTypes, loader));
+		viewDumpTest.testCombined();
+		idDumpTest.testCombined();
 		assertNotNull(UserSessionDump.dump(loader));
 	}
 }

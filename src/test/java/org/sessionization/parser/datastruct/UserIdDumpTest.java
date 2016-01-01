@@ -21,6 +21,10 @@ public class UserIdDumpTest {
 	private ClassPoolLoader loader;
 	private List<LogFieldType> allFieldTypes;
 
+	public void setLoader(ClassPoolLoader loader) {
+		this.loader = loader;
+	}
+
 	@Before
 	public void startUp() {
 		loader = new ClassPoolLoader();

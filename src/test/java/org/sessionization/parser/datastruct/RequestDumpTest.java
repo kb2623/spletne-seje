@@ -18,8 +18,12 @@ import static org.junit.Assert.assertNotNull;
 
 public class RequestDumpTest {
 
-	private ClassPoolLoader loader;
-	private List<LogFieldType> allFieldTypes;
+	ClassPoolLoader loader;
+	List<LogFieldType> allFieldTypes;
+
+	public void setLoader(ClassPoolLoader loader) {
+		this.loader = loader;
+	}
 
 	@Before
 	public void startUp() {
