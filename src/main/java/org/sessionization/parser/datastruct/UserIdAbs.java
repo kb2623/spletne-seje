@@ -1,20 +1,22 @@
 package org.sessionization.parser.datastruct;
 
-import org.sessionization.TimePoint;
-
 import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Cacheable
-public abstract class AUserId implements TimePoint {
+public abstract class UserIdAbs {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	public AUserId() {
+	public UserIdAbs() {
 		this.id = null;
+	}
+
+	public UserIdAbs(ParsedLine line) {
+		this();
 	}
 
 	public Integer getId() {
@@ -28,9 +30,9 @@ public abstract class AUserId implements TimePoint {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AUserId)) return false;
-		AUserId aUserId = (AUserId) o;
-		if (getId() != null ? !getId().equals(aUserId.getId()) : aUserId.getId() != null) return false;
+		if (!(o instanceof UserIdAbs)) return false;
+		UserIdAbs userIdAbs = (UserIdAbs) o;
+		if (getId() != null ? !getId().equals(userIdAbs.getId()) : userIdAbs.getId() != null) return false;
 		return true;
 	}
 
@@ -43,10 +45,4 @@ public abstract class AUserId implements TimePoint {
 	 * @return
 	 */
 	public abstract String getKey();
-
-	/**
-	 * @param line
-	 * @return
-	 */
-	public abstract boolean addParsedLine(ParsedLine line);
 }

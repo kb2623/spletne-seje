@@ -22,11 +22,11 @@ public class RemoteUser implements LogField {
 		if (!user.equalsIgnoreCase("-")) this.user = user;
 	}
 
-	public synchronized Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public synchronized void setId(Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

@@ -5,47 +5,55 @@ import org.sessionization.TimePoint;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Cacheable
-public abstract class AUserSession implements TimePoint {
+public abstract class UserSessionAbs implements TimePoint {
 
 	@OneToMany(cascade = CascadeType.ALL)
-	protected List<APageView> pages;
+	protected List<PageViewAbs> pages;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	public AUserSession() {
+	public UserSessionAbs() {
 		id = null;
-		pages = new LinkedList<>();
+		pages = new ArrayList<>();
 	}
 
-	public synchronized Integer getId() {
+	public UserSessionAbs(ParsedLine line) {
+		this();
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
-	public synchronized void setId(Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public List<APageView> getPages() {
+	public List<PageViewAbs> getPages() {
 		return pages;
 	}
 
-	public void setPages(List<APageView> pages) {
+	public void setPages(List<PageViewAbs> pages) {
 		this.pages = pages;
 	}
 
-	protected boolean addPageView(APageView loadedPage) {
-		if (pages != null) {
+	protected boolean addPageView(PageViewAbs loadedPage) {
+		if (pages != null && loadedPage != null) {
 			return pages.add(loadedPage);
 		} else {
 			return false;
 		}
+	}
+
+	public String getKey() {
+		return "";
 	}
 
 	public abstract boolean addParsedLine(ParsedLine line);
@@ -71,8 +79,8 @@ public abstract class AUserSession implements TimePoint {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AUserSession)) return false;
-		AUserSession that = (AUserSession) o;
+		if (!(o instanceof UserSessionAbs)) return false;
+		UserSessionAbs that = (UserSessionAbs) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getPages() != null ? !getPages().equals(that.getPages()) : that.getPages() != null) return false;
 		return true;

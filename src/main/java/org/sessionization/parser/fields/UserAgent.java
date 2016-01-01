@@ -27,11 +27,11 @@ public class UserAgent implements LogField {
 		userAgentString = type.parseUserAgent(info);
 	}
 
-	public synchronized Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public synchronized void setId(Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

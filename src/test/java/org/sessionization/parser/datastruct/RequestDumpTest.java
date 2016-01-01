@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-public class DRequestTest {
+public class RequestDumpTest {
 
 	private ClassPoolLoader loader;
 	private List<LogFieldType> allFieldTypes;
@@ -31,7 +31,7 @@ public class DRequestTest {
 		File file = new File("Request.class");
 		file.delete();
 		FileOutputStream fos = new FileOutputStream(file);
-		byte[] bytes = loader.getPool().get(DRequest.getName()).toBytecode();
+		byte[] bytes = loader.getPool().get(RequestDump.getName()).toBytecode();
 		fos.write(bytes);
 		fos.close();
 	}
@@ -39,12 +39,12 @@ public class DRequestTest {
 	@Test
 	public void testCommon() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.make();
-		assertNotNull(DRequest.dump(allFieldTypes, loader));
+		assertNotNull(RequestDump.dump(allFieldTypes, loader));
 	}
 
 	@Test
 	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
 		allFieldTypes = LogFormats.CombinedLogFormat.make();
-		assertNotNull(DRequest.dump(allFieldTypes, loader));
+		assertNotNull(RequestDump.dump(allFieldTypes, loader));
 	}
 }

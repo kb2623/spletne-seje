@@ -22,20 +22,20 @@ public class UriQueryKey {
 		id = null;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public synchronized Integer getId() {
-		return id;
-	}
-
-	public synchronized void setId(Integer id) {
-		this.id = id;
 	}
 
 	@Override

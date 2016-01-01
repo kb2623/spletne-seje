@@ -11,32 +11,36 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Cacheable
-public abstract class APageView implements TimePoint {
+public abstract class PageViewAbs implements TimePoint {
 
 	@OneToMany(cascade = CascadeType.ALL)
-	protected List<ARequest> requests;
+	protected List<RequestAbs> requests;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	public APageView() {
+	public PageViewAbs() {
 		id = null;
 		requests = new LinkedList<>();
 	}
 
-	public synchronized Integer getId() {
+	public PageViewAbs(ParsedLine line) {
+		this();
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
-	public synchronized void setId(Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public List<ARequest> getRequests() {
+	public List<RequestAbs> getRequests() {
 		return requests;
 	}
 
-	public void setRequests(List<ARequest> requests) {
+	public void setRequests(List<RequestAbs> requests) {
 		this.requests = requests;
 	}
 
@@ -63,8 +67,8 @@ public abstract class APageView implements TimePoint {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof APageView)) return false;
-		APageView that = (APageView) o;
+		if (!(o instanceof PageViewAbs)) return false;
+		PageViewAbs that = (PageViewAbs) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getRequests() != null ? !getRequests().equals(that.getRequests()) : that.getRequests() != null) return false;
 		return true;

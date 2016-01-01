@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class DPageView {
+public class PageViewDump {
 
 	private static String CLASSNAME = "org.sessionization.parser.datastruct.PageView";
 
@@ -24,7 +24,7 @@ public class DPageView {
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		aClass.setModifiers(Modifier.PUBLIC);
 		/** Dodaj super Class */
-		aClass.setSuperclass(pool.get(APageView.class.getName()));
+		aClass.setSuperclass(pool.get(PageViewAbs.class.getName()));
 		/** Dodaj anoracije */{
 			ConstPool constPool = aClass.getClassFile().getConstPool();
 			AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
@@ -44,18 +44,27 @@ public class DPageView {
 			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 			aClass.addConstructor(constructor);
 		}
+		/** PageView(ParsedLine line) */{
+			builder.setLength(0);
+			builder.append("public PageView(" + ParsedLine.class.getName() + " line) {");
+			builder.append("super();")
+					.append("super.requests.add(new " + RequestDump.getName() + "(line));");
+			builder.append('}');
+			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
+			aClass.addConstructor(constructor);
+		}
 		/** boolean addParsedLine(ParsedLine line) */{
 			builder.setLength(0);
 			builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
 			builder.append("if (line == null || super.requests == null) { return false; }");
 			builder.append("if (line.isResource()) " +
-					"{ return super.requests.add(new " + DRequest.getName() + "(line)); }");
+					"{ return super.requests.add(new " + RequestDump.getName() + "(line)); }");
 			builder.append("return false;");
 			builder.append('}');
 			CtMethod method = CtMethod.make(builder.toString(), aClass);
 			aClass.addMethod(method);
 		}
-		return aClass.toClass(loader, DPageView.class.getProtectionDomain());
+		return aClass.toClass(loader, PageViewDump.class.getProtectionDomain());
 	}
 
 	protected static List<LogFieldType> getFields(Collection<LogFieldType> types) {
