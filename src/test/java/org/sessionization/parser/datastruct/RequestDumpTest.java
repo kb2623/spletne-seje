@@ -2,7 +2,6 @@ package org.sessionization.parser.datastruct;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
@@ -30,7 +29,6 @@ public class RequestDumpTest {
 		loader = new ClassPoolLoader();
 	}
 
-	@After
 	public void endUp() throws IOException, NotFoundException, CannotCompileException {
 		File file = new File("Request.class");
 		file.delete();
