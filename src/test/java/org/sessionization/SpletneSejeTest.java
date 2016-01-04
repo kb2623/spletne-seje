@@ -135,18 +135,23 @@ public class SpletneSejeTest {
 	}
 
 	@Test
-	public void testRunOne() {
+	public void testRunSQLite() {
 		SpletneSeje.main("-fl", "COMMON", "-dbsqf", "-dbsq", pathNCSACommon);
 	}
 
 	@Test
-	public void testRunTwo() {
+	public void testRunH2() {
 		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACommon);
 	}
 
 	@Test
-	public void testRunThree() {
+	public void testRunHSQLBD() {
 		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACommon);
+	}
+
+	@Test
+	public void testRunDerby() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), pathNCSACommon);
 	}
 
 	@Test
