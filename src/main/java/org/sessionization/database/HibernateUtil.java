@@ -84,14 +84,14 @@ public class HibernateUtil implements AutoCloseable {
 			}
 			classes.add(f.getClassE());
 		}
+		classes.add(UserIdDump.dump(list, loader));
+		classes.add(UserIdAbs.class);
 		classes.add(RequestDump.dump(list, loader));
 		classes.add(RequestAbs.class);
 		classes.add(PageViewDump.dump(loader));
 		classes.add(PageViewAbs.class);
 		classes.add(UserSessionDump.dump(loader));
 		classes.add(UserSessionAbs.class);
-		classes.add(UserIdDump.dump(list, loader));
-		classes.add(UserIdAbs.class);
 		return classes;
 	}
 

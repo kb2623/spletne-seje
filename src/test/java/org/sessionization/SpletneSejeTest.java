@@ -140,8 +140,13 @@ public class SpletneSejeTest {
 	}
 
 	@Test
-	public void testRunTwo() throws MalformedURLException {
-		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), "-dbdr", "lib/h2-1.4.188.jar", "-dbdrc", "adfkl;", pathNCSACommon);
+	public void testRunTwo() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACommon);
+	}
+
+	@Test
+	public void testRunThree() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACommon);
 	}
 
 	@Test

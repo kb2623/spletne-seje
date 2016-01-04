@@ -141,9 +141,9 @@ public class ArgsParser {
 		return properties.getProperty("database.dialect.class");
 	}
 
-	@Option(name = "-dbdi", aliases = "database.dialect", usage = "Database dialect class name", metaVar = "<string>")
+	@Option(name = "-dbdi", aliases = "database.dialect.class", usage = "Database dialect class name", metaVar = "<string>")
 	public void setDialectClass(String name) {
-		properties.setProperty("database.dialect", name);
+		properties.setProperty("database.dialect.class", name);
 	}
 
 	public DdlOperation getOperation() {
@@ -174,7 +174,7 @@ public class ArgsParser {
 
 	@Option(name = "-dbdr", aliases = "database.driver", usage = "Path to jar file, that is a driver", metaVar = "<path>", depends = "-dbdrc")
 	public void setDriverUrl(File file) throws MalformedURLException {
-		properties.setProperty("database.driver", file.getPath());
+		properties.setProperty("database.driver", file.toURI().toURL().toString());
 	}
 
 	public int getConnectoinPoolSize() {
@@ -203,9 +203,9 @@ public class ArgsParser {
 		}
 	}
 
-	@Option(name = "-dbdic", aliases = "database.dialect.class", usage = "Path to class file, that is dialect for database", metaVar = "<path>", depends = "-dbdi")
-	public void setDialect(URL url) {
-		properties.setProperty("", "");
+	@Option(name = "-dbdic", aliases = "database.dialect", usage = "Path to class file, that is dialect for database", metaVar = "<path>", depends = "-dbdi")
+	public void setDialect(File file) throws MalformedURLException {
+		properties.setProperty("database.dialect", file.toURI().toURL().toString());
 	}
 
 	public boolean isIgnoreCrawlers() {

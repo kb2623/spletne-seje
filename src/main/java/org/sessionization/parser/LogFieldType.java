@@ -28,6 +28,11 @@ public enum LogFieldType {
 	 */
 	RemoteHost(new String[]{"%h"}, Address.class, null) {
 		@Override
+		public Class[] getDependencies() {
+			return new Class[]{InetAddressConverter.class};
+		}
+
+		@Override
 		public boolean isKey() {
 			return true;
 		}
