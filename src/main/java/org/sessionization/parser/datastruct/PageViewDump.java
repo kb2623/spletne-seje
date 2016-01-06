@@ -20,53 +20,57 @@ public class PageViewDump {
 	private static String CLASSNAME = "org.sessionization.parser.datastruct.PageView";
 
 	public static Class<?> dump(ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
-		final StringBuilder builder = new StringBuilder();
-		ClassPool pool = loader.getPool();
-		CtClass aClass = pool.makeClass(CLASSNAME);
-		aClass.setModifiers(Modifier.PUBLIC);
-		aClass.getClassFile().setMajorVersion(ClassFile.JAVA_8);
-		/** Dodaj super Class */
-		aClass.setSuperclass(pool.get(PageViewAbs.class.getName()));
-		/** Dodaj anoracije */{
-			ConstPool constPool = aClass.getClassFile().getConstPool();
-			AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-			{
-				Annotation anno = new Annotation(Entity.class.getName(), constPool);
-				attr.addAnnotation(anno);
+		try {
+			return loader.loadClass(CLASSNAME);
+		} catch (ClassNotFoundException e) {
+			final StringBuilder builder = new StringBuilder();
+			ClassPool pool = loader.getPool();
+			CtClass aClass = pool.makeClass(CLASSNAME);
+			aClass.setModifiers(Modifier.PUBLIC);
+			aClass.getClassFile().setMajorVersion(ClassFile.JAVA_8);
+			/** Dodaj super Class */
+			aClass.setSuperclass(pool.get(PageViewAbs.class.getName()));
+			/** Dodaj anoracije */{
+				ConstPool constPool = aClass.getClassFile().getConstPool();
+				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+				{
+					Annotation anno = new Annotation(Entity.class.getName(), constPool);
+					attr.addAnnotation(anno);
+				}
+				{
+					Annotation anno = new Annotation(Cacheable.class.getName(), constPool);
+					attr.addAnnotation(anno);
+				}
+				aClass.getClassFile().addAttribute(attr);
 			}
-			{
-				Annotation anno = new Annotation(Cacheable.class.getName(), constPool);
-				attr.addAnnotation(anno);
+			/** PageView() */{
+				builder.setLength(0);
+				builder.append("public PageView() { super(); }");
+				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
+				aClass.addConstructor(constructor);
 			}
-			aClass.getClassFile().addAttribute(attr);
+			/** PageView(ParsedLine line) */{
+				builder.setLength(0);
+				builder.append("public PageView(" + ParsedLine.class.getName() + " line) {");
+				builder.append("super(line);")
+						.append("super.requests.add(new " + RequestDump.getName() + "(line));");
+				builder.append('}');
+				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
+				aClass.addConstructor(constructor);
+			}
+			/** boolean addParsedLine(ParsedLine line) */{
+				builder.setLength(0);
+				builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
+				builder.append("if (line == null || super.requests == null) { return false; }");
+				builder.append("if (line.isResource()) " +
+						"{ return super.requests.add(new " + RequestDump.getName() + "(line)); }");
+				builder.append("return false;");
+				builder.append('}');
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
+				aClass.addMethod(method);
+			}
+			return aClass.toClass(loader, PageViewDump.class.getProtectionDomain());
 		}
-		/** PageView() */{
-			builder.setLength(0);
-			builder.append("public PageView() { super(); }");
-			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
-			aClass.addConstructor(constructor);
-		}
-		/** PageView(ParsedLine line) */{
-			builder.setLength(0);
-			builder.append("public PageView(" + ParsedLine.class.getName() + " line) {");
-			builder.append("super(line);")
-					.append("super.requests.add(new " + RequestDump.getName() + "(line));");
-			builder.append('}');
-			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
-			aClass.addConstructor(constructor);
-		}
-		/** boolean addParsedLine(ParsedLine line) */{
-			builder.setLength(0);
-			builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
-			builder.append("if (line == null || super.requests == null) { return false; }");
-			builder.append("if (line.isResource()) " +
-					"{ return super.requests.add(new " + RequestDump.getName() + "(line)); }");
-			builder.append("return false;");
-			builder.append('}');
-			CtMethod method = CtMethod.make(builder.toString(), aClass);
-			aClass.addMethod(method);
-		}
-		return aClass.toClass(loader, PageViewDump.class.getProtectionDomain());
 	}
 
 	protected static List<LogFieldType> getFields(Collection<LogFieldType> types) {

@@ -43,12 +43,28 @@ public class ObjectPool {
 		}
 	}
 
-	public void setCreators(Map<Class, ObjectCreator> map) {
-		creators.putAll(map);
+	public Map<Class, ObjectCreator> getCreators() {
+		return creators;
+	}
+
+	public void setCreators(Map<Class, ObjectCreator> creators) {
+		this.creators = creators;
+	}
+
+	public Properties getProperties() {
+		return properties;
 	}
 
 	public void setProperties(Properties properties) {
-		this.properties.putAll(properties);
+		this.properties = properties;
+	}
+
+	public ClassLoader getLoader() {
+		return loader;
+	}
+
+	public void setLoader(ClassLoader loader) {
+		this.loader = loader;
 	}
 
 	private Map<Integer, Object> initMap(Class type) {

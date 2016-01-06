@@ -36,7 +36,10 @@ public class UserIdDump {
 	public static Class<?> dump(final Collection<LogFieldType> fieldsTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
 		if (fieldsTypes.size() < 1) {
 			return null;
-		} else {
+		}
+		try {
+			return loader.loadClass(CLASSNAME);
+		} catch (ClassNotFoundException e) {
 			List<LogFieldType> fields = getFields(fieldsTypes);
 			final StringBuilder builder = new StringBuilder();
 			ClassPool pool = loader.getPool();

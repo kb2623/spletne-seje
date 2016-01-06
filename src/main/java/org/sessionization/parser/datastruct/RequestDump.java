@@ -28,7 +28,10 @@ public class RequestDump {
 	public static Class<?> dump(Collection<LogFieldType> fieldTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
 		if (fieldTypes.size() < 1) {
 			return null;
-		} else {
+		}
+		try {
+			return loader.loadClass(CLASSNAME);
+		} catch (ClassNotFoundException e) {
 			List<LogFieldType> fields = getFields(fieldTypes);
 			final StringBuilder builder = new StringBuilder();
 			ClassPool pool = loader.getPool();

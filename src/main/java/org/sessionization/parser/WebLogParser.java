@@ -202,6 +202,14 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	}
 
 	/**
+	 *
+	 * @return
+	 */
+	public ObjectPool getPool() {
+		return pool;
+	}
+
+	/**
 	 * @param pool
 	 */
 	public void setPool(ObjectPool pool) {

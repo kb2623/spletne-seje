@@ -32,235 +32,239 @@ public class UserSessionDump {
 		} catch (ClassNotFoundException e) {
 			pageView = null;
 		}
-		if (userId != null || pageView != null) {
-			final StringBuilder builder = new StringBuilder();
-			ClassPool pool = loader.getPool();
-			CtClass aClass = pool.makeClass(CLASSNAME);
-			aClass.setModifiers(Modifier.PUBLIC);
-			aClass.getClassFile().setMajorVersion(ClassFile.JAVA_8);
-			/** Dodajanje super razreda */
-			aClass.setSuperclass(pool.get(UserSessionAbs.class.getName()));
-			/** Dodaj anotacije */{
-				ConstPool constPool = aClass.getClassFile().getConstPool();
-				AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-				{
-					Annotation anno = new Annotation(Entity.class.getName(), constPool);
-					attr.addAnnotation(anno);
-				}
-				{
-					Annotation anno = new Annotation(Cacheable.class.getName(), constPool);
-					attr.addAnnotation(anno);
-				}
-				aClass.getClassFile().addAttribute(attr);
-			}
-			/** Polje UserId */
-			if (userId != null) {
-				builder.setLength(0);
-				builder.append("private " + userId.getName() + " userId;");
-				CtField field = CtField.make(builder.toString(), aClass);
-				{
-					ConstPool constPool = field.getFieldInfo().getConstPool();
+		try {
+			return loader.loadClass(CLASSNAME);
+		} catch (ClassNotFoundException e) {
+			if (userId != null || pageView != null) {
+				final StringBuilder builder = new StringBuilder();
+				ClassPool pool = loader.getPool();
+				CtClass aClass = pool.makeClass(CLASSNAME);
+				aClass.setModifiers(Modifier.PUBLIC);
+				aClass.getClassFile().setMajorVersion(ClassFile.JAVA_8);
+				/** Dodajanje super razreda */
+				aClass.setSuperclass(pool.get(UserSessionAbs.class.getName()));
+				/** Dodaj anotacije */{
+					ConstPool constPool = aClass.getClassFile().getConstPool();
 					AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 					{
-						Annotation anno = new Annotation(OneToOne.class.getName(), constPool);
-						{
-							EnumMemberValue member = new EnumMemberValue(constPool);
-							member.setType(CascadeType.class.getName());
-							member.setValue(CascadeType.ALL.name());
-							ArrayMemberValue array = new ArrayMemberValue(constPool);
-							array.setValue(new MemberValue[]{member});
-							anno.addMemberValue("cascade", array);
-						}
+						Annotation anno = new Annotation(Entity.class.getName(), constPool);
 						attr.addAnnotation(anno);
 					}
-					field.getFieldInfo().addAttribute(attr);
-				}
-				aClass.addField(field);
-			}
-			/** Polje List ki vebuje PageViewAbs */
-			if (pageView != null) {
-				builder.setLength(0);
-				builder.append("private " + List.class.getName() + " pages;");
-				CtField field = CtField.make(builder.toString(), aClass);
-				{
-					ConstPool constPool = field.getFieldInfo().getConstPool();
-					AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 					{
-						Annotation anno = new Annotation(OneToMany.class.getName(), constPool);
-						{
-							EnumMemberValue member = new EnumMemberValue(constPool);
-							member.setType(CascadeType.class.getName());
-							member.setValue(CascadeType.ALL.name());
-							ArrayMemberValue array = new ArrayMemberValue(constPool);
-							array.setValue(new MemberValue[]{member});
-							anno.addMemberValue("cascade", array);
-						}
-						{
-							ClassMemberValue member = new ClassMemberValue(constPool);
-							member.setValue(PageViewAbs.class.getName());
-							anno.addMemberValue("targetEntity", member);
-						}
+						Annotation anno = new Annotation(Cacheable.class.getName(), constPool);
 						attr.addAnnotation(anno);
 					}
-					field.getFieldInfo().addAttribute(attr);
+					aClass.getClassFile().addAttribute(attr);
 				}
-				aClass.addField(field);
-			}
-			/** UserSession() */{
-				builder.setLength(0);
-				builder.append("public UserSession() {");
-				builder.append("super();");
+				/** Polje UserId */
 				if (userId != null) {
-					builder.append("this.userId = null;");
-				}
-				if (pageView != null) {
-					builder.append("this.pages = null;");
-				}
-				builder.append('}');
-				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
-				aClass.addConstructor(constructor);
-			}
-			/** UserSession(ParsedLine line) */{
-				builder.setLength(0);
-				builder.append("public UserSession(" + ParsedLine.class.getName() + " line) {")
-						.append("super(line);");
-				if (userId != null) {
-					builder.append("this.userId = new " + userId.getName() + "(line);");
-				}
-				if (pageView != null) {
-					builder.append("this.pages = new " + ArrayList.class.getName() + "();")
-							.append("this.pages.add(new " + pageView.getName() + "(line));");
-				}
-				builder.append('}');
-				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
-				aClass.addConstructor(constructor);
-			}
-			/** String getKey() */
-			if (userId != null) {
-				builder.setLength(0);
-				builder.append("public " + String.class.getName() + " getKey() {");
-				if (userId != null) {
-					builder.append("return userId.getKey();");
-				} else {
-					builder.append("return \"\"");
-				}
-				builder.append('}');
-				CtMethod method = CtMethod.make(builder.toString(), aClass);
-				aClass.addMethod(method);
-			}
-			/** Getter in Setter za UserId */
-			if (userId != null) {
-				/** Getter */{
 					builder.setLength(0);
-					builder.append("public " + userId.getName() + " getUserId() {")
-							.append("return this.userId;");
+					builder.append("private " + userId.getName() + " userId;");
+					CtField field = CtField.make(builder.toString(), aClass);
+					{
+						ConstPool constPool = field.getFieldInfo().getConstPool();
+						AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+						{
+							Annotation anno = new Annotation(OneToOne.class.getName(), constPool);
+							{
+								EnumMemberValue member = new EnumMemberValue(constPool);
+								member.setType(CascadeType.class.getName());
+								member.setValue(CascadeType.ALL.name());
+								ArrayMemberValue array = new ArrayMemberValue(constPool);
+								array.setValue(new MemberValue[]{member});
+								anno.addMemberValue("cascade", array);
+							}
+							attr.addAnnotation(anno);
+						}
+						field.getFieldInfo().addAttribute(attr);
+					}
+					aClass.addField(field);
+				}
+				/** Polje List ki vebuje PageViewAbs */
+				if (pageView != null) {
+					builder.setLength(0);
+					builder.append("private " + List.class.getName() + " pages;");
+					CtField field = CtField.make(builder.toString(), aClass);
+					{
+						ConstPool constPool = field.getFieldInfo().getConstPool();
+						AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+						{
+							Annotation anno = new Annotation(OneToMany.class.getName(), constPool);
+							{
+								EnumMemberValue member = new EnumMemberValue(constPool);
+								member.setType(CascadeType.class.getName());
+								member.setValue(CascadeType.ALL.name());
+								ArrayMemberValue array = new ArrayMemberValue(constPool);
+								array.setValue(new MemberValue[]{member});
+								anno.addMemberValue("cascade", array);
+							}
+							{
+								ClassMemberValue member = new ClassMemberValue(constPool);
+								member.setValue(PageViewAbs.class.getName());
+								anno.addMemberValue("targetEntity", member);
+							}
+							attr.addAnnotation(anno);
+						}
+						field.getFieldInfo().addAttribute(attr);
+					}
+					aClass.addField(field);
+				}
+				/** UserSession() */{
+					builder.setLength(0);
+					builder.append("public UserSession() {");
+					builder.append("super();");
+					if (userId != null) {
+						builder.append("this.userId = null;");
+					}
+					if (pageView != null) {
+						builder.append("this.pages = null;");
+					}
+					builder.append('}');
+					CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
+					aClass.addConstructor(constructor);
+				}
+				/** UserSession(ParsedLine line) */{
+					builder.setLength(0);
+					builder.append("public UserSession(" + ParsedLine.class.getName() + " line) {")
+							.append("super(line);");
+					if (userId != null) {
+						builder.append("this.userId = new " + userId.getName() + "(line);");
+					}
+					if (pageView != null) {
+						builder.append("this.pages = new " + ArrayList.class.getName() + "();")
+								.append("this.pages.add(new " + pageView.getName() + "(line));");
+					}
+					builder.append('}');
+					CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
+					aClass.addConstructor(constructor);
+				}
+				/** String getKey() */
+				if (userId != null) {
+					builder.setLength(0);
+					builder.append("public " + String.class.getName() + " getKey() {");
+					if (userId != null) {
+						builder.append("return userId.getKey();");
+					} else {
+						builder.append("return \"\"");
+					}
 					builder.append('}');
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
-				/** Setter */{
-					builder.setLength(0);
-					builder.append("public void setUserId(" + userId.getName() + " userId) {")
-							.append("this.userId = userId;");
-					builder.append('}');
-					CtMethod method = CtMethod.make(builder.toString(), aClass);
-					aClass.addMethod(method);
-				}
-			}
-			/** Getter in Setter za PageView */
-			if (pageView != null) {
-				/** Getter */{
-					builder.setLength(0);
-					builder.append("public " + List.class.getName() + " getPages() {")
-							.append("return this.pages;");
-					builder.append('}');
-					CtMethod method = CtMethod.make(builder.toString(), aClass);
-					aClass.addMethod(method);
-				}
-				/** Setter */{
-					builder.setLength(0);
-					builder.append("public void setPages(" + List.class.getName() + " pages) {")
-							.append("this.pages = pages;");
-					builder.append('}');
-					CtMethod method = CtMethod.make(builder.toString(), aClass);
-					aClass.addMethod(method);
-				}
-			}
-			/** boolean addParsedLine(ParsedLine line) super razreda */{
-				builder.setLength(0);
-				builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
-				builder.append("if (line == null) { return false; }");
+				/** Getter in Setter za UserId */
 				if (userId != null) {
-					builder.append("if (!line.getKey().equals(getKey())) {");
-					builder.append("return false;");
-					builder.append('}');
+					/** Getter */{
+						builder.setLength(0);
+						builder.append("public " + userId.getName() + " getUserId() {")
+								.append("return this.userId;");
+						builder.append('}');
+						CtMethod method = CtMethod.make(builder.toString(), aClass);
+						aClass.addMethod(method);
+					}
+					/** Setter */{
+						builder.setLength(0);
+						builder.append("public void setUserId(" + userId.getName() + " userId) {")
+								.append("this.userId = userId;");
+						builder.append('}');
+						CtMethod method = CtMethod.make(builder.toString(), aClass);
+						aClass.addMethod(method);
+					}
 				}
+				/** Getter in Setter za PageView */
 				if (pageView != null) {
-					builder.append("if (!((" + pageView.getName() + ") pages.get(pages.size() - 1)).addParsedLine(line)) {");
-					builder.append("pages.add(new " + pageView.getName() + "(line));");
-					builder.append('}');
+					/** Getter */{
+						builder.setLength(0);
+						builder.append("public " + List.class.getName() + " getPages() {")
+								.append("return this.pages;");
+						builder.append('}');
+						CtMethod method = CtMethod.make(builder.toString(), aClass);
+						aClass.addMethod(method);
+					}
+					/** Setter */{
+						builder.setLength(0);
+						builder.append("public void setPages(" + List.class.getName() + " pages) {")
+								.append("this.pages = pages;");
+						builder.append('}');
+						CtMethod method = CtMethod.make(builder.toString(), aClass);
+						aClass.addMethod(method);
+					}
 				}
-				builder.append("return true;");
-				builder.append('}');
-				CtMethod method = CtMethod.make(builder.toString(), aClass);
-				aClass.addMethod(method);
-			}
-			/** getLocalDate() */{
-				if (pageView != null) {
+				/** boolean addParsedLine(ParsedLine line) super razreda */{
 					builder.setLength(0);
-					builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
-					builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalDate() : " + LocalDate.class.getName() + ".MIN;");
+					builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
+					builder.append("if (line == null) { return false; }");
+					if (userId != null) {
+						builder.append("if (!line.getKey().equals(getKey())) {");
+						builder.append("return false;");
+						builder.append('}');
+					}
+					if (pageView != null) {
+						builder.append("if (!((" + pageView.getName() + ") pages.get(pages.size() - 1)).addParsedLine(line)) {");
+						builder.append("pages.add(new " + pageView.getName() + "(line));");
+						builder.append('}');
+					}
+					builder.append("return true;");
 					builder.append('}');
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
-			}
-			/** getLocalTime() */{
-				if (pageView != null) {
+				/** getLocalDate() */{
+					if (pageView != null) {
+						builder.setLength(0);
+						builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
+						builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalDate() : " + LocalDate.class.getName() + ".MIN;");
+						builder.append('}');
+						CtMethod method = CtMethod.make(builder.toString(), aClass);
+						aClass.addMethod(method);
+					}
+				}
+				/** getLocalTime() */{
+					if (pageView != null) {
+						builder.setLength(0);
+						builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
+						builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalTime() : " + LocalTime.class.getName() + ".MIDNIGHT;");
+						builder.append('}');
+						CtMethod method = CtMethod.make(builder.toString(), aClass);
+						aClass.addMethod(method);
+					}
+				}
+				/** equals(Object o) */{
 					builder.setLength(0);
-					builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
-					builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalTime() : " + LocalTime.class.getName() + ".MIDNIGHT;");
+					builder.append("public " + boolean.class.getName() + " equals(" + Object.class.getName() + " o) {");
+					builder.append("if (o == null || !(o instanceof " + CLASSNAME + ")) { return false; }");
+					builder.append("if (o == this) { return true; }");
+					builder.append(CLASSNAME + " oo = (" + CLASSNAME + ") o;");
+					builder.append("return super.equals(oo)");
+					if (userId != null) {
+						builder.append(" && (getUserId() != null ? getUserId().equals(oo.getUserId()) : oo.getUserId() == null)");
+					}
+					if (pageView != null) {
+						builder.append(" && (getPages() != null ? getPages().equals(oo.getPages()) : oo.getPages() == null)");
+					}
+					builder.append(';');
 					builder.append('}');
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
+				/** hashCode() */{
+					builder.setLength(0);
+					builder.append("public " + int.class.getName() + " hashCode() {");
+					builder.append("int res = super.hashCode();");
+					if (userId != null) {
+						builder.append("res = 31 * res + (getUserId() != null ? getUserId().hashCode() : 0);");
+					}
+					if (pageView != null) {
+						builder.append("res = 31 * res + (getPages() != null ? getPages().hashCode() : 0);");
+					}
+					builder.append("return res;");
+					builder.append('}');
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+				return aClass.toClass(loader, UserSessionDump.class.getProtectionDomain());
+			} else {
+				return null;
 			}
-			/** equals(Object o) */{
-				builder.setLength(0);
-				builder.append("public " + boolean.class.getName() + " equals(" + Object.class.getName() + " o) {");
-				builder.append("if (o == null || !(o instanceof " + CLASSNAME + ")) { return false; }");
-				builder.append("if (o == this) { return true; }");
-				builder.append(CLASSNAME + " oo = (" + CLASSNAME + ") o;");
-				builder.append("return super.equals(oo)");
-				if (userId != null) {
-					builder.append(" && (getUserId() != null ? getUserId().equals(oo.getUserId()) : oo.getUserId() == null)");
-				}
-				if (pageView != null) {
-					builder.append(" && (getPages() != null ? getPages().equals(oo.getPages()) : oo.getPages() == null)");
-				}
-				builder.append(';');
-				builder.append('}');
-				CtMethod method = CtMethod.make(builder.toString(), aClass);
-				aClass.addMethod(method);
-			}
-			/** hashCode() */{
-				builder.setLength(0);
-				builder.append("public " + int.class.getName() + " hashCode() {");
-				builder.append("int res = super.hashCode();");
-				if (userId != null) {
-					builder.append("res = 31 * res + (getUserId() != null ? getUserId().hashCode() : 0);");
-				}
-				if (pageView != null) {
-					builder.append("res = 31 * res + (getPages() != null ? getPages().hashCode() : 0);");
-				}
-				builder.append("return res;");
-				builder.append('}');
-				CtMethod method = CtMethod.make(builder.toString(), aClass);
-				aClass.addMethod(method);
-			}
-			return aClass.toClass(loader, UserSessionDump.class.getProtectionDomain());
-		} else {
-			return null;
 		}
 	}
 
