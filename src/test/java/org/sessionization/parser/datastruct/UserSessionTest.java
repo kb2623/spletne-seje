@@ -14,7 +14,7 @@ import java.lang.reflect.Constructor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class UserIdAbsTest {
+public class UserSessionTest {
 
 	private ClassLoader loader;
 	private WebLogParser parser;

@@ -2,6 +2,7 @@ package org.sessionization.parser.datastruct;
 
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import org.sessionization.ClassPoolLoader;
@@ -23,6 +24,7 @@ public class PageViewDump {
 		ClassPool pool = loader.getPool();
 		CtClass aClass = pool.makeClass(CLASSNAME);
 		aClass.setModifiers(Modifier.PUBLIC);
+		aClass.getClassFile().setMajorVersion(ClassFile.JAVA_8);
 		/** Dodaj super Class */
 		aClass.setSuperclass(pool.get(PageViewAbs.class.getName()));
 		/** Dodaj anoracije */{
@@ -47,7 +49,7 @@ public class PageViewDump {
 		/** PageView(ParsedLine line) */{
 			builder.setLength(0);
 			builder.append("public PageView(" + ParsedLine.class.getName() + " line) {");
-			builder.append("super();")
+			builder.append("super(line);")
 					.append("super.requests.add(new " + RequestDump.getName() + "(line));");
 			builder.append('}');
 			CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);

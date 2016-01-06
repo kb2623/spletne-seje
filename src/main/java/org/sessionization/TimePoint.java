@@ -26,7 +26,6 @@ public interface TimePoint {
 		return getLocalDateTime().format(formatter);
 	}
 
-
 	default long secBetwene(TimePoint point) {
 		return Math.abs(ChronoUnit.SECONDS.between(getLocalDateTime(), point.getLocalDateTime()));
 	}

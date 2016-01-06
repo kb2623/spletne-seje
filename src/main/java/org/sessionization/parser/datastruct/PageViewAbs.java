@@ -66,8 +66,8 @@ public abstract class PageViewAbs implements TimePoint {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof PageViewAbs)) return false;
 		if (this == o) return true;
-		if (!(o instanceof PageViewAbs)) return false;
 		PageViewAbs that = (PageViewAbs) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getRequests() != null ? !getRequests().equals(that.getRequests()) : that.getRequests() != null) return false;

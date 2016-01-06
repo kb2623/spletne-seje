@@ -2,6 +2,7 @@ package org.sessionization.parser.datastruct;
 
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.ArrayMemberValue;
@@ -33,6 +34,7 @@ public class RequestDump {
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
 			aClass.setModifiers(Modifier.PUBLIC);
+			aClass.getClassFile().setMajorVersion(ClassFile.JAVA_8);
 			/** Dodaj super Class */
 			aClass.setSuperclass(pool.get(RequestAbs.class.getName()));
 			/** Dodaj anoracije */{
@@ -121,7 +123,7 @@ public class RequestDump {
 				builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
 				for (LogFieldType f : fields) {
 					if (f == LogFieldType.DateTime || f == LogFieldType.Time) {
-						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getTime() : null);");
+						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getTime() : " + LocalTime.class.getName() + ".MIDNIGHT);");
 						has = true;
 						break;
 					}
@@ -138,7 +140,7 @@ public class RequestDump {
 				builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
 				for (LogFieldType f : fields) {
 					if (f == LogFieldType.DateTime || f == LogFieldType.Date) {
-						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getDate() : null);");
+						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getDate() : " + LocalDate.class.getName() + ".MIN);");
 						has = true;
 						break;
 					}
@@ -152,8 +154,8 @@ public class RequestDump {
 			/** equals(Object o) */{
 				builder.setLength(0);
 				builder.append("public boolean equals(" + Object.class.getName() + " o) {");
-				builder.append("if (this == o) { return true; }\n");
-				builder.append("else if (o == null || getClass() != o.getClass()) { return false; }");
+				builder.append("if (o == null || !(o instanceof " + CLASSNAME + ")) { return false; }");
+				builder.append("if (this == o) { return true; }");
 				builder.append("else {" + CLASSNAME + " v = (" + CLASSNAME + ") o;");
 				builder.append("return super.equals(o)");
 				for (LogFieldType f : fields) {

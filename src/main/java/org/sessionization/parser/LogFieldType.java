@@ -368,7 +368,7 @@ public enum LogFieldType {
 	Date(new String[]{"date"}, org.sessionization.parser.fields.w3c.Date.class, null) {
 		@Override
 		public LogField parse(Scanner scanner, WebLogParser parser) throws ParseException {
-			return parser.getTokenInstance(classType, scanner.next(), ((W3CWebLogParser) parser).getDateFormat());
+			return parser.getTokenInstance(classType, scanner.next(), ((WebLogParserW3C) parser).getDateFormat());
 		}
 	},
 	/**
@@ -380,7 +380,7 @@ public enum LogFieldType {
 	Time(new String[]{"time"}, org.sessionization.parser.fields.w3c.Time.class, null) {
 		@Override
 		public LogField parse(Scanner scanner, WebLogParser parser) throws ParseException {
-			return parser.getTokenInstance(classType, scanner.next(), ((W3CWebLogParser) parser).getTimeFormat());
+			return parser.getTokenInstance(classType, scanner.next(), ((WebLogParserW3C) parser).getTimeFormat());
 		}
 	},
 	/**

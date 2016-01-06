@@ -46,11 +46,9 @@ public class IISWebLogParser extends WebLogParserW3C {
 
 	/**
 	 * Metoda nastavi prevzete vrednosti poljem razreda:
-	 * <p><code>dateFormat = dd/MM/yyyy</code></p>
-	 * <p><code>timeFormat = HH:mm:ss</code></p>
-	 * <p><code>locale = Locale.US</code></p>
+	 * <p><code>delimiter = ", "</code></p>
 	 */
 	private void setDefaultFields() {
-		super.delimiter = Pattern.compile(", ");
+		delimiter = Pattern.compile(", ");
 	}
 }

@@ -2,6 +2,7 @@ package org.sessionization.parser.datastruct;
 
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.ArrayMemberValue;
@@ -41,6 +42,7 @@ public class UserIdDump {
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
 			aClass.setModifiers(Modifier.PUBLIC);
+			aClass.getClassFile().setMajorVersion(ClassFile.JAVA_8);
 			/** Dodaj super class */
 			aClass.setSuperclass(pool.get(UserIdAbs.class.getName()));
 			/** Dodaj anotacije */{
@@ -142,8 +144,8 @@ public class UserIdDump {
 			/** equals(Object o) */{
 				builder.setLength(0);
 				builder.append("public boolean equals(" + Object.class.getName() + " o) {");
+				builder.append("if (o == null || !(o instanceof " + CLASSNAME + ")) { return false; }");
 				builder.append("if (this == o) { return true; }");
-				builder.append("else if (o == null || getClass() != o.getClass()) { return false; }");
 				builder.append("else {" + CLASSNAME + " v = (" + CLASSNAME + ") o;");
 				builder.append("return super.equals(o)");
 				for (LogFieldType f : fields) {

@@ -1,7 +1,11 @@
 package org.datastruct;
 
+import javassist.bytecode.Descriptor;
+
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Queue;
+import java.util.Set;
 
 public interface IQueue<E> extends Queue<E> {
 
@@ -32,8 +36,14 @@ public interface IQueue<E> extends Queue<E> {
 
 	@Override
 	default boolean removeAll(Collection<?> collection) throws NullPointerException, ClassCastException, UnsupportedOperationException {
-		for (Object o : collection) {
-			while (remove(o)) ;
+		if (collection instanceof Set) {
+			for (Object o : collection) {
+				while (remove(o)) ;
+			}
+		} else {
+			for (Object o : collection) {
+				remove(o);
+			}
 		}
 		return true;
 	}

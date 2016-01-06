@@ -2,13 +2,18 @@ package org.sessionization.parser.datastruct;
 
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
+import javassist.bytecode.SignatureAttribute;
 import javassist.bytecode.annotation.*;
 import org.sessionization.ClassPoolLoader;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class UserSessionDump {
@@ -32,6 +37,7 @@ public class UserSessionDump {
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
 			aClass.setModifiers(Modifier.PUBLIC);
+			aClass.getClassFile().setMajorVersion(ClassFile.JAVA_8);
 			/** Dodajanje super razreda */
 			aClass.setSuperclass(pool.get(UserSessionAbs.class.getName()));
 			/** Dodaj anotacije */{
@@ -102,7 +108,15 @@ public class UserSessionDump {
 			}
 			/** UserSession() */{
 				builder.setLength(0);
-				builder.append("public UserSession() { super(); }");
+				builder.append("public UserSession() {");
+				builder.append("super();");
+				if (userId != null) {
+					builder.append("this.userId = null;");
+				}
+				if (pageView != null) {
+					builder.append("this.pages = null;");
+				}
+				builder.append('}');
 				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 				aClass.addConstructor(constructor);
 			}
@@ -124,8 +138,12 @@ public class UserSessionDump {
 			/** String getKey() */
 			if (userId != null) {
 				builder.setLength(0);
-				builder.append("public " + String.class.getName() + " getKey() {")
-						.append("return userId.getKey();");
+				builder.append("public " + String.class.getName() + " getKey() {");
+				if (userId != null) {
+					builder.append("return userId.getKey();");
+				} else {
+					builder.append("return \"\"");
+				}
 				builder.append('}');
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
@@ -183,6 +201,59 @@ public class UserSessionDump {
 					builder.append('}');
 				}
 				builder.append("return true;");
+				builder.append('}');
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
+				aClass.addMethod(method);
+			}
+			/** getLocalDate() */{
+				if (pageView != null) {
+					builder.setLength(0);
+					builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
+					builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalDate() : " + LocalDate.class.getName() + ".MIN;");
+					builder.append('}');
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+			}
+			/** getLocalTime() */{
+				if (pageView != null) {
+					builder.setLength(0);
+					builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
+					builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalTime() : " + LocalTime.class.getName() + ".MIDNIGHT;");
+					builder.append('}');
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+			}
+			/** equals(Object o) */{
+				builder.setLength(0);
+				builder.append("public " + boolean.class.getName() + " equals(" + Object.class.getName() + " o) {");
+				builder.append("if (o == null || !(o instanceof " + CLASSNAME + ")) { return false; }");
+				builder.append("if (o == this) { return true; }");
+				builder.append(CLASSNAME + " oo = (" + CLASSNAME + ") o;");
+				builder.append("return super.equals(oo)");
+				if (userId != null) {
+					builder.append(" && (getUserId() != null ? getUserId().equals(oo.getUserId()) : oo.getUserId() == null)");
+				}
+				if (pageView != null) {
+					builder.append(" && (getPages() != null ? getPages().equals(oo.getPages()) : oo.getPages() == null)");
+				}
+				builder.append(';');
+				builder.append('}');
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
+				aClass.addMethod(method);
+			}
+			/** hashCode() */{
+				builder.setLength(0);
+				builder.append("public " + int.class.getName() + " hashCode() {");
+				builder.append("int res = super.hashCode();");
+				if (userId != null) {
+					builder.append("res = 31 * res + (getUserId() != null ? getUserId().hashCode() : 0);");
+				}
+				if (pageView != null) {
+					builder.append("res = 31 * res + (getPages() != null ? getPages().hashCode() : 0);");
+				}
+				builder.append("return res;");
 				builder.append('}');
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
