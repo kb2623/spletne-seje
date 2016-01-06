@@ -153,13 +153,4 @@ public class SpletneSejeTest {
 	public void testRunDerby() {
 		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), pathNCSACommon);
 	}
-
-	@Test
-	public void testSome() throws Exception {
-		Properties properties = new Properties();
-		assertNotNull(ClassLoader.getSystemResourceAsStream("ClassPool.properties"));
-		properties.load(ClassLoader.getSystemResourceAsStream("ClassPool.properties"));
-		properties.storeToXML(System.out, null, "UTF-8");
-		properties.storeToXML(System.out, null);
-	}
 }
