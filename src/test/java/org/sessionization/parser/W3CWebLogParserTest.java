@@ -111,7 +111,7 @@ public class W3CWebLogParserTest {
 
 	@Test
 	public void testParseLineFileTryResource() {
-		try (AWebLogParser parser1 = new W3CWebLogParser(Locale.US, new File[]{new File(ClassLoader.getSystemResource("ex100614.log").getFile())})) {
+		try (WebLogParser parser1 = new W3CWebLogParser(Locale.US, new File[]{new File(ClassLoader.getSystemResource("ex100614.log").getFile())})) {
 			parser1.forEach(System.out::println);
 		} catch (IOException e) {
 			fail();

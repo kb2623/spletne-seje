@@ -1,17 +1,13 @@
 package org.sessionization.parser;
 
-import org.sessionization.parser.datastruct.ParsedLine;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("deprecation")
-public class IISWebLogParser extends W3CWebLogParser {
+public class IISWebLogParser extends WebLogParserW3C {
 
 	/**
 	 * Konstruktor ki uporabi prevzeti knstriktor razreda {@link ParserAbs}.
@@ -21,7 +17,11 @@ public class IISWebLogParser extends W3CWebLogParser {
 	 */
 	public IISWebLogParser() {
 		super();
-		setDefaultFields(Locale.US);
+	}
+
+	public IISWebLogParser(Locale locale, File[] file) throws FileNotFoundException {
+		super(locale, file);
+		setDefaultFields();
 	}
 
 	/**
@@ -29,7 +29,8 @@ public class IISWebLogParser extends W3CWebLogParser {
 	 * @throws FileNotFoundException
 	 */
 	public IISWebLogParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
-		super(locale, file);
+		super(locale, file, ignore);
+		setDefaultFields();
 	}
 
 	/**
@@ -40,6 +41,7 @@ public class IISWebLogParser extends W3CWebLogParser {
 	public IISWebLogParser(Locale locale, File[] file, List<LogFieldType> list, List<LogFieldType> ignore) throws FileNotFoundException {
 		super(locale, file);
 		super.setFieldType(list);
+		setDefaultFields();
 	}
 
 	/**
@@ -48,18 +50,7 @@ public class IISWebLogParser extends W3CWebLogParser {
 	 * <p><code>timeFormat = HH:mm:ss</code></p>
 	 * <p><code>locale = Locale.US</code></p>
 	 */
-	private void setDefaultFields(Locale locale) {
-		super.setDateFormat("dd/MM/yyyy", locale);
-		super.setTimeFormat("HH:mm:ss", locale);
+	private void setDefaultFields() {
 		super.delimiter = Pattern.compile(", ");
-	}
-
-	@Override
-	public ParsedLine parseLine() throws ParseException {
-		try {
-			return parseLine(getLine());
-		} catch (IOException e) {
-			return null;
-		}
 	}
 }

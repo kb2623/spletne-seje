@@ -164,4 +164,22 @@ public class NCSAWebLogParserTest {
 			fail();
 		}
 	}
+
+	@Test
+	public void testMoreFieldsException() {
+		String testNiz = "216.67.1.91 - leon [01/Jul/2002:12:11:52 +0000] \"GET /index.html HTTP/1.1\" 200 431 \"http://www.loganalyzer.net/\" \"Mozilla/4.05 [en] (WinNT; I)\" \"USERID=CustomerA;IMPID=01234\"";
+		try {
+			parser.openFile(new StringReader(testNiz));
+			String[] cookie = "%h %l %u %t %r %s %b %{Referer}i %{User-agent}i".split(" ");
+			List<LogFieldType> listType = LogFormats.ParseCmdArgs.make(cookie);
+			parser.setFieldType(listType);
+			ParsedLine list = parser.parseLine();
+			parser.closeFile();
+		} catch (NullPointerException | IOException e) {
+			e.printStackTrace();
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Line has more fields than expected!!!", e.getMessage());
+		}
+	}
 }

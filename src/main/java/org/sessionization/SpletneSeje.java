@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class SpletneSeje {
 
 	private ArgsParser argsParser;
-	private AWebLogParser logParser;
+	private WebLogParser logParser;
 	private HibernateUtil db;
 
 	public SpletneSeje() {

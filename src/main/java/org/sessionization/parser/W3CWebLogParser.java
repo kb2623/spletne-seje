@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -16,77 +16,18 @@ import java.util.Scanner;
  *
  * @author klemen
  */
-@SuppressWarnings("deprecation")
-public class W3CWebLogParser extends AWebLogParser {
+public class W3CWebLogParser extends WebLogParserW3C {
 
-	private DateTimeFormatter timeFormat;
-	private DateTimeFormatter dateFormat;
-
-	/**
-	 * Konstruktor ki uporabi prevzeti oknstriktor razreda {@link ParserAbs}.
-	 *
-	 * @see AWebLogParser#AWebLogParser()
-	 * @see W3CWebLogParser#setDefaultFields()
-	 */
 	public W3CWebLogParser() {
 		super();
-		setDefaultFields(Locale.US);
 	}
 
-	/**
-	 *
-	 * @param locale
-	 * @param file
-	 * @throws FileNotFoundException
-	 */
 	public W3CWebLogParser(Locale locale, File[] file) throws FileNotFoundException {
-		super(file);
-		setDefaultFields(locale);
+		super(locale, file);
 	}
 
-	/**
-	 * Metoda nastavi prevzete vrednosti poljem razreda:
-	 * <p><code>fieldType = null</code></p>
-	 * <p><code>dateFormat = dd/MM/yyyy</code></p>
-	 * <p><code>timeFormat = HH:mm:ss</code></p>
-	 * <p><code>locale = Locale.US</code></p>
-	 *
-	 * @param locale
-	 */
-	private void setDefaultFields(Locale locale) {
-		dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(locale);
-		timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss").withLocale(locale);
-	}
-
-	/**
-	 * Nastavljanje formata za parsanje datuma
-	 *
-	 * @param format
-	 * @param localeString
-	 */
-	public void setDateFormat(String format, Locale locale) {
-		this.dateFormat = DateTimeFormatter.ofPattern(format == null ? "yyyy-MM-dd" : format).withLocale(locale == null ? Locale.getDefault() : locale);
-	}
-
-	public DateTimeFormatter getDateFormat() {
-		return dateFormat;
-	}
-
-	/**
-	 * Nastavljanje formata za parsanje &#x10d;asa
-	 *
-	 * @param format
-	 * @param localeString
-	 */
-	public void setTimeFormat(String format, Locale locale) {
-		this.timeFormat = DateTimeFormatter.ofPattern(format == null ? "HH:mm:ss" : format).withLocale(locale == null ? Locale.getDefault() : locale);
-	}
-
-	/**
-	 * @return
-	 */
-	public DateTimeFormatter getTimeFormat() {
-		return timeFormat;
+	public W3CWebLogParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
+		super(locale, file, ignore);
 	}
 
 	@Override

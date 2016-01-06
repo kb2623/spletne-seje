@@ -3,14 +3,13 @@ package org.sessionization;
 import org.datastruct.RadixTree;
 import org.junit.Before;
 import org.junit.Test;
-import org.sessionization.parser.AWebLogParser;
+import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.LogFormats;
 import org.sessionization.parser.NCSAWebLogParser;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -20,7 +19,7 @@ public class SpletneSejeTest {
 	private String pathNCSACombined;
 	private String pathNCSACommon;
 
-	private AWebLogParser parser;
+	private WebLogParser parser;
 
 	@Before
 	public void setUp() throws IOException {

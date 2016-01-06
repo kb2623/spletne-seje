@@ -11,7 +11,7 @@ import java.util.Locale;
  *
  * @author klemen
  */
-public class NCSAWebLogParser extends AWebLogParser {
+public class NCSAWebLogParser extends WebLogParser {
 
 	private DateTimeFormatter formatter;
 

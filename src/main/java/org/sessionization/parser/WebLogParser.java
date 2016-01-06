@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *
  * @author klemen
  */
-public abstract class AWebLogParser implements Iterable<ParsedLine>, AutoCloseable {
+public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseable {
 
 	/**
 	 * Tabela, ki vsebuje vrste polji v log datoteki
@@ -52,7 +52,7 @@ public abstract class AWebLogParser implements Iterable<ParsedLine>, AutoCloseab
 	 * pozicija = 0<p>
 	 * datoteka = null
 	 */
-	public AWebLogParser() {
+	public WebLogParser() {
 		readers = null;
 		fieldType = null;
 		delimiter = Pattern.compile(" ");
@@ -62,7 +62,7 @@ public abstract class AWebLogParser implements Iterable<ParsedLine>, AutoCloseab
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public AWebLogParser(File... file) throws FileNotFoundException {
+	public WebLogParser(File... file) throws FileNotFoundException {
 		this();
 		openFile(file);
 	}
@@ -161,6 +161,9 @@ public abstract class AWebLogParser implements Iterable<ParsedLine>, AutoCloseab
 			if (ignore != null ? !ignore.contains(ft) : true) {
 				lineData.add(ft.parse(scanner, this));
 			}
+		}
+		if (scanner.hasNext()) {
+			throw new ParseException("Line has more fields than expected!!!", getPos());
 		}
 		return new ParsedLine(lineData);
 	}

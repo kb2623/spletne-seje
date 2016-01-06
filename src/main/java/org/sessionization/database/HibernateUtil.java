@@ -10,7 +10,7 @@ import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.AWebLogParser;
+import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.datastruct.*;
@@ -29,7 +29,7 @@ public class HibernateUtil implements AutoCloseable {
 	private ServiceRegistry serviceRegistry = null;
 	private ClassPoolLoader loader = null;
 
-	public HibernateUtil(ArgsParser argsParser, AWebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
+	public HibernateUtil(ArgsParser argsParser, WebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
 		/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
 		List<LogFieldType> list = logParser.getFieldType();
 		if (logParser.getIgnoreFieldTypes() != null) {
@@ -39,14 +39,13 @@ public class HibernateUtil implements AutoCloseable {
 		this.loader = initClassLoader(argsParser);
 		Properties props = initProperties(argsParser);
 		/** Dodaj potrebne razrede */
-		Set<Class> classes = initClasses(list, loader);
 		serviceRegistry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
 				.applySettings(props)
 				.build();
 		try {
 			MetadataSources sources = new MetadataSources(serviceRegistry);
-			for (Class c : classes) {
+			for (Class c : initClasses(list, loader)) {
 				sources.addAnnotatedClass(c);
 			}
 			factory = sources.buildMetadata().buildSessionFactory();

@@ -4,7 +4,7 @@ import org.datastruct.ObjectPool;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.AWebLogParser;
+import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.LogFormats;
 import org.sessionization.parser.NCSAWebLogParser;
 
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 public class UserIdAbsTest {
 
 	private ClassLoader loader;
-	private AWebLogParser parser;
+	private WebLogParser parser;
 
 	@Before
 	public void setUp() {
