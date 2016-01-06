@@ -80,4 +80,9 @@ public abstract class PageViewAbs implements TimePoint {
 		result = 31 * result + (getRequests() != null ? getRequests().hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return requests.toString();
+	}
 }

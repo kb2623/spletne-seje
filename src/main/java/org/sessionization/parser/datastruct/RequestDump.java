@@ -179,6 +179,19 @@ public class RequestDump {
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
+			/** toString() */{
+				builder.setLength(0);
+				builder.append("public " + String.class.getName() + " toString() {");
+				builder.append("return ");
+				for (LogFieldType f : fields) {
+					builder.append("(" + f.getGetterName() + "() != null ? " + f.getGetterName() + "().toString() : \"-\") + \" \" + ");
+				}
+				builder.delete(builder.length() - 9, builder.length());
+				builder.append(';');
+				builder.append('}');
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
+				aClass.addMethod(method);
+			}
 			return aClass.toClass(loader, PageViewDump.class.getProtectionDomain());
 		}
 	}

@@ -17,10 +17,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class UserSessionTest {
 
@@ -37,7 +37,8 @@ public class UserSessionTest {
 		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		parser.openFile(new StringReader(
 				"157.55.39.19 - - [26/Jun/2014:04:44:51 +0200] \"GET /jope-puloverji/moski-pulover-b74-red?limit=18 HTTP/1.1\" 200 9545\n" +
-						"157.55.39.19 - - [28/Jun/2014:04:44:51 +0200] \"GET /jope-puloverji/moski-pulover-b74-black?limit=18 HTTP/1.1\" 200 9545"
+						"157.55.39.19 - - [28/Jun/2014:04:44:51 +0200] \"GET /jope-puloverji/gtk-3.0.css HTTP/1.1\" 200 9545\n" +
+						"157.55.39.19 - - [28/Jun/2014:04:46:23 +0200] \"GET /jope-puloverji/moski-pulover-b74-red?limit=18 HTTP/1.1\" 200 9545"
 		));
 		initClasses((ClassPoolLoader) loader);
 	}
@@ -73,7 +74,6 @@ public class UserSessionTest {
 
 	@Test
 	public void testGetLocalTime() throws Exception {
-		initClasses((ClassPoolLoader) loader);
 		ParsedLine line = parser.parseLine();
 		Class session = loader.loadClass(UserSessionDump.getName());
 		assertNotNull(session);
@@ -83,12 +83,46 @@ public class UserSessionTest {
 	}
 
 	@Test
-	public void testTimePoint() {
+	public void testGetLocalDateTime() throws Exception {
+		ParsedLine line = parser.parseLine();
+		Class session = loader.loadClass(UserSessionDump.getName());
+		assertNotNull(session);
+		Constructor init = session.getConstructor(ParsedLine.class);
+		UserSessionAbs uSession = (UserSessionAbs) init.newInstance(line);
+		assertEquals(LocalDateTime.of(2014, 6, 26, 4, 44, 51), uSession.getLocalDateTime());
+	}
 
+	@Test
+	public void testTimePoint() throws Exception {
+		ParsedLine l1 = parser.parseLine(), l2 = parser.parseLine();
+		Class session = loader.loadClass(UserSessionDump.getName());
+		assertNotNull(session);
+		Constructor init = session.getConstructor(ParsedLine.class);
+		UserSessionAbs uS1 = (UserSessionAbs) init.newInstance(l1), uS2 = (UserSessionAbs) init.newInstance(l2);
+		assertNotNull(uS1);
+		assertEquals("Client 157.55.39.19 - - [[04:44:51 26.06.2014 GET /jope-puloverji/moski-pulover-b74-red[[limit = 18]] HTTP/1.1 200 9545]]", uS1.toString());
+		assertNotNull(uS2);
+		assertEquals("Client 157.55.39.19 - - [[04:44:51 28.06.2014 GET /jope-puloverji/gtk-3.0.css HTTP/1.1 200 9545]]", uS2.toString());
+		assertEquals(uS1.getKey(), uS2.getKey());
+		assertEquals(LocalDateTime.of(2014, 6, 26, 4, 44, 51), uS1.getLocalDateTime());
+		assertEquals(LocalDateTime.of(2014, 6, 28, 4, 44, 51), uS2.getLocalDateTime());
+		assertEquals(172800, uS2.secBetwene(uS1));
+		assertEquals(172800, uS1.secBetwene(uS2));
 	}
 
 	@Test
 	public void testAddParsedLine() throws Exception {
-
+		ParsedLine l1 = parser.parseLine(), l2 = parser.parseLine(), l3 = parser.parseLine();
+		assertFalse(l1.isResource());
+		assertTrue(l2.isResource());
+		assertFalse(l3.isResource());
+		Class session = loader.loadClass(UserSessionDump.getName());
+		assertNotNull(session);
+		Constructor init = session.getConstructor(ParsedLine.class);
+		UserSessionAbs uSession = (UserSessionAbs) init.newInstance(l1);
+		assertNotNull(uSession);
+		assertTrue(uSession.addParsedLine(l2));
+		assertTrue(uSession.addParsedLine(l3));
+		assertEquals("Client 157.55.39.19 - - [[04:44:51 26.06.2014 GET /jope-puloverji/moski-pulover-b74-red[[limit = 18]] HTTP/1.1 200 9545, 04:44:51 28.06.2014 GET /jope-puloverji/gtk-3.0.css HTTP/1.1 200 9545], [04:46:23 28.06.2014 GET /jope-puloverji/moski-pulover-b74-red[[limit = 18]] HTTP/1.1 200 9545]]", uSession.toString());
 	}
 }

@@ -261,6 +261,22 @@ public class UserSessionDump {
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
+				/** toString() */{
+					builder.setLength(0);
+					builder.append("public " + String.class.getName() + " toString() {");
+					builder.append("return ");
+					if (userId != null) {
+						builder.append("(getUserId() != null ? getUserId().toString() : \"\") + \" \" + ");
+					}
+					if (pageView != null) {
+						builder.append("(getPages() != null ? getPages().toString() : \"\") + \" \" + ");
+					}
+					builder.delete(builder.length() - 9, builder.length());
+					builder.append(';');
+					builder.append('}');
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
 				return aClass.toClass(loader, UserSessionDump.class.getProtectionDomain());
 			} else {
 				return null;

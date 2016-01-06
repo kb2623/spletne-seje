@@ -4,12 +4,15 @@ import org.junit.Test;
 import org.sessionization.parser.LogType;
 import org.sessionization.parser.fields.ncsa.DateTime;
 import org.sessionization.parser.fields.ncsa.RequestLine;
+import org.sessionization.parser.fields.w3c.Time;
 
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -129,7 +132,13 @@ public class TestLogField {
 	public void testTimePoint() {
 		DateTime dt1 = new DateTime(LocalDateTime.of(2015, 12, 17, 0, 0, 12)), dt2 = new DateTime(LocalDateTime.of(2015, 12, 18, 0, 0, 12));
 		assertEquals(24 * 3600, dt1.secBetwene(dt2));
-
+		dt1 = new DateTime(LocalDateTime.of(2015, 6, 27, 4, 44, 51));
+		dt2 = new DateTime(LocalDateTime.of(2015, 6, 28, 2, 44, 51));
+		assertEquals(79200, dt1.secBetwene(dt2));
+		System.out.println(dt2.secBetwene(dt1));
+		Time t1 = new Time(LocalTime.of(23, 45, 45)), t2 = new Time(LocalTime.of(0, 10, 10));
+		System.out.println(t1.secBetwene(t2));
+		System.out.println(t2.secBetwene(t1));
 	}
 
 	@Test

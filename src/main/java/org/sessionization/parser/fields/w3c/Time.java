@@ -20,7 +20,7 @@ public class Time implements LogField, TimePoint {
 		time = null;
 	}
 
-	protected Time(LocalTime time) {
+	public Time(LocalTime time) {
 		this.time = time;
 	}
 

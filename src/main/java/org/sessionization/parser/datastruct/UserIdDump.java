@@ -137,10 +137,11 @@ public class UserIdDump {
 				for (LogFieldType f : fields) {
 					builder.append("(this." + f.getFieldName() + " != null ? " + f.getFieldName()).append(".getKey() : \"\") + ");
 				}
-				if (builder.length() > 2) {
-					builder.delete(builder.length() - 2, builder.length());
+				if (builder.length() > 3) {
+					builder.delete(builder.length() - 3, builder.length());
 				}
-				builder.append(";}");
+				builder.append(';');
+				builder.append("}");
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
@@ -166,6 +167,19 @@ public class UserIdDump {
 					builder.append("res = 31 * res + (" + f.getFieldName() + " != null ? this." + f.getFieldName() + ".hashCode() : 0);");
 				}
 				builder.append("return res;").append('}');
+				CtMethod method = CtMethod.make(builder.toString(), aClass);
+				aClass.addMethod(method);
+			}
+			/** toString() */{
+				builder.setLength(0);
+				builder.append("public " + String.class.getName() + " toString() {");
+				builder.append("return ");
+				for (LogFieldType f : fields) {
+					builder.append("(" + f.getGetterName() + "() != null ? " + f.getGetterName() + "().toString() : \"-\") + \" \" + ");
+				}
+				builder.delete(builder.length() - 9, builder.length());
+				builder.append(';');
+				builder.append('}');
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
