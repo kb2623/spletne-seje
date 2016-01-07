@@ -16,7 +16,7 @@ public class LinkQueueTest {
 	private Queue<Integer> queue;
 	private Queue<Integer> tqueue;
 
-	private int size = 100;
+	private int size = 10000;
 
 	@Before
 	public void setUp() throws Exception {

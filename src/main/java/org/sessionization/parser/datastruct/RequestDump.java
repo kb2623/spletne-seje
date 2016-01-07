@@ -126,7 +126,7 @@ public class RequestDump {
 				builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
 				for (LogFieldType f : fields) {
 					if (f == LogFieldType.DateTime || f == LogFieldType.Time) {
-						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getTime() : " + LocalTime.class.getName() + ".MIDNIGHT);");
+						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getTime() : null);");
 						has = true;
 						break;
 					}
@@ -143,7 +143,7 @@ public class RequestDump {
 				builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
 				for (LogFieldType f : fields) {
 					if (f == LogFieldType.DateTime || f == LogFieldType.Date) {
-						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getDate() : " + LocalDate.class.getName() + ".MIN);");
+						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getDate() : null);");
 						has = true;
 						break;
 					}

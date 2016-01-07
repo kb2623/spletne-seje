@@ -13,7 +13,7 @@ public class AvlTreeTest {
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
 
-	private int size = 5000;
+	private int size = 10000;
 
 	@Before
 	public void setUp() throws Exception {

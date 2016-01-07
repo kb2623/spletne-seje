@@ -212,7 +212,7 @@ public class UserSessionDump {
 					if (pageView != null) {
 						builder.setLength(0);
 						builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
-						builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalDate() : " + LocalDate.class.getName() + ".MIN;");
+						builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalDate() : null;");
 						builder.append('}');
 						CtMethod method = CtMethod.make(builder.toString(), aClass);
 						aClass.addMethod(method);
@@ -222,7 +222,7 @@ public class UserSessionDump {
 					if (pageView != null) {
 						builder.setLength(0);
 						builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
-						builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalTime() : " + LocalTime.class.getName() + ".MIDNIGHT;");
+						builder.append("return pages != null ? ((" + PageViewDump.getName() + ") pages.get(pages.size() - 1)).getLocalTime() : null;");
 						builder.append('}');
 						CtMethod method = CtMethod.make(builder.toString(), aClass);
 						aClass.addMethod(method);

@@ -11,15 +11,23 @@ public interface TimePoint {
 	static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
 
 	default LocalDate getLocalDate() {
-		return LocalDate.MIN;
+		return null;
 	}
 
 	default LocalTime getLocalTime() {
-		return LocalTime.MIDNIGHT;
+		return null;
 	}
 
 	default LocalDateTime getLocalDateTime() {
-		return getLocalDate().atTime(getLocalTime());
+		LocalDate date = getLocalDate();
+		LocalTime time = getLocalTime();
+		if (date == null) {
+			date = LocalDate.MIN;
+		}
+		if (time == null) {
+			time = LocalTime.MIDNIGHT;
+		}
+		return date.atTime(time);
 	}
 
 	default String printDate() {

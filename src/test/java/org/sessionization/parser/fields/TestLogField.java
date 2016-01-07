@@ -130,15 +130,20 @@ public class TestLogField {
 
 	@Test
 	public void testTimePoint() {
-		DateTime dt1 = new DateTime(LocalDateTime.of(2015, 12, 17, 0, 0, 12)), dt2 = new DateTime(LocalDateTime.of(2015, 12, 18, 0, 0, 12));
+		DateTime dt1 = new DateTime(LocalDateTime.of(2015, 12, 17, 0, 0, 12));
+		DateTime dt2 = new DateTime(LocalDateTime.of(2015, 12, 18, 0, 0, 12));
 		assertEquals(24 * 3600, dt1.secBetwene(dt2));
 		dt1 = new DateTime(LocalDateTime.of(2015, 6, 27, 4, 44, 51));
 		dt2 = new DateTime(LocalDateTime.of(2015, 6, 28, 2, 44, 51));
 		assertEquals(79200, dt1.secBetwene(dt2));
-		System.out.println(dt2.secBetwene(dt1));
-		Time t1 = new Time(LocalTime.of(23, 45, 45)), t2 = new Time(LocalTime.of(0, 10, 10));
-		System.out.println(t1.secBetwene(t2));
-		System.out.println(t2.secBetwene(t1));
+		Time t1 = new Time(LocalTime.of(23, 45, 45));
+		Time t2 = new Time(LocalTime.of(0, 10, 10));
+		assertEquals(84935, t1.secBetwene(t2));
+		assertEquals(84935, t2.secBetwene(t1));
+		dt1 = new DateTime(LocalDateTime.of(2014, 12, 27, 23, 45, 45));
+		dt2 = new DateTime(LocalDateTime.of(2014, 12, 28, 0, 10, 10));
+		assertEquals(1465, dt2.secBetwene(dt1));
+		assertEquals(1465, dt1.secBetwene(dt2));
 	}
 
 	@Test

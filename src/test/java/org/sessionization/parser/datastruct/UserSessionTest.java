@@ -60,6 +60,7 @@ public class UserSessionTest {
 		assertEquals(line1.getKey(), u1.getKey());
 		UserSessionAbs u2 = (UserSessionAbs) init.newInstance(line2);
 		assertEquals(line2.getKey(), u2.getKey());
+		assertEquals(u1.getKey(), u2.getKey());
 	}
 
 	@Test

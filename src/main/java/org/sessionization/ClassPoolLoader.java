@@ -1,6 +1,9 @@
 package org.sessionization;
 
+import javassist.CannotCompileException;
 import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 
 public class ClassPoolLoader extends ClassLoader {
 
@@ -13,7 +16,11 @@ public class ClassPoolLoader extends ClassLoader {
 
 	public ClassPoolLoader(ClassLoader loader, ClassPool pool) {
 		super(loader);
-		this.pool = pool;
+		if (pool != null) {
+			this.pool = pool;
+		} else {
+			this.pool = ClassPool.getDefault();
+		}
 	}
 
 	public ClassPoolLoader(ClassLoader loader) {
@@ -30,4 +37,16 @@ public class ClassPoolLoader extends ClassLoader {
 		return pool;
 	}
 
+	@Override
+	protected Class<?> findClass(String name) throws ClassNotFoundException {
+		try {
+			return super.findClass(name);
+		} catch (ClassNotFoundException e) {
+			try {
+				return pool.getCtClass(name).toClass(this, getClass().getProtectionDomain());
+			} catch (CannotCompileException | NotFoundException e1) {
+				throw new ClassNotFoundException(e1.getMessage(), e1);
+			}
+		}
+	}
 }

@@ -13,14 +13,30 @@ public class ObjectPool {
 	private ClassLoader loader = null;
 
 	public ObjectPool(Map<Class, Map<Integer, Object>> mapObject, Map<Class, ObjectCreator> creators, Properties properties, ClassLoader loader) {
-		this.mapObject = mapObject;
-		this.creators = creators;
-		this.properties = properties;
-		this.loader = loader;
+		if (mapObject == null) {
+			this.mapObject = new AvlTree<>();
+		} else {
+			this.mapObject = mapObject;
+		}
+		if (creators == null) {
+			this.creators = new AvlTree<>();
+		} else {
+			this.creators = creators;
+		}
+		if (properties == null) {
+			this.properties = new Properties();
+		} else {
+			this.properties = properties;
+		}
+		if (loader == null) {
+			this.loader = ClassLoader.getSystemClassLoader();
+		} else {
+			this.loader = loader;
+		}
 	}
 
 	public ObjectPool() {
-		this(new AvlTree<>(), new AvlTree<>(), new Properties(), ClassLoader.getSystemClassLoader());
+		this(null, null, null, null);
 	}
 
 	public static <T> T makeObject(Class<T> c, Object... args) throws ExceptionInInitializerError {
