@@ -192,7 +192,7 @@ public class RequestDump {
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
-			return aClass.toClass(loader, PageViewDump.class.getProtectionDomain());
+			return aClass.toClass(loader, loader.getClass().getProtectionDomain());
 		}
 	}
 

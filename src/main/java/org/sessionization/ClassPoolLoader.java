@@ -5,6 +5,8 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 
+import java.util.Set;
+
 public class ClassPoolLoader extends ClassLoader {
 
 	private ClassPool pool;

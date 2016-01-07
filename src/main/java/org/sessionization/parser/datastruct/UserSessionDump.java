@@ -277,7 +277,7 @@ public class UserSessionDump {
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
 				}
-				return aClass.toClass(loader, UserSessionDump.class.getProtectionDomain());
+				return aClass.toClass(loader, loader.getClass().getProtectionDomain());
 			} else {
 				return null;
 			}
