@@ -1,12 +1,13 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class Host implements LogField {
+public class Host implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,5 +70,10 @@ public class Host implements LogField {
 		int result = getId() != null ? getId().hashCode() : 0;
 		result = 31 * result + getHost().hashCode();
 		return result;
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select h.id from " + getClass().getSimpleName() + " h where h.host like " + host;
 	}
 }

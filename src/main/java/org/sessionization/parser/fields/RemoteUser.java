@@ -1,12 +1,13 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class RemoteUser implements LogField {
+public class RemoteUser implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,5 +69,10 @@ public class RemoteUser implements LogField {
 		int result = getId() != null ? getId().hashCode() : 0;
 		result = 31 * result + getUser().hashCode();
 		return result;
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select r.id from " + getClass().getSimpleName() + " r where r.user = '" + user + "'";
 	}
 }

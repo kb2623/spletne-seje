@@ -63,4 +63,10 @@ public class UriSteamQuery extends UriSteam {
 		result = 31 * result + (getQuery() != null ? getQuery().hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String getIdQuery() {
+		// TODO: 1/8/16
+		return null;
+	}
 }

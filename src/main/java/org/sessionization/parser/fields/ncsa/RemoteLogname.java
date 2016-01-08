@@ -1,12 +1,13 @@
 package org.sessionization.parser.fields.ncsa;
 
+import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class RemoteLogname implements LogField {
+public class RemoteLogname implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,5 +76,10 @@ public class RemoteLogname implements LogField {
 	@Override
 	public String getKey() {
 		return logname == null ? "-" : logname;
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select r.id form " + getClass().getSimpleName() + " r where r.logname = '" + logname + "'";
 	}
 }

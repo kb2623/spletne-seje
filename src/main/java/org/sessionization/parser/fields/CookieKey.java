@@ -1,10 +1,12 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
+
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class CookieKey {
+public class CookieKey implements HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,5 +62,10 @@ public class CookieKey {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select c.id form " + getClass().getSimpleName() + " where c.name = '" + name + "'";
 	}
 }

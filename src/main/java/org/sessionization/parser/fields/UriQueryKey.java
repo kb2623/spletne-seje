@@ -1,10 +1,12 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
+
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class UriQueryKey {
+public class UriQueryKey implements HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,5 +60,10 @@ public class UriQueryKey {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select u.id form " + getClass().getSimpleName() + " u where u.name = '" + name + "'";
 	}
 }

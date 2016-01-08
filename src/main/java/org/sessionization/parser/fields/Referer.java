@@ -1,6 +1,6 @@
 package org.sessionization.parser.fields;
 
-import org.sessionization.parser.LogField;
+import org.sessionization.HibernateTable;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -10,7 +10,7 @@ import java.net.URI;
 
 @Entity
 @Cacheable
-public class Referer extends UriSteamQuery implements LogField {
+public class Referer extends UriSteamQuery implements HibernateTable {
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Host host;
@@ -62,5 +62,11 @@ public class Referer extends UriSteamQuery implements LogField {
 	@Override
 	public String toString() {
 		return host.toString() + super.toString();
+	}
+
+	@Override
+	public String getIdQuery() {
+		// TODO: 1/8/16
+		return null;
 	}
 }

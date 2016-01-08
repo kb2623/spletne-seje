@@ -1,5 +1,7 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
+import org.sessionization.database.InetAddressConverter;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -10,7 +12,7 @@ import java.net.UnknownHostException;
 
 @Entity
 @Cacheable
-public class Address implements LogField {
+public class Address implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -102,5 +104,10 @@ public class Address implements LogField {
 		result = 31 * result + (isServerAddress() ? 1 : 0);
 		result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
 		return result;
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select a.id from " + getClass().getSimpleName() + " where a.serverAddress = '" + InetAddressConverter.getInetAddressString(address) + "' and s.serverAddress = " + String.valueOf(serverAddress);
 	}
 }

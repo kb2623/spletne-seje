@@ -1,5 +1,6 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Cacheable
-public class UriQuery implements LogField {
+public class UriQuery implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -95,6 +96,12 @@ public class UriQuery implements LogField {
 		int result = getId() != null ? getId().hashCode() : 0;
 		result = 31 * result + (getPairs() != null ? getPairs().hashCode() : 0);
 		return result;
+	}
+
+	@Override
+	public String getIdQuery() {
+		// TODO: 1/8/16
+		return null;
 	}
 }
 

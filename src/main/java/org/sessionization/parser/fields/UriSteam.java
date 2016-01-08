@@ -1,5 +1,6 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.net.URL;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Cacheable
-public class UriSteam implements LogField {
+public class UriSteam implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -110,5 +111,10 @@ public class UriSteam implements LogField {
 	@Override
 	public String toString() {
 		return getFile();
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select u.id form " + getClass().getSimpleName() + " u where u.file = '" + file + "'";
 	}
 }

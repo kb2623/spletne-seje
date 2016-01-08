@@ -1,12 +1,13 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class Protocol implements LogField {
+public class Protocol implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,5 +91,10 @@ public class Protocol implements LogField {
 		result = 31 * result + getProtocol().hashCode();
 		result = 31 * result + (getVersion() != +0.0f ? Float.floatToIntBits(getVersion()) : 0);
 		return result;
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select p.id form " + getClass().getSimpleName() + " p where p.protocol = '" + protocol + "' and p.version = " + version;
 	}
 }

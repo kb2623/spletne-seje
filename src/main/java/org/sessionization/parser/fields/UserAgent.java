@@ -1,5 +1,6 @@
 package org.sessionization.parser.fields;
 
+import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.LogType;
 
@@ -7,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class UserAgent implements LogField {
+public class UserAgent implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,5 +79,10 @@ public class UserAgent implements LogField {
 		int result = getId() != null ? getId().hashCode() : 0;
 		result = 31 * result + getUserAgentString().hashCode();
 		return result;
+	}
+
+	@Override
+	public String getIdQuery() {
+		return "select u.id form " + getClass().getSimpleName() + " u where u.userAgentString = '" + userAgentString + "'";
 	}
 }

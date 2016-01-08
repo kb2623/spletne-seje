@@ -1,5 +1,6 @@
 package org.sessionization.parser.fields.ncsa;
 
+import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.fields.Method;
 import org.sessionization.parser.fields.Protocol;
@@ -13,7 +14,7 @@ import java.net.URISyntaxException;
 
 @Entity
 @Cacheable
-public class RequestLine implements LogField {
+public class RequestLine implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -147,5 +148,11 @@ public class RequestLine implements LogField {
 		result = 31 * result + (getUri() != null ? getUri().hashCode() : 0);
 		result = 31 * result + (getProtocol() != null ? getProtocol().hashCode() : 0);
 		return result;
+	}
+
+	@Override
+	public String getIdQuery() {
+		// TODO: 1/8/16
+		return null;
 	}
 }
