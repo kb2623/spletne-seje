@@ -19,6 +19,11 @@ public class Cookie implements LogField, HibernateTable {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<CookiePair> pairs;
 
+	public Cookie() {
+		id = null;
+		pairs = null;
+	}
+
 	public Cookie(String line, LogType type) throws IllegalArgumentException {
 		id = null;
 		if (!line.equals("-")) {

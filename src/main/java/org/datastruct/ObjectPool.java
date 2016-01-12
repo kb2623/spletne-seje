@@ -7,12 +7,12 @@ import java.util.Properties;
 
 public class ObjectPool {
 
-	private Map<Class, Map<Integer, Object>> mapObject = null;
+	private Map<Class, Map> mapObject = null;
 	private Map<Class, ObjectCreator> creators = null;
 	private Properties properties = null;
 	private ClassLoader loader = null;
 
-	public ObjectPool(Map<Class, Map<Integer, Object>> mapObject, Map<Class, ObjectCreator> creators, Properties properties, ClassLoader loader) {
+	public ObjectPool(Map<Class, Map> mapObject, Map<Class, ObjectCreator> creators, Properties properties, ClassLoader loader) {
 		if (mapObject == null) {
 			this.mapObject = new AvlTree<>();
 		} else {
@@ -137,19 +137,23 @@ public class ObjectPool {
 		return getObject(c, hash, args);
 	}
 
-	private <T> T getObject(Class<T> c, int hash, Object... args) {
-		Map<Integer, Object> map = mapObject.get(c);
+	private <T> T getObject(Class<T> c, Object hash, Object... args) {
+		Map map = mapObject.get(c);
 		T ret = null;
 		if (map == null) {
 			map = initMap(c);
 			ret = makeObjectForPool(c, args);
-			map.put(hash, ret);
+			if (ret != null) {
+				map.put(hash, ret);
+			}
 			mapObject.put(c, map);
 		} else {
-			ret = c.cast(map.get(hash));
+			ret = (T) map.get(hash);
 			if (ret == null) {
 				ret = makeObjectForPool(c, args);
-				map.put(hash, ret);
+				if (ret != null) {
+					map.put(hash, ret);
+				}
 			}
 		}
 		return ret;
@@ -163,7 +167,7 @@ public class ObjectPool {
 		if (creator == null) {
 			return makeObject(c, args);
 		} else {
-			return c.cast(creator.create(this, c, args));
+			return (T) creator.create(this, args);
 		}
 	}
 
@@ -230,6 +234,6 @@ public class ObjectPool {
 		 * @param args
 		 * @return
 		 */
-		E create(ObjectPool pool, Class<E> c, Object... args);
+		E create(ObjectPool pool, Object... args);
 	}
 }
