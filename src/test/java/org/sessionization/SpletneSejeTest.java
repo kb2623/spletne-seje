@@ -3,16 +3,17 @@ package org.sessionization;
 import org.datastruct.RadixTree;
 import org.junit.Before;
 import org.junit.Test;
-import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.LogFormats;
 import org.sessionization.parser.NCSAWebLogParser;
+import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SpletneSejeTest {
 
@@ -77,7 +78,7 @@ public class SpletneSejeTest {
 					break;
 				case 2:
 					System.out.println("Skiping: " + line.next().toString());
-					while (!line.next().isResource()) {
+					while (!line.next().isWebPageResource()) {
 					}
 					break;
 				case 3:
@@ -85,7 +86,7 @@ public class SpletneSejeTest {
 					do {
 						l = line.next();
 						System.out.println(line.next().toString());
-					} while (l.isResource());
+					} while (l.isWebPageResource());
 					break;
 				default:
 					run = false;

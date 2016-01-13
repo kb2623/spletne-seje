@@ -62,7 +62,7 @@ public class PageViewDump {
 				builder.setLength(0);
 				builder.append("public " + boolean.class.getName() + " addParsedLine(" + ParsedLine.class.getName() + " line) {");
 				builder.append("if (line == null || super.requests == null) { return false; }");
-				builder.append("if (line.isResource()) " +
+				builder.append("if (line.isWebPageResource()) " +
 						"{ return super.requests.add(new " + RequestDump.getName() + "(line)); }");
 				builder.append("return false;");
 				builder.append('}');

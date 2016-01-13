@@ -3,6 +3,8 @@ package org.sessionization.parser;
 import org.kohsuke.args4j.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -46,6 +48,7 @@ public class ArgsParser {
 		properties.setProperty("format.locale", Locale.US.toLanguageTag());
 		properties.setProperty("parse.size", "500");
 		properties.setProperty("session.time", "7200");
+		properties.setProperty("objectpool.properties", ClassLoader.getSystemResource("ClassPool.properties").getPath());
 	}
 
 	public String[] getLogFormat() {
@@ -59,6 +62,18 @@ public class ArgsParser {
 	@Option(name = "-fl", aliases = "format.log", usage = "Log file format. Check NCSA or W3C log formats.", metaVar = "<log format>")
 	public void setLogFormat(String format) {
 		properties.setProperty("format.log", format);
+	}
+
+	public Properties getObjectPoolProperties() throws IOException {
+		String path = properties.getProperty("objectpool.properties");
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(path));
+		return properties;
+	}
+
+	@Option(name = "-pp", aliases = "objectpool.properties", usage = "Properties for ObjectPool!!!", metaVar = "<path>")
+	public void setObjectPoolProperties(File file) {
+		properties.setProperty("objectpool.properties", file.getAbsolutePath());
 	}
 
 	public int getSessionTime() {

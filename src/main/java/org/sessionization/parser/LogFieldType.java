@@ -216,6 +216,11 @@ public enum LogFieldType {
 				throw new ParseException("Bad referer!!!", parser.getPos());
 			}
 		}
+
+		@Override
+		public Map<Class, ObjectCreator> getCreators() {
+			return ObjectCreators.Referer.getCreator();
+		}
 	},
 	RefererW3C(new String[]{"cs(Referer)"}, Referer.class, null) {
 		@Override
@@ -239,6 +244,11 @@ public enum LogFieldType {
 			} catch (URISyntaxException e) {
 				throw new ParseException("Bad referer!!!", parser.getPos());
 			}
+		}
+
+		@Override
+		public Map<Class, ObjectCreator> getCreators() {
+			return ObjectCreators.Referer.getCreator();
 		}
 	},
 	/**
@@ -968,8 +978,16 @@ enum ObjectCreators {
 			ObjectCreator creator;
 
 			creator = (pool, args) -> {
+				if (args.length < 1) {
+					return null;
+				}
+				URI uri = (URI) args[0];
 				org.sessionization.parser.fields.Referer referer = new Referer();
-				// TODO: 1/13/16
+				org.sessionization.parser.fields.UriSteamQuery query = pool.getObject(org.sessionization.parser.fields.UriSteamQuery.class, uri);
+				String hostName = uri.getAuthority();
+				Host host = pool.getObject(Host.class, hostName != null ? hostName : "-");
+				referer.setSteamQuery(query);
+				referer.setHost(host);
 				return referer;
 			};
 			creators.put(org.sessionization.parser.fields.Referer.class, creator);

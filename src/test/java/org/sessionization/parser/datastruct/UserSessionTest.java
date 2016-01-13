@@ -6,16 +6,13 @@ import org.datastruct.ObjectPool;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.LogFormats;
 import org.sessionization.parser.NCSAWebLogParser;
-import sun.util.resources.LocaleData;
+import org.sessionization.parser.WebLogParser;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -114,9 +111,9 @@ public class UserSessionTest {
 	@Test
 	public void testAddParsedLine() throws Exception {
 		ParsedLine l1 = parser.parseLine(), l2 = parser.parseLine(), l3 = parser.parseLine();
-		assertFalse(l1.isResource());
-		assertTrue(l2.isResource());
-		assertFalse(l3.isResource());
+		assertFalse(l1.isWebPageResource());
+		assertTrue(l2.isWebPageResource());
+		assertFalse(l3.isWebPageResource());
 		Class session = loader.loadClass(UserSessionDump.getName());
 		assertNotNull(session);
 		Constructor init = session.getConstructor(ParsedLine.class);

@@ -72,7 +72,7 @@ public class ObjectPool {
 	}
 
 	public void setProperties(Properties properties) {
-		this.properties = properties;
+		this.properties.putAll(properties);
 	}
 
 	public ClassLoader getLoader() {

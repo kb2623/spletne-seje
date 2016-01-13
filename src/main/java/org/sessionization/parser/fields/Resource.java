@@ -18,7 +18,7 @@ public interface Resource {
 	 *
 	 * @return Zahteva resurs ali spletna stran.
 	 */
-	default boolean isResource() {
+	default boolean isWebPageResource() {
 		String extension = getExtension();
 		switch ((extension != null) ? extension : "") {
 			case "png":

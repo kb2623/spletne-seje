@@ -2,6 +2,7 @@ package org.sessionization;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
+import org.datastruct.ObjectPool;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.database.HibernateUtil;
@@ -12,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -106,6 +109,20 @@ public class SpletneSeje {
 		if (ignore.length > 0) {
 			logParser.setIgnoreFieldType(LogFormats.ParseCmdArgs.make(ignore));
 		}
+		/** Nastavi Object pool in dodaj Creatorje in Propertije */
+		ObjectPool pool = new ObjectPool();
+		Map creators = new HashMap<>();
+		List<LogFieldType> fields = logParser.getFieldType();
+		fields.removeAll(logParser.getIgnoreFieldTypes());
+		for (LogFieldType f : fields) {
+			Map tmp = f.getCreators();
+			if (tmp != null) {
+				creators.putAll(tmp);
+			}
+		}
+		pool.setCreators(creators);
+		pool.setProperties(argsParser.getObjectPoolProperties());
+		logParser.setPool(pool);
 		/** Ustvari povezavo do podatkovne baze, ter ustvari tabele */
 		db = new HibernateUtil(argsParser, logParser);
 	}
@@ -168,5 +185,6 @@ public class SpletneSeje {
 		} catch (InterruptedException e) {
 			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in learning!!!");
 		}
+		logParser.close();
 	}
 }

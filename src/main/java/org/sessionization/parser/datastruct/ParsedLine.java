@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
-public class ParsedLine implements Iterable<LogField> {
+public class ParsedLine implements Iterable<LogField>, TimePoint {
 
 	private LogField[] array;
 
@@ -57,10 +57,10 @@ public class ParsedLine implements Iterable<LogField> {
 	 * @return <code>true</code> -> Vrstica vsebuje resurs
 	 * <code>false</code> -> Vrstica ne vsebuje resursa li na ne vsebuje polja, ki identificira resurs
 	 */
-	public boolean isResource() {
+	public boolean isWebPageResource() {
 		for (LogField f : array) {
 			if (f instanceof Resource) {
-				return ((Resource) f).isResource();
+				return ((Resource) f).isWebPageResource();
 			}
 		}
 		return false;
@@ -149,19 +149,27 @@ public class ParsedLine implements Iterable<LogField> {
 		return builder.toString();
 	}
 
-	public LocalTime getTime() {
+	@Override
+	public LocalDate getLocalDate() {
 		for (LogField f : array) {
 			if (f instanceof TimePoint) {
-				return ((TimePoint) f).getLocalTime();
+				LocalDate date = ((TimePoint) f).getLocalDate();
+				if (date != null) {
+					return date;
+				}
 			}
 		}
 		return null;
 	}
 
-	public LocalDate getDate() {
+	@Override
+	public LocalTime getLocalTime() {
 		for (LogField f : array) {
 			if (f instanceof TimePoint) {
-				return ((TimePoint) f).getLocalDate();
+				LocalTime time = ((TimePoint) f).getLocalTime();
+				if (time != null) {
+					return time;
+				}
 			}
 		}
 		return null;

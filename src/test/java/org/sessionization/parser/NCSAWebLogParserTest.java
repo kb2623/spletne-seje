@@ -141,7 +141,7 @@ public class NCSAWebLogParserTest {
 			parser1.setFieldType(LogFormats.ParseCmdArgs.make(cookie));
 			ParsedLine line = parser1.parseLine();
 			assertEquals("[Client 216.67.1.91 | - | leon | 12:11:52 01.07.2002 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 [en] (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", line.toString());
-			assertFalse(line.isResource());
+			assertFalse(line.isWebPageResource());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
