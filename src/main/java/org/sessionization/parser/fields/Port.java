@@ -13,10 +13,10 @@ public class Port implements LogField, HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "port_number")
+	@Column(name = "port_number", nullable = false)
 	private int portNumber;
 
-	@Column(name = "server_port")
+	@Column(name = "server_port", nullable = false)
 	private boolean isServer;
 
 	public Port() {

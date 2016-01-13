@@ -14,7 +14,7 @@ public class UserAgent implements LogField, HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "string")
+	@Column(name = "name", unique = true, nullable = false)
 	private String userAgentString;
 
 	public UserAgent() {

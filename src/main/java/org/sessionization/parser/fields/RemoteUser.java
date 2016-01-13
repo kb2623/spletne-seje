@@ -13,6 +13,7 @@ public class RemoteUser implements LogField, HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Column(name = "name", nullable = false, unique = true)
 	private String user;
 
 	public RemoteUser() {

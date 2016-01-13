@@ -13,6 +13,7 @@ public class UriSteam implements LogField, HibernateTable, Resource {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Column(unique = true, nullable = false)
 	private String file;
 
 	public UriSteam() {

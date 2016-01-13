@@ -13,8 +13,10 @@ public class Protocol implements LogField, HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Column(nullable = false)
 	private String protocol;
 
+	@Column(nullable = false)
 	private float version;
 
 	public Protocol() {

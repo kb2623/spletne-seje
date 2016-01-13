@@ -21,6 +21,7 @@ public class Address implements LogField, HibernateTable {
 	@Column(name = "is_server")
 	private boolean serverAddress;
 
+	@Column(unique = true, nullable = false)
 	private InetAddress address;
 
 	public Address() {

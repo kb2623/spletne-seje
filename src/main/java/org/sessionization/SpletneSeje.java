@@ -113,7 +113,9 @@ public class SpletneSeje {
 		ObjectPool pool = new ObjectPool();
 		Map creators = new HashMap<>();
 		List<LogFieldType> fields = logParser.getFieldType();
-		fields.removeAll(logParser.getIgnoreFieldTypes());
+		if (logParser.getIgnoreFieldTypes() != null) {
+			fields.removeAll(logParser.getIgnoreFieldTypes());
+		}
 		for (LogFieldType f : fields) {
 			Map tmp = f.getCreators();
 			if (tmp != null) {

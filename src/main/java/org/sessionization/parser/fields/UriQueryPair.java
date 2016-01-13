@@ -12,6 +12,7 @@ public class UriQueryPair implements HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Column(nullable = false)
 	private String value;
 
 	@OneToOne(cascade = CascadeType.ALL)
