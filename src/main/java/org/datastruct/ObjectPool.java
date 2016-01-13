@@ -225,15 +225,4 @@ public class ObjectPool {
 		}
 		return (T) ret;
 	}
-
-	@FunctionalInterface
-	public interface ObjectCreator<E> {
-		/**
-		 * @param pool
-		 * @param c
-		 * @param args
-		 * @return
-		 */
-		E create(ObjectPool pool, Object... args);
-	}
 }

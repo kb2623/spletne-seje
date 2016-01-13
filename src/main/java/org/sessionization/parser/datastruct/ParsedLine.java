@@ -3,13 +3,12 @@ package org.sessionization.parser.datastruct;
 import org.sessionization.TimePoint;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.fields.Referer;
+import org.sessionization.parser.fields.Resource;
 import org.sessionization.parser.fields.UriSteam;
 import org.sessionization.parser.fields.UserAgent;
-import org.sessionization.parser.fields.ncsa.DateTime;
-import org.sessionization.parser.fields.ncsa.RequestLine;
-import org.sessionization.parser.fields.w3c.Date;
-import org.sessionization.parser.fields.w3c.Time;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -60,10 +59,8 @@ public class ParsedLine implements Iterable<LogField> {
 	 */
 	public boolean isResource() {
 		for (LogField f : array) {
-			if (f instanceof UriSteam && !(f instanceof Referer)) {
-				return ((UriSteam) f).isResource();
-			} else if (f instanceof RequestLine) {
-				return ((RequestLine) f).getUri().isResource();
+			if (f instanceof Resource) {
+				return ((Resource) f).isResource();
 			}
 		}
 		return false;
@@ -77,7 +74,9 @@ public class ParsedLine implements Iterable<LogField> {
 	 */
 	public String getExtension() {
 		for (int i = 0; i < array.length; i++) {
-			if (array[i] instanceof UriSteam) return ((UriSteam) array[i]).getExtension();
+			if (array[i] instanceof Resource) {
+				return ((Resource) array[i]).getExtension();
+			}
 		}
 		return null;
 	}
@@ -143,24 +142,26 @@ public class ParsedLine implements Iterable<LogField> {
 	public String getKey() {
 		StringBuilder builder = new StringBuilder();
 		for (Object f : array) {
-			if (f instanceof LogField && ((LogField) f).getKey() != null) builder.append(((LogField) f).getKey());
+			if (f instanceof LogField && ((LogField) f).getKey() != null) {
+				builder.append(((LogField) f).getKey());
+			}
 		}
 		return builder.toString();
 	}
 
-	public TimePoint getTime() {
+	public LocalTime getTime() {
 		for (LogField f : array) {
-			if (f instanceof Time || f instanceof DateTime) {
-				return (TimePoint) f;
+			if (f instanceof TimePoint) {
+				return ((TimePoint) f).getLocalTime();
 			}
 		}
 		return null;
 	}
 
-	public TimePoint getDate() {
+	public LocalDate getDate() {
 		for (LogField f : array) {
-			if (f instanceof Date || f instanceof DateTime) {
-				return (TimePoint) f;
+			if (f instanceof TimePoint) {
+				return ((TimePoint) f).getLocalDate();
 			}
 		}
 		return null;

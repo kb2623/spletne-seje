@@ -25,7 +25,7 @@ public class UriQuery implements LogField, HibernateTable {
 
 	public UriQuery(String niz) {
 		id = null;
-		if (niz != null && niz.charAt(0) != '-') {
+		if (niz != null && !niz.equals("-")) {
 			setupMap(niz);
 		} else {
 			pairs = null;
@@ -34,14 +34,14 @@ public class UriQuery implements LogField, HibernateTable {
 
 	private void setupMap(String niz) {
 		String[] tab = niz.split("&");
+		UriQueryPair tmp;
 		pairs = new ArrayList<>(tab.length);
 		for (String s : tab) {
-			String[] pair = s.split("=");
-			UriQueryPair tmp = null;
-			if (pair.length == 2) {
-				tmp = new UriQueryPair(pair[0], pair[1]);
+			tab = s.split("=");
+			if (tab.length == 2) {
+				tmp = new UriQueryPair(tab[0], tab[1]);
 			} else {
-				tmp = new UriQueryPair(pair[0], "-");
+				tmp = new UriQueryPair(tab[0], "-");
 			}
 			pairs.add(tmp);
 		}

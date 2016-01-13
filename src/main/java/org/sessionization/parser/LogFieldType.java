@@ -1,9 +1,11 @@
 package org.sessionization.parser;
 
+import org.datastruct.ObjectCreator;
 import org.sessionization.database.ConnectionStatusConverter;
 import org.sessionization.database.InetAddressConverter;
 import org.sessionization.database.MethodConverter;
 import org.sessionization.parser.fields.*;
+import org.sessionization.parser.fields.ncsa.RequestLine;
 import org.sessionization.parser.fields.w3c.MetaData;
 
 import java.net.InetAddress;
@@ -11,10 +13,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.text.ParseException;
-import java.util.InputMismatchException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public enum LogFieldType {
@@ -109,11 +108,11 @@ public enum LogFieldType {
 		@Override
 		public Class[] getDependencies() {
 			List<Class> list = new LinkedList<>();
-			list.add(org.sessionization.parser.fields.Method.class);
 			list.add(Protocol.class);
+			list.add(org.sessionization.parser.fields.Method.class);
+			list.add(org.sessionization.parser.fields.UriQuery.class);
 			list.add(org.sessionization.parser.fields.UriSteam.class);
 			list.add(UriSteamQuery.class);
-			list.add(org.sessionization.parser.fields.UriQuery.class);
 			for (Class c : UriQuery.getDependencies()) {
 				list.add(c);
 			}
@@ -132,6 +131,11 @@ public enum LogFieldType {
 			} catch (InputMismatchException e) {
 				throw new ParseException("Bad first line of request!!!", parser.getPos());
 			}
+		}
+
+		@Override
+		public Map<Class, ObjectCreator> getCreators() {
+			return ObjectCreators.RequestLine.getCreator();
 		}
 	},
 	/**
@@ -188,13 +192,13 @@ public enum LogFieldType {
 		@Override
 		public Class[] getDependencies() {
 			List<Class> list = new LinkedList<>();
+			list.add(org.sessionization.parser.fields.Host.class);
 			list.add(org.sessionization.parser.fields.UriSteam.class);
 			list.add(UriSteamQuery.class);
 			list.add(org.sessionization.parser.fields.UriQuery.class);
 			for (Class c : UriQuery.getDependencies()) {
 				list.add(c);
 			}
-			list.add(org.sessionization.parser.fields.Host.class);
 			return list.toArray(new Class[list.size()]);
 		}
 
@@ -217,13 +221,13 @@ public enum LogFieldType {
 		@Override
 		public Class[] getDependencies() {
 			List<Class> list = new LinkedList<>();
+			list.add(org.sessionization.parser.fields.Host.class);
 			list.add(org.sessionization.parser.fields.UriSteam.class);
 			list.add(UriSteamQuery.class);
 			list.add(org.sessionization.parser.fields.UriQuery.class);
 			for (Class c : UriQuery.getDependencies()) {
 				list.add(c);
 			}
-			list.add(org.sessionization.parser.fields.Host.class);
 			return list.toArray(new Class[list.size()]);
 		}
 
@@ -316,6 +320,11 @@ public enum LogFieldType {
 				throw new ParseException("Bad cookie!!!", parser.getPos());
 			}
 		}
+
+		@Override
+		public Map<Class, ObjectCreator> getCreators() {
+			return ObjectCreators.Cookie.getCreator();
+		}
 	},
 	CookieW3C(new String[]{"cs(Cookie)"}, Cookie.class, null) {
 		@Override
@@ -334,6 +343,11 @@ public enum LogFieldType {
 		@Override
 		public LogField parse(Scanner scanner, WebLogParser parser) throws ParseException {
 			return parser.getTokenInstance(classType, scanner.next(), LogType.W3C);
+		}
+
+		@Override
+		public Map<Class, ObjectCreator> getCreators() {
+			return ObjectCreators.Cookie.getCreator();
 		}
 	},
 	/**
@@ -598,6 +612,11 @@ public enum LogFieldType {
 					UriQueryKey.class
 			};
 		}
+
+		@Override
+		public Map<Class, ObjectCreator> getCreators() {
+			return ObjectCreators.UriQuesy.getCreator();
+		}
 	},
 	/**
 	 * NCSA:
@@ -772,8 +791,15 @@ public enum LogFieldType {
 		return format;
 	}
 
+	/**
+	 * @return
+	 */
 	public Pattern getPattern() {
 		return pattern;
+	}
+
+	public Map<Class, ObjectCreator> getCreators() {
+		return null;
 	}
 }
 
@@ -792,4 +818,168 @@ enum TimeUnit {
 	};
 
 	public abstract long getMicroSeconds(int value);
+}
+
+enum ObjectCreators {
+	UriQuesy {
+		@Override
+		public Map<Class, ObjectCreator> getCreator() {
+			Map creators = new HashMap<>(3);
+			ObjectCreator creator;
+
+			creator = (pool, args) -> {
+				if (args.length < 1) {
+					return null;
+				}
+				UriQuery query = new UriQuery();
+				if (!((String) args[0]).equals("-")) {
+					UriQueryPair pair;
+					List list = new ArrayList<>();
+					String[] tab = ((String) args[0]).split("&");
+					for (String s : tab) {
+						tab = s.split("=");
+						if (tab.length == 2) {
+							pair = pool.getObject(UriQueryPair.class, tab[0], tab[1]);
+						} else {
+							pair = pool.getObject(UriQueryPair.class, tab[0], "-");
+						}
+						list.add(pair);
+					}
+					query.setPairs(list);
+				}
+				return query;
+			};
+			creators.put(UriQuery.class, creator);
+
+			creator = (pool, args) -> {
+				UriQueryPair pair = new UriQueryPair();
+				UriQueryKey key = pool.getObject(UriQueryKey.class, args[0]);
+				pair.setKey(key);
+				pair.setValue((String) args[1]);
+				return pair;
+			};
+			creators.put(UriQueryPair.class, creator);
+
+			return creators;
+		}
+	},
+	Cookie {
+		@Override
+		public Map<Class, ObjectCreator> getCreator() {
+			Map creators = new HashMap<>();
+			ObjectCreator creator;
+
+			creator = (pool, args) -> {
+				if (args.length < 2) {
+					return null;
+				}
+				LogType parser = (LogType) args[1];
+				String line = (String) args[0];
+				Cookie cookie = new Cookie();
+				if (!line.equals("-")) {
+					List list = new ArrayList<>();
+					CookiePair pair;
+					for (String s : parser.parseCooki(line).split(" ")) {
+						int mid = s.indexOf("=");
+						String sKey, value;
+						if (mid == s.length() - 1) {
+							value = "-";
+							sKey = s.substring(0, mid);
+						} else {
+							value = s.substring(mid + 1);
+							sKey = s.substring(0, mid);
+						}
+						pair = pool.getObject(CookiePair.class, sKey, value);
+						list.add(pair);
+					}
+					cookie.setPairs(list);
+				}
+				return cookie;
+			};
+			creators.put(org.sessionization.parser.fields.Cookie.class, creator);
+
+			creator = (pool, args) -> {
+				CookiePair pair = new CookiePair();
+				CookieKey key = pool.getObject(CookieKey.class, args[0]);
+				pair.setKey(key);
+				pair.setValue((String) args[1]);
+				return pair;
+			};
+			creators.put(CookiePair.class, creator);
+
+			return creators;
+		}
+	},
+	UriSteamQuery {
+		@Override
+		public Map<Class, ObjectCreator> getCreator() {
+			Map creators = new HashMap<>();
+			creators.putAll(UriQuesy.getCreator());
+			ObjectCreator creator;
+
+			creator = (pool, args) -> {
+				URI uri = (URI) args[0];
+				org.sessionization.parser.fields.UriSteamQuery steamQuery = null;
+				String query = uri.getQuery();
+				UriQuery uriQuery = pool.getObject(UriQuery.class, query != null ? query : "-");
+				UriSteam uriSteam = pool.getObject(UriSteam.class, uri.getRawPath());
+				steamQuery.setUriSteam(uriSteam);
+				steamQuery.setQuery(uriQuery);
+				return steamQuery;
+			};
+			creators.put(org.sessionization.parser.fields.UriSteamQuery.class, creator);
+
+			return creators;
+		}
+	},
+	RequestLine {
+		@Override
+		public Map<Class, ObjectCreator> getCreator() {
+			Map creators = new HashMap<>();
+			creators.putAll(UriSteamQuery.getCreator());
+			ObjectCreator creator;
+
+			creator = (pool, args) -> {
+				if (args.length < 1) {
+					return null;
+				}
+				String[] tab = ((String) args[0]).split(" ");
+				if (tab.length < 3) {
+					return null;
+				}
+				org.sessionization.parser.fields.ncsa.RequestLine requestLine = new RequestLine();
+				requestLine.setMethod(Method.setMethod(tab[0]));
+				org.sessionization.parser.fields.UriSteamQuery steamQuery = pool.getObject(org.sessionization.parser.fields.UriSteamQuery.class, tab[1]);
+				requestLine.setSteamQuery(steamQuery);
+				Protocol protocol = pool.getObject(Protocol.class, tab[3]);
+				requestLine.setProtocol(protocol);
+				return requestLine;
+			};
+			creators.put(org.sessionization.parser.fields.ncsa.RequestLine.class, creator);
+
+			return creators;
+		}
+	},
+	Referer {
+		@Override
+		public Map<Class, ObjectCreator> getCreator() {
+			Map creators = new HashMap<>();
+			creators.putAll(UriSteamQuery.getCreator());
+			ObjectCreator creator;
+
+			creator = (pool, args) -> {
+				org.sessionization.parser.fields.Referer referer = new Referer();
+				// TODO: 1/13/16
+				return referer;
+			};
+			creators.put(org.sessionization.parser.fields.Referer.class, creator);
+
+			return creators;
+		}
+	};
+
+	/**
+	 * @return
+	 */
+	public abstract Map<Class, ObjectCreator> getCreator();
 }

@@ -1,32 +1,52 @@
 package org.sessionization.parser.fields;
 
 import org.sessionization.HibernateTable;
+import org.sessionization.parser.LogField;
 
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.net.URI;
 
 @Entity
 @Cacheable
-public class Referer extends UriSteamQuery implements HibernateTable {
+public class Referer implements LogField, HibernateTable, Resource {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private UriSteamQuery steamQuery;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Host host;
 
 	public Referer() {
-		super();
+		id = null;
+		steamQuery = null;
 		host = null;
 	}
 
 	public Referer(URI url) {
-		super(url);
-		if (url.getRawAuthority() != null) {
-			host = new Host(url.getAuthority());
-		} else {
-			host = new Host("-");
-		}
+		String tmp;
+		steamQuery = new UriSteamQuery(url);
+		tmp = url.getAuthority();
+		host = new Host(tmp != null ? tmp : "-");
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public UriSteamQuery getSteamQuery() {
+		return steamQuery;
+	}
+
+	public void setSteamQuery(UriSteamQuery steamQuery) {
+		this.steamQuery = steamQuery;
 	}
 
 	public Host getHost() {
@@ -39,34 +59,41 @@ public class Referer extends UriSteamQuery implements HibernateTable {
 
 	@Override
 	public String izpis() {
-		return host.izpis() + super.izpis();
+		return host.izpis() + " " + steamQuery.izpis();
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof Referer)) return false;
-		if (!super.equals(o)) return false;
 		Referer referer = (Referer) o;
+		if (id != null ? !id.equals(referer.id) : referer.id != null) return false;
+		if (steamQuery != null ? !steamQuery.equals(referer.steamQuery) : referer.steamQuery != null) return false;
 		if (getHost() != null ? !getHost().equals(referer.getHost()) : referer.getHost() != null) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = super.hashCode();
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (steamQuery != null ? steamQuery.hashCode() : 0);
 		result = 31 * result + (getHost() != null ? getHost().hashCode() : 0);
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return host.toString() + super.toString();
+		return steamQuery.toString() + " " + host.toString();
 	}
 
 	@Override
 	public String getIdQuery() {
 		// TODO: 1/8/16
 		return null;
+	}
+
+	@Override
+	public String getFile() {
+		return steamQuery.getFile();
 	}
 }

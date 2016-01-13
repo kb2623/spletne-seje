@@ -1,34 +1,53 @@
 package org.sessionization.parser.fields;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import org.sessionization.HibernateTable;
+import org.sessionization.parser.LogField;
+
+import javax.persistence.*;
 import java.net.URI;
 
 @Entity
 @Cacheable
-public class UriSteamQuery extends UriSteam {
+public class UriSteamQuery implements LogField, HibernateTable, Resource {
 
-	@OneToOne
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private UriSteam uriSteam;
+
+	@OneToOne(cascade = CascadeType.ALL)
 	private UriQuery query;
 
 	public UriSteamQuery() {
-		super();
+		id = null;
+		uriSteam = null;
 		query = null;
 	}
 
 	public UriSteamQuery(URI uri) {
-		super(uri.getRawPath());
+		uriSteam = new UriSteam(uri.getRawPath());
 		String query = uri.getQuery();
 		this.query = new UriQuery(query != null ? query : "-");
 	}
 
-	/**
-	 * Metoda vrne query
-	 *
-	 * @return vrne <code>UriQuery</code>
-	 * @see UriQuery
-	 */
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public UriSteam getUriSteam() {
+		return uriSteam;
+	}
+
+	public void setUriSteam(UriSteam uriSteam) {
+		this.uriSteam = uriSteam;
+	}
+
 	public UriQuery getQuery() {
 		return query;
 	}
@@ -38,28 +57,35 @@ public class UriSteamQuery extends UriSteam {
 	}
 
 	@Override
+	public String getFile() {
+		return uriSteam.getFile();
+	}
+
+	@Override
 	public String izpis() {
-		return super.izpis() + (query.getPairs() != null ? query.izpis() : "");
+		return uriSteam.izpis() + " " + (query.getPairs() != null ? query.izpis() : "");
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + (query.getPairs() != null ? query.izpis() : "");
+		return uriSteam.toString() + " " + (query.getPairs() != null ? query.izpis() : "");
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+		if (!(o instanceof UriSteamQuery)) return false;
 		UriSteamQuery that = (UriSteamQuery) o;
+		if (id != null ? !id.equals(that.id) : that.id != null) return false;
+		if (uriSteam != null ? !uriSteam.equals(that.uriSteam) : that.uriSteam != null) return false;
 		if (getQuery() != null ? !getQuery().equals(that.getQuery()) : that.getQuery() != null) return false;
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = super.hashCode();
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (uriSteam != null ? uriSteam.hashCode() : 0);
 		result = 31 * result + (getQuery() != null ? getQuery().hashCode() : 0);
 		return result;
 	}

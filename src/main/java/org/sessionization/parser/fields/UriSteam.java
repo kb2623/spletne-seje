@@ -4,12 +4,10 @@ import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.net.URL;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Cacheable
-public class UriSteam implements LogField, HibernateTable {
+public class UriSteam implements LogField, HibernateTable, Resource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +22,7 @@ public class UriSteam implements LogField, HibernateTable {
 
 	public UriSteam(String file) {
 		id = null;
-		if (!file.equals("-")) {
-			this.file = file;
-		} else {
-			this.file = null;
-		}
+		setFile(file);
 	}
 
 	public Integer getId() {
@@ -39,53 +33,20 @@ public class UriSteam implements LogField, HibernateTable {
 		this.id = id;
 	}
 
-	/**
-	 * Getter metoda za URL
-	 *
-	 * @return Url naslov
-	 * @see URL
-	 */
+	@Override
 	public String getFile() {
 		return file != null ? file : "";
 	}
 
 	public void setFile(String file) {
-		this.file = file;
-	}
-
-	/**
-	 * Metoda, ki vrne koncnico zahtevanega resursa.
-	 *
-	 * @return Koncnica zahtevanega resursa.
-	 */
-	public String getExtension() {
-		int indexOfExtension = file.lastIndexOf('.');
-		int indexOfLastSeparator = file.lastIndexOf('/');
-		return (indexOfExtension < indexOfLastSeparator) ? null : file.substring(indexOfExtension + 1);
-	}
-
-	/**
-	 * Metoda, ki preverja ali je zahteva po spletni strani ali po resursu za spletno stran.
-	 *
-	 * @return Zahteva resurs ali spletna stran.
-	 */
-	public boolean isResource() {
-		String extension = getExtension();
-		switch ((extension != null) ? extension : "") {
-			case "png":
-			case "css":
-			case "js":
-			case "jpg":
-			case "txt":
-			case "gif":
-			case "ico":
-			case "xml":
-			case "csv":
-				return true;
-			default:
-				return false;
+		if (file.equals("-")) {
+			this.file = null;
+		} else {
+			this.file = file;
 		}
 	}
+
+
 
 	public String izpis() {
 		return getFile();

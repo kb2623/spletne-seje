@@ -24,7 +24,6 @@ public class UserAgent implements LogField, HibernateTable {
 
 	public UserAgent(String info, LogType type) {
 		id = null;
-		;
 		userAgentString = type.parseUserAgent(info);
 	}
 

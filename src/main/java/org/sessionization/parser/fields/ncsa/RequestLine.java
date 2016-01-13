@@ -4,7 +4,7 @@ import org.sessionization.HibernateTable;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.fields.Method;
 import org.sessionization.parser.fields.Protocol;
-import org.sessionization.parser.fields.UriSteam;
+import org.sessionization.parser.fields.Resource;
 import org.sessionization.parser.fields.UriSteamQuery;
 
 import javax.persistence.*;
@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 
 @Entity
 @Cacheable
-public class RequestLine implements LogField, HibernateTable {
+public class RequestLine implements LogField, HibernateTable, Resource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class RequestLine implements LogField, HibernateTable {
 	private Method method;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	private UriSteamQuery uri;
+	private UriSteamQuery steamQuery;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Protocol protocol;
@@ -31,7 +31,7 @@ public class RequestLine implements LogField, HibernateTable {
 	public RequestLine() {
 		id = null;
 		method = null;
-		uri = null;
+		steamQuery = null;
 		protocol = null;
 	}
 
@@ -46,7 +46,7 @@ public class RequestLine implements LogField, HibernateTable {
 			throw new IllegalArgumentException();
 		} else {
 			method = Method.setMethod(tab[0]);
-			uri = new UriSteamQuery(new URI(tab[1]));
+			steamQuery = new UriSteamQuery(new URI(tab[1]));
 			protocol = new Protocol(tab[2]);
 		}
 	}
@@ -61,7 +61,7 @@ public class RequestLine implements LogField, HibernateTable {
 	 */
 	public RequestLine(String method, String uri, String protocol) throws URISyntaxException {
 		id = null;
-		this.uri = new UriSteamQuery(new URI(uri));
+		this.steamQuery = new UriSteamQuery(new URI(uri));
 		this.protocol = new Protocol(protocol);
 		this.method = Method.setMethod(method);
 	}
@@ -74,22 +74,16 @@ public class RequestLine implements LogField, HibernateTable {
 		this.id = id;
 	}
 
-	public UriSteamQuery getUri() {
-		return uri;
+	public UriSteamQuery getSteamQuery() {
+		return steamQuery;
 	}
 
-	public void setUri(UriSteamQuery uri) {
-		this.uri = uri;
+	public void setSteamQuery(UriSteamQuery steamQuery) {
+		this.steamQuery = steamQuery;
 	}
 
-	/**
-	 * Getter za resurs
-	 *
-	 * @return
-	 * @see UriSteam
-	 */
-	public UriSteam getFile() {
-		return uri;
+	public String getFile() {
+		return steamQuery.getFile();
 	}
 
 	/**
@@ -121,12 +115,12 @@ public class RequestLine implements LogField, HibernateTable {
 
 	@Override
 	public String izpis() {
-		return method.izpis() + " " + uri.izpis() + " " + protocol.izpis();
+		return method.izpis() + " " + steamQuery.izpis() + " " + protocol.izpis();
 	}
 
 	@Override
 	public String toString() {
-		return method.toString() + " " + uri.toString() + " " + protocol.toString();
+		return method.toString() + " " + steamQuery.toString() + " " + protocol.toString();
 	}
 
 	@Override
@@ -136,7 +130,8 @@ public class RequestLine implements LogField, HibernateTable {
 		RequestLine that = (RequestLine) o;
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getMethod() != that.getMethod()) return false;
-		if (getUri() != null ? !getUri().equals(that.getUri()) : that.getUri() != null) return false;
+		if (getSteamQuery() != null ? !getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() != null)
+			return false;
 		if (getProtocol() != null ? !getProtocol().equals(that.getProtocol()) : that.getProtocol() != null) return false;
 		return true;
 	}
@@ -145,7 +140,7 @@ public class RequestLine implements LogField, HibernateTable {
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
 		result = 31 * result + (getMethod() != null ? getMethod().hashCode() : 0);
-		result = 31 * result + (getUri() != null ? getUri().hashCode() : 0);
+		result = 31 * result + (getSteamQuery() != null ? getSteamQuery().hashCode() : 0);
 		result = 31 * result + (getProtocol() != null ? getProtocol().hashCode() : 0);
 		return result;
 	}
