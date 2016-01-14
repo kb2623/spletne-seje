@@ -95,17 +95,21 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 
 	@Override
 	public Object setDbId(Session session) {
-		getUriSteam().setDbId(session);
-		getQuery().setDbId(session);
-		Query query = session.createQuery(
-				"select sq.id form " + getClass().getSimpleName() + " as sq where sq.uriSteam = " + getUriSteam().getId() + " and sq.query = " + getQuery().getId()
-		);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer uriSteamId = (Integer) getUriSteam().setDbId(session);
+		Integer queryId = (Integer) getQuery().setDbId(session);
+		if (uriSteamId != null && queryId != null) {
+			Query query = session.createQuery(
+					"select sq.id form " + getClass().getSimpleName() + " as sq where sq.uriSteam = " + uriSteamId + " and sq.query = " + queryId
+			);
+			List list = query.list();
+			Integer id = null;
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
+			return id;
+		} else {
+			return null;
 		}
-		return id;
 	}
 }

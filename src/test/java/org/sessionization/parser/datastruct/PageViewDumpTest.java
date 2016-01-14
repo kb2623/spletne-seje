@@ -31,7 +31,7 @@ public class PageViewDumpTest extends RequestDumpTest {
 	}
 
 	@Test
-	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
+	public void testCombined() throws Exception {
 		super.testCombined();
 		assertNotNull(PageViewDump.dump(loader));
 	}

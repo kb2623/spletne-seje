@@ -129,11 +129,11 @@ public class HibernateUtil implements AutoCloseable {
 
 	@Override
 	public void close() {
-		if (serviceRegistry != null) {
-			StandardServiceRegistryBuilder.destroy(serviceRegistry);
-		}
 		if (factory != null) {
 			factory.close();
+		}
+		if (serviceRegistry != null) {
+			StandardServiceRegistryBuilder.destroy(serviceRegistry);
 		}
 	}
 

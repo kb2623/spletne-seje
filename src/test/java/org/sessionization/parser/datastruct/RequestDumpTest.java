@@ -45,7 +45,7 @@ public class RequestDumpTest {
 	}
 
 	@Test
-	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
+	public void testCombined() throws Exception {
 		allFieldTypes = LogFormats.CombinedLogFormat.make();
 		assertNotNull(RequestDump.dump(allFieldTypes, loader));
 	}

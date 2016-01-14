@@ -203,5 +203,6 @@ public class SpletneSeje {
 			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in learning!!!");
 		}
 		logParser.close();
+		db.close();
 	}
 }

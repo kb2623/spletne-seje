@@ -1,5 +1,6 @@
 package org.sessionization.parser.datastruct;
 
+import org.hibernate.Session;
 import org.sessionization.TimePoint;
 import org.sessionization.database.HibernateUtil;
 
@@ -63,6 +64,12 @@ public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateT
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public Object setDbId(Session session) {
+		// TODO: 1/14/16
+		return null;
 	}
 
 	@Override

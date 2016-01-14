@@ -96,17 +96,21 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 
 	@Override
 	public Object setDbId(Session session) {
-		getSteamQuery().setDbId(session);
-		getHost().setDbId(session);
-		Query query = session.createQuery(
-				"select r form " + getClass().getSimpleName() + " as r where r.steamQuery = " + getSteamQuery().getId() + " and r.host = " + getHost().getId()
-		);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer steamQueryId = (Integer) getSteamQuery().setDbId(session);
+		Integer hostId = (Integer) getHost().setDbId(session);
+		if (steamQueryId != null && hostId != null) {
+			Query query = session.createQuery(
+					"select r form " + getClass().getSimpleName() + " as r where r.steamQuery = " + steamQueryId + " and r.host = " + hostId
+			);
+			List list = query.list();
+			Integer id = null;
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
+			return id;
+		} else {
+			return null;
 		}
-		return id;
 	}
 }

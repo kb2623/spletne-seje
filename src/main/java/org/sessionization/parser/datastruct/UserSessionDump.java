@@ -4,8 +4,9 @@ import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
-import javassist.bytecode.SignatureAttribute;
 import javassist.bytecode.annotation.*;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.sessionization.ClassPoolLoader;
 
 import javax.persistence.*;
@@ -13,7 +14,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class UserSessionDump {
@@ -273,6 +273,48 @@ public class UserSessionDump {
 					}
 					builder.delete(builder.length() - 9, builder.length());
 					builder.append(';');
+					builder.append('}');
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+				/** Object setDbId(Session session) */{
+					builder.setLength(0);
+					builder.append("public " + Object.class.getName() + " setDbId(" + Session.class.getName() + " session) {");
+					if (userId != null) {
+						builder.append(Integer.class.getName() + " userId = this.getUserId().setDbId(session);");
+					}
+					if (pageView != null) {
+//						builder.append(Integer.class.getName() + " pagesId = this.getPages().setDbId(session);");
+						// TODO: 1/14/16 tukaj imamo list 
+					}
+					builder.append("if (");
+					if (userId != null) {
+						builder.append("userId != null &&");
+					}
+					if (pageView != null) {
+//						builder.append("pagesId != null &&");
+						// TODO: 1/14/16 tukaj imamo list
+					}
+					builder.delete(builder.length() - 3, builder.length());
+					builder.append(") {");
+					builder.append(Query.class.getName() + " query = session.createQuery(\"select o.id from \" + getClass().getSimpleName() + \" as o where");
+					if (userId != null) {
+						builder.append(" o.userId = \" + userId + \" and ");
+					}
+					if (pageView != null) {
+//						builder.append(" o.pages = \" + pagesId + \" and ");
+						// TODO: 1/14/16 tukaj imamo list 
+					}
+					builder.delete(builder.length() - 5, builder.length());
+					builder.append("\");");
+					builder.append(List.class.getName() + " list = query.list();");
+					builder.append(Integer.class.getName() + " id = null;");
+					builder.append("if (!list.isEmpty()) {");
+					builder.append("id = (" + Integer.class.getName() + ") list.get(0);");
+					builder.append("this.setId(id);");
+					builder.append('}');
+					builder.append("return id;");
+					builder.append("} else { return null; }");
 					builder.append('}');
 					CtMethod method = CtMethod.make(builder.toString(), aClass);
 					aClass.addMethod(method);
