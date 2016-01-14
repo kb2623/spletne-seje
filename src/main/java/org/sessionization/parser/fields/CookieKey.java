@@ -1,9 +1,11 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -45,12 +47,9 @@ public class CookieKey implements HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		CookieKey cookieKey = (CookieKey) o;
-
 		if (getId() != null ? !getId().equals(cookieKey.getId()) : cookieKey.getId() != null) return false;
 		if (getName() != null ? !getName().equals(cookieKey.getName()) : cookieKey.getName() != null) return false;
-
 		return true;
 	}
 
@@ -66,9 +65,17 @@ public class CookieKey implements HibernateUtil.HibernateTable {
 		return name;
 	}
 
-	//	return "select c.id form " + getClass().getSimpleName() + " where c.name = '" + name + "'";
 	@Override
 	public Object setDbId(Session session) {
-		return null;
+		Query query = session.createQuery(
+				"select c.id from " + getClass().getSimpleName() + " as c where c.name = '" + getName() + "'"
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

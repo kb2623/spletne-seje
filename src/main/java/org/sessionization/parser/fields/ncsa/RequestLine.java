@@ -1,7 +1,9 @@
 package org.sessionization.parser.fields.ncsa;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.MethodConverter;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.fields.Method;
 import org.sessionization.parser.fields.Protocol;
@@ -12,6 +14,7 @@ import javax.persistence.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -148,7 +151,17 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		getSteamQuery().setDbId(session);
+		getProtocol().setDbId(session);
+		Query query = session.createQuery(
+				"select l.id from " + getClass().getSimpleName() + " as l where l.method = '" + MethodConverter.getMethodString(getMethod()) + "' and l.steamQuery = " + getSteamQuery().getId() + " and l.protocol = " + getProtocol().getId()
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

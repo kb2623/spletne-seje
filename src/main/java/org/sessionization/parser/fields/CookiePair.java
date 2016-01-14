@@ -1,9 +1,11 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -59,13 +61,10 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		CookiePair that = (CookiePair) o;
-
 		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getValue() != null ? !getValue().equals(that.getValue()) : that.getValue() != null) return false;
 		if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
-
 		return true;
 	}
 
@@ -84,8 +83,17 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		getKey().setDbId(session);
+		Query query = session.createQuery(
+				"select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + getKey().getId() + " and cp.value = '" + getValue() + "'"
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }
 

@@ -1,11 +1,13 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 import java.net.URI;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -93,7 +95,17 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		getUriSteam().setDbId(session);
+		getQuery().setDbId(session);
+		Query query = session.createQuery(
+				"select sq.id form " + getClass().getSimpleName() + " as sq where sq.uriSteam = " + getUriSteam().getId() + " and sq.query = " + getQuery().getId()
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

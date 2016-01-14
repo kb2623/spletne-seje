@@ -1,7 +1,9 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.InetAddressConverter;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -9,6 +11,7 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -107,9 +110,17 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 		return result;
 	}
 
-	//	return "select a.id from " + getClass().getSimpleName() + " where a.serverAddress = '" + InetAddressConverter.getInetAddressString(address) + "' and s.serverAddress = " + String.valueOf(serverAddress);
 	@Override
 	public Object setDbId(Session session) {
-		return null;
+		Query query = session.createQuery(
+				"select a.id from " + getClass().getSimpleName() + " as a where a.serverAddress = " + isServerAddress() + " and a.address = '" + InetAddressConverter.getInetAddressString(getAddress()) + "'"
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -64,10 +65,16 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 		return name;
 	}
 
-	//	return "select u.id form " + getClass().getSimpleName() + " u where u.name = '" + name + "'";
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		String hquery = "sesect u.id form " + getClass().getSimpleName() + " as u where u.name = '" + getName() + "'";
+		org.hibernate.Query query = session.createQuery(hquery);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

@@ -1,10 +1,12 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -85,10 +87,17 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 		return result;
 	}
 
-	//	return "selest p.id from " + getClass().getSimpleName() + " p where p.portNumber = " + portNumber + " and p.isServer = " + String.valueOf(isServer);
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
+		Query query = session.createQuery(
+				"select p.id form " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer()
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
 		return null;
 	}
 }

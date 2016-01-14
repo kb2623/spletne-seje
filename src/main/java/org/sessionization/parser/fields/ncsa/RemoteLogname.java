@@ -1,10 +1,12 @@
 package org.sessionization.parser.fields.ncsa;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -79,10 +81,17 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 		return logname == null ? "-" : logname;
 	}
 
-	//	return "select r.id form " + getClass().getSimpleName() + " r where r.logname = '" + logname + "'";
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		Query query = session.createQuery(
+				"select r.id from " + getClass().getSimpleName() + " as r where r.logname = '" + getLogname() + "'"
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

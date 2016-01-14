@@ -7,6 +7,11 @@ import javax.persistence.Converter;
 
 @Converter(autoApply = true)
 public class MethodConverter implements AttributeConverter<Method, String> {
+
+	public static String getMethodString(Method method) {
+		return method.name();
+	}
+
 	@Override
 	public String convertToDatabaseColumn(Method attribute) {
 		return attribute.name();

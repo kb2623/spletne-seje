@@ -1,11 +1,13 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 import java.net.URI;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -94,7 +96,17 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		getSteamQuery().setDbId(session);
+		getHost().setDbId(session);
+		Query query = session.createQuery(
+				"select r form " + getClass().getSimpleName() + " as r where r.steamQuery = " + getSteamQuery().getId() + " and r.host = " + getHost().getId()
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

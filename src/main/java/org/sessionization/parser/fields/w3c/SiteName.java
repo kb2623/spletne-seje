@@ -1,10 +1,12 @@
 package org.sessionization.parser.fields.w3c;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -70,10 +72,17 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 		return result;
 	}
 
-	//	return "select s.id from " + getClass().getSimpleName() + " s where s.name = '" + name + "'";
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		Query query = session.createQuery(
+				"select s.id from " + getClass().getSimpleName() + " as s where s.name = '" + getName() + "'"
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

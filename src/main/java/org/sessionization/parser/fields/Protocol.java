@@ -1,10 +1,12 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -96,10 +98,17 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 		return result;
 	}
 
-	//	return "select p.id form " + getClass().getSimpleName() + " p where p.protocol = '" + protocol + "' and p.version = " + version;
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		Query query = session.createQuery(
+				"select p.id form " + getClass().getSimpleName() + " as p where p.protocol = '" + getProtocol() + "' and p.version = " + getVersion()
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }

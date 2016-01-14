@@ -1,13 +1,14 @@
 package org.sessionization.parser.datastruct;
 
 import org.sessionization.TimePoint;
+import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Cacheable
-public abstract class UserSessionAbs implements TimePoint {
+public abstract class UserSessionAbs implements TimePoint, HibernateUtil.HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

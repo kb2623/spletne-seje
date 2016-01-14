@@ -1,9 +1,11 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -81,8 +83,17 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		getKey().setDbId(session);
+		Query query = session.createQuery(
+				"select qp.id from " + getClass().getSimpleName() + " as qp where qp.value = '" + getValue() + "' and qp.key = " + getKey().getId()
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }
 

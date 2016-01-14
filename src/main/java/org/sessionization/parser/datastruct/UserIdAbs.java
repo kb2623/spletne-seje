@@ -1,11 +1,13 @@
 package org.sessionization.parser.datastruct;
 
+import org.sessionization.database.HibernateUtil;
+
 import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Cacheable
-public abstract class UserIdAbs {
+public abstract class UserIdAbs implements HibernateUtil.HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

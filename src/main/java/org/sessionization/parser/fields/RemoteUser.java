@@ -1,10 +1,12 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -73,9 +75,17 @@ public class RemoteUser implements LogField, HibernateUtil.HibernateTable {
 		return result;
 	}
 
-	//	return "select r.id from " + getClass().getSimpleName() + " r where r.user = '" + user + "'";
 	@Override
 	public Object setDbId(Session session) {
-		return null;
+		Query query = session.createQuery(
+				"select r.id form " + getClass().getSimpleName() + " as r where r.user = '" + getUser() + "'"
+		);
+		List list = query.list();
+		Integer id = null;
+		if (!list.isEmpty()) {
+			id = (Integer) list.get(0);
+			setId(id);
+		}
+		return id;
 	}
 }
