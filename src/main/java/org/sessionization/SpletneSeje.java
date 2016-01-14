@@ -7,7 +7,9 @@ import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.*;
+import org.sessionization.parser.datastruct.ParsedLine;
 import org.sessionization.parser.datastruct.UserIdAbs;
+import org.sessionization.parser.fields.w3c.MetaData;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -83,6 +85,19 @@ public class SpletneSeje {
 				break;
 			default:
 				throw new ExceptionInInitializerError("Unknown log format!!!");
+		}
+		/** Ce imamo EXTENDED log format potm moramo pridobiti vrstico, ki ima podatke o poljih v log datoteki */
+		if (logParser instanceof W3CWebLogParser) {
+			ParsedLine line;
+			do {
+				line = logParser.parseLine();
+				if (line.get(0) instanceof MetaData) {
+					MetaData mData = (MetaData) line.get(0);
+					if (mData.getMetaData().equals("Fields")) {
+						break;
+					}
+				}
+			} while (true);
 		}
 		/** Nastavi format datuma */
 		if (argsParser.getDateFormat() != null) {

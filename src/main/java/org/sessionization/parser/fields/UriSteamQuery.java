@@ -1,6 +1,7 @@
 package org.sessionization.parser.fields;
 
-import org.sessionization.HibernateTable;
+import org.hibernate.Session;
+import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.net.URI;
 
 @Entity
 @Cacheable
-public class UriSteamQuery implements LogField, HibernateTable, Resource {
+public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Resource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -91,8 +92,8 @@ public class UriSteamQuery implements LogField, HibernateTable, Resource {
 	}
 
 	@Override
-	public String getIdQuery() {
-		// TODO: 1/8/16
+	public Object setDbId(Session session) {
+		// TODO: 1/14/16
 		return null;
 	}
 }

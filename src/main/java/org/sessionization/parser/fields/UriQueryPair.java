@@ -1,12 +1,13 @@
 package org.sessionization.parser.fields;
 
-import org.sessionization.HibernateTable;
+import org.hibernate.Session;
+import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class UriQueryPair implements HibernateTable {
+public class UriQueryPair implements HibernateUtil.HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,8 +80,8 @@ public class UriQueryPair implements HibernateTable {
 	}
 
 	@Override
-	public String getIdQuery() {
-		// TODO: 1/8/16
+	public Object setDbId(Session session) {
+		// TODO: 1/14/16
 		return null;
 	}
 }

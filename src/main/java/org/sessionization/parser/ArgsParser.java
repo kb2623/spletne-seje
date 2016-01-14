@@ -64,6 +64,15 @@ public class ArgsParser {
 		properties.setProperty("format.log", format);
 	}
 
+	public String getDefaultSchema() {
+		return properties.getProperty("database.schema");
+	}
+
+	@Option(name = "-ds", aliases = "database.schema", usage = "Default database schema", metaVar = "<string>")
+	public void setDefaultSchema(String name) {
+		properties.setProperty("database.schema", name);
+	}
+
 	public Properties getObjectPoolProperties() throws IOException {
 		String path = properties.getProperty("objectpool.properties");
 		Properties properties = new Properties();

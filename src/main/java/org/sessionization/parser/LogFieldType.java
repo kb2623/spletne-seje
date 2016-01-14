@@ -1,6 +1,6 @@
 package org.sessionization.parser;
 
-import org.datastruct.ObjectCreator;
+import org.datastruct.ObjectPool;
 import org.sessionization.database.ConnectionStatusConverter;
 import org.sessionization.database.InetAddressConverter;
 import org.sessionization.database.MethodConverter;
@@ -110,6 +110,9 @@ public enum LogFieldType {
 			List<Class> list = new LinkedList<>();
 			list.add(Protocol.class);
 			list.add(org.sessionization.parser.fields.Method.class);
+			for (Class c : Method.getDependencies()) {
+				list.add(c);
+			}
 			list.add(org.sessionization.parser.fields.UriQuery.class);
 			list.add(org.sessionization.parser.fields.UriSteam.class);
 			list.add(UriSteamQuery.class);
@@ -134,7 +137,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Map<Class, ObjectCreator> getCreators() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreators() {
 			return ObjectCreators.RequestLine.getCreator();
 		}
 	},
@@ -218,7 +221,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Map<Class, ObjectCreator> getCreators() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreators() {
 			return ObjectCreators.Referer.getCreator();
 		}
 	},
@@ -247,7 +250,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Map<Class, ObjectCreator> getCreators() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreators() {
 			return ObjectCreators.Referer.getCreator();
 		}
 	},
@@ -332,7 +335,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Map<Class, ObjectCreator> getCreators() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreators() {
 			return ObjectCreators.Cookie.getCreator();
 		}
 	},
@@ -356,7 +359,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Map<Class, ObjectCreator> getCreators() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreators() {
 			return ObjectCreators.Cookie.getCreator();
 		}
 	},
@@ -624,7 +627,7 @@ public enum LogFieldType {
 		}
 
 		@Override
-		public Map<Class, ObjectCreator> getCreators() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreators() {
 			return ObjectCreators.UriQuesy.getCreator();
 		}
 	},
@@ -808,7 +811,7 @@ public enum LogFieldType {
 		return pattern;
 	}
 
-	public Map<Class, ObjectCreator> getCreators() {
+	public Map<Class, ObjectPool.ObjectCreator> getCreators() {
 		return null;
 	}
 }
@@ -833,9 +836,9 @@ enum TimeUnit {
 enum ObjectCreators {
 	UriQuesy {
 		@Override
-		public Map<Class, ObjectCreator> getCreator() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreator() {
 			Map creators = new HashMap<>(3);
-			ObjectCreator creator;
+			ObjectPool.ObjectCreator creator;
 
 			creator = (pool, args) -> {
 				if (args.length < 1) {
@@ -875,9 +878,9 @@ enum ObjectCreators {
 	},
 	Cookie {
 		@Override
-		public Map<Class, ObjectCreator> getCreator() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreator() {
 			Map creators = new HashMap<>();
-			ObjectCreator creator;
+			ObjectPool.ObjectCreator creator;
 
 			creator = (pool, args) -> {
 				if (args.length < 2) {
@@ -922,10 +925,10 @@ enum ObjectCreators {
 	},
 	UriSteamQuery {
 		@Override
-		public Map<Class, ObjectCreator> getCreator() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreator() {
 			Map creators = new HashMap<>();
 			creators.putAll(UriQuesy.getCreator());
-			ObjectCreator creator;
+			ObjectPool.ObjectCreator creator;
 
 			creator = (pool, args) -> {
 				URI uri = (URI) args[0];
@@ -944,10 +947,10 @@ enum ObjectCreators {
 	},
 	RequestLine {
 		@Override
-		public Map<Class, ObjectCreator> getCreator() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreator() {
 			Map creators = new HashMap<>();
 			creators.putAll(UriSteamQuery.getCreator());
-			ObjectCreator creator;
+			ObjectPool.ObjectCreator creator;
 
 			creator = (pool, args) -> {
 				if (args.length < 1) {
@@ -972,10 +975,10 @@ enum ObjectCreators {
 	},
 	Referer {
 		@Override
-		public Map<Class, ObjectCreator> getCreator() {
+		public Map<Class, ObjectPool.ObjectCreator> getCreator() {
 			Map creators = new HashMap<>();
 			creators.putAll(UriSteamQuery.getCreator());
-			ObjectCreator creator;
+			ObjectPool.ObjectCreator creator;
 
 			creator = (pool, args) -> {
 				if (args.length < 1) {
@@ -999,5 +1002,5 @@ enum ObjectCreators {
 	/**
 	 * @return
 	 */
-	public abstract Map<Class, ObjectCreator> getCreator();
+	public abstract Map<Class, ObjectPool.ObjectCreator> getCreator();
 }

@@ -1,6 +1,7 @@
 package org.sessionization.parser.fields;
 
-import org.sessionization.HibernateTable;
+import org.hibernate.Session;
+import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.LogType;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Cacheable
-public class Cookie implements LogField, HibernateTable {
+public class Cookie implements LogField, HibernateUtil.HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -116,8 +117,8 @@ public class Cookie implements LogField, HibernateTable {
 	}
 
 	@Override
-	public String getIdQuery() {
-		// TODO: 1/8/16
+	public Object setDbId(Session session) {
+		// TODO: 1/14/16
 		return null;
 	}
 }

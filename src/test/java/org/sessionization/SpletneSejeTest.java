@@ -19,6 +19,7 @@ public class SpletneSejeTest {
 
 	private String pathNCSACombined;
 	private String pathNCSACommon;
+	private String pathW3CExtended;
 
 	private WebLogParser parser;
 
@@ -26,6 +27,7 @@ public class SpletneSejeTest {
 	public void setUp() throws IOException {
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
 		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
+		pathW3CExtended = ClassLoader.getSystemResource("ex080814.log").getFile();
 		parser = new NCSAWebLogParser();
 	}
 
@@ -135,22 +137,62 @@ public class SpletneSejeTest {
 	}
 
 	@Test
-	public void testRunSQLite() {
+	public void testRunSQLiteCommon() {
 		SpletneSeje.main("-fl", "COMMON", "-dbsqf", "-dbsq", pathNCSACommon);
 	}
 
 	@Test
-	public void testRunH2() {
+	public void testRunSQLiteCombined() {
+		SpletneSeje.main("-fl", "COMBINED", "-dbsqf", "-dbsq", pathNCSACombined);
+	}
+
+	@Test
+	public void testRunSQLiteExtended() {
+		SpletneSeje.main("-fl", "EXTENDED", "-dbsqf", "-dbsq", pathW3CExtended);
+	}
+
+	@Test
+	public void testRunH2Common() {
 		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACommon);
 	}
 
 	@Test
-	public void testRunHSQLBD() {
+	public void testRunH2Combined() {
+		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACombined);
+	}
+
+	@Test
+	public void testRunH2Extended() {
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathW3CExtended);
+	}
+
+	@Test
+	public void testRunHSQLBDCommon() {
 		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACommon);
 	}
 
 	@Test
-	public void testRunDerby() {
+	public void testRunHSQLBDCombined() {
+		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACombined);
+	}
+
+	@Test
+	public void testRunHSQLBDExtended() {
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathW3CExtended);
+	}
+
+	@Test
+	public void testRunDerbyCommon() {
 		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), pathNCSACommon);
+	}
+
+	@Test
+	public void testRunDerbyCombined() {
+		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), pathNCSACombined);
+	}
+
+	@Test
+	public void testRunDerbyExtended() {
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), pathW3CExtended);
 	}
 }

@@ -10,9 +10,9 @@ import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.ArgsParser;
 import org.sessionization.parser.LogFieldType;
+import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.datastruct.*;
 
 import java.io.IOException;
@@ -72,6 +72,9 @@ public class HibernateUtil implements AutoCloseable {
 		props.setProperty("hibernate.show_sql", String.valueOf(parser.isShowSql()));
 		props.setProperty("hibernate.format_sql", String.valueOf(parser.isShowSqlFormat()));
 		props.setProperty("hibernate.hbm2ddl.auto", parser.getOperation().getValue());
+		if (parser.getDefaultSchema() != null) {
+			props.setProperty("hibernate.default_schema", parser.getDefaultSchema());
+		}
 		return props;
 	}
 
@@ -116,13 +119,39 @@ public class HibernateUtil implements AutoCloseable {
 		return loader;
 	}
 
-	public Session getSession() {
-		return factory.openSession();
+	public synchronized Object execute(Operation operation, HibernateTable table) {
+		Object ret;
+		try (Session session = factory.openSession()) {
+			ret = operation.run(session, table);
+		}
+		return ret;
 	}
 
 	@Override
 	public void close() {
-		if (serviceRegistry != null) StandardServiceRegistryBuilder.destroy(serviceRegistry);
-		if (factory != null) factory.close();
+		if (serviceRegistry != null) {
+			StandardServiceRegistryBuilder.destroy(serviceRegistry);
+		}
+		if (factory != null) {
+			factory.close();
+		}
+	}
+
+	@FunctionalInterface
+	public interface Operation {
+		/**
+		 * @param session
+		 * @param o
+		 * @return
+		 */
+		Object run(Session session, HibernateTable table);
+	}
+
+	public interface HibernateTable {
+		/**
+		 * @param session
+		 * @return
+		 */
+		Object setDbId(Session session);
 	}
 }

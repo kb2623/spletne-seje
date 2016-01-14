@@ -1,13 +1,14 @@
 package org.sessionization.parser.fields;
 
-import org.sessionization.HibernateTable;
+import org.hibernate.Session;
+import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class Host implements LogField, HibernateTable {
+public class Host implements LogField, HibernateUtil.HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,8 +74,10 @@ public class Host implements LogField, HibernateTable {
 		return result;
 	}
 
+	//	return "select h.id from " + getClass().getSimpleName() + " h where h.host like " + host;
 	@Override
-	public String getIdQuery() {
-		return "select h.id from " + getClass().getSimpleName() + " h where h.host like " + host;
+	public Object setDbId(Session session) {
+		// TODO: 1/14/16
+		return null;
 	}
 }

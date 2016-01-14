@@ -1,13 +1,14 @@
 package org.sessionization.parser.fields.w3c;
 
-import org.sessionization.HibernateTable;
+import org.hibernate.Session;
+import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class SiteName implements LogField, HibernateTable {
+public class SiteName implements LogField, HibernateUtil.HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,8 +70,10 @@ public class SiteName implements LogField, HibernateTable {
 		return result;
 	}
 
+	//	return "select s.id from " + getClass().getSimpleName() + " s where s.name = '" + name + "'";
 	@Override
-	public String getIdQuery() {
-		return "select s.id from " + getClass().getSimpleName() + " s where s.name = '" + name + "'";
+	public Object setDbId(Session session) {
+		// TODO: 1/14/16
+		return null;
 	}
 }

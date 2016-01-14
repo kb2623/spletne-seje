@@ -1,13 +1,14 @@
 package org.sessionization.parser.fields;
 
-import org.sessionization.HibernateTable;
+import org.hibernate.Session;
+import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class Port implements LogField, HibernateTable {
+public class Port implements LogField, HibernateUtil.HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,8 +85,10 @@ public class Port implements LogField, HibernateTable {
 		return result;
 	}
 
+	//	return "selest p.id from " + getClass().getSimpleName() + " p where p.portNumber = " + portNumber + " and p.isServer = " + String.valueOf(isServer);
 	@Override
-	public String getIdQuery() {
-		return "selest p.id from " + getClass().getSimpleName() + " p where p.portNumber = " + portNumber + " and p.isServer = " + String.valueOf(isServer);
+	public Object setDbId(Session session) {
+		// TODO: 1/14/16
+		return null;
 	}
 }

@@ -1,9 +1,6 @@
 package org.datastruct;
 
-import javassist.bytecode.Descriptor;
-
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Queue;
 import java.util.Set;
 
