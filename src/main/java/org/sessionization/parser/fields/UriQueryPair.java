@@ -83,21 +83,17 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
+		Integer id = getId();
 		Integer keyId = (Integer) getKey().setDbId(session);
-		if (keyId != null) {
-			Query query = session.createQuery(
-					"select qp.id from " + getClass().getSimpleName() + " as qp where qp.value = '" + getValue() + "' and qp.key = " + keyId
-			);
+		if (id == null && keyId != null) {
+			Query query = session.createQuery("select qp.id from " + getClass().getSimpleName() + " as qp where qp.value = '" + getValue() + "' and qp.key = " + keyId);
 			List list = query.list();
-			Integer id = null;
 			if (!list.isEmpty()) {
 				id = (Integer) list.get(0);
 				setId(id);
 			}
-			return id;
-		} else {
-			return null;
 		}
+		return id;
 	}
 }
 

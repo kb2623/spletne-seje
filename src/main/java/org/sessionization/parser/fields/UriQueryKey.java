@@ -67,13 +67,14 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		String hquery = "sesect u.id form " + getClass().getSimpleName() + " as u where u.name = '" + getName() + "'";
-		org.hibernate.Query query = session.createQuery(hquery);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer id = getId();
+		if (id == null) {
+			org.hibernate.Query query = session.createQuery("sesect u.id form " + getClass().getSimpleName() + " as u where u.name = '" + getName() + "'");
+			List list = query.list();
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
 		}
 		return id;
 	}

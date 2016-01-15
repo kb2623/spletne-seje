@@ -85,14 +85,14 @@ public class UserAgent implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Query query = session.createQuery(
-				"select u.id form " + getClass().getSimpleName() + " as u where u.userAgentString = '" + getUserAgentString() + "'"
-		);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer id = getId();
+		if (id == null) {
+			Query query = session.createQuery("select u.id form " + getClass().getSimpleName() + " as u where u.userAgentString = '" + getUserAgentString() + "'");
+			List list = query.list();
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
 		}
 		return id;
 	}

@@ -89,15 +89,15 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Query query = session.createQuery(
-				"select p.id form " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer()
-		);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer id = getId();
+		if (id == null) {
+			Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer());
+			List list = query.list();
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
 		}
-		return null;
+		return id;
 	}
 }

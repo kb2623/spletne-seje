@@ -83,21 +83,17 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
+		Integer id = getId();
 		Integer keyId = (Integer) getKey().setDbId(session);
-		if (keyId != null) {
-			Query query = session.createQuery(
-					"select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + keyId + " and cp.value = '" + getValue() + "'"
-			);
+		if (id == null && keyId != null) {
+			Query query = session.createQuery("select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + keyId + " and cp.value = '" + getValue() + "'");
 			List list = query.list();
-			Integer id = null;
 			if (!list.isEmpty()) {
 				id = (Integer) list.get(0);
 				setId(id);
 			}
-			return id;
-		} else {
-			return null;
 		}
+		return id;
 	}
 }
 

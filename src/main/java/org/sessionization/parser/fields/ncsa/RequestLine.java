@@ -151,21 +151,17 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 
 	@Override
 	public Object setDbId(Session session) {
+		Integer id = getId();
 		Integer steamQueryId = (Integer) getSteamQuery().setDbId(session);
 		Integer protocolId = (Integer) getProtocol().setDbId(session);
-		if (steamQueryId != null && protocolId != null) {
-			Query query = session.createQuery(
-					"select l.id from " + getClass().getSimpleName() + " as l where l.method = '" + MethodConverter.getMethodString(getMethod()) + "' and l.steamQuery = " + steamQueryId + " and l.protocol = " + protocolId
-			);
+		if (id == null && steamQueryId != null && protocolId != null) {
+			Query query = session.createQuery("select l.id from " + getClass().getSimpleName() + " as l where l.method = '" + MethodConverter.getMethodString(getMethod()) + "' and l.steamQuery = " + steamQueryId + " and l.protocol = " + protocolId);
 			List list = query.list();
-			Integer id = null;
 			if (!list.isEmpty()) {
 				id = (Integer) list.get(0);
 				setId(id);
 			}
-			return id;
-		} else {
-			return null;
 		}
+		return id;
 	}
 }

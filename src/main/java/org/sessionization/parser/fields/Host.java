@@ -78,14 +78,14 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Query query = session.createQuery(
-				"select h.id form " + getClass().getSimpleName() + " as h where h.host = '" + getHost() + "'"
-		);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer id = getId();
+		if (id == null) {
+			Query query = session.createQuery("select h.id form " + getClass().getSimpleName() + " as h where h.host = '" + getHost() + "'");
+			List list = query.list();
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
 		}
 		return id;
 	}

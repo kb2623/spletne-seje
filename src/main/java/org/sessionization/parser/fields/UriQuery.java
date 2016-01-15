@@ -16,7 +16,7 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
 	private List<UriQueryPair> pairs;
 
 	public UriQuery() {

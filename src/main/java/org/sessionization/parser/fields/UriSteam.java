@@ -80,14 +80,14 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 
 	@Override
 	public Object setDbId(Session session) {
-		Query query = session.createQuery(
-				"select u.id form " + getClass().getSimpleName() + " as u where u.file = '" + getFile() + "'"
-		);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer id = getId();
+		if (id == null) {
+			Query query = session.createQuery("select u.id form " + getClass().getSimpleName() + " as u where u.file = '" + getFile() + "'");
+			List list = query.list();
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
 		}
 		return id;
 	}

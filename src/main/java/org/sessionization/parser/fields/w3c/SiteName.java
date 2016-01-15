@@ -74,14 +74,14 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Query query = session.createQuery(
-				"select s.id from " + getClass().getSimpleName() + " as s where s.name = '" + getName() + "'"
-		);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer id = getId();
+		if (id == null) {
+			Query query = session.createQuery("select s.id from " + getClass().getSimpleName() + " as s where s.name = '" + getName() + "'");
+			List list = query.list();
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
 		}
 		return id;
 	}

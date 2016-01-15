@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class SpletneSeje {
+public class SpletneSeje implements AutoCloseable {
 
 	private ArgsParser argsParser;
 	private WebLogParser logParser;
@@ -148,8 +148,8 @@ public class SpletneSeje {
 	 * @param args
 	 */
 	public static void main(String... args) {
-		try {
-			new SpletneSeje(args).run();
+		try (SpletneSeje seje = new SpletneSeje()) {
+			seje.run();
 		} catch (CmdLineException e) {
 			if (!e.getLocalizedMessage().equals("Print help")) {
 				System.err.println(e.getLocalizedMessage());
@@ -177,6 +177,8 @@ public class SpletneSeje {
 			printError(e.getLocalizedMessage(), 9);
 		} catch (NotFoundException e) {
 			printError(e.getLocalizedMessage(), 10);
+		} catch (Exception e) {
+			printError(e.getLocalizedMessage(), 11);
 		}
 	}
 
@@ -192,17 +194,17 @@ public class SpletneSeje {
 		parseThread.start();
 		learnThread.start();
 		// TODO dodaj se druge niti
-		try {
-			parseThread.join();
-		} catch (InterruptedException e) {
-			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in parsing!!!");
+		parseThread.join();
+		learnThread.join();
+	}
+
+	@Override
+	public void close() throws Exception {
+		if (db != null) {
+			db.close();
 		}
-		try {
-			learnThread.join();
-		} catch (InterruptedException e) {
-			throw new InterruptedException(e.getLocalizedMessage() + " :: problem in learning!!!");
+		if (logParser != null) {
+			logParser.close();
 		}
-		logParser.close();
-		db.close();
 	}
 }

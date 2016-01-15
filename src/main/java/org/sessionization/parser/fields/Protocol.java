@@ -100,14 +100,14 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Query query = session.createQuery(
-				"select p.id form " + getClass().getSimpleName() + " as p where p.protocol = '" + getProtocol() + "' and p.version = " + getVersion()
-		);
-		List list = query.list();
-		Integer id = null;
-		if (!list.isEmpty()) {
-			id = (Integer) list.get(0);
-			setId(id);
+		Integer id = getId();
+		if (id == null) {
+			Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.protocol = '" + getProtocol() + "' and p.version = " + getVersion());
+			List list = query.list();
+			if (!list.isEmpty()) {
+				id = (Integer) list.get(0);
+				setId(id);
+			}
 		}
 		return id;
 	}
