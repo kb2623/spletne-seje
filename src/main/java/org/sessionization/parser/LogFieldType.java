@@ -1,6 +1,6 @@
 package org.sessionization.parser;
 
-import org.datastruct.ObjectPool;
+import org.datastruct.concurrent.ObjectPool;
 import org.sessionization.database.ConnectionStatusConverter;
 import org.sessionization.database.InetAddressConverter;
 import org.sessionization.database.MethodConverter;

@@ -132,7 +132,6 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		RequestLine that = (RequestLine) o;
-		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getMethod() != that.getMethod()) return false;
 		if (getSteamQuery() != null ? !getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() != null)
 			return false;

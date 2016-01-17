@@ -1,6 +1,6 @@
 package org.sessionization.parser;
 
-import org.datastruct.ObjectPool;
+import org.datastruct.concurrent.ObjectPool;
 import org.sessionization.parser.datastruct.ParsedLine;
 
 import java.io.*;

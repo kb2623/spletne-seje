@@ -64,7 +64,6 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Host host1 = (Host) o;
-		if (getId() != null ? !getId().equals(host1.getId()) : host1.getId() != null) return false;
 		if (!getHost().equals(host1.getHost())) return false;
 		return true;
 	}

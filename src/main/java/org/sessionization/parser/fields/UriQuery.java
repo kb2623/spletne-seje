@@ -87,7 +87,6 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		UriQuery uriQuery = (UriQuery) o;
-		if (getId() != null ? !getId().equals(uriQuery.getId()) : uriQuery.getId() != null) return false;
 		if (getPairs() != null ? !getPairs().equals(uriQuery.getPairs()) : uriQuery.getPairs() != null) return false;
 		return true;
 	}
@@ -101,8 +100,27 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		List<Integer> ids = new ArrayList<>(pairs.size());
+		for (UriQueryPair p : pairs) {
+			Integer tmp = (Integer) p.setDbId(session);
+			if (tmp != null) {
+				ids.add(tmp);
+			}
+		}
+		Integer id = getId();
+		if (id == null && ids.size() == pairs.size()) {
+			org.hibernate.Query query = session.createQuery("select distinct q.id from " + getClass().getSimpleName() + " as q join q.pairs as p where p.id in (:list)");
+			query.setParameterList("list", ids);
+			ids = query.list();
+			for (Integer i : ids) {
+				UriQuery q = session.load(UriQuery.class, i);
+				if (equals(q)) {
+					setId(i);
+					return i;
+				}
+			}
+		}
+		return id;
 	}
 }
 

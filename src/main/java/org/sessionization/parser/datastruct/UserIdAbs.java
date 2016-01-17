@@ -33,8 +33,6 @@ public abstract class UserIdAbs implements HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof UserIdAbs)) return false;
-		UserIdAbs userIdAbs = (UserIdAbs) o;
-		if (getId() != null ? !getId().equals(userIdAbs.getId()) : userIdAbs.getId() != null) return false;
 		return true;
 	}
 

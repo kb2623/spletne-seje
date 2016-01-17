@@ -2,13 +2,13 @@ package org.sessionization;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
-import org.datastruct.ObjectPool;
+import org.datastruct.concurrent.ObjectPool;
 import org.kohsuke.args4j.CmdLineException;
 import org.sessionization.analyzer.LogAnalyzer;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.*;
 import org.sessionization.parser.datastruct.ParsedLine;
-import org.sessionization.parser.datastruct.UserIdAbs;
+import org.sessionization.parser.datastruct.UserSessionAbs;
 import org.sessionization.parser.fields.w3c.MetaData;
 
 import java.io.FileNotFoundException;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
 
 public class SpletneSeje implements AutoCloseable {
 
@@ -188,14 +188,31 @@ public class SpletneSeje implements AutoCloseable {
 	}
 
 	public void run() throws InterruptedException {
-		BlockingQueue<Map<String, UserIdAbs>> qParserLearner = new LinkedBlockingQueue<>();
-		Thread parseThread = new ParserThread(qParserLearner, logParser, argsParser.getParseSize());
-		Thread learnThread = new LearnThread(qParserLearner);
-		parseThread.start();
-		learnThread.start();
+		HibernateUtil.Operation operation = (session, table) -> {
+			Integer ret = (Integer) table.setDbId(session);
+			try {
+				session.getTransaction().begin();
+				session.saveOrUpdate(table);
+				session.getTransaction().commit();
+			} catch (Exception e) {
+				session.getTransaction().rollback();
+				throw e;
+			}
+			return ret;
+		};
+
+		BlockingQueue<ParsedLine> qParserLearner = new LinkedTransferQueue<>();
+		BlockingQueue<Map<String, UserSessionAbs>> maps = new LinkedTransferQueue<>();
+		Thread parseT = new TParser(qParserLearner, logParser);
+		Thread timeSortT = new TTimeSort(qParserLearner, maps);
+		Thread saveDbT = new TSaveDb(maps, db, operation);
+		parseT.start();
+		timeSortT.start();
+		saveDbT.start();
 		// TODO dodaj se druge niti
-		parseThread.join();
-		learnThread.join();
+		parseT.join();
+		timeSortT.join();
+		saveDbT.join();
 	}
 
 	@Override

@@ -48,7 +48,6 @@ public class CookieKey implements HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		CookieKey cookieKey = (CookieKey) o;
-		if (getId() != null ? !getId().equals(cookieKey.getId()) : cookieKey.getId() != null) return false;
 		if (getName() != null ? !getName().equals(cookieKey.getName()) : cookieKey.getName() != null) return false;
 		return true;
 	}

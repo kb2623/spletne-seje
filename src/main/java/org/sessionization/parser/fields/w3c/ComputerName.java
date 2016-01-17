@@ -64,7 +64,6 @@ public class ComputerName implements LogField, HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ComputerName that = (ComputerName) o;
-		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (!getName().equals(that.getName())) return false;
 		return true;
 	}

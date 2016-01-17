@@ -1,5 +1,6 @@
 package org.sessionization.parser.fields;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
@@ -104,7 +105,6 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Cookie cookie = (Cookie) o;
-		if (getId() != null ? !getId().equals(cookie.getId()) : cookie.getId() != null) return false;
 		if (getPairs() != null ? !getPairs().equals(cookie.getPairs()) : cookie.getPairs() != null) return false;
 		return true;
 	}
@@ -118,7 +118,26 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
-		return null;
+		List<Integer> ids = new ArrayList<>(pairs.size());
+		for (CookiePair c : pairs) {
+			Integer tmp = (Integer) c.setDbId(session);
+			if (tmp != null) {
+				ids.add(tmp);
+			}
+		}
+		Integer id = getId();
+		if (id == null && ids.size() == pairs.size()) {
+			Query query = session.createQuery("select distinct c.id from " + getClass().getSimpleName() + " as c join c.pairs as cp where cp.id in (:list)");
+			query.setParameterList("list", ids);
+			ids = query.list();
+			for (Integer i : ids) {
+				Cookie c = session.load(Cookie.class, i);
+				if (equals(c)) {
+					setId(i);
+					return i;
+				}
+			}
+		}
+		return id;
 	}
 }

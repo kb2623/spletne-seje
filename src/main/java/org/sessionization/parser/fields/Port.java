@@ -75,7 +75,6 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 		Port port = (Port) o;
 		if (getPortNumber() != port.getPortNumber()) return false;
 		if (isServer() != port.isServer()) return false;
-		if (getId() != null ? !getId().equals(port.getId()) : port.getId() != null) return false;
 		return true;
 	}
 

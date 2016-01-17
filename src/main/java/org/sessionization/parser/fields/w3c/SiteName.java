@@ -60,7 +60,6 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		SiteName siteName = (SiteName) o;
-		if (getId() != null ? !getId().equals(siteName.getId()) : siteName.getId() != null) return false;
 		if (!getName().equals(siteName.getName())) return false;
 		return true;
 	}

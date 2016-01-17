@@ -85,7 +85,6 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 		if (o == null || getClass() != o.getClass()) return false;
 		Protocol protocol1 = (Protocol) o;
 		if (Float.compare(protocol1.getVersion(), getVersion()) != 0) return false;
-		if (getId() != null ? !getId().equals(protocol1.getId()) : protocol1.getId() != null) return false;
 		if (!getProtocol().equals(protocol1.getProtocol())) return false;
 		return true;
 	}

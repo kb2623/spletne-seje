@@ -240,7 +240,7 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	 */
 	public int count() {
 		int size = 0;
-		Stack<RadixEntry> stack = new Stack<>();
+		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
 		while (curr != null) {
 			if (curr.data != null) {
@@ -271,7 +271,7 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	 * @param list List, ki ga zelimo napolniti
 	 */
 	private void asList(List<V> list) {
-		Stack<RadixEntry> stack = new Stack<>();
+		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
 		while (curr != null) {
 			if (curr.data != null) {
@@ -357,7 +357,7 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	 * @return Ali element obstaja v strukturi
 	 */
 	private boolean search(Object value) {
-		Stack<RadixEntry> stack = new Stack<>();
+		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
 		while (curr != null) {
 			if (curr.data != null && curr.data.equals(value)) {
@@ -443,8 +443,8 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	 * @param set Set, ki ga zelimo napolniti
 	 */
 	private void keySet(Set<String> set) {
-		Stack<RadixEntry> stack = new Stack<>();
-		Stack<String> kStack = new Stack<>();
+		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
+		org.datastruct.Stack<String> kStack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
 		String key = rootNode.key;
 		while (curr != null) {
@@ -497,8 +497,8 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	 * @param set Set, ki ga zelmo napolniti
 	 */
 	private void entrySet(Set<Map.Entry<String, V>> set) {
-		Stack<RadixEntry> stack = new Stack<>();
-		Stack<String> kStack = new Stack<>();
+		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
+		org.datastruct.Stack<String> kStack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
 		String key = rootNode.key;
 		while (curr != null) {
@@ -545,8 +545,8 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	}
 
 	private void makeString(StringBuilder builder) {
-		Stack<RadixEntry> stack = new Stack<>();
-		Stack<String> kStack = new Stack<>();
+		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
+		org.datastruct.Stack<String> kStack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
 		String key = rootNode.key;
 		while (curr != null) {
@@ -638,11 +638,11 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 
 	private class RadixTreeIterator implements Iterator<V> {
 
-		private Stack<Iterator<RadixEntry>> stackIt;
+		private org.datastruct.Stack<Iterator<RadixEntry>> stackIt;
 		private RadixEntry next;
 
 		private RadixTreeIterator() {
-			this.stackIt = new Stack<>();
+			this.stackIt = new org.datastruct.Stack<>();
 			this.stackIt.push(rootNode.children.values().iterator());
 			if (!stackIt.peek().hasNext()) {
 				next = null;

@@ -38,8 +38,6 @@ public abstract class UserSessionAbs implements TimePoint, HibernateUtil.Hiberna
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof UserSessionAbs)) return false;
-		UserSessionAbs that = (UserSessionAbs) o;
-		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		return true;
 	}
 

@@ -190,17 +190,18 @@ public class UserIdDump {
 				builder.append("public " + Object.class.getName() + " setDbId(" + Session.class.getName() + " session) {");
 				for (LogFieldType f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
-						builder.append(Integer.class.getName() + " " + f.getFieldName() + " = " + f.getGetterName() + "().setDbId(session);");
+						builder.append(Integer.class.getName() + " " + f.getFieldName() + " = " + f.getGetterName() + "().setDbId(session);\n");
 					}
 				}
-				builder.append("if (");
+				builder.append(Integer.class.getName() + " id = getId();\n");
+				builder.append("if (id == null && ");
 				for (LogFieldType f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
-						builder.append(f.getFieldName() + " != null &&");
+						builder.append(" " + f.getFieldName() + " != null &&");
 					}
 				}
 				builder.delete(builder.length() - 3, builder.length());
-				builder.append(") {");
+				builder.append(") {\n");
 				builder.append(Query.class.getName() + " query = session.createQuery(\"select u.id from \" + getClass().getSimpleName() + \" as u where ");
 				for (LogFieldType f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
@@ -210,17 +211,20 @@ public class UserIdDump {
 					}
 					builder.append(" and ");
 				}
-				builder.delete(builder.length() - 5, builder.length());
-				builder.append("\");");
-				builder.append(List.class.getName() + " list = query.list();");
-				builder.append(Integer.class.getName() + " id = null;");
-				builder.append("if (!list.isEmpty()) {");
-				builder.append("id = (" + Integer.class.getName() + ") list.get(0);");
-				builder.append("this.setId(id);");
+				builder.delete(builder.length() - 9, builder.length());
+				builder.append(");\n");
+				builder.append("for (" + Iterator.class.getName() + " it = query.list().iterator(); it.hasNext(); ) {\n")
+						.append(Integer.class.getName() + " i = it.next();\n")
+						.append(CLASSNAME + " ins = session.load(" + CLASSNAME + ".class, i);\n")
+						.append("if (equals(ins)) {\n")
+						.append("this.setId(i);\n")
+						.append("return i;\n")
+						.append('}')
+						.append('}');
 				builder.append('}');
-				builder.append("return id;");
-				builder.append(" } else { return null; }");
+				builder.append("return id;\n");
 				builder.append('}');
+				System.out.println(builder.toString());
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}
@@ -252,5 +256,6 @@ public class UserIdDump {
 	public static String getName() {
 		return CLASSNAME;
 	}
+
 
 }

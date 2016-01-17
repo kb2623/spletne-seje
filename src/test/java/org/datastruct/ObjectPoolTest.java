@@ -1,5 +1,6 @@
 package org.datastruct;
 
+import org.datastruct.concurrent.ObjectPool;
 import org.junit.Before;
 import org.junit.Test;
 

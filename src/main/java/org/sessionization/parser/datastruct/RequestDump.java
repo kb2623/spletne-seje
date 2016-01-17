@@ -8,7 +8,6 @@ import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.ArrayMemberValue;
 import javassist.bytecode.annotation.EnumMemberValue;
 import javassist.bytecode.annotation.MemberValue;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.ClassPoolLoader;
 import org.sessionization.parser.LogField;
@@ -199,36 +198,10 @@ public class RequestDump {
 				builder.append("public " + Object.class.getName() + " setDbId(" + Session.class.getName() + " session) {");
 				for (LogFieldType f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
-						builder.append(Integer.class.getName() + " " + f.getFieldName() + " = " + f.getGetterName() + "().setDbId(session);");
+						builder.append(f.getGetterName() + "().setDbId(session);");
 					}
 				}
-				builder.append("if (");
-				for (LogFieldType f : fields) {
-					if (f.getClassE().isAnnotationPresent(Entity.class)) {
-						builder.append(f.getFieldName() + " != null &&");
-					}
-				}
-				builder.delete(builder.length() - 3, builder.length());
-				builder.append(") {");
-				builder.append(Query.class.getName() + " query = session.createQuery(\"select u.id from \" + getClass().getSimpleName() + \" as u where ");
-				for (LogFieldType f : fields) {
-					if (f.getClassE().isAnnotationPresent(Entity.class)) {
-						builder.append("u." + f.getFieldName() + " = \" + " + f.getFieldName() + " + \"");
-					} else {
-						builder.append("u." + f.getFieldName() + " = '\" + " + f.getGetterName() + "() + \"'");
-					}
-					builder.append(" and ");
-				}
-				builder.delete(builder.length() - 5, builder.length());
-				builder.append("\");");
-				builder.append(List.class.getName() + " list = query.list();");
-				builder.append(Integer.class.getName() + " id = null;");
-				builder.append("if (!list.isEmpty()) {");
-				builder.append("id = (" + Integer.class.getName() + ") list.get(0);");
-				builder.append("this.setId(id);");
-				builder.append('}');
-				builder.append("return id;");
-				builder.append(" } else { return null; }");
+				builder.append("return null;");
 				builder.append('}');
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);

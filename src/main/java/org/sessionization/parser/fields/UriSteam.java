@@ -61,7 +61,6 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		UriSteam uriSteam = (UriSteam) o;
-		if (getId() != null ? !getId().equals(uriSteam.getId()) : uriSteam.getId() != null) return false;
 		if (!getFile().equals(uriSteam.getFile())) return false;
 		return true;
 	}

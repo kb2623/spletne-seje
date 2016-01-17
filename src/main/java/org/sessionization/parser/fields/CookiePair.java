@@ -62,7 +62,6 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		CookiePair that = (CookiePair) o;
-		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getValue() != null ? !getValue().equals(that.getValue()) : that.getValue() != null) return false;
 		if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
 		return true;

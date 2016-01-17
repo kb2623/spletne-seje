@@ -71,7 +71,6 @@ public class UserAgent implements LogField, HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		UserAgent userAgent = (UserAgent) o;
-		if (getId() != null ? !getId().equals(userAgent.getId()) : userAgent.getId() != null) return false;
 		if (!getUserAgentString().equals(userAgent.getUserAgentString())) return false;
 		return true;
 	}

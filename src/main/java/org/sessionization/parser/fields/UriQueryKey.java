@@ -48,7 +48,6 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		UriQueryKey that = (UriQueryKey) o;
-		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
 		return true;
 	}

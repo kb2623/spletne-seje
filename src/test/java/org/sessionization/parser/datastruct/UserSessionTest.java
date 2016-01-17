@@ -2,7 +2,7 @@ package org.sessionization.parser.datastruct;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
-import org.datastruct.ObjectPool;
+import org.datastruct.concurrent.ObjectPool;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;

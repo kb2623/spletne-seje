@@ -96,7 +96,6 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 		if (o == null || getClass() != o.getClass()) return false;
 		Address address1 = (Address) o;
 		if (isServerAddress() != address1.isServerAddress()) return false;
-		if (getId() != null ? !getId().equals(address1.getId()) : address1.getId() != null) return false;
 		if (getAddress() != null ? !getAddress().equals(address1.getAddress()) : address1.getAddress() != null)
 			return false;
 		return true;

@@ -1,9 +1,13 @@
-package org.datastruct;
+package org.datastruct.concurrent;
+
+import org.datastruct.AvlTree;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ObjectPool {
 
@@ -11,6 +15,7 @@ public class ObjectPool {
 	private Map<Class, ObjectCreator> creators = null;
 	private Properties properties = null;
 	private ClassLoader loader = null;
+	private ReadWriteLock lock;
 
 	public ObjectPool(Map<Class, Map> mapObject, Map<Class, ObjectCreator> creators, Properties properties, ClassLoader loader) {
 		if (mapObject == null) {
@@ -33,6 +38,7 @@ public class ObjectPool {
 		} else {
 			this.loader = loader;
 		}
+		lock = new ReentrantReadWriteLock();
 	}
 
 	public ObjectPool() {
@@ -138,24 +144,30 @@ public class ObjectPool {
 	}
 
 	private <T> T getObject(Class<T> c, Object hash, Object... args) {
+		lock.readLock().lock();
 		Map map = mapObject.get(c);
 		T ret = null;
 		if (map == null) {
+			lock.writeLock().lock();
 			map = initMap(c);
 			ret = makeObjectForPool(c, args);
 			if (ret != null) {
 				map.put(hash, ret);
 			}
 			mapObject.put(c, map);
+			lock.writeLock().unlock();
 		} else {
 			ret = (T) map.get(hash);
 			if (ret == null) {
+				lock.writeLock().lock();
 				ret = makeObjectForPool(c, args);
 				if (ret != null) {
 					map.put(hash, ret);
 				}
+				lock.writeLock().unlock();
 			}
 		}
+		lock.readLock().unlock();
 		return ret;
 	}
 

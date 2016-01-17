@@ -68,7 +68,9 @@ public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateT
 
 	@Override
 	public Object setDbId(Session session) {
-		// TODO: 1/14/16
+		for (RequestAbs r : requests) {
+			r.setDbId(session);
+		}
 		return null;
 	}
 
@@ -77,7 +79,6 @@ public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateT
 		if (o == null || !(o instanceof PageViewAbs)) return false;
 		if (this == o) return true;
 		PageViewAbs that = (PageViewAbs) o;
-		if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
 		if (getRequests() != null ? !getRequests().equals(that.getRequests()) : that.getRequests() != null) return false;
 		return true;
 	}

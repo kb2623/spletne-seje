@@ -70,7 +70,6 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 		if (this == o) return true;
 		if (!(o instanceof Referer)) return false;
 		Referer referer = (Referer) o;
-		if (id != null ? !id.equals(referer.id) : referer.id != null) return false;
 		if (steamQuery != null ? !steamQuery.equals(referer.steamQuery) : referer.steamQuery != null) return false;
 		if (getHost() != null ? !getHost().equals(referer.getHost()) : referer.getHost() != null) return false;
 		return true;
