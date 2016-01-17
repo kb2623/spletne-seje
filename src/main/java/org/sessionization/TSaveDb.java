@@ -18,6 +18,21 @@ public class TSaveDb extends Thread {
 		this.operation = operation;
 	}
 
+	public TSaveDb(BlockingQueue queue, HibernateUtil db) {
+		this(queue, db, (session, table) -> {
+			Integer ret = (Integer) table.setDbId(session);
+			try {
+				session.getTransaction().begin();
+				session.saveOrUpdate(table);
+				session.getTransaction().commit();
+			} catch (Exception e) {
+				session.getTransaction().rollback();
+				throw e;
+			}
+			return ret;
+		});
+	}
+
 	@Override
 	public void run() {
 		UserSessionAbs session = null;

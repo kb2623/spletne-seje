@@ -188,24 +188,11 @@ public class SpletneSeje implements AutoCloseable {
 	}
 
 	public void run() throws InterruptedException {
-		HibernateUtil.Operation operation = (session, table) -> {
-			Integer ret = (Integer) table.setDbId(session);
-			try {
-				session.getTransaction().begin();
-				session.saveOrUpdate(table);
-				session.getTransaction().commit();
-			} catch (Exception e) {
-				session.getTransaction().rollback();
-				throw e;
-			}
-			return ret;
-		};
-
 		BlockingQueue<ParsedLine> qParserLearner = new LinkedTransferQueue<>();
 		BlockingQueue<Map<String, UserSessionAbs>> maps = new LinkedTransferQueue<>();
 		Thread parseT = new TParser(qParserLearner, logParser);
 		Thread timeSortT = new TTimeSort(qParserLearner, maps);
-		Thread saveDbT = new TSaveDb(maps, db, operation);
+		Thread saveDbT = new TSaveDb(maps, db);
 		parseT.start();
 		timeSortT.start();
 		saveDbT.start();
