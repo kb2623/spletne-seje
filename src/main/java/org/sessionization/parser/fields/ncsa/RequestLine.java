@@ -14,7 +14,6 @@ import javax.persistence.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -132,11 +131,9 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		RequestLine that = (RequestLine) o;
-		if (getMethod() != that.getMethod()) return false;
-		if (getSteamQuery() != null ? !getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() != null)
-			return false;
-		if (getProtocol() != null ? !getProtocol().equals(that.getProtocol()) : that.getProtocol() != null) return false;
-		return true;
+		return getMethod() != null ? getMethod().equals(that.getMethod()) : that.getMethod() == null
+				&& getSteamQuery() != null ? getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() == null
+				&& getProtocol() != null ? getProtocol().equals(that.getProtocol()) : that.getProtocol() == null;
 	}
 
 	@Override
@@ -150,17 +147,20 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
 		Integer steamQueryId = (Integer) getSteamQuery().setDbId(session);
 		Integer protocolId = (Integer) getProtocol().setDbId(session);
-		if (id == null && steamQueryId != null && protocolId != null) {
+		if (getId() != null) {
+			return getId();
+		}
+		if (steamQueryId != null && protocolId != null) {
 			Query query = session.createQuery("select l.id from " + getClass().getSimpleName() + " as l where l.method = '" + MethodConverter.getMethodString(getMethod()) + "' and l.steamQuery = " + steamQueryId + " and l.protocol = " + protocolId);
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+			for (Object o : query.list()) {
+				if (equals(session.load(getClass(), (Integer) o))) {
+					setId((Integer) o);
+					return o;
+				}
 			}
 		}
-		return id;
+		return null;
 	}
 }

@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -62,9 +61,8 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		CookiePair that = (CookiePair) o;
-		if (getValue() != null ? !getValue().equals(that.getValue()) : that.getValue() != null) return false;
-		if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
-		return true;
+		return getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null
+				&& getKey() != null ? getKey().equals(that.getKey()) : that.getKey() == null;
 	}
 
 	@Override
@@ -82,17 +80,18 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
 		Integer keyId = (Integer) getKey().setDbId(session);
-		if (id == null && keyId != null) {
-			Query query = session.createQuery("select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + keyId + " and cp.value = '" + getValue() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + keyId + " and cp.value = '" + getValue() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }
 

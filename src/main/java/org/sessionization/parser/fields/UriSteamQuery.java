@@ -7,7 +7,6 @@ import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 import java.net.URI;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -79,9 +78,8 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 		if (this == o) return true;
 		if (!(o instanceof UriSteamQuery)) return false;
 		UriSteamQuery that = (UriSteamQuery) o;
-		if (uriSteam != null ? !uriSteam.equals(that.uriSteam) : that.uriSteam != null) return false;
-		if (getQuery() != null ? !getQuery().equals(that.getQuery()) : that.getQuery() != null) return false;
-		return true;
+		return getUriSteam() != null ? getUriSteam().equals(that.getUriSteam()) : that.getUriSteam() == null
+				&& getQuery() != null ? getQuery().equals(that.getQuery()) : that.getQuery() == null;
 	}
 
 	@Override
@@ -94,17 +92,20 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
 		Integer uriSteamId = (Integer) getUriSteam().setDbId(session);
 		Integer queryId = (Integer) getQuery().setDbId(session);
-		if (id == null && uriSteamId != null && queryId != null) {
+		if (getId() != null) {
+			return getId();
+		}
+		if (uriSteamId != null && queryId != null) {
 			Query query = session.createQuery("select sq.id form " + getClass().getSimpleName() + " as sq where sq.uriSteam = " + uriSteamId + " and sq.query = " + queryId);
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+			for (Object o : query.list()) {
+				if (equals(session.load(getClass(), (Integer) o))) {
+					setId((Integer) o);
+					return o;
+				}
 			}
 		}
-		return id;
+		return null;
 	}
 }

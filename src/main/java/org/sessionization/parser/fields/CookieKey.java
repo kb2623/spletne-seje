@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -47,9 +46,8 @@ public class CookieKey implements HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		CookieKey cookieKey = (CookieKey) o;
-		if (getName() != null ? !getName().equals(cookieKey.getName()) : cookieKey.getName() != null) return false;
-		return true;
+		CookieKey that = (CookieKey) o;
+		return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
 	}
 
 	@Override
@@ -66,15 +64,16 @@ public class CookieKey implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select c.id from " + getClass().getSimpleName() + " as c where c.name = '" + getName() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select c.id from " + getClass().getSimpleName() + " as c where c.name = '" + getName() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

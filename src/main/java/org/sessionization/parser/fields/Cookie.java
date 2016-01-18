@@ -104,9 +104,14 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Cookie cookie = (Cookie) o;
-		if (getPairs() != null ? !getPairs().equals(cookie.getPairs()) : cookie.getPairs() != null) return false;
-		return true;
+		Cookie that = (Cookie) o;
+		if (getPairs() == null ? that.getPairs() == null : false) {
+			return true;
+		} else if (getPairs().size() == that.getPairs().size()) {
+			return getPairs().containsAll(that.getPairs());
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -125,19 +130,20 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 				ids.add(tmp);
 			}
 		}
-		Integer id = getId();
-		if (id == null && ids.size() == pairs.size()) {
+		if (getId() != null) {
+			return getId();
+		}
+		if (ids.size() == pairs.size()) {
 			Query query = session.createQuery("select distinct c.id from " + getClass().getSimpleName() + " as c join c.pairs as cp where cp.id in (:list)");
 			query.setParameterList("list", ids);
 			ids = query.list();
 			for (Integer i : ids) {
-				Cookie c = session.load(Cookie.class, i);
-				if (equals(c)) {
+				if (equals(session.load(getClass(), i))) {
 					setId(i);
 					return i;
 				}
 			}
 		}
-		return id;
+		return null;
 	}
 }

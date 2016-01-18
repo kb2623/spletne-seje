@@ -86,9 +86,14 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		UriQuery uriQuery = (UriQuery) o;
-		if (getPairs() != null ? !getPairs().equals(uriQuery.getPairs()) : uriQuery.getPairs() != null) return false;
-		return true;
+		UriQuery taht = (UriQuery) o;
+		if (getPairs() == null ? taht.getPairs() == null : false) {
+			return true;
+		} else if (getPairs().size() == taht.getPairs().size()) {
+			return getPairs().containsAll(taht.getPairs());
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -107,20 +112,21 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 				ids.add(tmp);
 			}
 		}
-		Integer id = getId();
-		if (id == null && ids.size() == pairs.size()) {
+		if (getId() != null) {
+			return getId();
+		}
+		if (ids.size() == pairs.size()) {
 			org.hibernate.Query query = session.createQuery("select distinct q.id from " + getClass().getSimpleName() + " as q join q.pairs as p where p.id in (:list)");
 			query.setParameterList("list", ids);
 			ids = query.list();
 			for (Integer i : ids) {
-				UriQuery q = session.load(UriQuery.class, i);
-				if (equals(q)) {
+				if (equals(session.load(getClass(), i))) {
 					setId(i);
 					return i;
 				}
 			}
 		}
-		return id;
+		return null;
 	}
 }
 

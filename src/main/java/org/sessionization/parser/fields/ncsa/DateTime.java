@@ -71,10 +71,9 @@ public class DateTime implements LogField, TimePoint {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof DateTime)) return false;
-		DateTime dateTime = (DateTime) o;
-		if (getDate() != null ? !getDate().equals(dateTime.getDate()) : dateTime.getDate() != null) return false;
-		if (getTime() != null ? !getTime().equals(dateTime.getTime()) : dateTime.getTime() != null) return false;
-		return true;
+		DateTime that = (DateTime) o;
+		return getDate() != null ? getDate().equals(that.getDate()) : that.getDate() == null
+				&& getTime() != null ? getTime().equals(that.getTime()) : that.getTime() == null;
 	}
 
 	@Override

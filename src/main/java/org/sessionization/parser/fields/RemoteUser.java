@@ -6,7 +6,6 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -63,8 +62,7 @@ public class RemoteUser implements LogField, HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		RemoteUser that = (RemoteUser) o;
-		if (!getUser().equals(that.getUser())) return false;
-		return true;
+		return getUser() != null ? getUser().equals(that.getUser()) : that.getUser() == null;
 	}
 
 	@Override
@@ -76,15 +74,16 @@ public class RemoteUser implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select r.id form " + getClass().getSimpleName() + " as r where r.user = '" + getUser() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select r.id form " + getClass().getSimpleName() + " as r where r.user = '" + getUser() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

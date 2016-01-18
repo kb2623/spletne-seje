@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -62,9 +61,8 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		UriQueryPair that = (UriQueryPair) o;
-		if (getValue() != null ? !getValue().equals(that.getValue()) : that.getValue() != null) return false;
-		if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
-		return true;
+		return getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null
+				&& getKey() != null ? getKey().equals(that.getKey()) : that.getKey() == null;
 	}
 
 	@Override
@@ -82,17 +80,20 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
 		Integer keyId = (Integer) getKey().setDbId(session);
-		if (id == null && keyId != null) {
+		if (getId() != null) {
+			return getId();
+		}
+		if (keyId != null) {
 			Query query = session.createQuery("select qp.id from " + getClass().getSimpleName() + " as qp where qp.value = '" + getValue() + "' and qp.key = " + keyId);
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+			for (Object o : query.list()) {
+				if (equals(session.load(getClass(), (Integer) o))) {
+					setId((Integer) o);
+					return o;
+				}
 			}
 		}
-		return id;
+		return null;
 	}
 }
 

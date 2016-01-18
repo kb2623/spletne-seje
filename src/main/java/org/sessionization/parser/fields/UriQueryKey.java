@@ -4,7 +4,6 @@ import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -48,8 +47,7 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		UriQueryKey that = (UriQueryKey) o;
-		if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
-		return true;
+		return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
 	}
 
 	@Override
@@ -66,15 +64,16 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			org.hibernate.Query query = session.createQuery("sesect u.id form " + getClass().getSimpleName() + " as u where u.name = '" + getName() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		org.hibernate.Query query = session.createQuery("sesect u.id form " + getClass().getSimpleName() + " as u where u.name = '" + getName() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

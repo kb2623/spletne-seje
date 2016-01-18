@@ -6,7 +6,6 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -64,8 +63,7 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		RemoteLogname that = (RemoteLogname) o;
-		if (!getLogname().equals(that.getLogname())) return false;
-		return true;
+		return getLogname() != null ? getLogname().equals(that.getLogname()) : that.getLogname() == null;
 	}
 
 	@Override
@@ -82,15 +80,16 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.logname = '" + getLogname() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.logname = '" + getLogname() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

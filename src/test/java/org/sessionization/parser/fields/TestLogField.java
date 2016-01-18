@@ -6,12 +6,17 @@ import org.sessionization.parser.fields.ncsa.DateTime;
 import org.sessionization.parser.fields.ncsa.RequestLine;
 import org.sessionization.parser.fields.w3c.Time;
 
+import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -170,5 +175,18 @@ public class TestLogField {
 		Scanner s = new Scanner("[12/Jan/2014 12:23:00 +0010]");
 		System.out.println(s.hasNext(p1));
 		System.out.println(s.next(p1));
+	}
+
+	@Test
+	public void testReflectionsFields() {
+		List<Field> list = new LinkedList<>();
+		for (Field f : Cookie.class.getDeclaredFields()) {
+			if (!f.isAnnotationPresent(Transient.class) && !f.isAnnotationPresent(Id.class)) {
+				list.add(f);
+			}
+		}
+		for (Field f : list) {
+			System.out.println(f.getGenericType());
+		}
 	}
 }

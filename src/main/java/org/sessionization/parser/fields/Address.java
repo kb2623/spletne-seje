@@ -11,7 +11,6 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -94,11 +93,9 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Address address1 = (Address) o;
-		if (isServerAddress() != address1.isServerAddress()) return false;
-		if (getAddress() != null ? !getAddress().equals(address1.getAddress()) : address1.getAddress() != null)
-			return false;
-		return true;
+		Address that = (Address) o;
+		return isServerAddress() == that.isServerAddress()
+				&& getAddress() != null ? getAddress().equals(that.getAddress()) : that.getAddress() == null;
 	}
 
 	@Override
@@ -111,15 +108,16 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select a.id from " + getClass().getSimpleName() + " as a where a.serverAddress = " + isServerAddress() + " and a.address = '" + InetAddressConverter.getInetAddressString(getAddress()) + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select a.id from " + getClass().getSimpleName() + " as a where a.serverAddress = " + isServerAddress() + " and a.address = '" + InetAddressConverter.getInetAddressString(getAddress()) + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

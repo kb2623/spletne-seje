@@ -39,9 +39,8 @@ public class SubStatus implements LogField {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		SubStatus subStatus = (SubStatus) o;
-		if (getStatus() != subStatus.getStatus()) return false;
-		return true;
+		SubStatus that = (SubStatus) o;
+		return getStatus() == that.getStatus();
 	}
 
 	@Override

@@ -44,8 +44,7 @@ public class Win32Status implements LogField {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Win32Status that = (Win32Status) o;
-		if (getStatus() != that.getStatus()) return false;
-		return true;
+		return getStatus() == that.getStatus();
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -72,10 +71,9 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Port port = (Port) o;
-		if (getPortNumber() != port.getPortNumber()) return false;
-		if (isServer() != port.isServer()) return false;
-		return true;
+		Port that = (Port) o;
+		return getPortNumber() == that.getPortNumber()
+				&& isServer() == that.isServer();
 	}
 
 	@Override
@@ -88,15 +86,16 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer());
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer());
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

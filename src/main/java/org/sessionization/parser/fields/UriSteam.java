@@ -6,7 +6,6 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -60,9 +59,8 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		UriSteam uriSteam = (UriSteam) o;
-		if (!getFile().equals(uriSteam.getFile())) return false;
-		return true;
+		UriSteam that = (UriSteam) o;
+		return getFile() != null ? getFile().equals(that.getFile()) : that.getFile() == null;
 	}
 
 	@Override
@@ -79,15 +77,16 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select u.id form " + getClass().getSimpleName() + " as u where u.file = '" + getFile() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select u.id form " + getClass().getSimpleName() + " as u where u.file = '" + getFile() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

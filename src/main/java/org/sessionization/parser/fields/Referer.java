@@ -7,7 +7,6 @@ import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 import java.net.URI;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -69,10 +68,9 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof Referer)) return false;
-		Referer referer = (Referer) o;
-		if (steamQuery != null ? !steamQuery.equals(referer.steamQuery) : referer.steamQuery != null) return false;
-		if (getHost() != null ? !getHost().equals(referer.getHost()) : referer.getHost() != null) return false;
-		return true;
+		Referer that = (Referer) o;
+		return getSteamQuery() != null ? getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() == null
+				&& getHost() != null ? getHost().equals(that.getHost()) : that.getHost() == null;
 	}
 
 	@Override
@@ -95,19 +93,20 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
 		Integer steamQueryId = (Integer) getSteamQuery().setDbId(session);
 		Integer hostId = (Integer) getHost().setDbId(session);
-		if (id == null && steamQueryId != null && hostId != null) {
-			Query query = session.createQuery(
-					"select r form " + getClass().getSimpleName() + " as r where r.steamQuery = " + steamQueryId + " and r.host = " + hostId
-			);
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		if (steamQueryId != null && hostId != null) {
+			Query query = session.createQuery("select r form " + getClass().getSimpleName() + " as r where r.steamQuery = " + steamQueryId + " and r.host = " + hostId);
+			for (Object o : query.list()) {
+				if (equals(session.load(getClass(), (Integer) o))) {
+					setId((Integer) o);
+					return o;
+				}
 			}
 		}
-		return id;
+		return null;
 	}
 }

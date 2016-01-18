@@ -39,8 +39,7 @@ public class KeepAliveNumber implements LogField {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		KeepAliveNumber that = (KeepAliveNumber) o;
-		if (getNumber() != that.getNumber()) return false;
-		return true;
+		return getNumber() == that.getNumber();
 	}
 
 	@Override

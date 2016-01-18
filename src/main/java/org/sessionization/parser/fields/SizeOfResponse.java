@@ -40,8 +40,7 @@ public class SizeOfResponse implements LogField {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		SizeOfResponse that = (SizeOfResponse) o;
-		if (getSize() != that.getSize()) return false;
-		return true;
+		return getSize() == that.getSize();
 	}
 
 	@Override

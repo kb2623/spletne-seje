@@ -7,7 +7,6 @@ import org.sessionization.parser.LogField;
 import org.sessionization.parser.LogType;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -70,9 +69,8 @@ public class UserAgent implements LogField, HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		UserAgent userAgent = (UserAgent) o;
-		if (!getUserAgentString().equals(userAgent.getUserAgentString())) return false;
-		return true;
+		UserAgent that = (UserAgent) o;
+		return getUserAgentString().equals(that.getUserAgentString());
 	}
 
 	@Override
@@ -84,15 +82,16 @@ public class UserAgent implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select u.id form " + getClass().getSimpleName() + " as u where u.userAgentString = '" + getUserAgentString() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select u.id form " + getClass().getSimpleName() + " as u where u.userAgentString = '" + getUserAgentString() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

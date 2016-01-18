@@ -6,7 +6,6 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -59,9 +58,8 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		SiteName siteName = (SiteName) o;
-		if (!getName().equals(siteName.getName())) return false;
-		return true;
+		SiteName that = (SiteName) o;
+		return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
 	}
 
 	@Override
@@ -73,15 +71,16 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select s.id from " + getClass().getSimpleName() + " as s where s.name = '" + getName() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select s.id from " + getClass().getSimpleName() + " as s where s.name = '" + getName() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

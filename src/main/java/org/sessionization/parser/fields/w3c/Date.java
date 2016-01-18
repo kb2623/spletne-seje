@@ -50,9 +50,8 @@ public class Date implements LogField, TimePoint {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Date date1 = (Date) o;
-		if (!getDate().equals(date1.getDate())) return false;
-		return true;
+		Date that = (Date) o;
+		return getDate() != null ? getDate().equals(that.getDate()) : that.getDate() == null;
 	}
 
 	@Override

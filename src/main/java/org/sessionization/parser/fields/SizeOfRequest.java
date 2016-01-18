@@ -44,8 +44,7 @@ public class SizeOfRequest implements LogField {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		SizeOfRequest that = (SizeOfRequest) o;
-		if (getSize() != that.getSize()) return false;
-		return true;
+		return getSize() == that.getSize();
 	}
 
 	@Override

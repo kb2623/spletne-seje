@@ -6,7 +6,6 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -63,9 +62,8 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Host host1 = (Host) o;
-		if (!getHost().equals(host1.getHost())) return false;
-		return true;
+		Host that = (Host) o;
+		return getHost() != null ? getHost().equals(that.getHost()) : that.getHost() == null;
 	}
 
 	@Override
@@ -77,15 +75,16 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select h.id form " + getClass().getSimpleName() + " as h where h.host = '" + getHost() + "'");
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select h.id form " + getClass().getSimpleName() + " as h where h.host = '" + getHost() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }

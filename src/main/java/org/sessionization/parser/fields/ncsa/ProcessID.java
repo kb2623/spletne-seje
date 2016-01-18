@@ -38,9 +38,8 @@ public class ProcessID implements LogField {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		ProcessID processID = (ProcessID) o;
-		if (getpId() != processID.getpId()) return false;
-		return true;
+		ProcessID that = (ProcessID) o;
+		return getpId() == that.getpId();
 	}
 
 	@Override

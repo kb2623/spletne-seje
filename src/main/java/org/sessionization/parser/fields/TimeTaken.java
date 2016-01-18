@@ -47,9 +47,8 @@ public class TimeTaken implements LogField {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		TimeTaken timeTaken = (TimeTaken) o;
-		if (getTime() != timeTaken.getTime()) return false;
-		return true;
+		TimeTaken that = (TimeTaken) o;
+		return getTime() == that.getTime();
 	}
 
 	@Override

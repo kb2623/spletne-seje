@@ -6,7 +6,6 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Cacheable
@@ -83,10 +82,9 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Protocol protocol1 = (Protocol) o;
-		if (Float.compare(protocol1.getVersion(), getVersion()) != 0) return false;
-		if (!getProtocol().equals(protocol1.getProtocol())) return false;
-		return true;
+		Protocol that = (Protocol) o;
+		return Float.compare(that.getVersion(), getVersion()) == 0
+				&& getProtocol() != null ? getProtocol().equals(that.getProtocol()) : that.getProtocol() == null;
 	}
 
 	@Override
@@ -99,15 +97,16 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public Object setDbId(Session session) {
-		Integer id = getId();
-		if (id == null) {
-			Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.protocol = '" + getProtocol() + "' and p.version = " + getVersion());
-			List list = query.list();
-			if (!list.isEmpty()) {
-				id = (Integer) list.get(0);
-				setId(id);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.protocol = '" + getProtocol() + "' and p.version = " + getVersion());
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
 			}
 		}
-		return id;
+		return null;
 	}
 }
