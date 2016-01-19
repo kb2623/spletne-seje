@@ -278,6 +278,7 @@ public class UserSessionDump {
 					aClass.addMethod(method);
 				}
 				/** Object setDbId(Session session) */{
+					// TODO: 1/19/16
 					builder.setLength(0);
 					builder.append("public " + Object.class.getName() + " setDbId(" + Session.class.getName() + " session) {");
 					if (userId != null) {

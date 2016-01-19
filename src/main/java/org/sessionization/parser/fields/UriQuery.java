@@ -84,8 +84,8 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof UriQuery)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		UriQuery taht = (UriQuery) o;
 		if (getPairs() == null ? taht.getPairs() == null : false) {
 			return true;

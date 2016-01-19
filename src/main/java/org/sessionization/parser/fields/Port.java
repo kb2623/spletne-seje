@@ -69,8 +69,8 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Port)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		Port that = (Port) o;
 		return getPortNumber() == that.getPortNumber()
 				&& isServer() == that.isServer();

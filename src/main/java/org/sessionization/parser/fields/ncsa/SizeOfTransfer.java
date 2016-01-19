@@ -36,8 +36,8 @@ public class SizeOfTransfer implements LogField {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof SizeOfTransfer)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		SizeOfTransfer that = (SizeOfTransfer) o;
 		return getSize() == that.getSize();
 	}

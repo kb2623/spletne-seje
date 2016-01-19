@@ -59,8 +59,8 @@ public class RemoteUser implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof RemoteUser)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		RemoteUser that = (RemoteUser) o;
 		return getUser() != null ? getUser().equals(that.getUser()) : that.getUser() == null;
 	}

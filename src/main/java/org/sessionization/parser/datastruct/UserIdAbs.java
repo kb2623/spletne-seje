@@ -31,8 +31,7 @@ public abstract class UserIdAbs implements HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof UserIdAbs)) return false;
+		if (o == null || !(o instanceof UserIdAbs)) return false;
 		return true;
 	}
 

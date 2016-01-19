@@ -102,8 +102,8 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Cookie)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		Cookie that = (Cookie) o;
 		if (getPairs() == null ? that.getPairs() == null : false) {
 			return true;

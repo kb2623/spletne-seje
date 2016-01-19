@@ -36,8 +36,7 @@ public abstract class UserSessionAbs implements TimePoint, HibernateUtil.Hiberna
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof UserSessionAbs)) return false;
+		if (o == null || !(o instanceof UserSessionAbs)) return false;
 		return true;
 	}
 

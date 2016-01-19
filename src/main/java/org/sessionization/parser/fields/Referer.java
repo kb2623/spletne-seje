@@ -66,8 +66,8 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Referer)) return false;
 		if (this == o) return true;
-		if (!(o instanceof Referer)) return false;
 		Referer that = (Referer) o;
 		return getSteamQuery() != null ? getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() == null
 				&& getHost() != null ? getHost().equals(that.getHost()) : that.getHost() == null;

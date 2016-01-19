@@ -41,8 +41,8 @@ public class Win32Status implements LogField {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Win32Status)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		Win32Status that = (Win32Status) o;
 		return getStatus() == that.getStatus();
 	}

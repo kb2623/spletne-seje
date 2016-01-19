@@ -60,8 +60,8 @@ public class ComputerName implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof ComputerName)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		ComputerName that = (ComputerName) o;
 		return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
 	}

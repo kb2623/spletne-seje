@@ -36,8 +36,8 @@ public class KeepAliveNumber implements LogField {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof KeepAliveNumber)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		KeepAliveNumber that = (KeepAliveNumber) o;
 		return getNumber() == that.getNumber();
 	}

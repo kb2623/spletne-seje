@@ -58,8 +58,8 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof UriQueryPair)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		UriQueryPair that = (UriQueryPair) o;
 		return getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null
 				&& getKey() != null ? getKey().equals(that.getKey()) : that.getKey() == null;

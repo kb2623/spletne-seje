@@ -79,8 +79,13 @@ public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateT
 		if (o == null || !(o instanceof PageViewAbs)) return false;
 		if (this == o) return true;
 		PageViewAbs that = (PageViewAbs) o;
-		if (getRequests() != null ? !getRequests().equals(that.getRequests()) : that.getRequests() != null) return false;
-		return true;
+		if (getRequests() == null ? that.getRequests() == null : false) {
+			return true;
+		} else if (getRequests().size() == that.getRequests().size()) {
+			return getRequests().containsAll(that.getRequests());
+		} else {
+			return false;
+		}
 	}
 
 	@Override

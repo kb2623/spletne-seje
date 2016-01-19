@@ -75,8 +75,8 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof UriSteamQuery)) return false;
 		if (this == o) return true;
-		if (!(o instanceof UriSteamQuery)) return false;
 		UriSteamQuery that = (UriSteamQuery) o;
 		return getUriSteam() != null ? getUriSteam().equals(that.getUriSteam()) : that.getUriSteam() == null
 				&& getQuery() != null ? getQuery().equals(that.getQuery()) : that.getQuery() == null;

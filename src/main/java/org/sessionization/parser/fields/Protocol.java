@@ -80,8 +80,8 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Protocol)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		Protocol that = (Protocol) o;
 		return Float.compare(that.getVersion(), getVersion()) == 0
 				&& getProtocol() != null ? getProtocol().equals(that.getProtocol()) : that.getProtocol() == null;

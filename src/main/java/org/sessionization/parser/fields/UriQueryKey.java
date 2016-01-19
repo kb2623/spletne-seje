@@ -44,8 +44,8 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof UriQueryKey)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		UriQueryKey that = (UriQueryKey) o;
 		return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
 	}

@@ -52,8 +52,8 @@ public class Time implements LogField, TimePoint {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Time)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		Time that = (Time) o;
 		return getTime() != null ? getTime().equals(that.getTime()) : that.getTime() == null;
 	}

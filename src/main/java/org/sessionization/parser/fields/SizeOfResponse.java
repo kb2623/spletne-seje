@@ -37,8 +37,8 @@ public class SizeOfResponse implements LogField {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof SizeOfResponse)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		SizeOfResponse that = (SizeOfResponse) o;
 		return getSize() == that.getSize();
 	}

@@ -56,8 +56,8 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof SiteName)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		SiteName that = (SiteName) o;
 		return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
 	}

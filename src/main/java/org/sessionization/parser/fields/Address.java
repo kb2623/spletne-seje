@@ -91,8 +91,8 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Address)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		Address that = (Address) o;
 		return isServerAddress() == that.isServerAddress()
 				&& getAddress() != null ? getAddress().equals(that.getAddress()) : that.getAddress() == null;

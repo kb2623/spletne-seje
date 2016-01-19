@@ -44,8 +44,8 @@ public class CookieKey implements HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof CookieKey)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		CookieKey that = (CookieKey) o;
 		return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
 	}

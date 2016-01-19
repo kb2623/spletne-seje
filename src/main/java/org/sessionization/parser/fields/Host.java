@@ -60,8 +60,8 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Host)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		Host that = (Host) o;
 		return getHost() != null ? getHost().equals(that.getHost()) : that.getHost() == null;
 	}

@@ -58,8 +58,8 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof CookiePair)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		CookiePair that = (CookiePair) o;
 		return getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null
 				&& getKey() != null ? getKey().equals(that.getKey()) : that.getKey() == null;

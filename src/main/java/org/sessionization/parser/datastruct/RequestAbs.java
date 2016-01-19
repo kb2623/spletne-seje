@@ -32,8 +32,7 @@ public abstract class RequestAbs implements TimePoint, HibernateUtil.HibernateTa
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof RequestAbs)) return false;
+		if (o == null || !(o instanceof RequestAbs)) return false;
 		return true;
 	}
 

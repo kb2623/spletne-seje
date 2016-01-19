@@ -60,8 +60,8 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof RemoteLogname)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		RemoteLogname that = (RemoteLogname) o;
 		return getLogname() != null ? getLogname().equals(that.getLogname()) : that.getLogname() == null;
 	}

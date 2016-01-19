@@ -67,8 +67,8 @@ public class UserAgent implements LogField, HibernateUtil.HibernateTable {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof UserAgent)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		UserAgent that = (UserAgent) o;
 		return getUserAgentString().equals(that.getUserAgentString());
 	}

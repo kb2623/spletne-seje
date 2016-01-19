@@ -41,8 +41,8 @@ public class StatusCode implements LogField {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof StatusCode)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		StatusCode that = (StatusCode) o;
 		return getStatus() == that.getStatus();
 	}

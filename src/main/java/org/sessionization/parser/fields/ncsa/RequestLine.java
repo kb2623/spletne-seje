@@ -128,8 +128,8 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof RequestLine)) return false;
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 		RequestLine that = (RequestLine) o;
 		return getMethod() != null ? getMethod().equals(that.getMethod()) : that.getMethod() == null
 				&& getSteamQuery() != null ? getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() == null

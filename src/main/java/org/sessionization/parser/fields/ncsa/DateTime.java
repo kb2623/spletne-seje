@@ -69,8 +69,8 @@ public class DateTime implements LogField, TimePoint {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof DateTime)) return false;
 		if (this == o) return true;
-		if (!(o instanceof DateTime)) return false;
 		DateTime that = (DateTime) o;
 		return getDate() != null ? getDate().equals(that.getDate()) : that.getDate() == null
 				&& getTime() != null ? getTime().equals(that.getTime()) : that.getTime() == null;
