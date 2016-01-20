@@ -42,12 +42,13 @@ public class ParsedLine implements Iterable<LogField>, TimePoint {
 	 * @return Zahtevo opravil robot ali ne.
 	 */
 	public boolean isCrawler() {
-		for (LogField f : array)
+		for (LogField f : array) {
 			if (f instanceof UriSteam && !(f instanceof Referer)) {
 				return ((UriSteam) f).getFile().equals("robots.txt");
 			} else if (f instanceof UserAgent) {
 				return ((UserAgent) f).isCrawler();
 			}
+		}
 		return false;
 	}
 

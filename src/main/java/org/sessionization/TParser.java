@@ -24,9 +24,13 @@ public class TParser extends Thread {
 		do {
 			try {
 				line = parser.parseLine();
-				queue.put(line);
-			} catch (ParseException | IOException | InterruptedException e) {
+			} catch (ParseException | IOException e) {
 				line = null;
+			}
+			try {
+				queue.put(line);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		} while (line != null);
 	}

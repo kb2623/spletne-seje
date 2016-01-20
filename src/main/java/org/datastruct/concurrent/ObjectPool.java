@@ -148,23 +148,31 @@ public class ObjectPool {
 		Map map = mapObject.get(c);
 		T ret = null;
 		if (map == null) {
-			lock.writeLock().lock();
-			map = initMap(c);
-			ret = makeObjectForPool(c, args);
-			if (ret != null) {
-				map.put(hash, ret);
-			}
-			mapObject.put(c, map);
-			lock.writeLock().unlock();
-		} else {
-			ret = (T) map.get(hash);
-			if (ret == null) {
-				lock.writeLock().lock();
+			lock.readLock().unlock();
+			if (lock.writeLock().tryLock()) {
+				map = initMap(c);
 				ret = makeObjectForPool(c, args);
 				if (ret != null) {
 					map.put(hash, ret);
 				}
+				mapObject.put(c, map);
 				lock.writeLock().unlock();
+			} else {
+				return getObject(c, hash, args);
+			}
+		} else {
+			ret = (T) map.get(hash);
+			if (ret == null) {
+				lock.readLock().unlock();
+				if (lock.writeLock().tryLock()) {
+					ret = makeObjectForPool(c, args);
+					if (ret != null) {
+						map.put(hash, ret);
+					}
+					lock.writeLock().unlock();
+				} else {
+					return getObject(c, hash, args);
+				}
 			}
 		}
 		lock.readLock().unlock();

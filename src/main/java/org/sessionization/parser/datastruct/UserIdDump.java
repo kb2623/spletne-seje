@@ -186,7 +186,6 @@ public class UserIdDump {
 				aClass.addMethod(method);
 			}
 			/** Object setDbId(Session session) */{
-				// TODO: 1/19/16
 				builder.setLength(0);
 				builder.append("public " + Object.class.getName() + " setDbId(" + Session.class.getName() + " session) {");
 				for (LogFieldType f : fields) {
@@ -194,8 +193,8 @@ public class UserIdDump {
 						builder.append(Integer.class.getName() + " " + f.getFieldName() + " = " + f.getGetterName() + "().setDbId(session);\n");
 					}
 				}
-				builder.append(Integer.class.getName() + " id = getId();\n");
-				builder.append("if (id == null && ");
+				builder.append("if (getId() != null) { return getId(); }");
+				builder.append("if (");
 				for (LogFieldType f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
 						builder.append(" " + f.getFieldName() + " != null &&");
@@ -216,16 +215,15 @@ public class UserIdDump {
 				builder.append(");\n");
 				builder.append("for (" + Iterator.class.getName() + " it = query.list().iterator(); it.hasNext(); ) {\n")
 						.append(Integer.class.getName() + " i = it.next();\n")
-						.append(CLASSNAME + " ins = session.load(" + CLASSNAME + ".class, i);\n")
+						.append(CLASSNAME + " ins = session.load(getClass(), i);\n")
 						.append("if (equals(ins)) {\n")
 						.append("this.setId(i);\n")
 						.append("return i;\n")
 						.append('}')
 						.append('}');
 				builder.append('}');
-				builder.append("return id;\n");
+				builder.append("return null;\n");
 				builder.append('}');
-				System.out.println(builder.toString());
 				CtMethod method = CtMethod.make(builder.toString(), aClass);
 				aClass.addMethod(method);
 			}

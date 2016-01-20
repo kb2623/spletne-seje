@@ -37,8 +37,14 @@ public class TSaveDb extends Thread {
 	public void run() {
 		UserSessionAbs session = null;
 		try {
-			session = queue.take();
-			db.execute(operation, session);
+			while (true) {
+				session = queue.take();
+				if (session != null) {
+					db.execute(operation, session);
+				} else {
+					break;
+				}
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
