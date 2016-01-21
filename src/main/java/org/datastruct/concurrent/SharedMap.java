@@ -1,25 +1,19 @@
 package org.datastruct.concurrent;
 
-import org.datastruct.AvlTree;
-
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
+public class SharedMap<K, V> implements ConcurrentMap<K, V> {
 
 	private ReadWriteLock lock;
+	private Map<K, V> map;
 
-	public ConcurrentAvlTree() {
-		super();
-		lock = new ReentrantReadWriteLock();
-	}
-
-	public ConcurrentAvlTree(Comparator<K> keyCmp) {
-		super(keyCmp);
+	public SharedMap(Map<K, V> map) {
+		this.map = map;
 		lock = new ReentrantReadWriteLock();
 	}
 
@@ -27,7 +21,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public int size() {
 		lock.readLock().lock();
 		try {
-			return super.size();
+			return map.size();
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -37,7 +31,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public boolean isEmpty() {
 		lock.readLock().lock();
 		try {
-			return super.isEmpty();
+			return map.isEmpty();
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -47,7 +41,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public boolean containsKey(Object o) {
 		lock.readLock().lock();
 		try {
-			return super.containsKey(o);
+			return map.containsKey(o);
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -57,7 +51,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public boolean containsValue(Object o) {
 		lock.readLock().lock();
 		try {
-			return super.containsValue(o);
+			return map.containsValue(o);
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -67,7 +61,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public V get(Object o) {
 		lock.readLock().lock();
 		try {
-			return super.get(o);
+			return map.get(o);
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -77,7 +71,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public V put(K key, V value) throws NullPointerException {
 		lock.writeLock().lock();
 		try {
-			return super.put(key, value);
+			return map.put(key, value);
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -87,7 +81,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public V remove(Object o) {
 		lock.writeLock().lock();
 		try {
-			return super.remove(o);
+			return map.remove(o);
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -95,13 +89,8 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 
 	@Override
 	public void putAll(Map<? extends K, ? extends V> map) throws NullPointerException {
-		lock.writeLock().lock();
-		try {
-			for (Map.Entry<? extends K, ? extends V> e : map.entrySet()) {
-				super.put(e.getKey(), e.getValue());
-			}
-		} finally {
-			lock.writeLock().unlock();
+		for (Entry<? extends K, ? extends V> e : map.entrySet()) {
+			put(e.getKey(), e.getValue());
 		}
 	}
 
@@ -109,7 +98,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public void clear() {
 		lock.writeLock().lock();
 		try {
-			super.clear();
+			map.clear();
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -119,7 +108,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public Set<K> keySet() {
 		lock.readLock().lock();
 		try {
-			return super.keySet();
+			return map.keySet();
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -129,9 +118,9 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public Collection<V> values() {
 		lock.readLock().lock();
 		try {
-			return super.values();
+			return map.values();
 		} finally {
-			lock.readLock().lock();
+			lock.readLock().unlock();
 		}
 	}
 
@@ -139,7 +128,7 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	public Set<Entry<K, V>> entrySet() {
 		lock.readLock().lock();
 		try {
-			return super.entrySet();
+			return map.entrySet();
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -156,12 +145,49 @@ public class ConcurrentAvlTree<K, V> extends AvlTree<K, V> {
 	}
 
 	@Override
-	public String printTree() {
-		lock.readLock().lock();
-		try {
-			return super.printTree();
-		} finally {
-			lock.readLock().unlock();
+	public V putIfAbsent(K key, V value) {
+		if (containsKey(key)) {
+			return get(key);
+		} else {
+			return put(key, value);
 		}
+	}
+
+	@Override
+	public boolean remove(Object key, Object value) {
+		if (containsKey(key)) {
+			Object o = get(key);
+			if (o == null && value == null) {
+				remove(key);
+				return true;
+			} else if (o.equals(value)) {
+				remove(key);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean replace(K key, V oldValue, V newValue) {
+		if (containsKey(key)) {
+			Object o = get(key);
+			if (o == null && oldValue == null) {
+				put(key, newValue);
+				return true;
+			} else if (o.equals(oldValue)) {
+				put(key, newValue);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public V replace(K key, V value) {
+		if (containsKey(key)) {
+			return put(key, value);
+		}
+		return null;
 	}
 }

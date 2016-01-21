@@ -1,32 +1,42 @@
 package org.sessionization;
 
+import org.hibernate.Transaction;
 import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.datastruct.UserSessionAbs;
 
 import java.util.concurrent.BlockingQueue;
 
-public class TSaveDb extends Thread {
+public class SaveDataBaseThread extends Thread {
+
+	private static volatile int ThreadNumber = -1;
 
 	private BlockingQueue<UserSessionAbs> queue;
 	private HibernateUtil db;
 	private HibernateUtil.Operation operation;
 
-	public TSaveDb(BlockingQueue queue, HibernateUtil db, HibernateUtil.Operation operation) {
-		super();
+	public SaveDataBaseThread(ThreadGroup group, BlockingQueue queue, HibernateUtil db, HibernateUtil.Operation operation) {
+		super(group, "SaveToDataBaseThread-" + ThreadNumber++);
 		this.queue = queue;
 		this.db = db;
 		this.operation = operation;
 	}
 
-	public TSaveDb(BlockingQueue queue, HibernateUtil db) {
+	public SaveDataBaseThread(BlockingQueue queue, HibernateUtil db, HibernateUtil.Operation operation) {
+		this(null, queue, db, operation);
+	}
+
+	public SaveDataBaseThread(BlockingQueue queue, HibernateUtil db) {
 		this(queue, db, (session, table) -> {
 			Integer ret = (Integer) table.setDbId(session);
+			Transaction transaction = session.getTransaction();
 			try {
-				session.getTransaction().begin();
+				transaction.begin();
 				session.saveOrUpdate(table);
-				session.getTransaction().commit();
+				transaction.commit();
 			} catch (Exception e) {
-				session.getTransaction().rollback();
+				if (transaction != null) {
+					transaction.rollback();
+				}
 				throw e;
 			}
 			return ret;
@@ -36,17 +46,17 @@ public class TSaveDb extends Thread {
 	@Override
 	public void run() {
 		UserSessionAbs session = null;
-		try {
-			while (true) {
+		while (true) {
+			try {
 				session = queue.take();
 				if (session != null) {
 					db.execute(operation, session);
 				} else {
 					break;
 				}
+			} catch (InterruptedException e) {
+				break;
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 }

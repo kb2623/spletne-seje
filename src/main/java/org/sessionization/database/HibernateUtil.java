@@ -10,7 +10,7 @@ import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.ArgsParser;
+import org.sessionization.parser.ArgumentParser;
 import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.datastruct.*;
@@ -29,15 +29,15 @@ public class HibernateUtil implements AutoCloseable {
 	private ServiceRegistry serviceRegistry = null;
 	private ClassPoolLoader loader = null;
 
-	public HibernateUtil(ArgsParser argsParser, WebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
+	public HibernateUtil(ArgumentParser argumentParser, WebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
 		/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
 		List<LogFieldType> list = logParser.getFieldType();
 		if (logParser.getIgnoreFieldTypes() != null) {
 			list.removeAll(logParser.getIgnoreFieldTypes());
 		}
 		/** Inicializacija ClassLoaderja */
-		this.loader = initClassLoader(argsParser);
-		Properties props = initProperties(argsParser);
+		this.loader = initClassLoader(argumentParser);
+		Properties props = initProperties(argumentParser);
 		/** Dodaj potrebne razrede */
 		serviceRegistry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
@@ -55,7 +55,7 @@ public class HibernateUtil implements AutoCloseable {
 		}
 	}
 
-	private Properties initProperties(ArgsParser parser) {
+	private Properties initProperties(ArgumentParser parser) {
 		Properties props = new Properties();
 		props.setProperty("hibernate.current_session_context_class", "thread");
 		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCacheProvider");
@@ -97,14 +97,14 @@ public class HibernateUtil implements AutoCloseable {
 		return classes;
 	}
 
-	private ClassPoolLoader initClassLoader(ArgsParser argsParser) throws NotFoundException, CannotCompileException, IOException {
+	private ClassPoolLoader initClassLoader(ArgumentParser argumentParser) throws NotFoundException, CannotCompileException, IOException {
 		/** Dodaj jar datoeke */
 		Set<URL> set = new HashSet<>();
-		if (argsParser.getDriverUrl() != null) {
-			set.add(argsParser.getDriverUrl());
+		if (argumentParser.getDriverUrl() != null) {
+			set.add(argumentParser.getDriverUrl());
 		}
-		if (argsParser.getDialect() != null) {
-			set.add(argsParser.getDialect());
+		if (argumentParser.getDialect() != null) {
+			set.add(argumentParser.getDialect());
 		}
 		if (set.size() > 0) {
 			URLClassLoader urlLoader = new URLClassLoader(set.toArray(new URL[set.size()]), ClassLoader.getSystemClassLoader());

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-public class ArgsParser {
+public class ArgumentParser {
 
 	private Properties properties;
 	private CmdLineParser parser;
@@ -26,7 +26,7 @@ public class ArgsParser {
 	@Argument(usage = "Input log files", metaVar = "<path>", required = true, multiValued = true)
 	private File[] inputFile = null;
 
-	public ArgsParser(String... args) throws CmdLineException, URISyntaxException {
+	public ArgumentParser(String... args) throws CmdLineException, URISyntaxException {
 		initDefaults();
 		parser = new PropretiesCmdParser(this);
 		parser.parseArgument(args);

@@ -7,15 +7,21 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.concurrent.BlockingQueue;
 
-public class TParser extends Thread {
+public class ParserThread extends Thread {
+
+	private static volatile int ThreadNumber = -1;
 
 	private BlockingQueue<ParsedLine> queue;
 	private WebLogParser parser;
 
-	public TParser(BlockingQueue queue, WebLogParser parser) {
-		super();
+	public ParserThread(ThreadGroup group, BlockingQueue queue, WebLogParser parser) {
+		super(group, "ParserThread-" + ThreadNumber++);
 		this.queue = queue;
 		this.parser = parser;
+	}
+
+	public ParserThread(BlockingQueue queue, WebLogParser parser) {
+		this(null, queue, parser);
 	}
 
 	@Override
@@ -24,13 +30,11 @@ public class TParser extends Thread {
 		do {
 			try {
 				line = parser.parseLine();
+				queue.put(line);
 			} catch (ParseException | IOException e) {
 				line = null;
-			}
-			try {
-				queue.put(line);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				line = null;
 			}
 		} while (line != null);
 	}
