@@ -198,6 +198,21 @@ public class LinkQueue<E> implements IQueue<E> {
 		Node(E data) {
 			this(data, null);
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof Node)) return false;
+			Node<?> that = (Node<?>) o;
+			return data != null ? data.equals(that.data) : that.data == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = data != null ? data.hashCode() : 0;
+			result = 31 * result + (prev != null ? prev.hashCode() : 0);
+			return result;
+		}
 	}
 
 	class IterateLinkQueue<E> implements Iterator<E> {

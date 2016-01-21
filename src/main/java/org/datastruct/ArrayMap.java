@@ -4,7 +4,7 @@ import org.datastruct.exception.MapFullException;
 
 import java.util.*;
 
-public class ArrayMap<Key, Value> implements IMap<Key, Value> {
+public class ArrayMap<Key, Value> implements Map<Key, Value> {
 
 	private Entry<Key, Value>[] store;
 	private int size = 0;
@@ -162,6 +162,13 @@ public class ArrayMap<Key, Value> implements IMap<Key, Value> {
 	}
 
 	@Override
+	public void putAll(Map<? extends Key, ? extends Value> m) {
+		for (Map.Entry<? extends Key, ? extends Value> e : m.entrySet()) {
+			put(e.getKey(), e.getValue());
+		}
+	}
+
+	@Override
 	public void clear() {
 		store = new Entry[maxSize];
 		size = 0;
@@ -236,6 +243,22 @@ public class ArrayMap<Key, Value> implements IMap<Key, Value> {
 			Value ret = value;
 			value = v;
 			return ret;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == null || !(o instanceof Entry)) return false;
+			if (this == o) return true;
+			Entry<?, ?> that = (Entry<?, ?>) o;
+			return getKey() != null ? getKey().equals(that.getKey()) : that.getKey() == null &&
+					getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = getKey() != null ? getKey().hashCode() : 0;
+			result = 31 * result + (getValue() != null ? getValue().hashCode() : 0);
+			return result;
 		}
 	}
 }

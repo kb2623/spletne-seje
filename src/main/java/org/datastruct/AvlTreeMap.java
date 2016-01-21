@@ -2,16 +2,16 @@ package org.datastruct;
 
 import java.util.*;
 
-public class AvlTree<K, V> implements IMap<K, V> {
+public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	private AVLEntry<K, V> root;
 	private CompareKey<K> keyCmp;
 
-	public AvlTree() {
+	public AvlTreeMap() {
 		this((k1, k2) -> k1.hashCode() - k2.hashCode());
 	}
 
-	public AvlTree(Comparator<K> keyCmp) {
+	public AvlTreeMap(Comparator<K> keyCmp) {
 		root = null;
 		this.keyCmp = new CompareKey<>(keyCmp);
 	}
@@ -304,6 +304,13 @@ public class AvlTree<K, V> implements IMap<K, V> {
 	}
 
 	@Override
+	public void putAll(Map<? extends K, ? extends V> m) {
+		for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
+			put(e.getKey(), e.getValue());
+		}
+	}
+
+	@Override
 	public void clear() {
 		root = null;
 	}
@@ -409,6 +416,126 @@ public class AvlTree<K, V> implements IMap<K, V> {
 		return builder.toString();
 	}
 
+	@Override
+	public Entry<K, V> lowerEntry(K key) {
+		return null;
+	}
+
+	@Override
+	public K lowerKey(K key) {
+		return null;
+	}
+
+	@Override
+	public Entry<K, V> floorEntry(K key) {
+		return null;
+	}
+
+	@Override
+	public K floorKey(K key) {
+		return null;
+	}
+
+	@Override
+	public Entry<K, V> ceilingEntry(K key) {
+		return null;
+	}
+
+	@Override
+	public K ceilingKey(K key) {
+		return null;
+	}
+
+	@Override
+	public Entry<K, V> higherEntry(K key) {
+		return null;
+	}
+
+	@Override
+	public K higherKey(K key) {
+		return null;
+	}
+
+	@Override
+	public Entry<K, V> firstEntry() {
+		return null;
+	}
+
+	@Override
+	public Entry<K, V> lastEntry() {
+		return null;
+	}
+
+	@Override
+	public Entry<K, V> pollFirstEntry() {
+		return null;
+	}
+
+	@Override
+	public Entry<K, V> pollLastEntry() {
+		return null;
+	}
+
+	@Override
+	public NavigableMap<K, V> descendingMap() {
+		return null;
+	}
+
+	@Override
+	public NavigableSet<K> navigableKeySet() {
+		return null;
+	}
+
+	@Override
+	public NavigableSet<K> descendingKeySet() {
+		return null;
+	}
+
+	@Override
+	public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+		return null;
+	}
+
+	@Override
+	public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
+		return null;
+	}
+
+	@Override
+	public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+		return null;
+	}
+
+	@Override
+	public Comparator<? super K> comparator() {
+		return keyCmp;
+	}
+
+	@Override
+	public SortedMap<K, V> subMap(K fromKey, K toKey) {
+		return null;
+	}
+
+	@Override
+	public SortedMap<K, V> headMap(K toKey) {
+		return null;
+	}
+
+	@Override
+	public SortedMap<K, V> tailMap(K fromKey) {
+		return null;
+	}
+
+	@Override
+	public K firstKey() {
+		return null;
+	}
+
+	@Override
+	public K lastKey() {
+		return null;
+	}
+
 	private class CompareKey<K> implements Comparator<K> {
 
 		private Comparator<K> cmp;
@@ -487,12 +614,11 @@ public class AvlTree<K, V> implements IMap<K, V> {
 
 		@Override
 		public boolean equals(Object o) {
+			if (o == null || !(o instanceof AVLEntry)) return false;
 			if (this == o) return true;
-			if (!(o instanceof AVLEntry)) return false;
-			AVLEntry<?, ?> avlEntry = (AVLEntry<?, ?>) o;
-			if (getKey() != null ? !getKey().equals(avlEntry.getKey()) : avlEntry.getKey() != null) return false;
-			if (getValue() != null ? !getValue().equals(avlEntry.getValue()) : avlEntry.getValue() != null) return false;
-			return true;
+			AVLEntry<?, ?> that = (AVLEntry<?, ?>) o;
+			return getKey() != null ? getKey().equals(that.getKey()) : that.getKey() == null &&
+					getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null;
 		}
 
 		@Override

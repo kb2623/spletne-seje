@@ -1,6 +1,6 @@
 package org.sessionization.parser;
 
-import org.datastruct.RadixTree;
+import org.datastruct.RadixTreeMap;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -34,7 +34,7 @@ public enum LogFormats {
 	private Map<String, LogFieldType> enumMaper;
 
 	LogFormats(int n) {
-		Map<String, LogFieldType> map = new RadixTree<>();
+		Map<String, LogFieldType> map = new RadixTreeMap<>();
 		for (LogFieldType type : EnumSet.allOf(LogFieldType.class)) {
 			for (String s : type.getFormatString()) {
 				switch (s.isEmpty() ? 3 : n) {

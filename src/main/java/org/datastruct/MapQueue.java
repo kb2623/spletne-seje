@@ -194,6 +194,22 @@ public class MapQueue<K, V> extends SkipMap<K, V> implements Iterable<V> {
 			}
 			prev = next = null;
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == null || !(o instanceof Entry)) return false;
+			if (this == o) return true;
+			Entry<?, ?> that = (Entry<?, ?>) o;
+			return super.equals(that);
+		}
+
+		@Override
+		public int hashCode() {
+			int result = super.hashCode();
+			result = 31 * result + (prev != null ? prev.hashCode() : 0);
+			result = 31 * result + (next != null ? next.hashCode() : 0);
+			return result;
+		}
 	}
 
 	class QueueIterator<V> implements Iterator<V> {

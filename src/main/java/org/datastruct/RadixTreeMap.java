@@ -3,12 +3,24 @@ package org.datastruct;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
+public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 
 	private RadixEntry rootNode;
+	private Comparator<String> cmp;
 
-	public RadixTree() {
+	public RadixTreeMap() {
 		rootNode = new RadixEntry();
+		cmp = (String k1, String k2) -> {
+			int numChar = 0;
+			while (numChar < k2.length() && numChar < k1.length()) {
+				if (k2.charAt(numChar) != k1.charAt(numChar)) {
+					break;
+				} else {
+					numChar++;
+				}
+			}
+			return numChar;
+		};
 	}
 
 	public V add(V data, String key) throws NullPointerException {
@@ -28,7 +40,7 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	 * @return Vrednost starega elementa
 	 */
 	private V insert(V data, String key, RadixEntry node) {
-		int numMatchChar = node.getNumberOfMatchingCharacters(key);
+		int numMatchChar = cmp.compare(node.key, key);
 		if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			return node.setValue(data);
 		} else if (numMatchChar == 0 || (numMatchChar == node.key.length() && numMatchChar < key.length())) {
@@ -67,7 +79,7 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 		RadixEntry curr = rootNode;
 		String currKey = key;
 		while (true) {
-			int numMatchChar = curr.getNumberOfMatchingCharacters(currKey);
+			int numMatchChar = cmp.compare(curr.key, currKey);
 			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
 				return curr.setValue(data);
 			} else if (numMatchChar == 0 || (numMatchChar == curr.key.length() && numMatchChar < currKey.length())) {
@@ -106,7 +118,7 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 		String currKey = key;
 		RadixEntry curr = rootNode;
 		while (curr != null) {
-			int numMatchChar = curr.getNumberOfMatchingCharacters(currKey);
+			int numMatchChar = cmp.compare(curr.key, currKey);
 			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
 				return curr.data;
 			} else if (numMatchChar < currKey.length() && numMatchChar == curr.key.length()) {
@@ -127,7 +139,7 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	 * @return Vrednost elementa
 	 */
 	private V search(RadixEntry node, String key) {
-		int numMatchChar = node.getNumberOfMatchingCharacters(key);
+		int numMatchChar = cmp.compare(node.key, key);
 		if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			return node.data;
 		} else if (numMatchChar < key.length() && numMatchChar == node.key.length()) {
@@ -160,7 +172,7 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	 * @return Vrednost izbrisanega elementa
 	 */
 	private V delete(String key, RadixEntry parent, RadixEntry node) {
-		int numMatchChar = node.getNumberOfMatchingCharacters(key);
+		int numMatchChar = cmp.compare(node.key, key);
 		if (node.key.equals("") || (numMatchChar < key.length() && numMatchChar == node.key.length())) {
 			String ostanekKljuca = key.substring(numMatchChar);
 			RadixEntry chield = node.children.get(ostanekKljuca.charAt(0));
@@ -178,7 +190,9 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 						mergeNodes(parent, node);
 					}
 				} else if (node.children.size() == 1) {
-					mergeNodes(node, node.children.getAt(0));
+					for (RadixEntry e : node.children.values()) {
+						mergeNodes(node, e);
+					}
 				} else {
 					node.data = null;
 				}
@@ -200,17 +214,21 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 		String currKey = key;
 		V data = null;
 		while (curr != null) {
-			int numMatchChar = curr.getNumberOfMatchingCharacters(currKey);
+			int numMatchChar = cmp.compare(curr.key, currKey);
 			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
 				if (curr.data != null) {
 					data = curr.data;
 					if (curr.children.isEmpty()) {
 						prev.children.remove(curr.key.charAt(0));
 						if (prev.children.size() == 1 && prev.data == null && prev != rootNode) {
-							mergeNodes(prev, prev.children.getAt(0));
+							for (RadixEntry e : prev.children.values()) {
+								mergeNodes(prev, e);
+							}
 						}
 					} else if (curr.children.size() == 1 && prev != rootNode) {
-						mergeNodes(curr, curr.children.getAt(0));
+						for (RadixEntry e : curr.children.values()) {
+							mergeNodes(curr, e);
+						}
 					} else {
 						curr.data = null;
 					}
@@ -425,6 +443,13 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 	}
 
 	@Override
+	public void putAll(Map<? extends String, ? extends V> m) {
+		for (Map.Entry<? extends String, ? extends V> e : m.entrySet()) {
+			put(e.getKey(), e.getValue());
+		}
+	}
+
+	@Override
 	public void clear() {
 		rootNode = new RadixEntry();
 	}
@@ -566,13 +591,140 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 		}
 	}
 
+	@Override
+	public Entry<String, V> lowerEntry(String key) {
+		return null;
+	}
+
+	@Override
+	public String lowerKey(String key) {
+		return null;
+	}
+
+	@Override
+	public Entry<String, V> floorEntry(String key) {
+		return null;
+	}
+
+	@Override
+	public String floorKey(String key) {
+		return null;
+	}
+
+	@Override
+	public Entry<String, V> ceilingEntry(String key) {
+		return null;
+	}
+
+	@Override
+	public String ceilingKey(String key) {
+		return null;
+	}
+
+	@Override
+	public Entry<String, V> higherEntry(String key) {
+		return null;
+	}
+
+	@Override
+	public String higherKey(String key) {
+		return null;
+	}
+
+	@Override
+	public Entry<String, V> firstEntry() {
+		return null;
+	}
+
+	@Override
+	public Entry<String, V> lastEntry() {
+		return null;
+	}
+
+	@Override
+	public Entry<String, V> pollFirstEntry() {
+		return null;
+	}
+
+	@Override
+	public Entry<String, V> pollLastEntry() {
+		return null;
+	}
+
+	@Override
+	public NavigableMap<String, V> descendingMap() {
+		return null;
+	}
+
+	@Override
+	public NavigableSet<String> navigableKeySet() {
+		return null;
+	}
+
+	@Override
+	public NavigableSet<String> descendingKeySet() {
+		return null;
+	}
+
+	@Override
+	public NavigableMap<String, V> subMap(String fromKey, boolean fromInclusive, String toKey, boolean toInclusive) {
+		return null;
+	}
+
+	@Override
+	public NavigableMap<String, V> headMap(String toKey, boolean inclusive) {
+		return null;
+	}
+
+	@Override
+	public NavigableMap<String, V> tailMap(String fromKey, boolean inclusive) {
+		return null;
+	}
+
+	@Override
+	public Comparator<? super String> comparator() {
+		return cmp;
+	}
+
+	@Override
+	public SortedMap<String, V> subMap(String fromKey, String toKey) {
+		return null;
+	}
+
+	@Override
+	public SortedMap<String, V> headMap(String toKey) {
+		return null;
+	}
+
+	@Override
+	public SortedMap<String, V> tailMap(String fromKey) {
+		return null;
+	}
+
+	@Override
+	public String firstKey() {
+		return null;
+	}
+
+	@Override
+	public String lastKey() {
+		return null;
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		RadixTreeMap tree = new RadixTreeMap();
+		tree.rootNode = (RadixEntry) rootNode.clone();
+		return tree;
+	}
+
 	class RadixEntry implements Map.Entry<String, V> {
 
-		SkipMap<Character, RadixEntry> children;
+		Map<Character, RadixEntry> children;
 		V data;
 		String key;
 
-		private RadixEntry(V data, String key, SkipMap<Character, RadixEntry> children) {
+		private RadixEntry(V data, String key, Map<Character, RadixEntry> children) {
 			this.data = data;
 			this.key = key;
 			this.children = children;
@@ -584,18 +736,6 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 
 		private RadixEntry() {
 			this(null, "");
-		}
-
-		private int getNumberOfMatchingCharacters(String key) {
-			int numChar = 0;
-			while (numChar < key.length() && numChar < this.key.length()) {
-				if (key.charAt(numChar) != this.key.charAt(numChar)) {
-					break;
-				} else {
-					numChar++;
-				}
-			}
-			return numChar;
 		}
 
 		@Override
@@ -620,19 +760,26 @@ public class RadixTree<V> implements IMap<String, V>, Iterable<V> {
 
 		@Override
 		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null) return false;
-			if (o instanceof Entry) {
-				Entry e = (Entry) o;
-				return (getKey() != null ? getKey().equals(e.getKey()) : null == e.getKey()) && (getValue() != null ? getValue().equals(e.getValue()) : null == e.getValue());
-			} else {
-				return false;
-			}
+			if (o == null || !(o instanceof Entry)) return false;
+			if (o == this) return true;
+			Entry that = (Entry) o;
+			return (getKey() != null ? getKey().equals(that.getKey()) : null == that.getKey()) && (getValue() != null ? getValue().equals(that.getValue()) : null == that.getValue());
 		}
 
 		@Override
 		public int hashCode() {
 			return getKey() != null ? getKey().hashCode() : 0;
+		}
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException {
+			RadixEntry entryClone = new RadixEntry(data, key);
+			Map<Character, RadixEntry> map = new SkipMap<>(5);
+			for (Map.Entry<Character, RadixEntry> e : children.entrySet()) {
+				map.put(e.getKey(), (RadixEntry) e.getValue().clone());
+			}
+			entryClone.children = map;
+			return entryClone;
 		}
 	}
 

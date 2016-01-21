@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 
 public class BinomialQueue<E> implements IQueue<E> {
 
-	private Node root;
+	private Node<E> root;
 	private NodeComparator cmp;
 	public BinomialQueue(Comparator<E> cmp) {
 		this.cmp = new NodeComparator(cmp);
@@ -50,7 +50,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 		}
 		E e = (E) o;
 		Stack<Node> stack = new Stack<>();
-		Node curr = root;
+		Node<E> curr = root;
 		while (curr != null || !stack.isEmpty()) {
 			if (curr == null) {
 				curr = stack.pop();
@@ -134,7 +134,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 		return true;
 	}
 
-	private Node merge(Node prev, Node next) {
+	private Node merge(Node<E> prev, Node<E> next) {
 		if (cmp.compare(next.data, prev.data) < 0) {
 			prev.sibling = next.chield;
 			next.chield = prev;
@@ -164,7 +164,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 			if (curr == null) {
 				curr = stack.pop();
 			} else {
-				int cmp = this.cmp.compare(curr.data, e);
+				int cmp = this.cmp.compare((E) curr.data, e);
 				if (cmp == 0) {
 					break;
 				} else if (cmp < 0) {
@@ -205,7 +205,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 		} else {
 			Node min = getFirst();
 			removeNode(min);
-			return min.data;
+			return (E) min.data;
 		}
 	}
 
@@ -213,7 +213,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 		Node curr = node, prev;
 		Stack<Node> stack = new Stack<>();
 		while (curr.parent != null) {
-			E pVal = curr.parent.data;
+			E pVal = (E) curr.parent.data;
 			curr.parent.data = curr.data;
 			curr.data = pVal;
 			curr = curr.parent;
@@ -314,12 +314,12 @@ public class BinomialQueue<E> implements IQueue<E> {
 		return removeFirst();
 	}
 
-	private Node getFirst() {
+	private Node<E> getFirst() {
 		if (isEmpty()) {
 			return null;
 		} else {
-			Node min = root;
-			Node curr = root.sibling;
+			Node<E> min = root;
+			Node<E> curr = root.sibling;
 			while (curr != null) {
 				if (cmp.compare(min.data, curr.data) > 0) {
 					min = curr;
@@ -420,7 +420,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 		}
 	}
 
-	private class Node {
+	private class Node<E> {
 
 		E data;
 		Node parent;
@@ -452,6 +452,24 @@ public class BinomialQueue<E> implements IQueue<E> {
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
 			return new Node(this.data, null, null, null, this.depth);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == null || !(o instanceof Node)) return false;
+			if (this == o) return true;
+			Node<?> that = (Node<?>) o;
+			return data != null ? data.equals(that.data) : that.data == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = data != null ? data.hashCode() : 0;
+			result = 31 * result + (parent != null ? parent.hashCode() : 0);
+			result = 31 * result + (sibling != null ? sibling.hashCode() : 0);
+			result = 31 * result + (chield != null ? chield.hashCode() : 0);
+			result = 31 * result + depth;
+			return result;
 		}
 	}
 

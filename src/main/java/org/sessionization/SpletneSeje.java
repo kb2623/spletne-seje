@@ -2,7 +2,7 @@ package org.sessionization;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
-import org.datastruct.RadixTree;
+import org.datastruct.RadixTreeMap;
 import org.datastruct.concurrent.ObjectPool;
 import org.datastruct.concurrent.SharedMap;
 import org.kohsuke.args4j.CmdLineException;
@@ -195,7 +195,7 @@ public class SpletneSeje implements AutoCloseable {
 		/** Ustvari vrste za posiljanje podatkov med nitmi */
 		BlockingQueue<ParsedLine> parsedLines = new LinkedTransferQueue<>();
 		BlockingQueue<UserSessionAbs> sessions = new LinkedTransferQueue<>();
-		ConcurrentMap sessionMapTimeSort = new SharedMap<>(new RadixTree<>());
+		ConcurrentMap sessionMapTimeSort = new SharedMap<>(new RadixTreeMap<>());
 		/** Ustvari skupine za niti */
 		ThreadGroup parseGroup = new ThreadGroup("Parse");
 		ThreadGroup timeSortGroup = new ThreadGroup("TimeSort");

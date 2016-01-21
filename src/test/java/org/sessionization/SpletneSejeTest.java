@@ -1,6 +1,6 @@
 package org.sessionization;
 
-import org.datastruct.RadixTree;
+import org.datastruct.RadixTreeMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.parser.LogFormats;
@@ -52,7 +52,7 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testNCSAParserCommonResRadixTree() throws IOException {
-		Map<String, List<ParsedLine>> testMap = new RadixTree<>();
+		Map<String, List<ParsedLine>> testMap = new RadixTreeMap<>();
 		parser.openFile(new File[]{new File(pathNCSACommon)});
 		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		for (ParsedLine line : parser) {
@@ -100,7 +100,7 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testNCSAParserCommonResRadixTreeHashMap() throws IOException {
-		Map<String, List<ParsedLine>> radixMap = new RadixTree<>();
+		Map<String, List<ParsedLine>> radixMap = new RadixTreeMap<>();
 		Map<String, List<ParsedLine>> hashMap = new HashMap<>();
 		parser.openFile(new File[]{new File(pathNCSACommon)});
 		parser.setFieldType(LogFormats.CommonLogFormat.make());

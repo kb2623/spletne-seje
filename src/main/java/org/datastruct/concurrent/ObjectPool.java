@@ -1,6 +1,6 @@
 package org.datastruct.concurrent;
 
-import org.datastruct.AvlTree;
+import org.datastruct.AvlTreeMap;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -19,12 +19,12 @@ public class ObjectPool {
 
 	public ObjectPool(Map<Class, Map> mapObject, Map<Class, ObjectCreator> creators, Properties properties, ClassLoader loader) {
 		if (mapObject == null) {
-			this.mapObject = new AvlTree<>();
+			this.mapObject = new AvlTreeMap<>();
 		} else {
 			this.mapObject = mapObject;
 		}
 		if (creators == null) {
-			this.creators = new AvlTree<>();
+			this.creators = new AvlTreeMap<>();
 		} else {
 			this.creators = creators;
 		}
@@ -126,10 +126,8 @@ public class ObjectPool {
 			} catch (InvocationTargetException e) {
 				System.err.println(e.getMessage());
 			}
-			return new AvlTree<>();
-		} else {
-			return new AvlTree<>();
 		}
+		return new AvlTreeMap<>();
 	}
 
 	public <T> T getObject(Class<T> c, Object... args) throws NullPointerException {

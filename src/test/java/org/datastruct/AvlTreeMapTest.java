@@ -8,7 +8,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class AvlTreeTest {
+public class AvlTreeMapTest {
 
 	private Map<Integer, Integer> map;
 	private Map<Integer, Integer> tmap;
@@ -18,7 +18,7 @@ public class AvlTreeTest {
 	@Before
 	public void setUp() throws Exception {
 		Compare cmp = new Compare();
-		map = new AvlTree<>(cmp);
+		map = new AvlTreeMap<>(cmp);
 		tmap = new TreeMap<>(cmp);
 		assertTrue(map.isEmpty());
 	}
@@ -207,7 +207,7 @@ public class AvlTreeTest {
 
 	@Test
 	public void testMixWith() {
-		AvlTree<Integer, Integer> tree = (AvlTree<Integer, Integer>) map;
+		AvlTreeMap<Integer, Integer> tree = (AvlTreeMap<Integer, Integer>) map;
 		assertNull(tree.put(46, 1));
 		assertEquals("{46:1}", tree.printTree());
 		assertNull(tree.put(19, 2));
@@ -308,7 +308,7 @@ public class AvlTreeTest {
 
 	@Test
 	public void testRemoveRoot() {
-		AvlTree<Integer, Integer> tree = (AvlTree<Integer, Integer>) map;
+		AvlTreeMap<Integer, Integer> tree = (AvlTreeMap<Integer, Integer>) map;
 		assertNull(map.put(23, 23));
 		assertNull(map.put(32, 32));
 		assertEquals("{23:2, 32:1}", tree.printTree());

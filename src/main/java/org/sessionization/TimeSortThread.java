@@ -1,12 +1,11 @@
 package org.sessionization;
 
-import org.datastruct.RadixTree;
-import org.datastruct.concurrent.SharedMap;
+import org.datastruct.RadixTreeMap;
 import org.sessionization.parser.datastruct.ParsedLine;
 import org.sessionization.parser.datastruct.UserSessionAbs;
 
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentMap;
 
 public class TimeSortThread extends Thread {
 
@@ -15,9 +14,9 @@ public class TimeSortThread extends Thread {
 
 	private BlockingQueue<ParsedLine> qParser;
 	private BlockingQueue<UserSessionAbs> qSession;
-	private ConcurrentMap<String, UserSessionAbs> map;
+	private Map<String, UserSessionAbs> map;
 
-	public TimeSortThread(ThreadGroup group, BlockingQueue qParser, BlockingQueue qSession, ConcurrentMap map, int sessionLength) {
+	public TimeSortThread(ThreadGroup group, BlockingQueue qParser, BlockingQueue qSession, Map map, int sessionLength) {
 		super(group, "TimeSortingThread-" + ThreadNumber++);
 		this.qParser = qParser;
 		this.qSession = qSession;
@@ -28,7 +27,7 @@ public class TimeSortThread extends Thread {
 	}
 
 	public TimeSortThread(BlockingQueue qParser, BlockingQueue qSession, int sessionLength) {
-		this(null, qParser, qSession, new SharedMap<>(new RadixTree<>()), sessionLength);
+		this(null, qParser, qSession, new RadixTreeMap<>(), sessionLength);
 	}
 
 	@Override
