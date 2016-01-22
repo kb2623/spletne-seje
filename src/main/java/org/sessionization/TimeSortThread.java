@@ -4,7 +4,10 @@ import org.datastruct.RadixTreeMap;
 import org.datastruct.concurrent.SharedBinomialQueue;
 import org.sessionization.parser.datastruct.ParsedLine;
 import org.sessionization.parser.datastruct.UserSessionAbs;
+import org.sessionization.parser.datastruct.UserSessionDump;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Queue;
@@ -58,30 +61,57 @@ public class TimeSortThread extends Thread {
 	@Override
 	public void run() {
 		ParsedLine line = null;
-		while (true) {
-			line = qParser.poll();
-			if (line != null) {
-				QueueElement e = new QueueElement(line.getKey(), line.getLocalDateTime());
-				UserSessionAbs session = map.get(e.getKey());
-				if (session == null) {
-					/** Imamo novo sejo */
-					// TODO: 1/22/16 dodaje e na prioritetno vrsto, ter izdelaj sejo ce je to potrebno
+		try {
+			while (true) {
+				line = qParser.poll();
+				if (line != null) {
+					QueueElement e = new QueueElement(line.getKey(), line.getLocalDateTime());
+					UserSessionAbs session = map.get(e.getKey());
+					if (session == null) {
+						if (!line.isWebPageResource()) {
+							session = makeSession(line);
+							map.put(session.getKey(), session);
+							queue.offer(e);
+						}
+					} else {
+						if (line.minus(session) <= sessionLength) {
+							// TODO: 1/22/16 Tuja imamo problem pri vecnitnem delovanju saj ne vem kaj ima katera nit
+							session.addParsedLine(line);
+						} else {
+							session = makeSession(line);
+							qSession.put(map.put(session.getKey(), session));
+						}
+						queue.offer(e);
+					}
+					for (e = queue.peek(); e != null && line.minus(e) > sessionLength; e = queue.peek()) {
+						session = map.get(e.getKey());
+						if (session == null) {
+							queue.poll();
+						} else if (session.getLocalDateTime().equals(e.getDateTime())) {
+							qSession.put(map.remove(e.getKey()));
+							queue.poll();
+						}
+					}
 				} else {
-					/** Seja ze obstaja */
-					// TODO: 1/22/16 Preveri case med zahtevo in pridobljeno sejo
-				}
-				// TODO: 1/22/16 Preveri privi element na prioritetni vrsti, ter ga primerjaj z e elementom, ki si ga izdelal. Ce pridobljena vrednost presega sessionLength potem prenesi ta sejo na vrsto za shranjevaneje v podatkovno bazo
-			} else {
-				/** Prdobili smo zadnjo vrstico */
-				try {
 					for (UserSessionAbs s : map.values()) {
 						qSession.put(s);
 					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					break;
 				}
-				break;
 			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private UserSessionAbs makeSession(ParsedLine line) {
+		try {
+			Class aClass = ClassLoader.getSystemClassLoader().loadClass(UserSessionDump.getName());
+			Constructor init = aClass.getConstructor(ParsedLine.class);
+			return (UserSessionAbs) init.newInstance(line);
+		} catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -125,8 +155,8 @@ public class TimeSortThread extends Thread {
 			if (o == null || !(o instanceof QueueElement)) return false;
 			if (this == o) return true;
 			QueueElement that = (QueueElement) o;
-			return getDateTime() != null ? getDateTime().equals(that.getDateTime()) : that.getDateTime() == null &&
-					getKey() != null ? getKey().equals(that.getKey()) : that.getKey() == null;
+			return getDateTime().equals(that.getDateTime()) &&
+					getKey().equals(that.getKey());
 		}
 
 		@Override
