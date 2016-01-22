@@ -106,6 +106,10 @@ public class UserSessionTest {
 		assertEquals(LocalDateTime.of(2014, 6, 28, 4, 44, 51), uS2.getLocalDateTime());
 		assertEquals(172800, uS2.secBetwene(uS1));
 		assertEquals(172800, uS1.secBetwene(uS2));
+		/** Vecji minus manjsi */
+		assertEquals(172800, uS2.minus(uS1));
+		/** Manjsi minus vecji */
+		assertEquals(-172800, uS1.minus(uS2));
 	}
 
 	@Test

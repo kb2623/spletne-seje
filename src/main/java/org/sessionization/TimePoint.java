@@ -39,6 +39,6 @@ public interface TimePoint {
 	}
 
 	default long minus(TimePoint point) {
-		return ChronoUnit.SECONDS.between(getLocalDateTime(), point.getLocalDateTime());
+		return ChronoUnit.SECONDS.between(point.getLocalDateTime(), getLocalDateTime());
 	}
 }
