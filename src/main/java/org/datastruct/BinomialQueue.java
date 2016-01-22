@@ -8,6 +8,7 @@ public class BinomialQueue<E> implements IQueue<E> {
 
 	private Node<E> root;
 	private NodeComparator cmp;
+
 	public BinomialQueue(Comparator<E> cmp) {
 		this.cmp = new NodeComparator(cmp);
 		root = null;
@@ -385,28 +386,16 @@ public class BinomialQueue<E> implements IQueue<E> {
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		BinomialQueue<E> clone = new BinomialQueue<>(cmp.cmp);
-		clone.root = clone(root, null);
+		clone.root = root != null ? (Node<E>) root.clone() : null;
 		return clone;
-	}
-
-	private Node clone(final Node node, final Node parent) throws CloneNotSupportedException {
-		if (node != null) {
-			Node nNode = (Node) node.clone();
-			nNode.chield = clone(node.chield, node);
-			nNode.sibling = clone(node.sibling, parent);
-			nNode.parent = parent;
-			return nNode;
-		} else {
-			return null;
-		}
 	}
 
 	class IteratorBQ<E> implements Iterator<E> {
 
 		private BinomialQueue<E> queue;
 
-		IteratorBQ(BinomialQueue<E> queue) {
-			this.queue = queue;
+		IteratorBQ(BinomialQueue<E> queue) throws CloneNotSupportedException {
+			this.queue = (BinomialQueue<E>) queue.clone();
 		}
 
 		@Override
@@ -423,9 +412,9 @@ public class BinomialQueue<E> implements IQueue<E> {
 	private class Node<E> {
 
 		E data;
-		Node parent;
-		Node sibling;
-		Node chield;
+		Node<E> parent;
+		Node<E> sibling;
+		Node<E> chield;
 		int depth;
 
 		Node(E data, Node parent, Node sibling, Node chield, int depth) {
@@ -451,7 +440,10 @@ public class BinomialQueue<E> implements IQueue<E> {
 
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
-			return new Node(this.data, null, null, null, this.depth);
+			Node<E> parent = this.parent != null ? (Node<E>) this.parent.clone() : null;
+			Node<E> sibling = this.sibling != null ? (Node<E>) this.sibling.clone() : null;
+			Node<E> chield = this.chield != null ? (Node<E>) this.chield.clone() : null;
+			return new Node(this.data, parent, sibling, chield, this.depth);
 		}
 
 		@Override

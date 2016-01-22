@@ -536,6 +536,13 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 		return null;
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		AvlTreeMap clone = new AvlTreeMap(keyCmp.cmp);
+		clone.root = root != null ? (AVLEntry) root.clone() : null;
+		return super.clone();
+	}
+
 	private class CompareKey<K> implements Comparator<K> {
 
 		private Comparator<K> cmp;
@@ -610,6 +617,13 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 			V ret = value;
 			value = v;
 			return ret;
+		}
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException {
+			AVLEntry<K, V> lower = this.lower != null ? (AVLEntry<K, V>) this.lower.clone() : null;
+			AVLEntry<K, V> higher = this.higher != null ? (AVLEntry<K, V>) this.higher.clone() : null;
+			return new AVLEntry<>(key, value, lower, higher, height);
 		}
 
 		@Override

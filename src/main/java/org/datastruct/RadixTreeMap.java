@@ -714,7 +714,7 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		RadixTreeMap tree = new RadixTreeMap();
-		tree.rootNode = (RadixEntry) rootNode.clone();
+		tree.rootNode = rootNode != null ? (RadixEntry) rootNode.clone() : null;
 		return tree;
 	}
 

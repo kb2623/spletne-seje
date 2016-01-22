@@ -49,6 +49,26 @@ public class ArgumentParser {
 		properties.setProperty("parse.size", "500");
 		properties.setProperty("session.time", "7200");
 		properties.setProperty("objectpool.properties", ClassLoader.getSystemResource("ClassPool.properties").getPath());
+		properties.setProperty("session.queue.session.size", "250");
+		properties.setProperty("session.queue.parsedline.size", "250");
+	}
+
+	public int getSessionQueueSize() {
+		return Integer.parseInt(properties.getProperty("session.queue.session.size"));
+	}
+
+	@Option(name = "-sqss", aliases = "session.queue.session.size", usage = "Queue size for Session class", metaVar = "<int>")
+	public void setSessionQueueSize(int size) {
+		properties.setProperty("session.queue.session.size", String.valueOf(size));
+	}
+
+	public int getParsedLineQueueSize() {
+		return Integer.parseInt(properties.getProperty("session.queue.parsedline.size"));
+	}
+
+	@Option(name = "-sqps", aliases = "session.queue.parsedline.size", usage = "Queuq size for ParsedLine class", metaVar = "<int>")
+	public void setParsedLineQueueSize(int size) {
+		properties.setProperty("session.queue.parsedline.size", String.valueOf(size));
 	}
 
 	public String[] getLogFormat() {
@@ -236,7 +256,7 @@ public class ArgumentParser {
 		return Boolean.valueOf(properties.getProperty("crawlers"));
 	}
 
-	@Option(name = "-c", aliases = "crawlers", usage = "Ignore web crawlers", metaVar = "<bool>")
+	@Option(name = "-c", aliases = "crawlers", usage = "Ignore web rawlers", metaVar = "<bool>")
 	public void setIgnoreCrawlers(boolean opt) {
 		properties.setProperty("crawlers", String.valueOf(opt));
 	}
