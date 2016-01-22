@@ -200,18 +200,24 @@ public class SpletneSeje implements AutoCloseable {
 		ThreadGroup parseGroup = new ThreadGroup("Parse");
 		ThreadGroup timeSortGroup = new ThreadGroup("TimeSort");
 		ThreadGroup saveGroup = new ThreadGroup("SaveToDataBase");
-		/** Ustavi niti ter jim podaj komunikacijske vrste */
+		/** Ustavi niti ter jim podaj classloaderje, komunikacijske vrste in ostale potrebne informacije */
 		List<Thread> listParseThreads = new LinkedList<>();
 		for (int i = 0; i < 1; i++) {
-			listParseThreads.add(new ParserThread(parseGroup, parsedLines, logParser));
+			Thread t = new ParserThread(parseGroup, parsedLines, logParser);
+			t.setContextClassLoader(db.getLoader());
+			listParseThreads.add(t);
 		}
 		List<Thread> listTimeSortThreads = new LinkedList<>();
 		for (int i = 0; i < 1; i++) {
-			listTimeSortThreads.add(new TimeSortThread(timeSortGroup, parsedLines, sessions, sessionMapTimeSort, argumentParser.getSessionTime()));
+			Thread t = new TimeSortThread(timeSortGroup, parsedLines, sessions, sessionMapTimeSort, argumentParser.getSessionTime());
+			t.setContextClassLoader(db.getLoader());
+			listTimeSortThreads.add(t);
 		}
 		List<Thread> listSaveDBThread = new LinkedList<>();
 		for (int i = 0; i < 1; i++) {
-			listSaveDBThread.add(new SaveDataBaseThread(sessions, db));
+			Thread t = new SaveDataBaseThread(sessions, db);
+			t.setContextClassLoader(db.getLoader());
+			listSaveDBThread.add(t);
 		}
 		/** Zazeni niti */
 		for (Thread t : listParseThreads) {

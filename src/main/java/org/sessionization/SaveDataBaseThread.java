@@ -14,6 +14,12 @@ public class SaveDataBaseThread extends Thread {
 	private HibernateUtil db;
 	private HibernateUtil.Operation operation;
 
+	/**
+	 * @param group
+	 * @param queue
+	 * @param db
+	 * @param operation
+	 */
 	public SaveDataBaseThread(ThreadGroup group, BlockingQueue queue, HibernateUtil db, HibernateUtil.Operation operation) {
 		super(group, "SaveToDataBaseThread-" + ThreadNumber++);
 		this.queue = queue;
@@ -21,6 +27,12 @@ public class SaveDataBaseThread extends Thread {
 		this.operation = operation;
 	}
 
+	/**
+	 *
+	 * @param queue
+	 * @param db
+	 * @param operation
+	 */
 	public SaveDataBaseThread(BlockingQueue queue, HibernateUtil db, HibernateUtil.Operation operation) {
 		this(null, queue, db, operation);
 	}

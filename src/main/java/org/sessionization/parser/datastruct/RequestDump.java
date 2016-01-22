@@ -81,6 +81,21 @@ public class RequestDump {
 				field.getFieldInfo().addAttribute(attr);
 				aClass.addField(field);
 			}
+			/** setterji in getterji za ostala polja */
+			for (LogFieldType f : fields) {
+				/** setter */{
+					builder.setLength(0);
+					builder.append("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+				/** getter */{
+					builder.setLength(0);
+					builder.append("public " + f.getClassE().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+			}
 			/** Request() */{
 				builder.setLength(0);
 				builder.append("public Request() {");
@@ -100,26 +115,11 @@ public class RequestDump {
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
 				for (LogFieldType f : fields) {
 					builder.append("if (f instanceof " + f.getClassE().getName() + ")");
-					builder.append("{ this." + f.getFieldName() + " = (" + f.getClassE().getName() + ") f; }");
+					builder.append("{ this." + f.getSetterName() + "((" + f.getClassE().getName() + ") f); }");
 				}
 				builder.append('}').append('}');
 				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 				aClass.addConstructor(constructor);
-			}
-			/** setterji in getterji za ostala polja */
-			for (LogFieldType f : fields) {
-				/** setter */{
-					builder.setLength(0);
-					builder.append("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}");
-					CtMethod method = CtMethod.make(builder.toString(), aClass);
-					aClass.addMethod(method);
-				}
-				/** getter */{
-					builder.setLength(0);
-					builder.append("public " + f.getClassE().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}");
-					CtMethod method = CtMethod.make(builder.toString(), aClass);
-					aClass.addMethod(method);
-				}
 			}
 			/** getLocalTime() super razreda interface */{
 				boolean has = false;

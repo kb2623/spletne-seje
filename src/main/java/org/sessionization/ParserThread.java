@@ -14,12 +14,22 @@ public class ParserThread extends Thread {
 	private BlockingQueue<ParsedLine> queue;
 	private WebLogParser parser;
 
+	/**
+	 * @param group
+	 * @param queue
+	 * @param parser
+	 */
 	public ParserThread(ThreadGroup group, BlockingQueue queue, WebLogParser parser) {
 		super(group, "ParserThread-" + ThreadNumber++);
 		this.queue = queue;
 		this.parser = parser;
 	}
 
+	/**
+	 *
+	 * @param queue
+	 * @param parser
+	 */
 	public ParserThread(BlockingQueue queue, WebLogParser parser) {
 		this(null, queue, parser);
 	}
@@ -30,11 +40,13 @@ public class ParserThread extends Thread {
 		do {
 			try {
 				line = parser.parseLine();
-				queue.put(line);
 			} catch (ParseException | IOException e) {
 				line = null;
+			}
+			try {
+				queue.put(line);
 			} catch (InterruptedException e) {
-				line = null;
+				e.printStackTrace();
 			}
 		} while (line != null);
 	}

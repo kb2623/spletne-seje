@@ -155,6 +155,7 @@ public class ObjectPool {
 				}
 				mapObject.put(c, map);
 				lock.writeLock().unlock();
+				return ret;
 			} else {
 				return getObject(c, hash, args);
 			}
@@ -168,6 +169,7 @@ public class ObjectPool {
 						map.put(hash, ret);
 					}
 					lock.writeLock().unlock();
+					return ret;
 				} else {
 					return getObject(c, hash, args);
 				}

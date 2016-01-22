@@ -92,6 +92,21 @@ public class UserIdDump {
 				field.getFieldInfo().addAttribute(attr);
 				aClass.addField(field);
 			}
+			/** setterji in getterji za ostala polja */
+			for (LogFieldType f : fields) {
+				/** setter */{
+					builder.setLength(0);
+					builder.append("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+				/** getter */{
+					builder.setLength(0);
+					builder.append("public " + f.getClassE().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}");
+					CtMethod method = CtMethod.make(builder.toString(), aClass);
+					aClass.addMethod(method);
+				}
+			}
 			/** UserId() */{
 				builder.setLength(0);
 				builder.append("public UserId() {");
@@ -111,26 +126,11 @@ public class UserIdDump {
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
 				for (LogFieldType f : fields) {
 					builder.append("if (f instanceof " + f.getClassE().getName() + ")");
-					builder.append("{ this." + f.getFieldName() + " = (" + f.getClassE().getName() + ") f; }");
+					builder.append("{ this." + f.getSetterName() + "((" + f.getClassE().getName() + ") f); }");
 				}
 				builder.append('}').append('}');
 				CtConstructor constructor = CtNewConstructor.make(builder.toString(), aClass);
 				aClass.addConstructor(constructor);
-			}
-			/** setterji in getterji za ostala polja */
-			for (LogFieldType f : fields) {
-				/** setter */{
-					builder.setLength(0);
-					builder.append("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}");
-					CtMethod method = CtMethod.make(builder.toString(), aClass);
-					aClass.addMethod(method);
-				}
-				/** getter */{
-					builder.setLength(0);
-					builder.append("public " + f.getClassE().getName() + " " + f.getGetterName() + "() {" + "return this." + f.getFieldName() + ";" + "}");
-					CtMethod method = CtMethod.make(builder.toString(), aClass);
-					aClass.addMethod(method);
-				}
 			}
 			/** String getKey() super razreda */{
 				builder.setLength(0);
@@ -214,7 +214,7 @@ public class UserIdDump {
 				builder.delete(builder.length() - 9, builder.length());
 				builder.append(");\n");
 				builder.append("for (" + Iterator.class.getName() + " it = query.list().iterator(); it.hasNext(); ) {\n")
-						.append(Integer.class.getName() + " i = it.next();\n")
+						.append(Integer.class.getName() + " i = (" + Integer.class.getName() + ") it.next();\n")
 						.append(CLASSNAME + " ins = session.load(getClass(), i);\n")
 						.append("if (equals(ins)) {\n")
 						.append("this.setId(i);\n")

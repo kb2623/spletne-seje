@@ -3,11 +3,17 @@ package org.datastruct.concurrent;
 import java.util.*;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SharedNavigableMap<K, V> implements ConcurrentNavigableMap<K, V> {
 
 	private ReadWriteLock lock;
 	private NavigableMap<K, V> map;
+
+	public SharedNavigableMap(NavigableMap map) {
+		this.map = map;
+		lock = new ReentrantReadWriteLock();
+	}
 
 	@Override
 	public ConcurrentNavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
@@ -26,7 +32,7 @@ public class SharedNavigableMap<K, V> implements ConcurrentNavigableMap<K, V> {
 
 	@Override
 	public Comparator<? super K> comparator() {
-		return null;
+		return map.comparator();
 	}
 
 	@Override

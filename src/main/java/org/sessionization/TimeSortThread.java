@@ -16,6 +16,16 @@ public class TimeSortThread extends Thread {
 	private BlockingQueue<UserSessionAbs> qSession;
 	private Map<String, UserSessionAbs> map;
 
+	/**
+	 * Konstruktor za ustvarjanje niti, ki sortira seje po casu.
+	 * Uporabi ta konstruktor, ce zelis izvajati casovno sortiranje na vecih nitih
+	 *
+	 * @param group
+	 * @param qParser
+	 * @param qSession
+	 * @param map
+	 * @param sessionLength
+	 */
 	public TimeSortThread(ThreadGroup group, BlockingQueue qParser, BlockingQueue qSession, Map map, int sessionLength) {
 		super(group, "TimeSortingThread-" + ThreadNumber++);
 		this.qParser = qParser;
@@ -26,6 +36,14 @@ public class TimeSortThread extends Thread {
 		}
 	}
 
+	/**
+	 * Kostruktor za ustarjanje niti, ki sortira seje po casu.
+	 * Ta konsruktor uporabi ce izvajas casovno urejanje samo na eni niti.
+	 *
+	 * @param qParser
+	 * @param qSession
+	 * @param sessionLength
+	 */
 	public TimeSortThread(BlockingQueue qParser, BlockingQueue qSession, int sessionLength) {
 		this(null, qParser, qSession, new RadixTreeMap<>(), sessionLength);
 	}
