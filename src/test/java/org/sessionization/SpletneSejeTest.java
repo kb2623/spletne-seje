@@ -25,9 +25,9 @@ public class SpletneSejeTest {
 
 	@Before
 	public void setUp() throws IOException {
-		pathNCSACombined = ClassLoader.getSystemResource("access_log").getFile();
-		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getFile();
-		pathW3CExtended = ClassLoader.getSystemResource("ex080814.log").getFile();
+		pathNCSACombined = ClassLoader.getSystemResource("access_log").getPath();
+		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getPath();
+		pathW3CExtended = ClassLoader.getSystemResource("ex080814.log").getPath();
 		parser = new NCSAWebLogParser();
 	}
 

@@ -15,13 +15,16 @@ import java.util.concurrent.BlockingQueue;
 
 public class TimeSortThread extends Thread {
 
-	private static volatile int ThreadNumber = -1;
+	private static volatile int ThreadNumber = 0;
 	private static volatile int sessionLength = 0;
+
+	private static ClassLoader loader = null;
 	private static Queue<QueueElement> queue = new SharedBinomialQueue<>(
 			(o1, o2) -> {
 				return (int) o1.minus(o2);
 			}
 	);
+
 	private BlockingQueue<ParsedLine> qParser;
 	private BlockingQueue<UserSessionAbs> qSession;
 	private Map<String, UserSessionAbs> map;
@@ -36,13 +39,16 @@ public class TimeSortThread extends Thread {
 	 * @param map
 	 * @param sessionLength
 	 */
-	public TimeSortThread(ThreadGroup group, BlockingQueue qParser, BlockingQueue qSession, Map map, int sessionLength) {
+	public TimeSortThread(ThreadGroup group, ClassLoader loader, BlockingQueue qParser, BlockingQueue qSession, Map map, int sessionLength) {
 		super(group, "TimeSortingThread-" + ThreadNumber++);
 		this.qParser = qParser;
 		this.qSession = qSession;
 		this.map = map;
-		if (TimeSortThread.sessionLength != 0) {
+		if (TimeSortThread.sessionLength == 0) {
 			TimeSortThread.sessionLength = sessionLength;
+		}
+		if (TimeSortThread.loader == null) {
+			TimeSortThread.loader = loader;
 		}
 	}
 
@@ -54,8 +60,8 @@ public class TimeSortThread extends Thread {
 	 * @param qSession
 	 * @param sessionLength
 	 */
-	public TimeSortThread(BlockingQueue qParser, BlockingQueue qSession, int sessionLength) {
-		this(null, qParser, qSession, new RadixTreeMap<>(), sessionLength);
+	public TimeSortThread(ClassLoader loader, BlockingQueue qParser, BlockingQueue qSession, int sessionLength) {
+		this(null, loader, qParser, qSession, new RadixTreeMap<>(), sessionLength);
 	}
 
 	@Override
@@ -63,50 +69,52 @@ public class TimeSortThread extends Thread {
 		ParsedLine line = null;
 		try {
 			while (true) {
-				line = qParser.poll();
-				if (line != null) {
-					QueueElement e = new QueueElement(line.getKey(), line.getLocalDateTime());
-					UserSessionAbs session = map.get(e.getKey());
-					if (session == null) {
-						if (!line.isWebPageResource()) {
-							session = makeSession(line);
-							map.put(session.getKey(), session);
-							queue.offer(e);
-						}
-					} else {
-						if (line.minus(session) <= sessionLength) {
-							// TODO: 1/22/16 Tuja imamo problem pri vecnitnem delovanju saj ne vem kaj ima katera nit
-							session.addParsedLine(line);
-						} else {
-							session = makeSession(line);
-							qSession.put(map.put(session.getKey(), session));
-						}
-						queue.offer(e);
-					}
-					for (e = queue.peek(); e != null && line.minus(e) > sessionLength; e = queue.peek()) {
-						session = map.get(e.getKey());
-						if (session == null) {
-							queue.poll();
-						} else if (session.getLocalDateTime().equals(e.getDateTime())) {
-							qSession.put(map.remove(e.getKey()));
-							queue.poll();
-						}
-					}
-				} else {
-					for (UserSessionAbs s : map.values()) {
-						qSession.put(s);
-					}
-					break;
-				}
+				consume(qParser.take());
 			}
 		} catch (InterruptedException e) {
+			for (UserSessionAbs o : map.values()) {
+				try {
+					qSession.put(o);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
 			e.printStackTrace();
+		}
+	}
+
+	private void consume(ParsedLine line) throws InterruptedException {
+		QueueElement e = new QueueElement(line.getKey(), line.getLocalDateTime());
+		UserSessionAbs session = map.get(e.getKey());
+		if (session == null) {
+			if (!line.isWebPageResource()) {
+				session = makeSession(line);
+				map.put(session.getKey(), session);
+				queue.offer(e);
+			}
+		} else {
+			if (line.minus(session) <= sessionLength) {
+				session.addParsedLine(line);
+			} else {
+				session = makeSession(line);
+				qSession.put(map.put(session.getKey(), session));
+			}
+			queue.offer(e);
+		}
+		for (e = queue.peek(); e != null && line.minus(e) > sessionLength; e = queue.peek()) {
+			session = map.get(e.getKey());
+			if (session == null) {
+				queue.poll();
+			} else if (session.getLocalDateTime().equals(e.getDateTime())) {
+				qSession.put(map.remove(e.getKey()));
+				queue.poll();
+			}
 		}
 	}
 
 	private UserSessionAbs makeSession(ParsedLine line) {
 		try {
-			Class aClass = ClassLoader.getSystemClassLoader().loadClass(UserSessionDump.getName());
+			Class aClass = loader.loadClass(UserSessionDump.getName());
 			Constructor init = aClass.getConstructor(ParsedLine.class);
 			return (UserSessionAbs) init.newInstance(line);
 		} catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {

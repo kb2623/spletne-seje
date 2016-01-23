@@ -9,7 +9,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class ParserThread extends Thread {
 
-	private static volatile int ThreadNumber = -1;
+	private static volatile int ThreadNumber = 0;
 
 	private BlockingQueue<ParsedLine> queue;
 	private WebLogParser parser;
@@ -40,13 +40,13 @@ public class ParserThread extends Thread {
 		do {
 			try {
 				line = parser.parseLine();
-			} catch (ParseException | IOException e) {
-				line = null;
-			}
-			try {
 				queue.put(line);
+			} catch (ParseException | IOException e) {
+				e.printStackTrace();
+				line = null;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				line = null;
 			}
 		} while (line != null);
 	}

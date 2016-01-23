@@ -8,13 +8,9 @@ import java.net.UnknownHostException;
 @Converter(autoApply = true)
 public class InetAddressConverter implements AttributeConverter<InetAddress, String> {
 
-	public static String getInetAddressString(InetAddress address) {
-		return address.toString();
-	}
-
 	@Override
 	public String convertToDatabaseColumn(InetAddress attribute) {
-		return attribute.toString();
+		return attribute.getHostAddress();
 	}
 
 	@Override

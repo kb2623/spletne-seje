@@ -23,7 +23,11 @@ public class RemoteUser implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	public RemoteUser(String user) {
-		if (!user.equalsIgnoreCase("-")) this.user = user;
+		if (!user.equalsIgnoreCase("-")) {
+			this.user = user;
+		} else {
+			this.user = "-";
+		}
 	}
 
 	public Integer getId() {
@@ -77,7 +81,7 @@ public class RemoteUser implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select r.id form " + getClass().getSimpleName() + " as r where r.user = '" + getUser() + "'");
+		Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.user = '" + getUser() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

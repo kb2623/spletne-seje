@@ -3,7 +3,6 @@ package org.sessionization.parser.fields;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
-import org.sessionization.database.InetAddressConverter;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -111,7 +110,8 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select a.id from " + getClass().getSimpleName() + " as a where a.serverAddress = " + isServerAddress() + " and a.address = '" + InetAddressConverter.getInetAddressString(getAddress()) + "'");
+		Query query = session.createQuery("select a.id from " + getClass().getSimpleName() + " as a where a.serverAddress = " + isServerAddress() + " and a.address = :address");
+		query.setParameter("address", getAddress());
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

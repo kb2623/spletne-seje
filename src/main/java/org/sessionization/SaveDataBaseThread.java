@@ -8,7 +8,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class SaveDataBaseThread extends Thread {
 
-	private static volatile int ThreadNumber = -1;
+	private static volatile int ThreadNumber = 0;
 
 	private BlockingQueue<UserSessionAbs> queue;
 	private HibernateUtil db;
@@ -57,18 +57,16 @@ public class SaveDataBaseThread extends Thread {
 
 	@Override
 	public void run() {
-		UserSessionAbs session = null;
-		while (true) {
-			try {
-				session = queue.take();
-				if (session != null) {
-					db.execute(operation, session);
-				} else {
-					break;
-				}
-			} catch (InterruptedException e) {
-				break;
+		try {
+			while (true) {
+				consume(queue.take());
 			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+	}
+
+	private void consume(UserSessionAbs session) {
+		db.execute(operation, session);
 	}
 }

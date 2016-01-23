@@ -28,7 +28,7 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 		if (!logname.equalsIgnoreCase("-")) {
 			this.logname = logname;
 		} else {
-			this.logname = null;
+			this.logname = "-";
 		}
 	}
 
@@ -41,7 +41,7 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	public String getLogname() {
-		return logname != null ? logname : "";
+		return logname != null ? logname : "-";
 	}
 
 	public void setLogname(String logname) {

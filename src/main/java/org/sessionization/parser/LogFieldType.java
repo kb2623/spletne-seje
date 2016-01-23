@@ -931,8 +931,13 @@ enum ObjectCreators {
 			ObjectPool.ObjectCreator creator;
 
 			creator = (pool, args) -> {
-				URI uri = (URI) args[0];
-				org.sessionization.parser.fields.UriSteamQuery steamQuery = null;
+				URI uri = null;
+				try {
+					uri = new URI(args[0].toString());
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+				org.sessionization.parser.fields.UriSteamQuery steamQuery = new UriSteamQuery();
 				String query = uri.getQuery();
 				UriQuery uriQuery = pool.getObject(UriQuery.class, query != null ? query : "-");
 				UriSteam uriSteam = pool.getObject(UriSteam.class, uri.getRawPath());
@@ -964,7 +969,7 @@ enum ObjectCreators {
 				requestLine.setMethod(Method.setMethod(tab[0]));
 				org.sessionization.parser.fields.UriSteamQuery steamQuery = pool.getObject(org.sessionization.parser.fields.UriSteamQuery.class, tab[1]);
 				requestLine.setSteamQuery(steamQuery);
-				Protocol protocol = pool.getObject(Protocol.class, tab[3]);
+				Protocol protocol = pool.getObject(Protocol.class, tab[2]);
 				requestLine.setProtocol(protocol);
 				return requestLine;
 			};

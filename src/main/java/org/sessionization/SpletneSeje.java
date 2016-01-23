@@ -152,7 +152,7 @@ public class SpletneSeje implements AutoCloseable {
 	 * @param args
 	 */
 	public static void main(String... args) {
-		try (SpletneSeje seje = new SpletneSeje()) {
+		try (SpletneSeje seje = new SpletneSeje(args)) {
 			seje.run();
 		} catch (CmdLineException e) {
 			if (!e.getLocalizedMessage().equals("Print help")) {
@@ -182,6 +182,7 @@ public class SpletneSeje implements AutoCloseable {
 		} catch (NotFoundException e) {
 			printError(e.getLocalizedMessage(), 10);
 		} catch (Exception e) {
+			e.printStackTrace();
 			printError(e.getLocalizedMessage(), 11);
 		}
 	}
@@ -193,8 +194,10 @@ public class SpletneSeje implements AutoCloseable {
 
 	public void run() throws InterruptedException {
 		/** Ustvari vrste za posiljanje podatkov med nitmi */
-		BlockingQueue<ParsedLine> parsedLines = new ArrayBlockingQueue<>(argumentParser.getParsedLineQueueSize());
-		BlockingQueue<UserSessionAbs> sessions = new ArrayBlockingQueue<>(argumentParser.getSessionQueueSize());
+//		BlockingQueue<ParsedLine> parsedLines = new ArrayBlockingQueue<>(argumentParser.getParsedLineQueueSize());
+		BlockingQueue<ParsedLine> parsedLines = new ArrayBlockingQueue<>(5);
+//		BlockingQueue<UserSessionAbs> sessions = new ArrayBlockingQueue<>(argumentParser.getSessionQueueSize());
+		BlockingQueue<UserSessionAbs> sessions = new ArrayBlockingQueue<>(5);
 		ConcurrentMap sessionMapTimeSort = new SharedMap<>(new RadixTreeMap<>());
 		/** Ustvari skupine za niti */
 		ThreadGroup parseGroup = new ThreadGroup("Parse");
@@ -204,19 +207,16 @@ public class SpletneSeje implements AutoCloseable {
 		List<Thread> listParseThreads = new LinkedList<>();
 		for (int i = 0; i < 1; i++) {
 			Thread t = new ParserThread(parseGroup, parsedLines, logParser);
-			t.setContextClassLoader(db.getLoader());
 			listParseThreads.add(t);
 		}
 		List<Thread> listTimeSortThreads = new LinkedList<>();
 		for (int i = 0; i < 1; i++) {
-			Thread t = new TimeSortThread(timeSortGroup, parsedLines, sessions, sessionMapTimeSort, argumentParser.getSessionTime());
-			t.setContextClassLoader(db.getLoader());
+			Thread t = new TimeSortThread(timeSortGroup, db.getLoader(), parsedLines, sessions, sessionMapTimeSort, argumentParser.getSessionTime());
 			listTimeSortThreads.add(t);
 		}
 		List<Thread> listSaveDBThread = new LinkedList<>();
 		for (int i = 0; i < 1; i++) {
 			Thread t = new SaveDataBaseThread(sessions, db);
-			t.setContextClassLoader(db.getLoader());
 			listSaveDBThread.add(t);
 		}
 		/** Zazeni niti */
@@ -234,10 +234,10 @@ public class SpletneSeje implements AutoCloseable {
 			t.join();
 		}
 		for (Thread t : listTimeSortThreads) {
-			t.join();
+			t.interrupt();
 		}
 		for (Thread t : listSaveDBThread) {
-			t.join();
+			t.interrupt();
 		}
 	}
 
