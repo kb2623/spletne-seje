@@ -49,6 +49,8 @@ public class ProcessID implements LogField {
 
 	@Override
 	public String toString() {
-		return pId + "";
+		return "ProcessID{" +
+				"pId=" + pId +
+				'}';
 	}
 }

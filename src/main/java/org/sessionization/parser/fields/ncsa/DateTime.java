@@ -63,8 +63,13 @@ public class DateTime implements LogField, TimePoint {
 	}
 
 	@Override
-	public String toString() {
-		return printDate();
+	public LocalDate getLocalDate() {
+		return date;
+	}
+
+	@Override
+	public LocalTime getLocalTime() {
+		return time;
 	}
 
 	@Override
@@ -84,12 +89,10 @@ public class DateTime implements LogField, TimePoint {
 	}
 
 	@Override
-	public LocalDate getLocalDate() {
-		return date;
-	}
-
-	@Override
-	public LocalTime getLocalTime() {
-		return time;
+	public String toString() {
+		return "DateTime{" +
+				"date=" + date +
+				", time=" + time +
+				'}';
 	}
 }

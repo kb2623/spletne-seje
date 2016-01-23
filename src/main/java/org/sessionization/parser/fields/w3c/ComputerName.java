@@ -54,8 +54,18 @@ public class ComputerName implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String toString() {
-		return name != null ? name : "-";
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select c.id form " + getClass().getSimpleName() + " c where c.name = '" + getName() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -74,17 +84,10 @@ public class ComputerName implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select c.id form " + getClass().getSimpleName() + " c where c.name = '" + getName() + "'");
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+	public String toString() {
+		return "ComputerName{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				'}';
 	}
 }

@@ -42,8 +42,8 @@ public class Date implements LogField, TimePoint {
 	}
 
 	@Override
-	public String toString() {
-		return date.toString();
+	public LocalDate getLocalDate() {
+		return date;
 	}
 
 	@Override
@@ -60,7 +60,9 @@ public class Date implements LogField, TimePoint {
 	}
 
 	@Override
-	public LocalDate getLocalDate() {
-		return date;
+	public String toString() {
+		return "Date{" +
+				"date=" + date +
+				'}';
 	}
 }

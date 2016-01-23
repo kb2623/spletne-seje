@@ -49,6 +49,8 @@ public class SizeOfTransfer implements LogField {
 
 	@Override
 	public String toString() {
-		return String.valueOf(size);
+		return "SizeOfTransfer{" +
+				"size=" + size +
+				'}';
 	}
 }

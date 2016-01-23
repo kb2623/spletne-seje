@@ -69,8 +69,22 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 	}
 
 	@Override
-	public String toString() {
-		return uriSteam.toString() + " " + (query.getPairs() != null ? query.izpis() : "");
+	public Object setDbId(Session session) {
+		Integer uriSteamId = (Integer) getUriSteam().setDbId(session);
+		Integer queryId = (Integer) getQuery().setDbId(session);
+		if (getId() != null) {
+			return getId();
+		}
+		if (uriSteamId != null && queryId != null) {
+			Query query = session.createQuery("select sq.id form " + getClass().getSimpleName() + " as sq where sq.uriSteam = " + uriSteamId + " and sq.query = " + queryId);
+			for (Object o : query.list()) {
+				if (equals(session.load(getClass(), (Integer) o))) {
+					setId((Integer) o);
+					return o;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -91,21 +105,11 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 	}
 
 	@Override
-	public Object setDbId(Session session) {
-		Integer uriSteamId = (Integer) getUriSteam().setDbId(session);
-		Integer queryId = (Integer) getQuery().setDbId(session);
-		if (getId() != null) {
-			return getId();
-		}
-		if (uriSteamId != null && queryId != null) {
-			Query query = session.createQuery("select sq.id form " + getClass().getSimpleName() + " as sq where sq.uriSteam = " + uriSteamId + " and sq.query = " + queryId);
-			for (Object o : query.list()) {
-				if (equals(session.load(getClass(), (Integer) o))) {
-					setId((Integer) o);
-					return o;
-				}
-			}
-		}
-		return null;
+	public String toString() {
+		return "UriSteamQuery{" +
+				"id=" + id +
+				", uriSteam=" + uriSteam +
+				", query=" + query +
+				'}';
 	}
 }

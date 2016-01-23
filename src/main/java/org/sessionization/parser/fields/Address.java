@@ -79,8 +79,19 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String toString() {
-		return (serverAddress ? "Server" : "Client") + " " + address.getHostAddress();
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select a.id from " + getClass().getSimpleName() + " as a where a.serverAddress = " + isServerAddress() + " and a.address = :address");
+		query.setParameter("address", getAddress());
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -106,18 +117,11 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select a.id from " + getClass().getSimpleName() + " as a where a.serverAddress = " + isServerAddress() + " and a.address = :address");
-		query.setParameter("address", getAddress());
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+	public String toString() {
+		return "Address{" +
+				"id=" + id +
+				", serverAddress=" + serverAddress +
+				", address=" + address +
+				'}';
 	}
 }

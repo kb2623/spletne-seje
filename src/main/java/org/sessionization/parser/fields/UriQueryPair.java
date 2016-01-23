@@ -57,6 +57,24 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 	}
 
 	@Override
+	public Object setDbId(Session session) {
+		Integer keyId = (Integer) getKey().setDbId(session);
+		if (getId() != null) {
+			return getId();
+		}
+		if (keyId != null) {
+			Query query = session.createQuery("select qp.id from " + getClass().getSimpleName() + " as qp where qp.value = '" + getValue() + "' and qp.key = " + keyId);
+			for (Object o : query.list()) {
+				if (equals(session.load(getClass(), (Integer) o))) {
+					setId((Integer) o);
+					return o;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof UriQueryPair)) return false;
 		if (this == o) return true;
@@ -75,25 +93,11 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public String toString() {
-		return key.toString() + " = " + value;
-	}
-
-	@Override
-	public Object setDbId(Session session) {
-		Integer keyId = (Integer) getKey().setDbId(session);
-		if (getId() != null) {
-			return getId();
-		}
-		if (keyId != null) {
-			Query query = session.createQuery("select qp.id from " + getClass().getSimpleName() + " as qp where qp.value = '" + getValue() + "' and qp.key = " + keyId);
-			for (Object o : query.list()) {
-				if (equals(session.load(getClass(), (Integer) o))) {
-					setId((Integer) o);
-					return o;
-				}
-			}
-		}
-		return null;
+		return "UriQueryPair{" +
+				"id=" + id +
+				", value='" + value + '\'' +
+				", key=" + key +
+				'}';
 	}
 }
 

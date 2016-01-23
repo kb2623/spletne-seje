@@ -74,12 +74,29 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append('[');
-		if (pairs != null)
-			pairs.forEach(e -> builder.append('[').append(e.toString()).append(']'));
-		return builder.append(']').toString();
+	public Object setDbId(Session session) {
+		List<Integer> ids = new ArrayList<>(pairs.size());
+		for (UriQueryPair p : pairs) {
+			Integer tmp = (Integer) p.setDbId(session);
+			if (tmp != null) {
+				ids.add(tmp);
+			}
+		}
+		if (getId() != null) {
+			return getId();
+		}
+		if (ids.size() == pairs.size()) {
+			org.hibernate.Query query = session.createQuery("select distinct q.id from " + getClass().getSimpleName() + " as q join q.pairs as p where p.id in (:list)");
+			query.setParameterList("list", ids);
+			ids = query.list();
+			for (Integer i : ids) {
+				if (equals(session.load(getClass(), i))) {
+					setId(i);
+					return i;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -104,29 +121,11 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public Object setDbId(Session session) {
-		List<Integer> ids = new ArrayList<>(pairs.size());
-		for (UriQueryPair p : pairs) {
-			Integer tmp = (Integer) p.setDbId(session);
-			if (tmp != null) {
-				ids.add(tmp);
-			}
-		}
-		if (getId() != null) {
-			return getId();
-		}
-		if (ids.size() == pairs.size()) {
-			org.hibernate.Query query = session.createQuery("select distinct q.id from " + getClass().getSimpleName() + " as q join q.pairs as p where p.id in (:list)");
-			query.setParameterList("list", ids);
-			ids = query.list();
-			for (Integer i : ids) {
-				if (equals(session.load(getClass(), i))) {
-					setId(i);
-					return i;
-				}
-			}
-		}
-		return null;
+	public String toString() {
+		return "UriQuery{" +
+				"id=" + id +
+				", pairs=" + pairs +
+				'}';
 	}
 }
 

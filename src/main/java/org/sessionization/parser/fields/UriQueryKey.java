@@ -43,6 +43,21 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 	}
 
 	@Override
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		org.hibernate.Query query = session.createQuery("select u.id from " + getClass().getSimpleName() + " as u where u.name = '" + getName() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof UriQueryKey)) return false;
 		if (this == o) return true;
@@ -59,21 +74,9 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 
 	@Override
 	public String toString() {
-		return name;
-	}
-
-	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		org.hibernate.Query query = session.createQuery("select u.id from " + getClass().getSimpleName() + " as u where u.name = '" + getName() + "'");
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+		return "UriQueryKey{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				'}';
 	}
 }

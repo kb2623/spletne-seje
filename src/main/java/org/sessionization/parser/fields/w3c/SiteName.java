@@ -50,8 +50,18 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String toString() {
-		return name;
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select s.id from " + getClass().getSimpleName() + " as s where s.name = '" + getName() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -70,17 +80,10 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select s.id from " + getClass().getSimpleName() + " as s where s.name = '" + getName() + "'");
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+	public String toString() {
+		return "SiteName{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				'}';
 	}
 }

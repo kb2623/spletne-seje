@@ -63,8 +63,18 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String toString() {
-		return (isServer ? "Server" : "Client") + " port " + portNumber;
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer());
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -85,17 +95,11 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer());
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+	public String toString() {
+		return "Port{" +
+				"id=" + id +
+				", portNumber=" + portNumber +
+				", isServer=" + isServer +
+				'}';
 	}
 }

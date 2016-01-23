@@ -49,6 +49,8 @@ public class KeepAliveNumber implements LogField {
 
 	@Override
 	public String toString() {
-		return number + "";
+		return "KeepAliveNumber{" +
+				"number=" + number +
+				'}';
 	}
 }

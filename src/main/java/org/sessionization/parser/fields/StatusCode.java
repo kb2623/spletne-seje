@@ -35,11 +35,6 @@ public class StatusCode implements LogField {
 	}
 
 	@Override
-	public String toString() {
-		return String.valueOf(status);
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof StatusCode)) return false;
 		if (this == o) return true;
@@ -50,5 +45,12 @@ public class StatusCode implements LogField {
 	@Override
 	public int hashCode() {
 		return getStatus();
+	}
+
+	@Override
+	public String toString() {
+		return "StatusCode{" +
+				"status=" + status +
+				'}';
 	}
 }

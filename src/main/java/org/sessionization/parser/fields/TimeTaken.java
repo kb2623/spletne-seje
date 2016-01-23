@@ -39,11 +39,6 @@ public class TimeTaken implements LogField {
 	}
 
 	@Override
-	public String toString() {
-		return String.valueOf(time);
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof TimeTaken)) return false;
 		if (this == o) return true;
@@ -54,5 +49,12 @@ public class TimeTaken implements LogField {
 	@Override
 	public int hashCode() {
 		return (int) (getTime() ^ (getTime() >>> 32));
+	}
+
+	@Override
+	public String toString() {
+		return "TimeTaken{" +
+				"time=" + time +
+				'}';
 	}
 }

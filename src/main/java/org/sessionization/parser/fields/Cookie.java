@@ -79,18 +79,6 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append('[');
-		if (pairs == null) {
-			builder.append('-');
-		} else {
-			pairs.forEach(e -> builder.append('[').append(e.toString()).append(']'));
-		}
-		return builder.append(']').toString();
-	}
-
-	@Override
 	public String getKey() {
 		if (pairs == null) return "-";
 		else {
@@ -98,27 +86,6 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 			pairs.forEach(e -> builder.append(e.toString()));
 			return builder.toString();
 		}
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o == null || !(o instanceof Cookie)) return false;
-		if (this == o) return true;
-		Cookie that = (Cookie) o;
-		if (getPairs() == null ? that.getPairs() == null : false) {
-			return true;
-		} else if (getPairs().size() == that.getPairs().size()) {
-			return getPairs().containsAll(that.getPairs());
-		} else {
-			return false;
-		}
-	}
-
-	@Override
-	public int hashCode() {
-		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getPairs() != null ? getPairs().hashCode() : 0);
-		return result;
 	}
 
 	@Override
@@ -145,5 +112,34 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Cookie)) return false;
+		if (this == o) return true;
+		Cookie that = (Cookie) o;
+		if (getPairs() == null ? that.getPairs() == null : false) {
+			return true;
+		} else if (getPairs().size() == that.getPairs().size()) {
+			return getPairs().containsAll(that.getPairs());
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getId() != null ? getId().hashCode() : 0;
+		result = 31 * result + (getPairs() != null ? getPairs().hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "Cookie{" +
+				"id=" + id +
+				", pairs=" + pairs +
+				'}';
 	}
 }

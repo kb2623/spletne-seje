@@ -65,28 +65,6 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (o == null || !(o instanceof Referer)) return false;
-		if (this == o) return true;
-		Referer that = (Referer) o;
-		return getSteamQuery() != null ? getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() == null
-				&& getHost() != null ? getHost().equals(that.getHost()) : that.getHost() == null;
-	}
-
-	@Override
-	public int hashCode() {
-		int result = id != null ? id.hashCode() : 0;
-		result = 31 * result + (steamQuery != null ? steamQuery.hashCode() : 0);
-		result = 31 * result + (getHost() != null ? getHost().hashCode() : 0);
-		return result;
-	}
-
-	@Override
-	public String toString() {
-		return steamQuery.toString() + " " + host.toString();
-	}
-
-	@Override
 	public String getFile() {
 		return steamQuery.getFile();
 	}
@@ -108,5 +86,31 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Referer)) return false;
+		if (this == o) return true;
+		Referer that = (Referer) o;
+		return getSteamQuery() != null ? getSteamQuery().equals(that.getSteamQuery()) : that.getSteamQuery() == null
+				&& getHost() != null ? getHost().equals(that.getHost()) : that.getHost() == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (steamQuery != null ? steamQuery.hashCode() : 0);
+		result = 31 * result + (getHost() != null ? getHost().hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "Referer{" +
+				"id=" + id +
+				", steamQuery=" + steamQuery +
+				", host=" + host +
+				'}';
 	}
 }

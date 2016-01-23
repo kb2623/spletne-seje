@@ -35,11 +35,6 @@ public class SizeOfRequest implements LogField {
 	}
 
 	@Override
-	public String toString() {
-		return String.valueOf(size);
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof SizeOfRequest)) return false;
 		if (this == o) return true;
@@ -50,5 +45,12 @@ public class SizeOfRequest implements LogField {
 	@Override
 	public int hashCode() {
 		return getSize();
+	}
+
+	@Override
+	public String toString() {
+		return "SizeOfRequest{" +
+				"size=" + size +
+				'}';
 	}
 }

@@ -122,8 +122,22 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 	}
 
 	@Override
-	public String toString() {
-		return method.toString() + " " + steamQuery.toString() + " " + protocol.toString();
+	public Object setDbId(Session session) {
+		Integer steamQueryId = (Integer) getSteamQuery().setDbId(session);
+		Integer protocolId = (Integer) getProtocol().setDbId(session);
+		if (getId() != null) {
+			return getId();
+		}
+		if (steamQueryId != null && protocolId != null) {
+			Query query = session.createQuery("select l.id from " + getClass().getSimpleName() + " as l where l.method = '" + MethodConverter.getMethodString(getMethod()) + "' and l.steamQuery = " + steamQueryId + " and l.protocol = " + protocolId);
+			for (Object o : query.list()) {
+				if (equals(session.load(getClass(), (Integer) o))) {
+					setId((Integer) o);
+					return o;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -146,21 +160,12 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 	}
 
 	@Override
-	public Object setDbId(Session session) {
-		Integer steamQueryId = (Integer) getSteamQuery().setDbId(session);
-		Integer protocolId = (Integer) getProtocol().setDbId(session);
-		if (getId() != null) {
-			return getId();
-		}
-		if (steamQueryId != null && protocolId != null) {
-			Query query = session.createQuery("select l.id from " + getClass().getSimpleName() + " as l where l.method = '" + MethodConverter.getMethodString(getMethod()) + "' and l.steamQuery = " + steamQueryId + " and l.protocol = " + protocolId);
-			for (Object o : query.list()) {
-				if (equals(session.load(getClass(), (Integer) o))) {
-					setId((Integer) o);
-					return o;
-				}
-			}
-		}
-		return null;
+	public String toString() {
+		return "RequestLine{" +
+				"id=" + id +
+				", method=" + method +
+				", steamQuery=" + steamQuery +
+				", protocol=" + protocol +
+				'}';
 	}
 }

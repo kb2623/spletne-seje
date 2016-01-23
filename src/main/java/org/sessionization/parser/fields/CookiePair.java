@@ -57,6 +57,22 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 	}
 
 	@Override
+	public Object setDbId(Session session) {
+		Integer keyId = (Integer) getKey().setDbId(session);
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + keyId + " and cp.value = '" + getValue() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof CookiePair)) return false;
 		if (this == o) return true;
@@ -75,23 +91,11 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 
 	@Override
 	public String toString() {
-		return key.toString() + " = " + value;
-	}
-
-	@Override
-	public Object setDbId(Session session) {
-		Integer keyId = (Integer) getKey().setDbId(session);
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + keyId + " and cp.value = '" + getValue() + "'");
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+		return "CookiePair{" +
+				"id=" + id +
+				", value='" + value + '\'' +
+				", key=" + key +
+				'}';
 	}
 }
 

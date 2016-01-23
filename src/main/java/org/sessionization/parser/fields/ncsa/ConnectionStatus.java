@@ -41,6 +41,8 @@ public enum ConnectionStatus implements LogField {
 
 	@Override
 	public String toString() {
-		return izpis();
+		return "ConnectionStatus{" +
+				izpis() +
+				"}";
 	}
 }

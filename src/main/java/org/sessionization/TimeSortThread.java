@@ -101,6 +101,7 @@ public class TimeSortThread extends Thread {
 			}
 			queue.offer(e);
 		}
+		System.out.println(e.toString());
 		for (e = queue.peek(); e != null && line.minus(e) > sessionLength; e = queue.peek()) {
 			session = map.get(e.getKey());
 			if (session == null) {
@@ -172,6 +173,14 @@ public class TimeSortThread extends Thread {
 			int result = getDateTime() != null ? getDateTime().hashCode() : 0;
 			result = 31 * result + (getKey() != null ? getKey().hashCode() : 0);
 			return result;
+		}
+
+		@Override
+		public String toString() {
+			return "QueueElement{" +
+					"dateTime=" + printDate() +
+					", key='" + key + '\'' +
+					'}';
 		}
 	}
 }

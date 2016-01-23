@@ -49,10 +49,24 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 		}
 	}
 
-
-
+	@Override
 	public String izpis() {
 		return getFile();
+	}
+
+	@Override
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select u.id from " + getClass().getSimpleName() + " as u where u.file = '" + getFile() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -75,18 +89,4 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 		return getFile();
 	}
 
-	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select u.id from " + getClass().getSimpleName() + " as u where u.file = '" + getFile() + "'");
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
-	}
 }

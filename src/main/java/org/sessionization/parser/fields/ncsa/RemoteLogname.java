@@ -54,8 +54,23 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String toString() {
-		return (logname != null) ? logname : "-";
+	public String getKey() {
+		return logname == null ? "-" : logname;
+	}
+
+	@Override
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.logname = '" + getLogname() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -74,22 +89,10 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String getKey() {
-		return logname == null ? "-" : logname;
-	}
-
-	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.logname = '" + getLogname() + "'");
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+	public String toString() {
+		return "RemoteLogname{" +
+				"id=" + id +
+				", logname='" + logname + '\'' +
+				'}';
 	}
 }

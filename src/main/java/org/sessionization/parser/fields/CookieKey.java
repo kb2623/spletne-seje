@@ -43,6 +43,21 @@ public class CookieKey implements HibernateUtil.HibernateTable {
 	}
 
 	@Override
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select c.id from " + getClass().getSimpleName() + " as c where c.name = '" + getName() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof CookieKey)) return false;
 		if (this == o) return true;
@@ -59,21 +74,9 @@ public class CookieKey implements HibernateUtil.HibernateTable {
 
 	@Override
 	public String toString() {
-		return name;
-	}
-
-	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select c.id from " + getClass().getSimpleName() + " as c where c.name = '" + getName() + "'");
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+		return "CookieKey{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				'}';
 	}
 }

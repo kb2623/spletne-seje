@@ -116,6 +116,8 @@ public enum Method implements LogField {
 
 	@Override
 	public String toString() {
-		return getMethod();
+		return "Method{" +
+				getMethod() +
+				"}";
 	}
 }

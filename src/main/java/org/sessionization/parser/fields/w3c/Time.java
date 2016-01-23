@@ -46,8 +46,8 @@ public class Time implements LogField, TimePoint {
 	}
 
 	@Override
-	public String toString() {
-		return time.toString();
+	public LocalTime getLocalTime() {
+		return time;
 	}
 
 	@Override
@@ -64,7 +64,9 @@ public class Time implements LogField, TimePoint {
 	}
 
 	@Override
-	public LocalTime getLocalTime() {
-		return time;
+	public String toString() {
+		return "Time{" +
+				"time=" + time +
+				'}';
 	}
 }

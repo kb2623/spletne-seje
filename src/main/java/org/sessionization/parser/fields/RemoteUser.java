@@ -52,13 +52,23 @@ public class RemoteUser implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public String toString() {
-		return (user != null) ? user : "-";
+	public String getKey() {
+		return user != null ? user : "-";
 	}
 
 	@Override
-	public String getKey() {
-		return user != null ? user : "-";
+	public Object setDbId(Session session) {
+		if (getId() != null) {
+			return getId();
+		}
+		Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.user = '" + getUser() + "'");
+		for (Object o : query.list()) {
+			if (equals(session.load(getClass(), (Integer) o))) {
+				setId((Integer) o);
+				return o;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -77,17 +87,10 @@ public class RemoteUser implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	@Override
-	public Object setDbId(Session session) {
-		if (getId() != null) {
-			return getId();
-		}
-		Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.user = '" + getUser() + "'");
-		for (Object o : query.list()) {
-			if (equals(session.load(getClass(), (Integer) o))) {
-				setId((Integer) o);
-				return o;
-			}
-		}
-		return null;
+	public String toString() {
+		return "RemoteUser{" +
+				"id=" + id +
+				", user='" + user + '\'' +
+				'}';
 	}
 }
