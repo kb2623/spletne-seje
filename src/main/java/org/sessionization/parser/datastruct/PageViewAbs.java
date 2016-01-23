@@ -97,6 +97,9 @@ public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateT
 
 	@Override
 	public String toString() {
-		return requests.toString();
+		return "PageViewAbs{" +
+				"id=" + id +
+				", requests=" + requests +
+				'}';
 	}
 }

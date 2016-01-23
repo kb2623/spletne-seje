@@ -438,16 +438,81 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public Entry<K, V> ceilingEntry(K key) {
+		if (key == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		} else {
+			AVLEntry<K, V> curr = root;
+			AVLEntry<K, V> prev = null;
+			while (true) {
+				int cmp = keyCmp.compare(key, curr.key);
+				if (cmp == 0) {
+					return curr;
+				} else if (cmp > 0) {
+					if (curr.higher != null) {
+						prev = curr;
+						curr = curr.higher;
+					} else {
+						break;
+					}
+				} else {
+					if (curr.lower != null) {
+						prev = curr;
+						curr = curr.lower;
+					} else {
+						break;
+					}
+				}
+			}
+			if (prev == null) {
+				prev = root;
+			}
+			// TODO: 1/23/16 Tukaj najdi naslednji vecji kljuc
+		}
 		return null;
 	}
 
 	@Override
 	public K ceilingKey(K key) {
+		if (key == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		} else {
+			AVLEntry<K, V> curr = root;
+			AVLEntry<K, V> prev = null;
+			while (true) {
+				int cmp = keyCmp.compare(key, curr.key);
+				if (cmp == 0) {
+					return curr.key;
+				} else if (cmp > 0) {
+					if (curr.higher != null) {
+						prev = curr;
+						curr = curr.higher;
+					} else {
+						break;
+					}
+				} else {
+					if (curr.lower != null) {
+						prev = curr;
+						curr = curr.lower;
+					} else {
+						break;
+					}
+				}
+			}
+			if (prev == null) {
+				prev = root;
+			}
+			// TODO: 1/23/16 Tukaj najdi naslednji vecji kljuc
+		}
 		return null;
 	}
 
 	@Override
 	public Entry<K, V> higherEntry(K key) {
+		// TODO: 1/23/16
 		return null;
 	}
 
@@ -458,51 +523,81 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public Entry<K, V> firstEntry() {
+		if (!isEmpty()) {
+			AVLEntry<K, V> curr = root;
+			while (true) {
+				if (curr.lower != null) {
+					curr = curr.lower;
+				} else {
+					return curr;
+				}
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public Entry<K, V> lastEntry() {
+		if (!isEmpty()) {
+			AVLEntry<K, V> curr = root;
+			while (true) {
+				if (curr.higher != null) {
+					curr = curr.higher;
+				} else {
+					return curr;
+				}
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public Entry<K, V> pollFirstEntry() {
-		return null;
+		Map.Entry<K, V> first = firstEntry();
+		remove(first.getKey());
+		return first;
 	}
 
 	@Override
 	public Entry<K, V> pollLastEntry() {
-		return null;
+		Map.Entry<K, V> last = lastEntry();
+		remove(last.getKey());
+		return last;
 	}
 
 	@Override
 	public NavigableMap<K, V> descendingMap() {
+		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public NavigableSet<K> navigableKeySet() {
+		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public NavigableSet<K> descendingKeySet() {
+		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
+		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+		// TODO: 1/23/16
 		return null;
 	}
 
@@ -513,26 +608,35 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public SortedMap<K, V> subMap(K fromKey, K toKey) {
+		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public SortedMap<K, V> headMap(K toKey) {
+		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public SortedMap<K, V> tailMap(K fromKey) {
+		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public K firstKey() {
+		if (!isEmpty()) {
+			return firstEntry().getKey();
+		}
 		return null;
 	}
 
 	@Override
 	public K lastKey() {
+		if (!isEmpty()) {
+			return lastEntry().getKey();
+		}
 		return null;
 	}
 
@@ -638,6 +742,11 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 		@Override
 		public int hashCode() {
 			return getKey() != null ? getKey().hashCode() : 0;
+		}
+
+		@Override
+		public String toString() {
+			return key + "=" + value;
 		}
 	}
 }

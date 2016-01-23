@@ -9,6 +9,7 @@ import org.sessionization.parser.fields.UserAgent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -207,20 +208,8 @@ public class ParsedLine implements Iterable<LogField>, TimePoint {
 
 	@Override
 	public String toString() {
-		try {
-			StringBuilder builder = new StringBuilder();
-			builder.append('[');
-			for (int i = 0; true; ) {
-				builder.append(array[i].toString());
-				if (++i < array.length) {
-					builder.append(" | ");
-				} else {
-					break;
-				}
-			}
-			return builder.append(']').toString();
-		} catch (ArrayIndexOutOfBoundsException e) {
-			return "[]";
-		}
+		return "ParsedLine{" +
+				"array=" + Arrays.toString(array) +
+				'}';
 	}
 }

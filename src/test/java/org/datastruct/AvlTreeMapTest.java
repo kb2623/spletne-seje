@@ -10,8 +10,8 @@ import static org.junit.Assert.*;
 
 public class AvlTreeMapTest {
 
-	private Map<Integer, Integer> map;
-	private Map<Integer, Integer> tmap;
+	private NavigableMap<Integer, Integer> map;
+	private NavigableMap<Integer, Integer> tmap;
 
 	private int size = 10000;
 
@@ -328,6 +328,33 @@ public class AvlTreeMapTest {
 		assertEquals("{23:3, 10:1, 34:2, 33:1, 35:1}", tree.printTree());
 		assertEquals(new Integer(23), map.remove(23));
 		assertEquals("{34:3, 10:2, 35:1, 33:1}", tree.printTree());
+	}
+
+	@Test
+	public void testCelingEntry() {
+		map.put(1, 1);
+		map.put(2, 2);
+		map.put(3, 3);
+		map.put(4, 4);
+		map.put(5, 5);
+		map.put(7, 7);
+		map.put(9, 9);
+		map.put(11, 11);
+		map.put(14, 14);
+		System.out.println(map.ceilingEntry(5));
+		System.out.println(map.ceilingEntry(6));
+	}
+
+	@Test
+	public void testFirstEntry() {
+		testPut(true);
+		assertEquals(tmap.firstEntry(), map.firstEntry());
+	}
+
+	@Test
+	public void testLastEntry() {
+		testPut(true);
+		assertEquals(tmap.lastEntry(), map.lastEntry());
 	}
 
 	class Compare implements Comparator<Integer> {

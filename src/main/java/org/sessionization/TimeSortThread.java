@@ -84,6 +84,7 @@ public class TimeSortThread extends Thread {
 	}
 
 	private void consume(ParsedLine line) throws InterruptedException {
+		// FIXME: 1/23/16 Nekaj ne posilja sej naprej v qSession vrsto
 		QueueElement e = new QueueElement(line.getKey(), line.getLocalDateTime());
 		UserSessionAbs session = map.get(e.getKey());
 		if (session == null) {
@@ -101,7 +102,6 @@ public class TimeSortThread extends Thread {
 			}
 			queue.offer(e);
 		}
-		System.out.println(e.toString());
 		for (e = queue.peek(); e != null && line.minus(e) > sessionLength; e = queue.peek()) {
 			session = map.get(e.getKey());
 			if (session == null) {
