@@ -684,14 +684,28 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 	public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
 		if (fromKey == null || toKey == null) {
 			throw new NullPointerException();
+		} else if (keyCmp.compare(fromKey, toKey) > 0) {
+			throw new IllegalArgumentException();
 		} else if (isEmpty() || fromKey.equals(toKey)) {
 			return new AvlTreeMap<>();
-		} else if (keyCmp.compare(fromKey, toKey) < 0) {
-			throw new IllegalArgumentException();
 		}
 		NavigableMap<K, V> map = new AvlTreeMap<>(keyCmp);
-		// TODO: 1/25/16
+		subMap(root, map, fromKey, fromInclusive, toKey, toInclusive);
 		return map;
+	}
+
+	private void subMap(AVLEntry<K, V> e, NavigableMap<K, V> map, K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+		boolean test1 = fromKey != null ? (fromInclusive ? keyCmp.compare(fromKey, e.key) <= 0 : keyCmp.compare(fromKey, e.key) < 0) : true;
+		boolean test2 = toKey != null ? (toInclusive ? keyCmp.compare(toKey, e.key) >= 0 : keyCmp.compare(toKey, e.key) > 0) : true;
+		if (test1 && test2) {
+			map.put(e.getKey(), e.getValue());
+		}
+		if (test1 && e.lower != null) {
+			subMap(e.lower, map, fromKey, fromInclusive, toKey, toInclusive);
+		}
+		if (test2 && e.higher != null) {
+			subMap(e.higher, map, fromKey, fromInclusive, toKey, toInclusive);
+		}
 	}
 
 	@Override
@@ -702,7 +716,7 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 			return new AvlTreeMap<>();
 		}
 		NavigableMap<K, V> map = new AvlTreeMap<>(keyCmp);
-		// TODO: 1/23/16
+		subMap(root, map, null, false, toKey, inclusive);
 		return map;
 	}
 
@@ -714,7 +728,7 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 			return new AvlTreeMap<>();
 		}
 		NavigableMap<K, V> map = new AvlTreeMap<>(keyCmp);
-		// TODO: 1/23/16
+		subMap(root, map, fromKey, inclusive, null, false);
 		return map;
 	}
 

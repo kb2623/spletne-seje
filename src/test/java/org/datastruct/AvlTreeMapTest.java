@@ -434,17 +434,69 @@ public class AvlTreeMapTest {
 
 	@Test
 	public void testTailMap() {
-		// TODO: 1/25/16  
+		try {
+			map.tailMap(null, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		testPut(true);
+		int formKey = (int) (Math.random() * size);
+		NavigableMap<Integer, Integer> stmap = tmap.tailMap(formKey, true);
+		NavigableMap<Integer, Integer> smap = map.tailMap(formKey, true);
+		assertEquals(stmap.size(), smap.size());
+		for (Map.Entry e : stmap.entrySet()) {
+			assertEquals(e.getValue(), smap.get(e.getKey()));
+		}
 	}
 
 	@Test
 	public void testHeadMap() {
-		// TODO: 1/25/16  
+		try {
+			map.headMap(null, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		testPut(true);
+		int toKey = (int) (Math.random() * size);
+		NavigableMap<Integer, Integer> stmap = tmap.headMap(toKey, true);
+		NavigableMap<Integer, Integer> smap = map.headMap(toKey, true);
+		assertEquals(stmap.size(), smap.size());
+		for (Map.Entry e : stmap.entrySet()) {
+			assertEquals(e.getValue(), smap.get(e.getKey()));
+		}
 	}
 
 	@Test
 	public void testSubMap() {
-		// TODO: 1/25/16  
+		try {
+			map.subMap(null, false, 10, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		try {
+			map.subMap(20, false, null, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		try {
+			map.subMap(null, false, null, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		try {
+			map.subMap(200, false, 10, false);
+			fail();
+		} catch (IllegalArgumentException e) {
+		}
+		testPut(true);
+		int formKey = (int) (Math.random() * size);
+		int toKey = formKey + (int) (Math.random() * (size - formKey));
+		NavigableMap<Integer, Integer> stmap = tmap.subMap(formKey, true, toKey, true);
+		NavigableMap<Integer, Integer> smap = map.subMap(formKey, true, toKey, true);
+		assertEquals(stmap.size(), smap.size());
+		for (Map.Entry e : stmap.entrySet()) {
+			assertEquals(e.getValue(), smap.get(e.getKey()));
+		}
 	}
 
 	class Compare implements Comparator<Integer> {
