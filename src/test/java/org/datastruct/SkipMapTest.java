@@ -2,6 +2,7 @@ package org.datastruct;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -10,8 +11,8 @@ import static org.junit.Assert.*;
 
 public class SkipMapTest {
 
-	private Map<Integer, Integer> map;
-	private Map<Integer, Integer> tmap;
+	private NavigableMap<Integer, Integer> map;
+	private NavigableMap<Integer, Integer> tmap;
 
 	private int size = 500;
 	private int conns = 6;
@@ -215,6 +216,188 @@ public class SkipMapTest {
 		testPut(false);
 		System.out.println(((SkipMap) map).printTree());
 		System.out.println(map.toString());
+	}
+
+	@Test
+	@Ignore
+	public void testCeilingEntry() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.ceilingEntry(i), map.ceilingEntry(i));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testCeilingKey() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.ceilingKey(i), map.ceilingKey(i));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testFirstEntry() {
+		testPut(true);
+		assertEquals(tmap.firstEntry(), map.firstEntry());
+	}
+
+	@Test
+	@Ignore
+	public void testLastEntry() {
+		testPut(true);
+		assertEquals(tmap.lastEntry(), map.lastEntry());
+	}
+
+	@Test
+	@Ignore
+	public void testDescendingMap() {
+		testPut(true);
+		NavigableMap rtmap = tmap.descendingMap();
+		NavigableMap rmap = map.descendingMap();
+		assertEquals(rtmap.firstEntry(), rmap.firstEntry());
+		assertEquals(rtmap.lastEntry(), rmap.lastEntry());
+	}
+
+	@Test
+	@Ignore
+	public void testDescendingKeySet() {
+		testPut(true);
+		NavigableSet<Integer> tset = tmap.descendingKeySet();
+		NavigableSet<Integer> mset = map.descendingKeySet();
+		Iterator<Integer> tit = tset.iterator();
+		Iterator<Integer> mit = mset.iterator();
+		while (tit.hasNext()) {
+			assertEquals(tit.next(), mit.next());
+		}
+		if (mit.hasNext()) {
+			fail();
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testFloorEntry() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.floorEntry(i), map.floorEntry(i));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testFloorKey() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.floorKey(i), map.floorKey(i));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testLowerEntry() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.lowerEntry(i), map.lowerEntry(i));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testLowerKey() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.lowerKey(i), map.lowerKey(i));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testHigherEntry() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.higherEntry(i), map.higherEntry(i));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testHigherKey() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.higherKey(i), map.higherKey(i));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testTailMap() {
+		try {
+			map.tailMap(null, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		testPut(true);
+		int formKey = (int) (Math.random() * size);
+		NavigableMap<Integer, Integer> stmap = tmap.tailMap(formKey, true);
+		NavigableMap<Integer, Integer> smap = map.tailMap(formKey, true);
+		assertEquals(stmap.size(), smap.size());
+		for (Map.Entry e : stmap.entrySet()) {
+			assertEquals(e.getValue(), smap.get(e.getKey()));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testHeadMap() {
+		try {
+			map.headMap(null, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		testPut(true);
+		int toKey = (int) (Math.random() * size);
+		NavigableMap<Integer, Integer> stmap = tmap.headMap(toKey, true);
+		NavigableMap<Integer, Integer> smap = map.headMap(toKey, true);
+		assertEquals(stmap.size(), smap.size());
+		for (Map.Entry e : stmap.entrySet()) {
+			assertEquals(e.getValue(), smap.get(e.getKey()));
+		}
+	}
+
+	@Test
+	@Ignore
+	public void testSubMap() {
+		try {
+			map.subMap(null, false, 10, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		try {
+			map.subMap(20, false, null, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		try {
+			map.subMap(null, false, null, false);
+			fail();
+		} catch (NullPointerException e) {
+		}
+		try {
+			map.subMap(200, false, 10, false);
+			fail();
+		} catch (IllegalArgumentException e) {
+		}
+		testPut(true);
+		int formKey = (int) (Math.random() * size);
+		int toKey = formKey + (int) (Math.random() * (size - formKey));
+		NavigableMap<Integer, Integer> stmap = tmap.subMap(formKey, true, toKey, true);
+		NavigableMap<Integer, Integer> smap = map.subMap(formKey, true, toKey, true);
+		assertEquals(stmap.size(), smap.size());
+		for (Map.Entry e : stmap.entrySet()) {
+			assertEquals(e.getValue(), smap.get(e.getKey()));
+		}
 	}
 
 	class Compare implements Comparator<Integer> {
