@@ -159,23 +159,29 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 			} else {
 				curr.lower = new AVLEntry<>(key, value);
 			}
-			while (!stack.isEmpty()) {
-				curr = stack.pop();
-				cmp = curr.getBalance();
-				if (cmp < -1 || cmp > 1) {
-					if (stack.isEmpty()) {
-						root = rotate(curr, cmp);
-					} else if (stack.peek().lower == curr) {
-						stack.peek().lower = rotate(curr, cmp);
-					} else {
-						stack.peek().higher = rotate(curr, cmp);
-					}
-					return null;
+			updateTree(stack);
+		}
+		return null;
+	}
+
+	private void updateTree(Stack<AVLEntry<K, V>> stack) {
+		int cmp;
+		AVLEntry<K, V> curr;
+		while (!stack.isEmpty()) {
+			curr = stack.pop();
+			cmp = curr.getBalance();
+			if (cmp < -1 || cmp > 1) {
+				if (stack.isEmpty()) {
+					root = rotate(curr, cmp);
+				} else if (stack.peek().lower == curr) {
+					stack.peek().lower = rotate(curr, cmp);
 				} else {
-					curr.updataHeight();
+					stack.peek().higher = rotate(curr, cmp);
 				}
+				return;
+			} else {
+				curr.updataHeight();
 			}
-			return null;
 		}
 	}
 
@@ -243,64 +249,63 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 					}
 				}
 			}
-			AVLEntry<K, V> minNode = found;
-			if (found.lower != null) {
-				minNode = found.lower;
-				if (minNode.higher != null) {
-					while (minNode.higher != null) {
-						stack.push(minNode);
-						minNode = minNode.higher;
-					}
-					stack.peek().higher = minNode.lower;
+			return deleteFoundNode(found, stack).getValue();
+		}
+	}
+
+	private Map.Entry<K, V> deleteFoundNode(final AVLEntry<K, V> node, final Stack<AVLEntry<K, V>> stack) {
+		AVLEntry<K, V> retNode = node;
+		AVLEntry<K, V> minNode = node;
+		if (node.lower != null) {
+			minNode = node.lower;
+			if (minNode.higher != null) {
+				while (minNode.higher != null) {
+					stack.push(minNode);
+					minNode = minNode.higher;
+				}
+				stack.peek().higher = minNode.lower;
+				retNode = replaceValues(node, minNode);
+			} else {
+				if (stack.pop() == root) {
+					stack.push(node);
+					node.lower = minNode.lower;
+					retNode = replaceValues(node, minNode);
 				} else {
-					if (stack.pop() == root) {
-						stack.push(found);
-						found.lower = minNode.lower;
-					} else if (stack.peek().lower == found) {
+					if (stack.peek().lower == node) {
 						stack.peek().lower = minNode;
 					} else {
 						stack.peek().higher = minNode;
 					}
-					minNode.higher = found.higher;
-					minNode.updataHeight();
+					minNode.higher = node.higher;
+					stack.push(minNode);
 				}
-			} else if (found.higher != null) {
-				minNode = minNode.higher;
-				found.lower = minNode.lower;
-				found.higher = minNode.higher;
-				found.updataHeight();
+			}
+		} else if (node.higher != null) {
+			minNode = minNode.higher;
+			node.lower = minNode.lower;
+			node.higher = minNode.higher;
+			retNode = replaceValues(node, minNode);
+		} else {
+			if (node == root) {
+				root = null;
 			} else {
-				if (found == root) {
-					root = null;
+				stack.pop();
+				if (stack.peek().lower == node) {
+					stack.peek().lower = null;
 				} else {
-					stack.pop();
-					if (stack.peek().lower == found) {
-						stack.peek().lower = null;
-					} else {
-						stack.peek().higher = null;
-					}
+					stack.peek().higher = null;
 				}
 			}
-			AVLEntry<K, V> node;
-			while (!stack.isEmpty()) {
-				node = stack.pop();
-				cmp = node.getBalance();
-				if (cmp < -1 || cmp > 1) {
-					if (stack.isEmpty()) {
-						root = rotate(node, cmp);
-					} else if (stack.peek().lower == node) {
-						stack.peek().lower = rotate(node, cmp);
-					} else {
-						stack.peek().higher = rotate(node, cmp);
-					}
-					break;
-				} else {
-					node.updataHeight();
-				}
-			}
-			found.key = minNode.key;
-			return found.setValue(minNode.value);
 		}
+		updateTree(stack);
+		return retNode;
+	}
+
+	private AVLEntry<K, V> replaceValues(AVLEntry<K, V> n1, AVLEntry<K, V> n2) {
+		K key = n1.key;
+		V value = n1.value;
+		n1.setKeyValue(n2.key, n2.value);
+		return n2.setKeyValue(key, value);
 	}
 
 	@Override
@@ -418,21 +423,25 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public Entry<K, V> lowerEntry(K key) {
+		// TODO: 1/25/16
 		return null;
 	}
 
 	@Override
 	public K lowerKey(K key) {
+		// TODO: 1/25/16  
 		return null;
 	}
 
 	@Override
 	public Entry<K, V> floorEntry(K key) {
+		// TODO: 1/25/16  
 		return null;
 	}
 
 	@Override
 	public K floorKey(K key) {
+		// TODO: 1/25/16  
 		return null;
 	}
 
@@ -553,16 +562,40 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public Entry<K, V> pollFirstEntry() {
-		Map.Entry<K, V> first = firstEntry();
-		remove(first.getKey());
-		return first;
+		if (isEmpty()) {
+			return null;
+		} else {
+			Stack<AVLEntry<K, V>> stack = new Stack<>();
+			AVLEntry<K, V> found = root;
+			while (true) {
+				stack.push(found);
+				if (found.lower != null) {
+					found = found.lower;
+				} else {
+					break;
+				}
+			}
+			return deleteFoundNode(found, stack);
+		}
 	}
 
 	@Override
 	public Entry<K, V> pollLastEntry() {
-		Map.Entry<K, V> last = lastEntry();
-		remove(last.getKey());
-		return last;
+		if (isEmpty()) {
+			return null;
+		} else {
+			Stack<AVLEntry<K, V>> stack = new Stack<>();
+			AVLEntry<K, V> found = root;
+			while (true) {
+				stack.push(found);
+				if (found.higher != null) {
+					found = found.higher;
+				} else {
+					break;
+				}
+			}
+			return deleteFoundNode(found, stack);
+		}
 	}
 
 	@Override
@@ -704,6 +737,12 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 			} else {
 				height = (higher != null ? higher.height : 0) + 1;
 			}
+		}
+
+		private AVLEntry<K, V> setKeyValue(K key, V value) {
+			this.key = key;
+			this.value = value;
+			return this;
 		}
 
 		@Override
