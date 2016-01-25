@@ -331,18 +331,19 @@ public class AvlTreeMapTest {
 	}
 
 	@Test
-	public void testCelingEntry() {
-		map.put(1, 1);
-		map.put(2, 2);
-		map.put(3, 3);
-		map.put(4, 4);
-		map.put(5, 5);
-		map.put(7, 7);
-		map.put(9, 9);
-		map.put(11, 11);
-		map.put(14, 14);
-		System.out.println(map.ceilingEntry(5));
-		System.out.println(map.ceilingEntry(6));
+	public void testCeilingEntry() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.ceilingEntry(i), map.ceilingEntry(i));
+		}
+	}
+
+	@Test
+	public void testCeilingKey() {
+		testPut(true);
+		for (int i = 0; i < size; i++) {
+			assertEquals(tmap.ceilingKey(i), map.ceilingKey(i));
+		}
 	}
 
 	@Test
