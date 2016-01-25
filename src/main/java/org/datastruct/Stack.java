@@ -15,7 +15,9 @@ public class Stack<T> {
 	}
 
 	public T pop() throws NoSuchElementException {
-		if (this.isEmpty()) throw new NoSuchElementException();
+		if (this.isEmpty()) {
+			return null;
+		}
 		T ret = this.top.data;
 		this.top = this.top.prev;
 		return ret;

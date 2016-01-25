@@ -427,25 +427,74 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public Entry<K, V> lowerEntry(K key) {
-		// TODO: 1/25/16
+		if (key == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
+		Stack<AVLEntry<K, V>> stack = new Stack<>();
+		findNode(key, stack);
+		AVLEntry<K, V> e = stack.pop();
+		if (e.lower != null && keyCmp.compare(key, e.key) <= 0) {
+			e = e.lower;
+			while (e.higher != null) {
+				e = e.higher;
+			}
+			return e;
+		}
+		for (; e != null; e = stack.pop()) {
+			if (keyCmp.compare(key, e.key) > 0) {
+				return e;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public K lowerKey(K key) {
-		// TODO: 1/25/16  
+		if (key == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
+		Map.Entry<K, V> e = lowerEntry(key);
+		if (e != null) {
+			return e.getKey();
+		}
 		return null;
 	}
 
 	@Override
 	public Entry<K, V> floorEntry(K key) {
-		// TODO: 1/25/16  
+		if (key == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
+		Stack<AVLEntry<K, V>> stack = new Stack<>();
+		AVLEntry<K, V> e = findNode(key, stack);
+		if (e != null) {
+			return e;
+		}
+		for (e = stack.pop(); e != null; e = stack.pop()) {
+			if (keyCmp.compare(key, e.key) > 0) {
+				return e;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public K floorKey(K key) {
-		// TODO: 1/25/16  
+		if (key == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
+		Map.Entry<K, V> e = floorEntry(key);
+		if (e != null) {
+			return e.getKey();
+		}
 		return null;
 	}
 
@@ -460,9 +509,8 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 		AVLEntry<K, V> curr = findNode(key, stack);
 		if (curr != null) {
 			return curr;
-		} else {
-			curr = stack.pop();
 		}
+		curr = stack.pop();
 		if (keyCmp.compare(key, curr.key) < 0) {
 			return curr;
 		} else if (stack.peek().lower == curr) {
@@ -495,12 +543,42 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public Entry<K, V> higherEntry(K key) {
-		// TODO: 1/23/16
+		if (key == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
+		Stack<AVLEntry<K, V>> stack = new Stack<>();
+		findNode(key, stack);
+		AVLEntry<K, V> e = stack.pop();
+		if (keyCmp.compare(key, e.key) < 0) {
+			return e;
+		} else if (e.higher != null) {
+			e = e.higher;
+			while (e.lower != null) {
+				e = e.lower;
+			}
+			return e;
+		}
+		for (; e != null; e = stack.pop()) {
+			if (keyCmp.compare(key, e.key) < 0) {
+				return e;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public K higherKey(K key) {
+		if (key == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
+		Map.Entry<K, V> e = higherEntry(key);
+		if (e != null) {
+			return e.getKey();
+		}
 		return null;
 	}
 
@@ -574,36 +652,63 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public NavigableMap<K, V> descendingMap() {
-		// TODO: 1/23/16
-		return null;
+		AvlTreeMap<K, V> rmap = new AvlTreeMap<>(keyCmp.reversed());
+		for (Map.Entry<K, V> e : entrySet()) {
+			rmap.put(e.getKey(), e.getValue());
+		}
+		return rmap;
 	}
 
 	@Override
 	public NavigableSet<K> navigableKeySet() {
-		// TODO: 1/23/16
-		return null;
+		if (isEmpty()) {
+			return null;
+		}
+		NavigableSet<K> set = new TreeSet<>(keyCmp);
+		for (K k : keySet()) {
+			set.add(k);
+		}
+		return set;
 	}
 
 	@Override
 	public NavigableSet<K> descendingKeySet() {
-		// TODO: 1/23/16
-		return null;
+		NavigableSet<K> set = new TreeSet<>(keyCmp.reversed());
+		for (K key : keySet()) {
+			set.add(key);
+		}
+		return set;
 	}
 
 	@Override
 	public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+		if (fromKey == null || toKey == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
 		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
+		if (toKey == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
 		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+		if (fromKey == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
 		// TODO: 1/23/16
 		return null;
 	}
@@ -615,18 +720,33 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public SortedMap<K, V> subMap(K fromKey, K toKey) {
+		if (fromKey == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
 		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public SortedMap<K, V> headMap(K toKey) {
+		if (toKey == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
 		// TODO: 1/23/16
 		return null;
 	}
 
 	@Override
 	public SortedMap<K, V> tailMap(K fromKey) {
+		if (fromKey == null) {
+			throw new NullPointerException();
+		} else if (isEmpty()) {
+			return null;
+		}
 		// TODO: 1/23/16
 		return null;
 	}
