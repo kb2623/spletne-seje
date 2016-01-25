@@ -684,11 +684,14 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 	public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
 		if (fromKey == null || toKey == null) {
 			throw new NullPointerException();
-		} else if (isEmpty()) {
-			return null;
+		} else if (isEmpty() || fromKey.equals(toKey)) {
+			return new AvlTreeMap<>();
+		} else if (keyCmp.compare(fromKey, toKey) < 0) {
+			throw new IllegalArgumentException();
 		}
-		// TODO: 1/23/16
-		return null;
+		NavigableMap<K, V> map = new AvlTreeMap<>(keyCmp);
+		// TODO: 1/25/16
+		return map;
 	}
 
 	@Override
@@ -696,10 +699,11 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 		if (toKey == null) {
 			throw new NullPointerException();
 		} else if (isEmpty()) {
-			return null;
+			return new AvlTreeMap<>();
 		}
+		NavigableMap<K, V> map = new AvlTreeMap<>(keyCmp);
 		// TODO: 1/23/16
-		return null;
+		return map;
 	}
 
 	@Override
@@ -707,10 +711,11 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 		if (fromKey == null) {
 			throw new NullPointerException();
 		} else if (isEmpty()) {
-			return null;
+			return new AvlTreeMap<>();
 		}
+		NavigableMap<K, V> map = new AvlTreeMap<>(keyCmp);
 		// TODO: 1/23/16
-		return null;
+		return map;
 	}
 
 	@Override
@@ -722,11 +727,12 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 	public SortedMap<K, V> subMap(K fromKey, K toKey) {
 		if (fromKey == null) {
 			throw new NullPointerException();
-		} else if (isEmpty()) {
-			return null;
+		} else if (isEmpty() || fromKey.equals(toKey)) {
+			return new AvlTreeMap<>();
+		} else if (keyCmp.compare(fromKey, toKey) < 0) {
+			throw new IllegalArgumentException();
 		}
-		// TODO: 1/23/16
-		return null;
+		return subMap(fromKey, true, toKey, false);
 	}
 
 	@Override
@@ -734,10 +740,9 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 		if (toKey == null) {
 			throw new NullPointerException();
 		} else if (isEmpty()) {
-			return null;
+			return new AvlTreeMap<>();
 		}
-		// TODO: 1/23/16
-		return null;
+		return headMap(toKey, false);
 	}
 
 	@Override
@@ -745,10 +750,9 @@ public class AvlTreeMap<K, V> implements NavigableMap<K, V> {
 		if (fromKey == null) {
 			throw new NullPointerException();
 		} else if (isEmpty()) {
-			return null;
+			return new AvlTreeMap<>();
 		}
-		// TODO: 1/23/16
-		return null;
+		return tailMap(fromKey, true);
 	}
 
 	@Override

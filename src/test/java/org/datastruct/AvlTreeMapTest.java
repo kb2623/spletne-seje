@@ -432,6 +432,21 @@ public class AvlTreeMapTest {
 		}
 	}
 
+	@Test
+	public void testTailMap() {
+		// TODO: 1/25/16  
+	}
+
+	@Test
+	public void testHeadMap() {
+		// TODO: 1/25/16  
+	}
+
+	@Test
+	public void testSubMap() {
+		// TODO: 1/25/16  
+	}
+
 	class Compare implements Comparator<Integer> {
 		@Override
 		public int compare(Integer i1, Integer i2) {
