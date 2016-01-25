@@ -446,6 +446,12 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 		return null;
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO: 1/25/16
+		return super.clone();
+	}
+
 	protected class Entry<K, V> implements Map.Entry<K, V> {
 
 		protected Entry<K, V>[] conns;
@@ -488,6 +494,12 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			V ret = this.value;
 			this.value = value;
 			return ret;
+		}
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException {
+			// TODO: 1/25/16
+			return super.clone();
 		}
 
 		@Override
