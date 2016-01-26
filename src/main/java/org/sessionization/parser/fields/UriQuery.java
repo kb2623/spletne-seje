@@ -6,7 +6,9 @@ import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Cacheable
@@ -17,7 +19,7 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 	private Integer id;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	private List<UriQueryPair> pairs;
+	private Set<UriQueryPair> pairs;
 
 	public UriQuery() {
 		id = null;
@@ -29,14 +31,14 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 		if (niz != null && !niz.equals("-")) {
 			setupMap(niz);
 		} else {
-			pairs = null;
+			pairs = new HashSet<>();
 		}
 	}
 
 	private void setupMap(String niz) {
 		String[] tab = niz.split("&");
 		UriQueryPair tmp;
-		pairs = new ArrayList<>(tab.length);
+		pairs = new HashSet<>(tab.length);
 		for (String s : tab) {
 			tab = s.split("=");
 			if (tab.length == 2) {
@@ -56,11 +58,11 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 		this.id = id;
 	}
 
-	public List<UriQueryPair> getPairs() {
+	public Set<UriQueryPair> getPairs() {
 		return pairs;
 	}
 
-	public void setPairs(List<UriQueryPair> pairs) {
+	public void setPairs(Set<UriQueryPair> pairs) {
 		this.pairs = pairs;
 	}
 

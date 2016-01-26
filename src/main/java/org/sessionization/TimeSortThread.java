@@ -104,12 +104,10 @@ public class TimeSortThread extends Thread {
 		}
 		for (e = queue.peek(); e != null && line.minus(e) > sessionLength; e = queue.peek()) {
 			session = map.get(e.getKey());
-			if (session == null) {
-				queue.poll();
-			} else if (session.getLocalDateTime().equals(e.getDateTime())) {
+			if (session != null && session.getLocalDateTime().equals(e.getDateTime())) {
 				qSession.put(map.remove(e.getKey()));
-				queue.poll();
 			}
+			queue.poll();
 		}
 	}
 

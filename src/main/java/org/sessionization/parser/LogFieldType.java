@@ -845,9 +845,9 @@ enum ObjectCreators {
 					return null;
 				}
 				UriQuery query = new UriQuery();
+				Set set = new HashSet<>();
 				if (!((String) args[0]).equals("-")) {
 					UriQueryPair pair;
-					List list = new ArrayList<>();
 					String[] tab = ((String) args[0]).split("&");
 					for (String s : tab) {
 						tab = s.split("=");
@@ -856,10 +856,10 @@ enum ObjectCreators {
 						} else {
 							pair = pool.getObject(UriQueryPair.class, tab[0], "-");
 						}
-						list.add(pair);
+						set.add(pair);
 					}
-					query.setPairs(list);
 				}
+				query.setPairs(set);
 				return query;
 			};
 			creators.put(UriQuery.class, creator);
@@ -889,8 +889,8 @@ enum ObjectCreators {
 				LogType parser = (LogType) args[1];
 				String line = (String) args[0];
 				Cookie cookie = new Cookie();
+				Set set = new HashSet<>();
 				if (!line.equals("-")) {
-					List list = new ArrayList<>();
 					CookiePair pair;
 					for (String s : parser.parseCooki(line).split(" ")) {
 						int mid = s.indexOf("=");
@@ -903,10 +903,10 @@ enum ObjectCreators {
 							sKey = s.substring(0, mid);
 						}
 						pair = pool.getObject(CookiePair.class, sKey, value);
-						list.add(pair);
+						set.add(pair);
 					}
-					cookie.setPairs(list);
 				}
+				cookie.setPairs(set);
 				return cookie;
 			};
 			creators.put(org.sessionization.parser.fields.Cookie.class, creator);

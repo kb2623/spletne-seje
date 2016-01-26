@@ -418,7 +418,7 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public Comparator<? super K> comparator() {
-		return keyCmp;
+		return keyCmp.cmp;
 	}
 
 	@Override
@@ -448,8 +448,9 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		// TODO: 1/25/16
-		return super.clone();
+		SkipMap<K, V> map = new SkipMap<>(sentinel.conns.length, keyCmp.cmp);
+		map.sentinel = (Entry<K, V>) sentinel.clone();
+		return map;
 	}
 
 	protected class Entry<K, V> implements Map.Entry<K, V> {
@@ -498,8 +499,16 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
-			// TODO: 1/25/16
-			return super.clone();
+			Entry<K, V> e = new Entry<>(conns.length);
+			e.key = key;
+			e.value = value;
+			// TODO: 1/26/16 preveri ali ze klon obstaja
+			/*
+			for (int i = 0; i < conns.length; i++) {
+				e.conns[i] = (Entry<K, V>) conns[i].clone();
+			}
+			*/
+			return e;
 		}
 
 		@Override

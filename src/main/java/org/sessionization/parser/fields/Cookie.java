@@ -8,7 +8,9 @@ import org.sessionization.parser.LogType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Cacheable
@@ -19,7 +21,7 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 	private Integer id;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	private List<CookiePair> pairs;
+	private Set<CookiePair> pairs;
 
 	public Cookie() {
 		id = null;
@@ -30,7 +32,7 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 		id = null;
 		if (!line.equals("-")) {
 			String[] tab = type.parseCooki(line).split(" ");
-			pairs = new ArrayList<>(tab.length);
+			pairs = new HashSet<>(tab.length);
 			for (String s : tab) {
 				int indexOf = s.indexOf('=');
 				CookiePair tmp = null;
@@ -42,7 +44,7 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 				pairs.add(tmp);
 			}
 		} else {
-			pairs = null;
+			pairs = new HashSet<>();
 		}
 	}
 
@@ -58,11 +60,11 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 		this.id = id;
 	}
 
-	public List<CookiePair> getPairs() {
+	public Set<CookiePair> getPairs() {
 		return pairs;
 	}
 
-	public void setPairs(List<CookiePair> pairs) {
+	public void setPairs(Set<CookiePair> pairs) {
 		this.pairs = pairs;
 	}
 

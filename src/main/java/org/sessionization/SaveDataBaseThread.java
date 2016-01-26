@@ -49,6 +49,7 @@ public class SaveDataBaseThread extends Thread {
 				if (transaction != null) {
 					transaction.rollback();
 				}
+				System.out.println(table);
 				throw e;
 			}
 			return ret;

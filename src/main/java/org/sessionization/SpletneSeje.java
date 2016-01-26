@@ -234,10 +234,10 @@ public class SpletneSeje implements AutoCloseable {
 			t.join();
 		}
 		for (Thread t : listTimeSortThreads) {
-			t.interrupt();
+			t.join();
 		}
 		for (Thread t : listSaveDBThread) {
-			t.interrupt();
+			t.join();
 		}
 	}
 
