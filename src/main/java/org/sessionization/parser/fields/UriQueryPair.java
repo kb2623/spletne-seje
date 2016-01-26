@@ -63,7 +63,7 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 			return getId();
 		}
 		if (keyId != null) {
-			Query query = session.createQuery("select qp.id from " + getClass().getSimpleName() + " as qp where qp.value = '" + getValue() + "' and qp.key = " + keyId);
+			Query query = session.createQuery("select qp.id from " + getClass().getSimpleName() + " as qp where qp.value like '" + getValue() + "' and qp.key = " + keyId);
 			for (Object o : query.list()) {
 				if (equals(session.load(getClass(), (Integer) o))) {
 					setId((Integer) o);

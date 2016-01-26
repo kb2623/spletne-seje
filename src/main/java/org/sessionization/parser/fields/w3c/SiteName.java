@@ -54,7 +54,7 @@ public class SiteName implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select s.id from " + getClass().getSimpleName() + " as s where s.name = '" + getName() + "'");
+		Query query = session.createQuery("select s.id from " + getClass().getSimpleName() + " as s where s.name like '" + getName() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

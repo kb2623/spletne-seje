@@ -3,7 +3,6 @@ package org.sessionization.parser.fields.ncsa;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.database.HibernateUtil;
-import org.sessionization.database.MethodConverter;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.fields.Method;
 import org.sessionization.parser.fields.Protocol;
@@ -129,7 +128,8 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 			return getId();
 		}
 		if (steamQueryId != null && protocolId != null) {
-			Query query = session.createQuery("select l.id from " + getClass().getSimpleName() + " as l where l.method = '" + MethodConverter.getMethodString(getMethod()) + "' and l.steamQuery = " + steamQueryId + " and l.protocol = " + protocolId);
+			Query query = session.createQuery("select l.id from " + getClass().getSimpleName() + " as l where l.method = :method and l.steamQuery = " + steamQueryId + " and l.protocol = " + protocolId);
+			query.setParameter("method", getMethod());
 			for (Object o : query.list()) {
 				if (equals(session.load(getClass(), (Integer) o))) {
 					setId((Integer) o);

@@ -63,7 +63,7 @@ public class RemoteLogname implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.logname = '" + getLogname() + "'");
+		Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.logname like '" + getLogname() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

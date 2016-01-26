@@ -58,7 +58,7 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select h.id form " + getClass().getSimpleName() + " as h where h.host = '" + getHost() + "'");
+		Query query = session.createQuery("select h.id form " + getClass().getSimpleName() + " as h where h.host like '" + getHost() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

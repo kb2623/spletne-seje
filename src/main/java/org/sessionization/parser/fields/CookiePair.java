@@ -62,7 +62,7 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + keyId + " and cp.value = '" + getValue() + "'");
+		Query query = session.createQuery("select cp.id form " + getClass().getSimpleName() + " as cp where cp.key = " + keyId + " and cp.value like '" + getValue() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

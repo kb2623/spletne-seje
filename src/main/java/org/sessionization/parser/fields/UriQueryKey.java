@@ -47,7 +47,7 @@ public class UriQueryKey implements HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		org.hibernate.Query query = session.createQuery("select u.id from " + getClass().getSimpleName() + " as u where u.name = '" + getName() + "'");
+		org.hibernate.Query query = session.createQuery("select u.id from " + getClass().getSimpleName() + " as u where u.name like '" + getName() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);
