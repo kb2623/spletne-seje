@@ -6,6 +6,7 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Cacheable
@@ -18,29 +19,29 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 	@Column(nullable = false)
 	private String protocol;
 
-	@Column(nullable = false)
-	private float version;
+	@Column(nullable = false, unique = true)
+	private BigDecimal version;
 
 	public Protocol() {
 		id = null;
 		protocol = null;
-		version = 0;
+		version = null;
 	}
 
 	public Protocol(String protocolAndVersion) {
 		id = null;
 		String[] tab = protocolAndVersion.split("/");
 		if (tab.length == 1) {
-			if (tab[0].equalsIgnoreCase("http")) {
+			if (tab[0].equalsIgnoreCase("HTTP")) {
 				protocol = tab[0];
-				version = 0;
+				version = new BigDecimal("0");
 			} else {
 				protocol = "HTTP";
-				version = Float.valueOf(tab[0]);
+				version = new BigDecimal(tab[0]);
 			}
 		} else {
 			protocol = tab[0];
-			version = Float.valueOf(tab[1]);
+			version = new BigDecimal(tab[1]);
 		}
 	}
 
@@ -53,18 +54,18 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	public String getProtocol() {
-		return protocol != null ? protocol : "";
+		return protocol;
 	}
 
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
 
-	public float getVersion() {
+	public BigDecimal getVersion() {
 		return version;
 	}
 
-	public void setVersion(float version) {
+	public void setVersion(BigDecimal version) {
 		this.version = version;
 	}
 
@@ -78,7 +79,8 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select p.id from " + getClass().getSimpleName() + " as p where p.protocol like '" + getProtocol() + "' and p.version = " + getVersion());
+		Query query = session.createQuery("select p.id from " + getClass().getSimpleName() + " as p where p.protocol like '" + getProtocol() + "' and p.version = :version");
+		query.setParameter("version", getVersion());
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);
@@ -93,15 +95,15 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 		if (o == null || !(o instanceof Protocol)) return false;
 		if (this == o) return true;
 		Protocol that = (Protocol) o;
-		return Float.compare(that.getVersion(), getVersion()) == 0
-				&& getProtocol() != null ? getProtocol().equals(that.getProtocol()) : that.getProtocol() == null;
+		return getVersion().compareTo(that.getVersion()) == 0 &&
+				getProtocol() != null ? getProtocol().equals(that.getProtocol()) : that.getProtocol() == null;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + getProtocol().hashCode();
-		result = 31 * result + (getVersion() != +0.0f ? Float.floatToIntBits(getVersion()) : 0);
+		result = 31 * result + (getProtocol() != null ? getProtocol().hashCode() : 0);
+		result = 31 * result + (getVersion() != null ? getVersion().hashCode() : 0);
 		return result;
 	}
 

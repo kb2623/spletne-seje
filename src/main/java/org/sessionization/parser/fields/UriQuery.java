@@ -32,6 +32,7 @@ public class UriQuery implements LogField, HibernateUtil.HibernateTable {
 			setupMap(niz);
 		} else {
 			pairs = new HashSet<>();
+			pairs.add(new UriQueryPair(" ", " "));
 		}
 	}
 

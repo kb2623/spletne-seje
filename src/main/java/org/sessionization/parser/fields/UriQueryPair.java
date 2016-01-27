@@ -14,6 +14,7 @@ public class UriQueryPair implements HibernateUtil.HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Lob
 	@Column(nullable = false)
 	private String value;
 

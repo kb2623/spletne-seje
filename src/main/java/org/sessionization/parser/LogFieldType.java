@@ -846,8 +846,8 @@ enum ObjectCreators {
 				}
 				UriQuery query = new UriQuery();
 				Set set = new HashSet<>();
+				UriQueryPair pair;
 				if (!((String) args[0]).equals("-")) {
-					UriQueryPair pair;
 					String[] tab = ((String) args[0]).split("&");
 					for (String s : tab) {
 						tab = s.split("=");
@@ -858,6 +858,9 @@ enum ObjectCreators {
 						}
 						set.add(pair);
 					}
+				} else {
+					pair = pool.getObject(UriQueryPair.class, " ", " ");
+					set.add(pair);
 				}
 				query.setPairs(set);
 				return query;
@@ -890,8 +893,8 @@ enum ObjectCreators {
 				String line = (String) args[0];
 				Cookie cookie = new Cookie();
 				Set set = new HashSet<>();
+				CookiePair pair;
 				if (!line.equals("-")) {
-					CookiePair pair;
 					for (String s : parser.parseCooki(line).split(" ")) {
 						int mid = s.indexOf("=");
 						String sKey, value;
@@ -905,6 +908,9 @@ enum ObjectCreators {
 						pair = pool.getObject(CookiePair.class, sKey, value);
 						set.add(pair);
 					}
+				} else {
+					pair = pool.getObject(CookiePair.class, " ", " ");
+					set.add(pair);
 				}
 				cookie.setPairs(set);
 				return cookie;

@@ -38,12 +38,12 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 
 	@Override
 	public String getFile() {
-		return file != null ? file : "";
+		return file;
 	}
 
 	public void setFile(String file) {
 		if (file.equals("-")) {
-			this.file = null;
+			this.file = " ";
 		} else {
 			this.file = file;
 		}
@@ -89,7 +89,6 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 		return "UriSteam{" +
 				"id=" + id +
 				", file='" + file + '\'' +
-				", " + super.toString() +
 				'}';
 	}
 }

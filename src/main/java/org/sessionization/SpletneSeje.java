@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class SpletneSeje implements AutoCloseable {
 
@@ -194,10 +194,8 @@ public class SpletneSeje implements AutoCloseable {
 
 	public void run() throws InterruptedException {
 		/** Ustvari vrste za posiljanje podatkov med nitmi */
-//		BlockingQueue<ParsedLine> parsedLines = new ArrayBlockingQueue<>(argumentParser.getParsedLineQueueSize());
-		BlockingQueue<ParsedLine> parsedLines = new LinkedBlockingQueue<>();
-//		BlockingQueue<UserSessionAbs> sessions = new ArrayBlockingQueue<>(argumentParser.getSessionQueueSize());
-		BlockingQueue<UserSessionAbs> sessions = new LinkedBlockingQueue<>();
+		BlockingQueue<ParsedLine> parsedLines = new ArrayBlockingQueue<>(argumentParser.getParsedLineQueueSize());
+		BlockingQueue<UserSessionAbs> sessions = new ArrayBlockingQueue<>(argumentParser.getSessionQueueSize());
 		ConcurrentMap sessionMapTimeSort = new SharedMap<>(new RadixTreeMap<>());
 		/** Ustvari skupine za niti */
 		ThreadGroup parseGroup = new ThreadGroup("Parse");
@@ -234,9 +232,11 @@ public class SpletneSeje implements AutoCloseable {
 			t.join();
 		}
 		for (Thread t : listTimeSortThreads) {
+			t.interrupt();
 			t.join();
 		}
 		for (Thread t : listSaveDBThread) {
+			t.interrupt();
 			t.join();
 		}
 	}

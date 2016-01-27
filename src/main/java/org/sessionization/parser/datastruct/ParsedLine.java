@@ -6,6 +6,7 @@ import org.sessionization.parser.fields.Referer;
 import org.sessionization.parser.fields.Resource;
 import org.sessionization.parser.fields.UriSteam;
 import org.sessionization.parser.fields.UserAgent;
+import org.sessionization.parser.fields.w3c.MetaData;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -149,6 +150,15 @@ public class ParsedLine implements Iterable<LogField>, TimePoint {
 			}
 		}
 		return builder.toString();
+	}
+
+	public boolean isMetaData() {
+		for (LogField f : array) {
+			if (f instanceof MetaData) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

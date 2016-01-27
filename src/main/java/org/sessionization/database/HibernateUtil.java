@@ -5,6 +5,7 @@ import javassist.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
@@ -37,12 +38,16 @@ public class HibernateUtil implements AutoCloseable {
 		}
 		/** Inicializacija ClassLoaderja */
 		this.loader = initClassLoader(argumentParser);
+		/** Nastavi dodatne lastnosti za Hibernate */
 		Properties props = initProperties(argumentParser);
-		/** Dodaj potrebne razrede */
+		/** */
+		BootstrapServiceRegistryBuilder builder = new BootstrapServiceRegistryBuilder();
+		builder.applyClassLoader(loader);
 		serviceRegistry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
 				.applySettings(props)
 				.build();
+		/** Dodaj potrebne razrede */
 		try {
 			MetadataSources sources = new MetadataSources(serviceRegistry);
 			for (Class c : initClasses(list, loader)) {
@@ -57,8 +62,6 @@ public class HibernateUtil implements AutoCloseable {
 
 	private Properties initProperties(ArgumentParser parser) {
 		Properties props = new Properties();
-		props.setProperty("hibernate.current_session_context_class", "thread");
-		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCacheProvider");
 		props.setProperty("hibernate.connection.driver_class", parser.getDriverClass());
 		props.setProperty("hibernate.dialect", parser.getDialectClass());
 		props.setProperty("hibernate.connection.url", parser.getDatabaseUrl().toString());
@@ -68,14 +71,23 @@ public class HibernateUtil implements AutoCloseable {
 		if (parser.getPassWord() != null) {
 			props.setProperty("hibernate.connection.password", parser.getPassWord());
 		}
-		props.setProperty("hibernate.connection.pool_size", String.valueOf(parser.getConnectoinPoolSize()));
-		props.setProperty("hibernate.show_sql", String.valueOf(parser.isShowSql()));
-		props.setProperty("hibernate.format_sql", String.valueOf(parser.isShowSqlFormat()));
-		props.setProperty("hibernate.hbm2ddl.auto", parser.getOperation().getValue());
 		if (parser.getDefaultSchema() != null) {
 			props.setProperty("hibernate.default_schema", parser.getDefaultSchema());
 		}
+		props.setProperty("hibernate.connection.pool_size", String.valueOf(parser.getConnectoinPoolSize()));
+
+//		props.setProperty("hibernate.connection.isolation", String.valueOf(Connection.TRANSACTION_READ_COMMITTED));
+//		props.setProperty("hibernate.connection.provider_class", "org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider");
+//		props.setProperty("hibernate.c3p0.min_size", "5");
+//		props.setProperty("hibernate.c3p0.max_size", "20");
+
+		props.setProperty("hibernate.show_sql", String.valueOf(parser.isShowSql()));
+		props.setProperty("hibernate.format_sql", String.valueOf(parser.isShowSqlFormat()));
+		props.setProperty("hibernate.hbm2ddl.auto", parser.getOperation().getValue());
+
 		props.setProperty("hibernate.event.merge.entity_copy_observer", "allow");
+		props.setProperty("hibernate.current_session_context_class", "thread");
+		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCacheProvider");
 		return props;
 	}
 

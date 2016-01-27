@@ -49,7 +49,7 @@ public class SaveDataBaseThread extends Thread {
 				if (transaction != null) {
 					transaction.rollback();
 				}
-				System.out.println(table);
+				System.err.println(table);
 				throw e;
 			}
 			return ret;
@@ -63,7 +63,9 @@ public class SaveDataBaseThread extends Thread {
 				consume(queue.take());
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+		}
+		while (!queue.isEmpty()) {
+			consume(queue.poll());
 		}
 	}
 

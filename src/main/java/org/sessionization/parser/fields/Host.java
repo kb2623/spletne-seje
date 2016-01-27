@@ -28,7 +28,7 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 		if (!hostName.equals("-")) {
 			host = hostName;
 		} else {
-			host = null;
+			host = " ";
 		}
 	}
 
@@ -41,7 +41,7 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	public String getHost() {
-		return host != null ? host : "";
+		return host;
 	}
 
 	public void setHost(String host) {
@@ -58,7 +58,7 @@ public class Host implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select h.id form " + getClass().getSimpleName() + " as h where h.host like '" + getHost() + "'");
+		Query query = session.createQuery("select h.id from " + getClass().getSimpleName() + " as h where h.host like '" + getHost() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

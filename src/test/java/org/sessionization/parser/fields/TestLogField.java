@@ -9,6 +9,7 @@ import org.sessionization.parser.fields.w3c.Time;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -85,7 +86,7 @@ public class TestLogField {
 		try {
 			line = new RequestLine("GET", "/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello", "HTTP/1.1");
 			assertEquals("GET", line.getMethod().toString());
-			assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
+			assertEquals(new BigDecimal("1.1"), line.getProtocol().getVersion());
 			assertEquals("HTTP/1.1", line.getProtocol().toString());
 			assertEquals("[[limit = 18][test = hello]]", line.getSteamQuery().getQuery().toString());
 			assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getFile().toString());
@@ -93,7 +94,7 @@ public class TestLogField {
 			assertFalse(line.isWebPageResource());
 			line = new RequestLine("POST", "/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", "HTTP/1.1");
 			assertEquals("POST", line.getMethod().toString());
-			assertEquals(1.1, line.getProtocol().getVersion(), 0.01);
+			assertEquals(new BigDecimal("1.1"), line.getProtocol().getVersion());
 			assertEquals("HTTP/1.1", line.getProtocol().toString());
 			assertEquals("[[limit = 10]]", line.getSteamQuery().getQuery().toString());
 			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/" +
@@ -104,7 +105,7 @@ public class TestLogField {
 			line = new RequestLine("GET", "/image/cache/data/" +
 					"bigbananaPACK%20copy-cr-214x293.png", "HTTP");
 			assertEquals("GET", line.getMethod().toString());
-			assertEquals(0, line.getProtocol().getVersion(), 0.01);
+			assertEquals(new BigDecimal("0"), line.getProtocol().getVersion());
 			assertEquals("HTTP", line.getProtocol().toString());
 			assertEquals("[]", line.getSteamQuery().getQuery().toString());
 			assertTrue(line.isWebPageResource());
@@ -123,13 +124,18 @@ public class TestLogField {
 	}
 
 	@Test
-	public void testUriSteamQuery() throws URISyntaxException {
-		UriSteamQuery uriSteam = new UriSteamQuery(new URI("/srajce/srajce-kratek-rokav/srajca-s-kratkimi-rokavi-carisma-black-9024bl?sort=p.model&order=ASC"));
+	public void testUriSteamQuery() {
+		UriSteamQuery uriSteam = new UriSteamQuery(URI.create("/srajce/srajce-kratek-rokav/srajca-s-kratkimi-rokavi-carisma-black-9024bl?sort=p.model&order=ASC"));
+		System.out.println(uriSteam.getFile());
 		assertFalse(uriSteam.isWebPageResource());
-		uriSteam = new UriSteamQuery(new URI("/srajce/srajce-kratek-rokav/srajca-s-kratkimi-rokavi-carisma-black-9024bl.jpg?sort=p.model&order=ASC"));
+		uriSteam = new UriSteamQuery(URI.create("/srajce/srajce-kratek-rokav/srajca-s-kratkimi-rokavi-carisma-black-9024bl.jpg?sort=p.model&order=ASC"));
+		System.out.println(uriSteam.getFile());
 		assertTrue(uriSteam.isWebPageResource());
-		uriSteam = new UriSteamQuery(new URI("/image/cache/data/topbananaBLU-cr-214x293.png"));
+		uriSteam = new UriSteamQuery(URI.create("/image/cache/data/topbananaBLU-cr-214x293.png"));
+		System.out.println(uriSteam.getFile());
 		assertTrue(uriSteam.isWebPageResource());
+		uriSteam = new UriSteamQuery(URI.create("/hlace&limit=30&filter=OPTION=XL=1=Velikost"));
+		System.out.println(uriSteam.getFile());
 	}
 
 	@Test

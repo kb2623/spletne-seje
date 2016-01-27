@@ -77,7 +77,7 @@ public class Referer implements LogField, HibernateUtil.HibernateTable, Resource
 			return getId();
 		}
 		if (steamQueryId != null && hostId != null) {
-			Query query = session.createQuery("select r form " + getClass().getSimpleName() + " as r where r.steamQuery = " + steamQueryId + " and r.host = " + hostId);
+			Query query = session.createQuery("select r.id from " + getClass().getSimpleName() + " as r where r.steamQuery = " + steamQueryId + " and r.host = " + hostId);
 			for (Object o : query.list()) {
 				if (equals(session.load(getClass(), (Integer) o))) {
 					setId((Integer) o);

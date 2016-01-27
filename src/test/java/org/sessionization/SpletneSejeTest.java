@@ -26,7 +26,8 @@ public class SpletneSejeTest {
 	@Before
 	public void setUp() throws IOException {
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getPath();
-		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getPath();
+//		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getPath();
+		pathNCSACommon = ClassLoader.getSystemResource("testLog").getPath();
 		pathW3CExtended = ClassLoader.getSystemResource("ex080814.log").getPath();
 		parser = new NCSAWebLogParser();
 	}
@@ -138,7 +139,7 @@ public class SpletneSejeTest {
 
 	@Test
 	public void testRunSQLiteCommon() {
-		SpletneSeje.main("-fl", "COMMON", "-dbsqf", "-dbsq", pathNCSACommon);
+		SpletneSeje.main("-fl", "COMMON", pathNCSACommon);
 	}
 
 	@Test

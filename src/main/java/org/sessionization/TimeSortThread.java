@@ -72,42 +72,44 @@ public class TimeSortThread extends Thread {
 				consume(qParser.take());
 			}
 		} catch (InterruptedException e) {
-			for (UserSessionAbs o : map.values()) {
-				try {
-					qSession.put(o);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+		}
+		try {
+			while (!qParser.isEmpty()) {
+				consume(qParser.poll());
 			}
-			e.printStackTrace();
+			for (UserSessionAbs u : map.values()) {
+				qSession.put(u);
+			}
+		} catch (InterruptedException e) {
 		}
 	}
 
 	private void consume(ParsedLine line) throws InterruptedException {
-		// FIXME: 1/23/16 Nekaj ne posilja sej naprej v qSession vrsto
-		QueueElement e = new QueueElement(line.getKey(), line.getLocalDateTime());
-		UserSessionAbs session = map.get(e.getKey());
-		if (session == null) {
-			if (!line.isWebPageResource()) {
-				session = makeSession(line);
-				map.put(session.getKey(), session);
+		if (!line.isMetaData()) {
+			QueueElement e = new QueueElement(line.getKey(), line.getLocalDateTime());
+			UserSessionAbs session = map.get(e.getKey());
+			if (session == null) {
+				if (!line.isWebPageResource()) {
+					session = makeSession(line);
+					map.put(session.getKey(), session);
+					queue.offer(e);
+				}
+			} else {
+				if (line.minus(session) <= sessionLength) {
+					session.addParsedLine(line);
+				} else {
+					session = makeSession(line);
+					qSession.put(map.put(session.getKey(), session));
+				}
 				queue.offer(e);
 			}
-		} else {
-			if (line.minus(session) <= sessionLength) {
-				session.addParsedLine(line);
-			} else {
-				session = makeSession(line);
-				qSession.put(map.put(session.getKey(), session));
+			for (e = queue.peek(); e != null && line.minus(e) > sessionLength; e = queue.peek()) {
+				session = map.get(e.getKey());
+				if (session != null && session.getLocalDateTime().equals(e.getDateTime())) {
+					qSession.put(map.remove(e.getKey()));
+				}
+				queue.poll();
 			}
-			queue.offer(e);
-		}
-		for (e = queue.peek(); e != null && line.minus(e) > sessionLength; e = queue.peek()) {
-			session = map.get(e.getKey());
-			if (session != null && session.getLocalDateTime().equals(e.getDateTime())) {
-				qSession.put(map.remove(e.getKey()));
-			}
-			queue.poll();
 		}
 	}
 

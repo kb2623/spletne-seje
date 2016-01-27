@@ -45,6 +45,7 @@ public class Cookie implements LogField, HibernateUtil.HibernateTable {
 			}
 		} else {
 			pairs = new HashSet<>();
+			pairs.add(new CookiePair(" ", " "));
 		}
 	}
 

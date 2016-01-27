@@ -29,7 +29,7 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 	}
 
 	public UriSteamQuery(URI uri) {
-		uriSteam = new UriSteam(uri.getRawPath());
+		uriSteam = new UriSteam(uri.getPath());
 		String query = uri.getQuery();
 		this.query = new UriQuery(query != null ? query : "-");
 	}
@@ -76,7 +76,7 @@ public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Re
 			return getId();
 		}
 		if (uriSteamId != null && queryId != null) {
-			Query query = session.createQuery("select sq.id form " + getClass().getSimpleName() + " as sq where sq.uriSteam = " + uriSteamId + " and sq.query = " + queryId);
+			Query query = session.createQuery("select sq.id from " + getClass().getSimpleName() + " as sq where sq.uriSteam = " + uriSteamId + " and sq.query = " + queryId);
 			for (Object o : query.list()) {
 				if (equals(session.load(getClass(), (Integer) o))) {
 					setId((Integer) o);

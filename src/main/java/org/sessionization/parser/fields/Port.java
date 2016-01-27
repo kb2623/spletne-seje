@@ -67,7 +67,7 @@ public class Port implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select p.id form " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer());
+		Query query = session.createQuery("select p.id from " + getClass().getSimpleName() + " as p where p.portNumber = " + getPortNumber() + " and p.isServer = " + isServer());
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

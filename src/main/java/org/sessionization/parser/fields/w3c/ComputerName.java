@@ -58,7 +58,7 @@ public class ComputerName implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select c.id form " + getClass().getSimpleName() + " c where c.name like '" + getName() + "'");
+		Query query = session.createQuery("select c.id from " + getClass().getSimpleName() + " c where c.name like '" + getName() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

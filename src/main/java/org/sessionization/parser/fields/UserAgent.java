@@ -16,6 +16,7 @@ public class UserAgent implements LogField, HibernateUtil.HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Lob
 	@Column(name = "name", unique = true, nullable = false)
 	private String userAgentString;
 
@@ -60,7 +61,7 @@ public class UserAgent implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select u.id form " + getClass().getSimpleName() + " as u where u.userAgentString like '" + getUserAgentString() + "'");
+		Query query = session.createQuery("select u.id from " + getClass().getSimpleName() + " as u where u.userAgentString like '" + getUserAgentString() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);
