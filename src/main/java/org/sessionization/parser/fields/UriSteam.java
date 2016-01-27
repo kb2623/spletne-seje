@@ -89,6 +89,7 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 		return "UriSteam{" +
 				"id=" + id +
 				", file='" + file + '\'' +
+				", " + super.toString() +
 				'}';
 	}
 }

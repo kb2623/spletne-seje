@@ -68,11 +68,12 @@ public class UserSessionDump {
 						{
 							Annotation anno = new Annotation(OneToOne.class.getName(), constPool);
 							{
-								EnumMemberValue member = new EnumMemberValue(constPool);
-								member.setType(CascadeType.class.getName());
-								member.setValue(CascadeType.ALL.name());
+								EnumMemberValue member1 = new EnumMemberValue(constPool);
+								member1.setType(CascadeType.class.getName());
+								member1.setValue(CascadeType.ALL.name());
+
 								ArrayMemberValue array = new ArrayMemberValue(constPool);
-								array.setValue(new MemberValue[]{member});
+								array.setValue(new MemberValue[]{member1});
 								anno.addMemberValue("cascade", array);
 							}
 							attr.addAnnotation(anno);

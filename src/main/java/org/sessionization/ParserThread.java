@@ -42,7 +42,6 @@ public class ParserThread extends Thread {
 				line = parser.parseLine();
 				queue.put(line);
 			} catch (ParseException | IOException e) {
-				e.printStackTrace();
 				line = null;
 			} catch (InterruptedException e) {
 				e.printStackTrace();

@@ -43,7 +43,7 @@ public class SaveDataBaseThread extends Thread {
 			Transaction transaction = session.getTransaction();
 			try {
 				transaction.begin();
-				session.saveOrUpdate(table);
+				session.merge(table);
 				transaction.commit();
 			} catch (Exception e) {
 				if (transaction != null) {

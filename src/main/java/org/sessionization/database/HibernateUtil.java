@@ -75,6 +75,7 @@ public class HibernateUtil implements AutoCloseable {
 		if (parser.getDefaultSchema() != null) {
 			props.setProperty("hibernate.default_schema", parser.getDefaultSchema());
 		}
+		props.setProperty("hibernate.event.merge.entity_copy_observer", "allow");
 		return props;
 	}
 
