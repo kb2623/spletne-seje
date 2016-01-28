@@ -76,7 +76,7 @@ public class TimeSortThread extends Thread {
 			while (run) {
 				ParsedLine line = qParser.poll(1L, TimeUnit.SECONDS);
 				if (line != null) {
-					consume(qParser.take());
+					consume(line);
 				}
 			}
 			while (!qParser.isEmpty()) {
