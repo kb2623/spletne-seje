@@ -19,6 +19,7 @@ public class SpletneSejeTest {
 
 	private String pathNCSACombined;
 	private String pathNCSACommon;
+	private String pathNCSACommonShort;
 	private String pathW3CExtended;
 
 	private WebLogParser parser;
@@ -26,8 +27,8 @@ public class SpletneSejeTest {
 	@Before
 	public void setUp() throws IOException {
 		pathNCSACombined = ClassLoader.getSystemResource("access_log").getPath();
-//		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getPath();
-		pathNCSACommon = ClassLoader.getSystemResource("testLog").getPath();
+		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getPath();
+		pathNCSACommonShort = ClassLoader.getSystemResource("testLog").getPath();
 		pathW3CExtended = ClassLoader.getSystemResource("ex080814.log").getPath();
 		parser = new NCSAWebLogParser();
 	}
@@ -155,6 +156,11 @@ public class SpletneSejeTest {
 	@Test
 	public void testRunH2Common() {
 		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACommon);
+	}
+
+	@Test
+	public void testRunH2CommonShort() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACommonShort);
 	}
 
 	@Test

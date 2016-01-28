@@ -14,8 +14,7 @@ public class CookiePair implements HibernateUtil.HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Lob
-	@Column(nullable = false)
+	@Column(nullable = false, length = 500)
 	private String value;
 
 	@OneToOne(cascade = CascadeType.ALL)

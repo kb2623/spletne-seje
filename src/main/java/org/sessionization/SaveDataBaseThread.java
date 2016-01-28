@@ -5,9 +5,11 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.datastruct.UserSessionAbs;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class SaveDataBaseThread extends Thread {
 
+	private static volatile boolean run = true;
 	private static volatile int ThreadNumber = 0;
 
 	private BlockingQueue<UserSessionAbs> queue;
@@ -56,16 +58,25 @@ public class SaveDataBaseThread extends Thread {
 		});
 	}
 
+	public static void end() {
+		run = false;
+	}
+
 	@Override
 	public void run() {
 		try {
-			while (true) {
-				consume(queue.take());
+			while (run) {
+				UserSessionAbs session = queue.poll(1L, TimeUnit.SECONDS);
+				if (session != null) {
+					consume(session);
+				}
+			}
+			while (!queue.isEmpty()) {
+				consume(queue.poll());
 			}
 		} catch (InterruptedException e) {
-		}
-		while (!queue.isEmpty()) {
-			consume(queue.poll());
+			e.printStackTrace();
+			return;
 		}
 	}
 

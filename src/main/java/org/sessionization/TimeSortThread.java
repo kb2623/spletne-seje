@@ -12,9 +12,11 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class TimeSortThread extends Thread {
 
+	private static volatile boolean run = true;
 	private static volatile int ThreadNumber = 0;
 	private static volatile int sessionLength = 0;
 
@@ -64,16 +66,19 @@ public class TimeSortThread extends Thread {
 		this(null, loader, qParser, qSession, new RadixTreeMap<>(), sessionLength);
 	}
 
+	public static void end() {
+		run = false;
+	}
+
 	@Override
 	public void run() {
-		ParsedLine line = null;
 		try {
-			while (true) {
-				consume(qParser.take());
+			while (run) {
+				ParsedLine line = qParser.poll(1L, TimeUnit.SECONDS);
+				if (line != null) {
+					consume(qParser.take());
+				}
 			}
-		} catch (InterruptedException e) {
-		}
-		try {
 			while (!qParser.isEmpty()) {
 				consume(qParser.poll());
 			}
@@ -81,6 +86,8 @@ public class TimeSortThread extends Thread {
 				qSession.put(u);
 			}
 		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return;
 		}
 	}
 
