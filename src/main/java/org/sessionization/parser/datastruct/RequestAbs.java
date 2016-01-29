@@ -6,12 +6,12 @@ import org.sessionization.database.HibernateUtil;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Cacheable
 public abstract class RequestAbs implements TimePoint, HibernateUtil.HibernateTable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	public RequestAbs() {

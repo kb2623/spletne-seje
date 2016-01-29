@@ -6,7 +6,6 @@ import org.sessionization.database.HibernateUtil;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Cacheable
@@ -20,7 +19,7 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 	private String protocol;
 
 	@Column(nullable = false, unique = true)
-	private BigDecimal version;
+	private String version;
 
 	public Protocol() {
 		id = null;
@@ -34,14 +33,14 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 		if (tab.length == 1) {
 			if (tab[0].equalsIgnoreCase("HTTP")) {
 				protocol = tab[0];
-				version = new BigDecimal("0");
+				version = "0";
 			} else {
 				protocol = "HTTP";
-				version = new BigDecimal(tab[0]);
+				version = tab[0];
 			}
 		} else {
 			protocol = tab[0];
-			version = new BigDecimal(tab[1]);
+			version = tab[1];
 		}
 	}
 
@@ -61,11 +60,11 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 		this.protocol = protocol;
 	}
 
-	public BigDecimal getVersion() {
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(BigDecimal version) {
+	public void setVersion(String version) {
 		this.version = version;
 	}
 
@@ -79,8 +78,7 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select p.id from " + getClass().getSimpleName() + " as p where p.protocol like '" + getProtocol() + "' and p.version = :version");
-		query.setParameter("version", getVersion());
+		Query query = session.createQuery("select p.id from " + getClass().getSimpleName() + " as p where p.protocol like '" + getProtocol() + "' and p.version like '" + getVersion() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

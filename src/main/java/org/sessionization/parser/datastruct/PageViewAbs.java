@@ -11,14 +11,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Cacheable
 public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateTable {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	protected List<RequestAbs> requests;
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	public PageViewAbs() {

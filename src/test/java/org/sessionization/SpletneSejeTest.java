@@ -144,6 +144,11 @@ public class SpletneSejeTest {
 	}
 
 	@Test
+	public void testRunSQLiteCommonShort() {
+		SpletneSeje.main("-fl", "COMMON", pathNCSACommonShort);
+	}
+
+	@Test
 	public void testRunSQLiteCombined() {
 		SpletneSeje.main("-fl", "COMBINED", "-dbsqf", "-dbsq", pathNCSACombined);
 	}
@@ -176,6 +181,11 @@ public class SpletneSejeTest {
 	@Test
 	public void testRunHSQLBDCommon() {
 		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACommon);
+	}
+
+	@Test
+	public void testRunHSQLBDCommonShort() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACommonShort);
 	}
 
 	@Test
