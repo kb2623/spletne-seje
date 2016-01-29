@@ -20,7 +20,7 @@ public class Date implements LogField, TimePoint {
 		date = null;
 	}
 
-	protected Date(LocalDate date) {
+	public Date(LocalDate date) {
 		this.date = date;
 	}
 

@@ -18,18 +18,14 @@ public class ComputerName implements LogField, HibernateUtil.HibernateTable {
 	@Column(unique = true, nullable = false)
 	private String name;
 
-	private ComputerName() {
+	public ComputerName() {
 		id = null;
 		name = null;
 	}
 
 	public ComputerName(String name) {
 		id = null;
-		if (!name.equalsIgnoreCase("-")) {
-			this.name = name;
-		} else {
-			this.name = null;
-		}
+		this.name = name;
 	}
 
 	public Integer getId() {
@@ -41,7 +37,7 @@ public class ComputerName implements LogField, HibernateUtil.HibernateTable {
 	}
 
 	public String getName() {
-		return name != null ? name : "";
+		return name;
 	}
 
 	public void setName(String name) {
@@ -58,7 +54,7 @@ public class ComputerName implements LogField, HibernateUtil.HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select c.id from " + getClass().getSimpleName() + " c where c.name like '" + getName() + "'");
+		Query query = session.createQuery("select c.id from " + getClass().getSimpleName() + " as c where c.name like '" + getName() + "'");
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
 				setId((Integer) o);

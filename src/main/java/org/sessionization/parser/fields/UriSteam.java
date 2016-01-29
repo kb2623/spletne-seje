@@ -42,11 +42,7 @@ public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resourc
 	}
 
 	public void setFile(String file) {
-		if (file.equals("-")) {
-			this.file = " ";
-		} else {
-			this.file = file;
-		}
+		this.file = file;
 	}
 
 	@Override

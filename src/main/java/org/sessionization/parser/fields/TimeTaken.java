@@ -13,7 +13,7 @@ public class TimeTaken implements LogField {
 	@Column(name = "time_taken")
 	private long time;
 
-	private TimeTaken() {
+	public TimeTaken() {
 		time = 0;
 	}
 

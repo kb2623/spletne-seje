@@ -5,11 +5,10 @@ select * from USERID;
 select count(*) as NUMBER_OF_USERES from USERID;
 
 select * from USERSESSION;
-select count(*) from USERSESSION;
+select count(*) as NUMBER_OF_SESSIONS from USERSESSION;
 
 select * from URISTEAM;
-select * 
-  from URISTEAM 
+select * from URISTEAM 
   where FILE like '/hlace%';
 
 select * from USERSESSION_PAGEVIEWABS;
@@ -37,3 +36,6 @@ select USERSESSION.ID as SESSIONID, ADDRESS.ADDRESS as IP, URISTEAM.FILE, URIQUE
   join URIQUERYKEY on URIQUERYPAIR.KEY_ID = URIQUERYKEY.ID
   where ADDRESS.ADDRESS like '157.55.39.110'
   order by USERSESSION.ID asc, REQUEST.DATE asc, REQUEST.TIME asc;
+
+select * from USERAGENT;
+select count(*) as NUMBER_OF_AGENTS from USERAGENT;

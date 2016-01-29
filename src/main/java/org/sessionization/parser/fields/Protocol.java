@@ -15,10 +15,10 @@ public class Protocol implements LogField, HibernateUtil.HibernateTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 25)
 	private String protocol;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, unique = true, length = 25)
 	private String version;
 
 	public Protocol() {

@@ -17,26 +17,17 @@ import static org.junit.Assert.assertTrue;
 
 public class SpletneSejeTest {
 
-	private String pathNCSACombined;
-	private String pathNCSACommon;
-	private String pathNCSACommonShort;
-	private String pathW3CExtended;
-
 	private WebLogParser parser;
 
 	@Before
 	public void setUp() throws IOException {
-		pathNCSACombined = ClassLoader.getSystemResource("access_log").getPath();
-		pathNCSACommon = ClassLoader.getSystemResource("logCommon").getPath();
-		pathNCSACommonShort = ClassLoader.getSystemResource("testLog").getPath();
-		pathW3CExtended = ClassLoader.getSystemResource("ex080814.log").getPath();
 		parser = new NCSAWebLogParser();
 	}
 
 	@Test
 	public void testNCSAParserCommonResHashMap() throws IOException {
 		Map<String, List<ParsedLine>> testMap = new HashMap<>();
-		parser.openFile(new File[]{new File(pathNCSACommon)});
+		parser.openFile(new File[]{new File(ClassLoader.getSystemResource("logCommon").getPath())});
 		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		for (ParsedLine line : parser) {
 			List<ParsedLine> list = testMap.get(line.getKey());
@@ -55,7 +46,7 @@ public class SpletneSejeTest {
 	@Test
 	public void testNCSAParserCommonResRadixTree() throws IOException {
 		Map<String, List<ParsedLine>> testMap = new RadixTreeMap<>();
-		parser.openFile(new File[]{new File(pathNCSACommon)});
+		parser.openFile(new File[]{new File(ClassLoader.getSystemResource("logCommon").getPath())});
 		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		for (ParsedLine line : parser) {
 			List<ParsedLine> list = testMap.get(line.getKey());
@@ -104,7 +95,7 @@ public class SpletneSejeTest {
 	public void testNCSAParserCommonResRadixTreeHashMap() throws IOException {
 		Map<String, List<ParsedLine>> radixMap = new RadixTreeMap<>();
 		Map<String, List<ParsedLine>> hashMap = new HashMap<>();
-		parser.openFile(new File[]{new File(pathNCSACommon)});
+		parser.openFile(new File[]{new File(ClassLoader.getSystemResource("logCommon").getPath())});
 		parser.setFieldType(LogFormats.CommonLogFormat.make());
 		for (ParsedLine line : parser) {
 			List<ParsedLine> list = radixMap.get(line.getKey());
@@ -138,78 +129,105 @@ public class SpletneSejeTest {
 		SpletneSeje.main("-h");
 	}
 
+	/**
+	 * Pri testih nad datoteko <code>testLog</code> so rezultati v tablelah naslednji:
+	 * Address ima 13 zapisov
+	 * UserId ima 13 zapisov
+	 * UserSession ima 13 zapisov
+	 */
 	@Test
-	public void testRunSQLiteCommon() {
-		SpletneSeje.main("-fl", "COMMON", pathNCSACommon);
+	public void testRunCommonShortSQLite() {
+		SpletneSeje.main("-fl", "COMMON", ClassLoader.getSystemResource("testLog").getPath());
 	}
 
 	@Test
-	public void testRunSQLiteCommonShort() {
-		SpletneSeje.main("-fl", "COMMON", pathNCSACommonShort);
+	public void testRunCommonShortH2() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), ClassLoader.getSystemResource("testLog").getPath());
 	}
 
 	@Test
-	public void testRunSQLiteCombined() {
-		SpletneSeje.main("-fl", "COMBINED", "-dbsqf", "-dbsq", pathNCSACombined);
+	public void testRunCommonShortHSQLBD() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), ClassLoader.getSystemResource("testLog").getPath());
 	}
 
 	@Test
-	public void testRunSQLiteExtended() {
-		SpletneSeje.main("-fl", "EXTENDED", "-dbsqf", "-dbsq", pathW3CExtended);
+	public void testRunCommonShortDerby() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), ClassLoader.getSystemResource("testLog").getPath());
+	}
+
+	/**
+	 * Pri testih nad datoteko <code>logCommon</code> so rezultati v tablelah naslednji:
+	 * Address ima 187 zapisov
+	 * UserSession ima 200 zapisov
+	 */
+	@Test
+	public void testRunCommonSQLite() {
+		SpletneSeje.main("-fl", "COMMON", ClassLoader.getSystemResource("logCommon").getPath());
 	}
 
 	@Test
-	public void testRunH2Common() {
-		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACommon);
+	public void testRunCommonH2() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), ClassLoader.getSystemResource("logCommon").getPath());
 	}
 
 	@Test
-	public void testRunH2CommonShort() {
-		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACommonShort);
+	public void testRunCommonHSQLBD() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), ClassLoader.getSystemResource("logCommon").getPath());
 	}
 
 	@Test
-	public void testRunH2Combined() {
-		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathNCSACombined);
+	public void testRunCommonDerby() {
+		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), ClassLoader.getSystemResource("logCommon").getPath());
+	}
+
+	/**
+	 * Pri testih nad datoteko <code>access_log</code> so rezultati v tablelah naslednji:
+	 * Address ima 187 zapisov
+	 * UserId ima 198 zapisov
+	 * UserSession ima 210 zapisov
+	 */
+	@Test
+	public void testRunCombinedSQLite() {
+		SpletneSeje.main("-fl", "COMBINED", ClassLoader.getSystemResource("access_log").getPath());
 	}
 
 	@Test
-	public void testRunH2Extended() {
-		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), pathW3CExtended);
+	public void testRunCombinedH2() {
+		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), ClassLoader.getSystemResource("access_log").getPath());
 	}
 
 	@Test
-	public void testRunHSQLBDCommon() {
-		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACommon);
+	public void testRunCombinedHSQLBD() {
+		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), ClassLoader.getSystemResource("access_log").getPath());
 	}
 
 	@Test
-	public void testRunHSQLBDCommonShort() {
-		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACommonShort);
+	public void testRunCombinedDerby() {
+		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), ClassLoader.getSystemResource("access_log").getPath());
+	}
+
+	/**
+	 * Pri testih nad datoteko <code>ex080814.log</code> so rezultati v tablelah naslednji:
+	 * Address ima 9 zapisov
+	 * UserSession ima 9 zapisov
+	 */
+	@Test
+	public void testRunExtendedSQLite() {
+		SpletneSeje.main("-fl", "EXTENDED", ClassLoader.getSystemResource("ex080814.log").getPath());
 	}
 
 	@Test
-	public void testRunHSQLBDCombined() {
-		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathNCSACombined);
+	public void testRunExtendedH2() {
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), ClassLoader.getSystemResource("ex080814.log").getPath());
 	}
 
 	@Test
-	public void testRunHSQLBDExtended() {
-		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), pathW3CExtended);
+	public void testRunExtendedHSQLBD() {
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), ClassLoader.getSystemResource("ex080814.log").getPath());
 	}
 
 	@Test
-	public void testRunDerbyCommon() {
-		SpletneSeje.main("-fl", "COMMON", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), pathNCSACommon);
-	}
-
-	@Test
-	public void testRunDerbyCombined() {
-		SpletneSeje.main("-fl", "COMBINED", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), pathNCSACombined);
-	}
-
-	@Test
-	public void testRunDerbyExtended() {
-		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), pathW3CExtended);
+	public void testRunExtendedDerby() {
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), ClassLoader.getSystemResource("ex080814.log").getPath());
 	}
 }
