@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateTable {
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(joinColumns = @JoinColumn(name = "pageview_id"))
+	@JoinTable(joinColumns = @JoinColumn(name = "pageView_id"))
 	protected List<RequestAbs> requests;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
