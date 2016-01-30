@@ -7,7 +7,7 @@ import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.StringMemberValue;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.LogFieldType;
+import org.sessionization.parser.LogFieldTypeImp;
 
 import javax.persistence.Cacheable;
 import javax.persistence.DiscriminatorValue;
@@ -82,9 +82,9 @@ public class PageViewDump {
 		}
 	}
 
-	protected static List<LogFieldType> getFields(Collection<LogFieldType> types) {
-		List<LogFieldType> list = new ArrayList<>((int) (types.size() / 2));
-		for (LogFieldType f : types) {
+	protected static List<LogFieldTypeImp> getFields(Collection<LogFieldTypeImp> types) {
+		List<LogFieldTypeImp> list = new ArrayList<>((int) (types.size() / 2));
+		for (LogFieldTypeImp f : types) {
 			if (!f.isKey()) {
 				list.add(f);
 			}

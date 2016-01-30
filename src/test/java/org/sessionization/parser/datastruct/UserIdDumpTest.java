@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.LogFieldType;
+import org.sessionization.parser.LogFieldTypeImp;
 import org.sessionization.parser.LogFormats;
 
 import java.io.File;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 public class UserIdDumpTest {
 
 	private ClassPoolLoader loader;
-	private List<LogFieldType> allFieldTypes;
+	private List<LogFieldTypeImp> allFieldTypes;
 
 	public void setLoader(ClassPoolLoader loader) {
 		this.loader = loader;

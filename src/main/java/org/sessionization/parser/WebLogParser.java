@@ -19,16 +19,16 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	/**
 	 * Tabela, ki vsebuje vrste polji v log datoteki
 	 *
-	 * @see LogFieldType
+	 * @see LogFieldTypeImp
 	 */
-	protected List<LogFieldType> fieldType;
+	protected List<LogFieldTypeImp> fieldType;
 
 	/**
 	 * Tabela, ki vsebuje polja, ki jih ignoramo
 	 *
-	 * @see LogFieldType
+	 * @see LogFieldTypeImp
 	 */
-	protected Set<LogFieldType> ignore;
+	protected Set<LogFieldTypeImp> ignore;
 
 	/**
 	 *
@@ -157,7 +157,7 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 
 	ParsedLine parseLine(Scanner scanner) throws ParseException {
 		List<LogField> lineData = new ArrayList<>(fieldType.size());
-		for (LogFieldType ft : fieldType) {
+		for (LogFieldTypeImp ft : fieldType) {
 			if (ignore != null ? !ignore.contains(ft) : true) {
 				lineData.add(ft.parse(scanner, this));
 			}
@@ -188,7 +188,7 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	 *
 	 * @param ignore Tabela s polji, ki jih zelimo ignorirati
 	 */
-	public void setIgnoreFieldType(List<LogFieldType> ignore) {
+	public void setIgnoreFieldType(List<LogFieldTypeImp> ignore) {
 		if (ignore != null) {
 			this.ignore = EnumSet.copyOf(ignore);
 		}
@@ -197,7 +197,7 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	/**
 	 * @return
 	 */
-	public Set<LogFieldType> getIgnoreFieldTypes() {
+	public Set<LogFieldTypeImp> getIgnoreFieldTypes() {
 		return ignore;
 	}
 
@@ -223,7 +223,7 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	 *
 	 * @return Seznam tipov polji v datoteki
 	 */
-	public List<LogFieldType> getFieldType() {
+	public List<LogFieldTypeImp> getFieldType() {
 		return fieldType;
 	}
 
@@ -232,9 +232,9 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	 *
 	 * @param fields Tipi polji v log datoteki
 	 * @throws NullPointerException Ko je parameter <code>fields</code> enak null
-	 * @see LogFieldType
+	 * @see LogFieldTypeImp
 	 */
-	public void setFieldType(List<LogFieldType> fields) throws NullPointerException {
+	public void setFieldType(List<LogFieldTypeImp> fields) throws NullPointerException {
 		if (fields == null) {
 			throw new NullPointerException();
 		} else if (fields instanceof ArrayList) {

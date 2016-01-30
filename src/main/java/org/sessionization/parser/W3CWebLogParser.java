@@ -26,7 +26,7 @@ public class W3CWebLogParser extends WebLogParserW3C {
 		super(locale, file);
 	}
 
-	public W3CWebLogParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
+	public W3CWebLogParser(Locale locale, File[] file, List<LogFieldTypeImp> ignore) throws FileNotFoundException {
 		super(locale, file, ignore);
 	}
 
@@ -34,8 +34,8 @@ public class W3CWebLogParser extends WebLogParserW3C {
 	public ParsedLine parseLine() throws ParseException {
 		try {
 			Scanner tokens = getLine();
-			if (tokens.hasNext(LogFieldType.MetaData.getPattern())) {
-				MetaData metadata = (MetaData) LogFieldType.MetaData.parse(tokens, this);
+			if (tokens.hasNext(LogFieldTypeImp.MetaData.getPattern())) {
+				MetaData metadata = (MetaData) LogFieldTypeImp.MetaData.parse(tokens, this);
 				if (metadata.getMetaData().equals("Fields")) {
 					super.setFieldType(LogFormats.ParseCmdArgs.create(metadata.getValues()));
 				}

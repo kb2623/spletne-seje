@@ -154,7 +154,7 @@ public class NCSAWebLogParserTest {
 		try {
 			parser.openFile(new StringReader(testNiz));
 			String[] cookie = "%h %l %u %t %r %s %b %{Referer}i %{User-agent}i %C".split(" ");
-			List<LogFieldType> listType = LogFormats.ParseCmdArgs.make(cookie);
+			List<LogFieldTypeImp> listType = LogFormats.ParseCmdArgs.make(cookie);
 			parser.setFieldType(listType);
 			ParsedLine list = parser.parseLine();
 			assertEquals("[Client 216.67.1.91 | - | leon | 12:11:52 01.07.2002 | GET /index.html HTTP/1.1 | 200 | 431 | www.loganalyzer.net/ | Mozilla/4.05 [en] (WinNT; I) | [[USERID = CustomerA][IMPID = 01234]]]", list.toString());
@@ -171,7 +171,7 @@ public class NCSAWebLogParserTest {
 		try {
 			parser.openFile(new StringReader(testNiz));
 			String[] cookie = "%h %l %u %t %r %s %b %{Referer}i %{User-agent}i".split(" ");
-			List<LogFieldType> listType = LogFormats.ParseCmdArgs.make(cookie);
+			List<LogFieldTypeImp> listType = LogFormats.ParseCmdArgs.make(cookie);
 			parser.setFieldType(listType);
 			ParsedLine list = parser.parseLine();
 			parser.closeFile();

@@ -11,18 +11,18 @@ public enum LogFormats {
 
 	CommonLogFormat(0) {
 		@Override
-		public List<LogFieldType> make(String... args) {
+		public List<LogFieldTypeImp> make(String... args) {
 			return create("%h", "%l", "%u", "%t", "%r", "%s", "%b");
 		}
 	},
 	CombinedLogFormat(0) {
-		public List<LogFieldType> make(String... args) {
+		public List<LogFieldTypeImp> make(String... args) {
 			return create("%h", "%l", "%u", "%t", "%r", "%s", "%b", "%{Referer}i", "%{User-agent}i");
 		}
 	},
 	ParseCmdArgs(2) {
 		@Override
-		public List<LogFieldType> make(String... args) throws NullPointerException {
+		public List<LogFieldTypeImp> make(String... args) throws NullPointerException {
 			if (args == null) {
 				throw new NullPointerException();
 			} else {
@@ -31,11 +31,11 @@ public enum LogFormats {
 		}
 	};
 
-	private Map<String, LogFieldType> enumMaper;
+	private Map<String, LogFieldTypeImp> enumMaper;
 
 	LogFormats(int n) {
-		Map<String, LogFieldType> map = new RadixTreeMap<>();
-		for (LogFieldType type : EnumSet.allOf(LogFieldType.class)) {
+		Map<String, LogFieldTypeImp> map = new RadixTreeMap<>();
+		for (LogFieldTypeImp type : EnumSet.allOf(LogFieldTypeImp.class)) {
 			for (String s : type.getFormatString()) {
 				switch (s.isEmpty() ? 3 : n) {
 					case 0:
@@ -57,18 +57,18 @@ public enum LogFormats {
 		enumMaper = map;
 	}
 
-	List<LogFieldType> create(String... args) {
-		List<LogFieldType> list = new ArrayList<>(args.length);
+	List<LogFieldTypeImp> create(String... args) {
+		List<LogFieldTypeImp> list = new ArrayList<>(args.length);
 		for (String s : args) {
-			LogFieldType type = enumMaper.get(s);
+			LogFieldTypeImp type = enumMaper.get(s);
 			if (type == null) {
-				list.add(LogFieldType.Unknown);
-			} else if (type != LogFieldType.MetaData) {
+				list.add(LogFieldTypeImp.Unknown);
+			} else if (type != LogFieldTypeImp.MetaData) {
 				list.add(type);
 			}
 		}
 		return list;
 	}
 
-	public abstract List<LogFieldType> make(String... args) throws NullPointerException;
+	public abstract List<LogFieldTypeImp> make(String... args) throws NullPointerException;
 }

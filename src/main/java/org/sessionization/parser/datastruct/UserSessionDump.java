@@ -163,7 +163,7 @@ public class UserSessionDump {
 				if (userId != null) {
 					/** Getter */{
 						builder.setLength(0);
-						builder.append("public " + userId.getName() + " getUserId() {")
+						builder.append("public " + UserIdAbs.class.getName() + " getUserId() {")
 								.append("return this.userId;");
 						builder.append('}');
 						CtMethod method = CtMethod.make(builder.toString(), aClass);

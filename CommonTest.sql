@@ -11,9 +11,9 @@ select * from URISTEAM;
 select * from URISTEAM 
   where FILE like '/hlace%';
 
-select * from USERSESSION_PAGEVIEWABS;
+select * from USERSESSION_PAGEVIEW;
 
-select * from PageViewAbs;
+select * from PageView;
 select * from PAGEVIEW;
 
 select * from PROTOCOL;

@@ -1,6 +1,11 @@
 package org.sessionization.parser.datastruct;
 
 import org.sessionization.database.HibernateUtil;
+import org.sessionization.parser.fields.Address;
+import org.sessionization.parser.fields.Cookie;
+import org.sessionization.parser.fields.RemoteUser;
+import org.sessionization.parser.fields.UserAgent;
+import org.sessionization.parser.fields.ncsa.RemoteLogname;
 
 import javax.persistence.*;
 
@@ -29,6 +34,26 @@ public abstract class UserIdAbs implements HibernateUtil.HibernateTable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Address getAddress() {
+		return null;
+	}
+
+	public RemoteLogname getRemoteLogname() {
+		return null;
+	}
+
+	public RemoteUser getRemoteUser() {
+		return null;
+	}
+
+	public UserAgent getUserAgent() {
+		return null;
+	}
+
+	public Cookie getCookie() {
+		return null;
 	}
 
 	@Override

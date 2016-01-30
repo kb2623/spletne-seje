@@ -32,7 +32,7 @@ public abstract class WebLogParserW3C extends WebLogParser {
 		setDefaultFields(locale);
 	}
 
-	public WebLogParserW3C(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
+	public WebLogParserW3C(Locale locale, File[] file, List<LogFieldTypeImp> ignore) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 		super.setIgnoreFieldType(ignore);

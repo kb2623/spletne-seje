@@ -131,11 +131,11 @@ public class SpletneSeje implements AutoCloseable {
 		/** Nastavi Object pool in dodaj Creatorje in Propertije */
 		ObjectPool pool = new ObjectPool();
 		Map creators = new HashMap<>();
-		List<LogFieldType> fields = logParser.getFieldType();
+		List<LogFieldTypeImp> fields = logParser.getFieldType();
 		if (logParser.getIgnoreFieldTypes() != null) {
 			fields.removeAll(logParser.getIgnoreFieldTypes());
 		}
-		for (LogFieldType f : fields) {
+		for (LogFieldTypeImp f : fields) {
 			Map tmp = f.getCreators();
 			if (tmp != null) {
 				creators.putAll(tmp);

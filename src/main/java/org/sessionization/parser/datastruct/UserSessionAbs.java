@@ -4,6 +4,7 @@ import org.sessionization.TimePoint;
 import org.sessionization.database.HibernateUtil;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -30,6 +31,14 @@ public abstract class UserSessionAbs implements TimePoint, HibernateUtil.Hiberna
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public UserIdAbs getUserId() {
+		return null;
+	}
+
+	public List getPages() {
+		return null;
 	}
 
 	public abstract String getKey();

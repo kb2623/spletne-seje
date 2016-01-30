@@ -8,7 +8,7 @@ import javassist.bytecode.annotation.*;
 import org.hibernate.Session;
 import org.sessionization.ClassPoolLoader;
 import org.sessionization.parser.LogField;
-import org.sessionization.parser.LogFieldType;
+import org.sessionization.parser.LogFieldTypeImp;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -23,14 +23,14 @@ public class RequestDump {
 
 	private static String CLASSNAME = "org.sessionization.parser.datastruct.Request";
 
-	public static Class<?> dump(Collection<LogFieldType> fieldTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
+	public static Class<?> dump(Collection<LogFieldTypeImp> fieldTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
 		if (fieldTypes.size() < 1) {
 			return null;
 		}
 		try {
 			return loader.loadClass(CLASSNAME);
 		} catch (ClassNotFoundException e) {
-			List<LogFieldType> fields = getFields(fieldTypes);
+			List<LogFieldTypeImp> fields = getFields(fieldTypes);
 			final StringBuilder builder = new StringBuilder();
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
@@ -59,7 +59,7 @@ public class RequestDump {
 				aClass.getClassFile().addAttribute(attr);
 			}
 			/** Inicializacija polji */
-			for (LogFieldType f : fields) {
+			for (LogFieldTypeImp f : fields) {
 				builder.setLength(0);
 				builder.append("private " + f.getClassE().getName() + " " + f.getFieldName() + ";");
 				CtField field = CtField.make(builder.toString(), aClass);
@@ -86,7 +86,7 @@ public class RequestDump {
 				aClass.addField(field);
 			}
 			/** setterji in getterji za ostala polja */
-			for (LogFieldType f : fields) {
+			for (LogFieldTypeImp f : fields) {
 				/** setter */{
 					builder.setLength(0);
 					builder.append("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}");
@@ -104,7 +104,7 @@ public class RequestDump {
 				builder.setLength(0);
 				builder.append("public Request() {");
 				builder.append("super();");
-				for (LogFieldType f : fields) {
+				for (LogFieldTypeImp f : fields) {
 					builder.append("this." + f.getFieldName() + " = null;");
 				}
 				builder.append('}');
@@ -117,7 +117,7 @@ public class RequestDump {
 				builder.append("super(line);");
 				builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
-				for (LogFieldType f : fields) {
+				for (LogFieldTypeImp f : fields) {
 					builder.append("if (f instanceof " + f.getClassE().getName() + ")");
 					builder.append("{ this." + f.getSetterName() + "((" + f.getClassE().getName() + ") f); }");
 				}
@@ -129,8 +129,8 @@ public class RequestDump {
 				boolean has = false;
 				builder.setLength(0);
 				builder.append("public " + LocalTime.class.getName() + " getLocalTime() {");
-				for (LogFieldType f : fields) {
-					if (f == LogFieldType.DateTime || f == LogFieldType.Time) {
+				for (LogFieldTypeImp f : fields) {
+					if (f == LogFieldTypeImp.DateTime || f == LogFieldTypeImp.Time) {
 						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getTime() : null);");
 						has = true;
 						break;
@@ -146,8 +146,8 @@ public class RequestDump {
 				boolean has = false;
 				builder.setLength(0);
 				builder.append("public " + LocalDate.class.getName() + " getLocalDate() {");
-				for (LogFieldType f : fields) {
-					if (f == LogFieldType.DateTime || f == LogFieldType.Date) {
+				for (LogFieldTypeImp f : fields) {
+					if (f == LogFieldTypeImp.DateTime || f == LogFieldTypeImp.Date) {
 						builder.append("return (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".getDate() : null);");
 						has = true;
 						break;
@@ -166,7 +166,7 @@ public class RequestDump {
 				builder.append("if (this == o) { return true; }");
 				builder.append("else {" + CLASSNAME + " v = (" + CLASSNAME + ") o;");
 				builder.append("return super.equals(o)");
-				for (LogFieldType f : fields) {
+				for (LogFieldTypeImp f : fields) {
 					builder.append(" && (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".equals(v." + f.getGetterName() + "()) : v." + f.getGetterName() + "() == null)");
 				}
 				builder.append(';').append("}}");
@@ -177,7 +177,7 @@ public class RequestDump {
 				builder.setLength(0);
 				builder.append("public " + int.class.getName() + " hashCode() {");
 				builder.append(int.class.getName() + " res = super.hashCode();");
-				for (LogFieldType f : fields) {
+				for (LogFieldTypeImp f : fields) {
 					builder.append("res = 31 * res + (" + f.getFieldName() + " != null ? this." + f.getFieldName() + ".hashCode() : 0);");
 				}
 				builder.append("return res;").append('}');
@@ -188,7 +188,7 @@ public class RequestDump {
 				builder.setLength(0);
 				builder.append("public " + String.class.getName() + " toString() {");
 				builder.append("return ");
-				for (LogFieldType f : fields) {
+				for (LogFieldTypeImp f : fields) {
 					builder.append("(" + f.getGetterName() + "() != null ? " + f.getGetterName() + "().toString() : \"-\") + \" \" + ");
 				}
 				builder.delete(builder.length() - 9, builder.length());
@@ -200,7 +200,7 @@ public class RequestDump {
 			/** Object setDbId(Session session) */{
 				builder.setLength(0);
 				builder.append("public " + Object.class.getName() + " setDbId(" + Session.class.getName() + " session) {");
-				for (LogFieldType f : fields) {
+				for (LogFieldTypeImp f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
 						builder.append(f.getGetterName() + "().setDbId(session);");
 					}
@@ -214,9 +214,9 @@ public class RequestDump {
 		}
 	}
 
-	protected static List<LogFieldType> getFields(Collection<LogFieldType> types) {
-		List<LogFieldType> list = new ArrayList<>((int) (types.size() / 2));
-		for (LogFieldType f : types) {
+	protected static List<LogFieldTypeImp> getFields(Collection<LogFieldTypeImp> types) {
+		List<LogFieldTypeImp> list = new ArrayList<>((int) (types.size() / 2));
+		for (LogFieldTypeImp f : types) {
 			if (!f.isKey()) {
 				list.add(f);
 			}

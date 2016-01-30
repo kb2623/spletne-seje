@@ -5,13 +5,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.LogFieldType;
+import org.sessionization.parser.LogFieldTypeImp;
 import org.sessionization.parser.LogFormats;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -19,7 +18,7 @@ import static org.junit.Assert.assertNull;
 public class UserSessionDumpTest {
 
 	private ClassPoolLoader loader;
-	private List<LogFieldType> allFieldTypes;
+	private List<LogFieldTypeImp> allFieldTypes;
 
 	private PageViewDumpTest viewDumpTest = new PageViewDumpTest();
 	private UserIdDumpTest idDumpTest = new UserIdDumpTest();
