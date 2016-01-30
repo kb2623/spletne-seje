@@ -55,6 +55,13 @@ public class UserSessionDump {
 						Annotation anno = new Annotation(Cacheable.class.getName(), constPool);
 						attr.addAnnotation(anno);
 					}
+					{
+						Annotation anno = new Annotation(DiscriminatorValue.class.getName(), constPool);
+						StringMemberValue value = new StringMemberValue(constPool);
+						value.setValue("1");
+						anno.addMemberValue("value", value);
+						attr.addAnnotation(anno);
+					}
 					aClass.getClassFile().addAttribute(attr);
 				}
 				/** Polje UserId */

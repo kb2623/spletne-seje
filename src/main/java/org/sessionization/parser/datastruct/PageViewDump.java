@@ -5,10 +5,12 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.StringMemberValue;
 import org.sessionization.ClassPoolLoader;
 import org.sessionization.parser.LogFieldType;
 
 import javax.persistence.Cacheable;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +41,13 @@ public class PageViewDump {
 				}
 				{
 					Annotation anno = new Annotation(Cacheable.class.getName(), constPool);
+					attr.addAnnotation(anno);
+				}
+				{
+					Annotation anno = new Annotation(DiscriminatorValue.class.getName(), constPool);
+					StringMemberValue value = new StringMemberValue(constPool);
+					value.setValue("1");
+					anno.addMemberValue("value", value);
 					attr.addAnnotation(anno);
 				}
 				aClass.getClassFile().addAttribute(attr);

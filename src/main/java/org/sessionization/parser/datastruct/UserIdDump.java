@@ -4,10 +4,7 @@ import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
-import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.ArrayMemberValue;
-import javassist.bytecode.annotation.EnumMemberValue;
-import javassist.bytecode.annotation.MemberValue;
+import javassist.bytecode.annotation.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.ClassPoolLoader;
@@ -59,6 +56,13 @@ public class UserIdDump {
 				}
 				{
 					Annotation anno = new Annotation(Cacheable.class.getName(), constPool);
+					attr.addAnnotation(anno);
+				}
+				{
+					Annotation anno = new Annotation(DiscriminatorValue.class.getName(), constPool);
+					StringMemberValue value = new StringMemberValue(constPool);
+					value.setValue("1");
+					anno.addMemberValue("value", value);
 					attr.addAnnotation(anno);
 				}
 				aClass.getClassFile().addAttribute(attr);

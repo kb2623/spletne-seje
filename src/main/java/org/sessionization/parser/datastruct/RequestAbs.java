@@ -6,8 +6,10 @@ import org.sessionization.database.HibernateUtil;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
 @Cacheable
+@Table(name = "Request")
 public abstract class RequestAbs implements TimePoint, HibernateUtil.HibernateTable {
 
 	@Id

@@ -11,8 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
 @Cacheable
+@Table(name = "PageView")
 public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateTable {
 
 	@OneToMany(cascade = CascadeType.ALL)
