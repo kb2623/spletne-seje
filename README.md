@@ -6,17 +6,17 @@ Uporabljena licenca [GPL V3](LICENSE.md)
 
 ## Help
 
-| | | <path> | Input log files |
-| -c | crawlers| bool | Ignore web rawlers |
+| Command arg | Property arg | Type | Info |
+| --- | --- | --- | --- |
+|  |  | <path> | Input log files |
+| -c | crawlers | bool | Ignore web rawlers |
 | -dbcp | database.connection.pool_size| int | Number of connetions alowed for connecting to database |
 | -dbddl | database.ddl | Create or Update | Create new tables or update exsisting ones |
 | -dbdi | database.dialect.class | string | Database dialect class name |
- -dbdic (database.dialect) <path>       : Path to class file, that is dialect
-                                          for database
- -dbdr (database.driver) <path>         : Path to jar file, that is a driver
- -dbdrc (database.driver.class)         : Driver class for connecting to databse
- <string>
- -dbpw (database.password) <string>     : Password for user
+| -dbdic | database.dialect | path | Path to class file, that is dialect for database |
+| -dbdr | database.driver | path | Path to jar file, that is a driver |
+| -dbdrc | database.driver.class | string | Driver class for connecting to databse |
+| -dbpw | database.password | string | Password for user |
  -dbsq (database.sql.show) <bool>       : Show sql querys
  -dbsqf (database.sql.show.format)      : Show formated sql querys
  <bool>
