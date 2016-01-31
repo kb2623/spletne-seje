@@ -125,7 +125,7 @@ public class SpletneSejeTest {
 	}
 
 	@Test
-	public void testRunZero() {
+	public void testRunHelp() {
 		SpletneSeje.main("-h");
 	}
 
