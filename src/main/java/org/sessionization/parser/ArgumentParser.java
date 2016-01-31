@@ -283,7 +283,7 @@ public class ArgumentParser {
 		}
 	}
 
-	@Option(name = "li", aliases = "log.ignore", usage = "Fields to ignore", metaVar = "<string>")
+	@Option(name = "-li", aliases = "log.ignore", usage = "Fields to ignore", metaVar = "<string>")
 	public void setIgnoreFields(String niz) {
 		properties.setProperty("log.ignore", niz);
 	}

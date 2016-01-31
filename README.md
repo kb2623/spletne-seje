@@ -7,7 +7,7 @@ Uporabljena licenca [GPL V3](LICENSE.md)
 ## Help
 
 | Command arg | Property arg | Type | Info |
-| --- | --- | --- | --- |
+| :---: | :---: | :---: | --- |
 |  |  | `path` | Input log files |
 | -c | crawlers | `bool` | Ignore web rawlers |
 | -dbcp | database.connection.pool_size | `int` | Number of connetions alowed for connecting to database |
