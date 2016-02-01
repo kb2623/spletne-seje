@@ -39,21 +39,24 @@ Uporabljena licenca [GPL V3](LICENSE.md)
 `ProgName <path> ... [-c (crawlers) <bool>] [-dbcp (database.connection.pool_size) <int>] [-dbddl (database.ddl) [Create | Update]] [-dbdi (database.dialect.class) <string>] [-dbdic (database.dialect) <path>] [-dbdr (database.driver) <path>] [-dbdrc (database.driver.class) <string>] [-dbpw (database.password) <string>] [-dbsq (database.sql.show) <bool>] [-dbsqf (database.sql.show.format) <bool>] [-dbun (database.username) <string>] [-dburl (database.url) <URL>] [-ds (database.schema) <string>] [-fd (format.date) <date format>] [-fl (format.log) <log format>] [-flo (format.locale) <tag>] [-ft (format.time) <time format>] [-h (--help, -?)] [-pp (objectpool.properties) <path>] [-ps (parse.size) <int>] [-sqps (session.queue.parsedline.size) <int>] [-sqss (session.queue.session.size) <int>] [-st (session.time) <int>] [li (log.ignore) <string>] [-props <path>]`
 
 ### Log formats
-* COMMON
+* `COMMON`
 Ni potrbno navesti tipov polji
 
-* COMBINED
+* `COMBINED`
 Ni potrbno navesti tipov polji
 
-* EXTENDED
+* `EXTENDED`
 Ni potrbno navesti tipov polji
 
-* CUSTOM
+* `CUSTOM`
 Potrebno navesti tipe polji
 
+### Podprti tipi polji
+TODO
+
 ### Operacije
-* Create
+* `Create`
 Izdela podatkovno bazo
 
-* Update
+* `Update`
 Uporabi obstojeco podatkovno bazo
