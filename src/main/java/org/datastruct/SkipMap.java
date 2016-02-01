@@ -328,91 +328,165 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public Map.Entry<K, V> lowerEntry(K key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public K lowerKey(K key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			Map.Entry<K, V> e = lowerEntry(key);
+			return e != null ? e.getKey() : null;
+		}
 	}
 
 	@Override
 	public Map.Entry<K, V> floorEntry(K key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public K floorKey(K key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			Map.Entry<K, V> e = floorEntry(key);
+			return e != null ? e.getKey() : null;
+		}
 	}
 
 	@Override
 	public Map.Entry<K, V> ceilingEntry(K key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public K ceilingKey(K key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			Map.Entry<K, V> e = ceilingEntry(key);
+			return e != null ? e.getKey() : null;
+		}
 	}
 
 	@Override
 	public Map.Entry<K, V> higherEntry(K key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public K higherKey(K key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			Map.Entry<K, V> e = higherEntry(key);
+			return e != null ? e.getKey() : null;
+		}
 	}
 
 	@Override
 	public Map.Entry<K, V> firstEntry() {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public Map.Entry<K, V> lastEntry() {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public Map.Entry<K, V> pollFirstEntry() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public Map.Entry<K, V> pollLastEntry() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> descendingMap() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableSet<K> navigableKeySet() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableSet<K> descendingKeySet() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+		// TODO: 2/1/16
 		return null;
 	}
 
@@ -423,27 +497,30 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 
 	@Override
 	public SortedMap<K, V> subMap(K fromKey, K toKey) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public SortedMap<K, V> headMap(K toKey) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public SortedMap<K, V> tailMap(K fromKey) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public K firstKey() {
-		return null;
+		return isEmpty() ? null : firstEntry().getKey();
 	}
 
 	@Override
 	public K lastKey() {
-		return null;
+		return isEmpty() ? null : lastEntry().getKey();
 	}
 
 	@Override

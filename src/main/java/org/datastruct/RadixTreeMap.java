@@ -593,91 +593,165 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 
 	@Override
 	public Entry<String, V> lowerEntry(String key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public String lowerKey(String key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			Map.Entry<String, V> e = lowerEntry(key);
+			return e != null ? e.getKey() : null;
+		}
 	}
 
 	@Override
 	public Entry<String, V> floorEntry(String key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public String floorKey(String key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			Map.Entry<String, V> e = floorEntry(key);
+			return e != null ? e.getKey() : null;
+		}
 	}
 
 	@Override
 	public Entry<String, V> ceilingEntry(String key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public String ceilingKey(String key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			Map.Entry<String, V> e = ceilingEntry(key);
+			return e != null ? e.getKey() : null;
+		}
 	}
 
 	@Override
 	public Entry<String, V> higherEntry(String key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public String higherKey(String key) {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else if (key == null) {
+			throw new NullPointerException();
+		} else {
+			Map.Entry<String, V> e = higherEntry(key);
+			return e != null ? e.getKey() : null;
+		}
 	}
 
 	@Override
 	public Entry<String, V> firstEntry() {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public Entry<String, V> lastEntry() {
-		return null;
+		if (isEmpty()) {
+			return null;
+		} else {
+			// TODO: 2/1/16
+			return null;
+		}
 	}
 
 	@Override
 	public Entry<String, V> pollFirstEntry() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public Entry<String, V> pollLastEntry() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<String, V> descendingMap() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableSet<String> navigableKeySet() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableSet<String> descendingKeySet() {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<String, V> subMap(String fromKey, boolean fromInclusive, String toKey, boolean toInclusive) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<String, V> headMap(String toKey, boolean inclusive) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public NavigableMap<String, V> tailMap(String fromKey, boolean inclusive) {
+		// TODO: 2/1/16
 		return null;
 	}
 
@@ -688,27 +762,30 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 
 	@Override
 	public SortedMap<String, V> subMap(String fromKey, String toKey) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public SortedMap<String, V> headMap(String toKey) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public SortedMap<String, V> tailMap(String fromKey) {
+		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
 	public String firstKey() {
-		return null;
+		return isEmpty() ? null : firstEntry().getKey();
 	}
 
 	@Override
 	public String lastKey() {
-		return null;
+		return isEmpty() ? null : lastEntry().getKey();
 	}
 
 	@Override
