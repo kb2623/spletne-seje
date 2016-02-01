@@ -5,7 +5,6 @@ import javassist.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
@@ -41,8 +40,6 @@ public class HibernateUtil implements AutoCloseable {
 		/** Nastavi dodatne lastnosti za Hibernate */
 		Properties props = initProperties(argumentParser);
 		/** */
-		BootstrapServiceRegistryBuilder builder = new BootstrapServiceRegistryBuilder();
-		builder.applyClassLoader(loader);
 		serviceRegistry = new StandardServiceRegistryBuilder()
 				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
 				.applySettings(props)
