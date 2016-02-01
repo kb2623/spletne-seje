@@ -60,8 +60,8 @@ public class ArgumentParserTest {
 		return classes;
 	}
 
-	@Test
-	public void testArgsParsingHelp() {
+	@Test(expected = CmdLineException.class)
+	public void testArgsParsingHelp() throws CmdLineException {
 		try {
 			parser = new ArgumentParser("-h");
 			if (parser.isPrintHelp()) {
@@ -69,8 +69,6 @@ public class ArgumentParserTest {
 			} else {
 				fail();
 			}
-		} catch (CmdLineException e) {
-			fail();
 		} catch (URISyntaxException e) {
 			fail();
 		}
@@ -91,7 +89,7 @@ public class ArgumentParserTest {
 			assertEquals("org.sqlite.JDBC", parser.getDriverClass());
 			assertEquals("org.dialect.SQLiteDialect", parser.getDialectClass());
 			assertEquals(1, parser.getConnectoinPoolSize());
-			assertEquals("jdbc:sqlite:qliteDB", parser.getDatabaseUrl().toASCIIString());
+			assertEquals("jdbc:sqlite:sqliteDB", parser.getDatabaseUrl().toASCIIString());
 			assertEquals("test", parser.getInputFile()[0].getName());
 			assertEquals(Locale.US, parser.getLocale());
 			System.out.println();
@@ -106,34 +104,15 @@ public class ArgumentParserTest {
 	public void testArgsParsingOne() {
 		try {
 			parser = new ArgumentParser("-props", ClassLoader.getSystemResource("H2.properties").toURI().getPath(), "test");
-			assertEquals(Locale.CANADA_FRENCH, parser.getLocale());
-			assertTrue(parser.isIgnoreCrawlers());
-			assertTrue(parser.isShowSql());
-			assertTrue(parser.isShowSqlFormat());
-			assertEquals("testname", parser.getUserName());
-			assertEquals("testpass", parser.getPassWord());
+			assertEquals(Locale.US, parser.getLocale());
+			assertFalse(parser.isIgnoreCrawlers());
+			assertFalse(parser.isShowSql());
+			assertFalse(parser.isShowSqlFormat());
+			assertEquals("SA", parser.getUserName());
 			assertEquals("test", parser.getInputFile()[0].getName());
 		} catch (CmdLineException e) {
 			fail();
 		} catch (URISyntaxException e) {
-			fail();
-		}
-	}
-
-	@Test
-	public void testArgsParsingTwo() {
-		try {
-			parser = new ArgumentParser("-xml", ClassLoader.getSystemResource("Test2.xml").toURI().getPath(), "testtwo");
-			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
-			assertEquals("org.h2.Driver", parser.getDriverClass());
-			assertEquals("testtwo", parser.getInputFile()[0].getName());
-			assertEquals("jdbc:h2:./h2DB", parser.getDatabaseUrl().toString());
-			assertEquals(ArgumentParser.DdlOperation.Create, parser.getOperation());
-		} catch (CmdLineException e) {
-			e.printStackTrace();
-			fail();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
 			fail();
 		}
 	}
@@ -142,28 +121,10 @@ public class ArgumentParserTest {
 	public void testArgsParsingThree() {
 		try {
 			parser = new ArgumentParser("-props", ClassLoader.getSystemResource("H2.properties").toURI().getPath(), "test");
-			assertEquals("org.dialect.SQLiteDialect", parser.getDialectClass());
-			assertEquals("org.h2.Driver", parser.getDriverClass());
-			assertEquals("test", parser.getInputFile()[0].getName());
-			assertEquals("jdbc:h2:./h2DB", parser.getDatabaseUrl().toString());
-			assertEquals(ArgumentParser.DdlOperation.Create, parser.getOperation());
-		} catch (CmdLineException e) {
-			e.printStackTrace();
-			fail();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
-
-	@Test
-	public void testArgsParsingFour() {
-		try {
-			parser = new ArgumentParser("-xml", ClassLoader.getSystemResource("Test3.xml").toURI().getPath(), "test");
 			assertEquals("org.hibernate.dialect.H2Dialect", parser.getDialectClass());
 			assertEquals("org.h2.Driver", parser.getDriverClass());
 			assertEquals("test", parser.getInputFile()[0].getName());
-			assertEquals("jdbc:h2:./h2DB", parser.getDatabaseUrl().toString());
+			assertEquals("jdbc:h2:~/IdeaProjects/spletne-seje/h2db", parser.getDatabaseUrl().toString());
 			assertEquals(ArgumentParser.DdlOperation.Create, parser.getOperation());
 		} catch (CmdLineException e) {
 			e.printStackTrace();

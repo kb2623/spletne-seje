@@ -42,15 +42,15 @@ public class LogFormatsTest {
 	public void testExtendedLogF1() {
 		List<LogFieldTypeImp> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "cs(User-Agent)");
 		assertEquals(10, list.size());
-		assertTrue(list.contains(LogFieldTypeImp.UserAgentNCSA));
+		assertTrue(list.contains(LogFieldTypeImp.UserAgentW3C));
 	}
 
 	@Test
 	public void testExtendedLogF2() {
-		List<LogFieldTypeImp> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip", "s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "sc-bytes", "cs-bytes", "time-taken", "cs(User-Agent)", "cs(Referrer)");
+		List<LogFieldTypeImp> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip", "s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "sc-bytes", "cs-bytes", "time-taken", "cs(User-Agent)", "cs(Referer)");
 		assertEquals(15, list.size());
-		assertTrue(list.contains(LogFieldTypeImp.UserAgentNCSA));
-		assertTrue(list.contains(LogFieldTypeImp.RefererNCSA));
+		assertTrue(list.contains(LogFieldTypeImp.UserAgentW3C));
+		assertTrue(list.contains(LogFieldTypeImp.RefererW3C));
 	}
 
 	@Test

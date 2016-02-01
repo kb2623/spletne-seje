@@ -16,7 +16,7 @@ enum TestE {
 
 public class ObjectPoolTest {
 
-	static int time = 2000;
+	static int time = 1000;
 	private ObjectPool pool;
 
 	@Before

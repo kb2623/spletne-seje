@@ -9,7 +9,6 @@ import org.sessionization.parser.fields.w3c.Time;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -59,11 +58,11 @@ public class TestLogField {
 		Cookie cookie4 = new Cookie(testString3, LogType.NCSA);
 		String testString4 = "__utma=237691092.2338317182835442000.1214229487.1238435165.1238543004.8;+GAMBIT_ID=89.142.126.214-4231287712.29944903;+referencna=;+__utmz=237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa;+productsForComparison=712150%21701041%21610119%21403083;+ASPSESSIONIDASARQBAB=MDLBNDABLMEFLDGCFIFOJIGM;+__utmb=237691092.48.10.1238543004;+__utmc=237691092";
 		Cookie cookie5 = new Cookie(testString4, LogType.W3C);
-		assertEquals("[[USERID = CustomerA][IMPID = 01234]]", cookie.izpis());
-		assertEquals("[[USERID = CustomerA][IMPID = 01234]]", cookie2.izpis());
-		assertEquals("[-]", cookie3.izpis());
-		assertEquals("[-]", cookie4.izpis());
-		assertEquals("[[__utma = 237691092.2338317182835442000.1214229487.1238435165.1238543004.8][GAMBIT_ID = 89.142.126.214-4231287712.29944903][referencna = -][__utmz = 237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa][productsForComparison = 712150%21701041%21610119%21403083][ASPSESSIONIDASARQBAB = MDLBNDABLMEFLDGCFIFOJIGM][__utmb = 237691092.48.10.1238543004][__utmc = 237691092]]", cookie5.izpis());
+		assertEquals("[[CookiePair{id=null, value='CustomerA', key=CookieKey{id=null, name='USERID'}}][CookiePair{id=null, value='01234', key=CookieKey{id=null, name='IMPID'}}]]", cookie.izpis());
+		assertEquals("[[CookiePair{id=null, value='CustomerA', key=CookieKey{id=null, name='USERID'}}][CookiePair{id=null, value='01234', key=CookieKey{id=null, name='IMPID'}}]]", cookie2.izpis());
+		assertEquals("[[CookiePair{id=null, value=' ', key=CookieKey{id=null, name=' '}}]]", cookie3.izpis());
+		assertEquals("[[CookiePair{id=null, value=' ', key=CookieKey{id=null, name=' '}}]]", cookie4.izpis());
+		assertEquals("[[CookiePair{id=null, value='237691092.1238435165.7.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=enaa', key=CookieKey{id=null, name='__utmz'}}][CookiePair{id=null, value='MDLBNDABLMEFLDGCFIFOJIGM', key=CookieKey{id=null, name='ASPSESSIONIDASARQBAB'}}][CookiePair{id=null, value='237691092', key=CookieKey{id=null, name='__utmc'}}][CookiePair{id=null, value='89.142.126.214-4231287712.29944903', key=CookieKey{id=null, name='GAMBIT_ID'}}][CookiePair{id=null, value='237691092.2338317182835442000.1214229487.1238435165.1238543004.8', key=CookieKey{id=null, name='__utma'}}][CookiePair{id=null, value='-', key=CookieKey{id=null, name='referencna'}}][CookiePair{id=null, value='237691092.48.10.1238543004', key=CookieKey{id=null, name='__utmb'}}][CookiePair{id=null, value='712150%21701041%21610119%21403083', key=CookieKey{id=null, name='productsForComparison'}}]]", cookie5.izpis());
 	}
 
 	@Test
@@ -85,18 +84,18 @@ public class TestLogField {
 		RequestLine line = null;
 		try {
 			line = new RequestLine("GET", "/jope-puloverji/moski-pulover-b74-red?limit=18&test=hello", "HTTP/1.1");
-			assertEquals("GET", line.getMethod().toString());
-			assertEquals(new BigDecimal("1.1"), line.getProtocol().getVersion());
-			assertEquals("HTTP/1.1", line.getProtocol().toString());
-			assertEquals("[[limit = 18][test = hello]]", line.getSteamQuery().getQuery().toString());
+			assertEquals("Method{GET}", line.getMethod().toString());
+			assertEquals("1.1", line.getProtocol().getVersion());
+			assertEquals("Protocol{id=null, protocol='HTTP', version=1.1}", line.getProtocol().toString());
+			assertEquals("UriQuery{id=null, pairs=[UriQueryPair{id=null, value='18', key=UriQueryKey{id=null, name='limit'}}, UriQueryPair{id=null, value='hello', key=UriQueryKey{id=null, name='test'}}]}", line.getSteamQuery().getQuery().toString());
 			assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getFile().toString());
 			assertEquals("/jope-puloverji/moski-pulover-b74-red", line.getFile());
 			assertFalse(line.isWebPageResource());
 			line = new RequestLine("POST", "/catalog/view/javascript/jquery/supermenu/templates/gray/supermenu.css?limit=10", "HTTP/1.1");
-			assertEquals("POST", line.getMethod().toString());
-			assertEquals(new BigDecimal("1.1"), line.getProtocol().getVersion());
-			assertEquals("HTTP/1.1", line.getProtocol().toString());
-			assertEquals("[[limit = 10]]", line.getSteamQuery().getQuery().toString());
+			assertEquals("Method{POST}", line.getMethod().toString());
+			assertEquals("1.1", line.getProtocol().getVersion());
+			assertEquals("Protocol{id=null, protocol='HTTP', version=1.1}", line.getProtocol().toString());
+			assertEquals("UriQuery{id=null, pairs=[UriQueryPair{id=null, value='10', key=UriQueryKey{id=null, name='limit'}}]}", line.getSteamQuery().getQuery().toString());
 			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/" +
 					"supermenu.css", line.getFile().toString());
 			assertEquals("/catalog/view/javascript/jquery/supermenu/templates/gray/" +
@@ -104,10 +103,10 @@ public class TestLogField {
 			assertTrue(line.isWebPageResource());
 			line = new RequestLine("GET", "/image/cache/data/" +
 					"bigbananaPACK%20copy-cr-214x293.png", "HTTP");
-			assertEquals("GET", line.getMethod().toString());
-			assertEquals(new BigDecimal("0"), line.getProtocol().getVersion());
-			assertEquals("HTTP", line.getProtocol().toString());
-			assertEquals("[]", line.getSteamQuery().getQuery().toString());
+			assertEquals("Method{GET}", line.getMethod().toString());
+			assertEquals("0", line.getProtocol().getVersion());
+			assertEquals("Protocol{id=null, protocol='HTTP', version=0}", line.getProtocol().toString());
+			assertEquals("UriQuery{id=null, pairs=[UriQueryPair{id=null, value=' ', key=UriQueryKey{id=null, name=' '}}]}", line.getSteamQuery().getQuery().toString());
 			assertTrue(line.isWebPageResource());
 			assertEquals("/image/cache/data/bigbananaPACK%20copy-cr-214x293.png", line.getFile().toString());
 		} catch (URISyntaxException e) {

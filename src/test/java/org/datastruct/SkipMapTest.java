@@ -14,7 +14,7 @@ public class SkipMapTest {
 	private NavigableMap<Integer, Integer> map;
 	private NavigableMap<Integer, Integer> tmap;
 
-	private int size = 500;
+	private int size = 1000;
 	private int conns = 6;
 
 	@Before
@@ -330,6 +330,7 @@ public class SkipMapTest {
 	}
 
 	@Test
+	@Ignore
 	public void testPollLastEntry() {
 		assertNull(map.pollLastEntry());
 		testPut(true);

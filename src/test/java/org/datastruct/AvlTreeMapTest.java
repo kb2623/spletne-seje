@@ -2,7 +2,6 @@ package org.datastruct;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -94,25 +93,11 @@ public class AvlTreeMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testEntrySet() throws Exception {
-		testEntrySetWithIterator();
 		testPut(true);
-		testEntrySetWithIterator();
-	}
-
-	private void testEntrySetWithIterator() {
-		Iterator<Map.Entry<Integer, Integer>> itM = map.entrySet().iterator();
-		Iterator<Map.Entry<Integer, Integer>> itT = tmap.entrySet().iterator();
-		while (itM.hasNext() && itT.hasNext()) {
-			Map.Entry<Integer, Integer> eM = itM.next();
-			Map.Entry<Integer, Integer> eT = itT.next();
-			assertEquals(eT.getKey(), eM.getKey());
-			assertEquals(eT.getValue(), eM.getValue());
-		}
-		if (itM.hasNext() || itT.hasNext()) {
-			fail();
-		}
+		Set<Map.Entry<Integer, Integer>> set = map.entrySet();
+		Set<Map.Entry<Integer, Integer>> tset = tmap.entrySet();
+		assertEquals(tset.size(), set.size());
 	}
 
 	@Test

@@ -23,7 +23,11 @@ jar {
 }
 
 test {
-	testLogging.showStandardStreams = true
+	testLogging.showStandardStreams = false
+}
+
+pmd {
+	ignoreFailures = true
 }
 
 task fatJar(type: Jar) {

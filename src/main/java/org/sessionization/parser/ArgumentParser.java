@@ -48,7 +48,6 @@ public class ArgumentParser {
 		properties.setProperty("format.locale", Locale.US.toLanguageTag());
 		properties.setProperty("parse.size", "500");
 		properties.setProperty("session.time", "7200");
-		properties.setProperty("objectpool.properties", ClassLoader.getSystemResource("ClassPool.properties").getPath());
 		properties.setProperty("session.queue.session.size", "250");
 		properties.setProperty("session.queue.parsedline.size", "250");
 	}
@@ -95,9 +94,13 @@ public class ArgumentParser {
 
 	public Properties getObjectPoolProperties() throws IOException {
 		String path = properties.getProperty("objectpool.properties");
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(path));
-		return properties;
+		if (path != null) {
+			Properties properties = new Properties();
+			properties.load(new FileInputStream(path));
+			return properties;
+		} else {
+			return new Properties();
+		}
 	}
 
 	@Option(name = "-pp", aliases = "objectpool.properties", usage = "Properties for ObjectPool!!!", metaVar = "<path>")

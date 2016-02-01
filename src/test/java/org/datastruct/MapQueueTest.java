@@ -14,7 +14,7 @@ public class MapQueueTest {
 	private List<Integer> listV;
 	private List<Integer> listK;
 
-	private int size = 10000;
+	private int size = 1000;
 	private int capacity = 25;
 
 	@Before

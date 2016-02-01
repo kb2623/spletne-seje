@@ -107,12 +107,6 @@ public class ArrayMapTest {
 		assertFalse(map.containsKey(new Integer(16)));
 	}
 
-	@Test(expected = ClassCastException.class)
-	public void testContainsKeyClassCastExcetpion() {
-		testPutNoLimits();
-		map.containsKey("Dela");
-	}
-
 	@Test(expected = NullPointerException.class)
 	public void testContainsKeyNullPointerException() {
 		testPutNoLimits();
@@ -128,12 +122,6 @@ public class ArrayMapTest {
 		assertFalse(map.containsValue(new Integer(-10)));
 	}
 
-	@Test(expected = ClassCastException.class)
-	public void testContaisnValueClassCastExcetprion() {
-		testPutNoLimits();
-		map.containsValue("dela");
-	}
-
 	@Test(expected = NullPointerException.class)
 	public void testContaisnValueNullPointerException() {
 		testPutNoLimits();
@@ -147,12 +135,6 @@ public class ArrayMapTest {
 		assertNull(map.get(new Integer(20)));
 		assertEquals(new Integer(14), map.get(new Integer(14)));
 		assertNull(map.get(new Integer(100)));
-	}
-
-	@Test(expected = ClassCastException.class)
-	public void testGetClassCastException() {
-		testPutNoLimits();
-		map.get("Dela");
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -247,12 +229,6 @@ public class ArrayMapTest {
 		assertNull(map.remove(new Integer(14)));
 		assertEquals(new Integer(15), map.remove(new Integer(15)));
 		assertTrue(map.isEmpty());
-	}
-
-	@Test(expected = ClassCastException.class)
-	public void testRemoveClassCastException() {
-		testPutNoLimits();
-		map.remove("Dela");
 	}
 
 	@Test(expected = NullPointerException.class)
