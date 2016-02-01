@@ -763,19 +763,19 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	@Override
 	public SortedMap<String, V> subMap(String fromKey, String toKey) {
 		// TODO: 2/1/16
-		return null;
+		return subMap(fromKey, true, toKey, false);
 	}
 
 	@Override
 	public SortedMap<String, V> headMap(String toKey) {
 		// TODO: 2/1/16
-		return null;
+		return headMap(toKey, false);
 	}
 
 	@Override
 	public SortedMap<String, V> tailMap(String fromKey) {
 		// TODO: 2/1/16
-		return null;
+		return tailMap(fromKey, true);
 	}
 
 	@Override

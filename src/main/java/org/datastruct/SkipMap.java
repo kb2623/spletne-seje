@@ -498,19 +498,19 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 	@Override
 	public SortedMap<K, V> subMap(K fromKey, K toKey) {
 		// TODO: 2/1/16
-		return null;
+		return subMap(fromKey, true, toKey, false);
 	}
 
 	@Override
 	public SortedMap<K, V> headMap(K toKey) {
 		// TODO: 2/1/16
-		return null;
+		return headMap(toKey, false);
 	}
 
 	@Override
 	public SortedMap<K, V> tailMap(K fromKey) {
 		// TODO: 2/1/16
-		return null;
+		return tailMap(fromKey, true);
 	}
 
 	@Override
