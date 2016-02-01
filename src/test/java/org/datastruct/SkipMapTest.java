@@ -219,7 +219,6 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testCeilingEntry() {
 		testPut(true);
 		for (int i = 0; i < size; i++) {
@@ -228,7 +227,6 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testCeilingKey() {
 		testPut(true);
 		for (int i = 0; i < size; i++) {
@@ -237,14 +235,12 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFirstEntry() {
 		testPut(true);
 		assertEquals(tmap.firstEntry(), map.firstEntry());
 	}
 
 	@Test
-	@Ignore
 	public void testLastEntry() {
 		testPut(true);
 		assertEquals(tmap.lastEntry(), map.lastEntry());
@@ -277,7 +273,6 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFloorEntry() {
 		testPut(true);
 		for (int i = 0; i < size; i++) {
@@ -286,7 +281,6 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFloorKey() {
 		testPut(true);
 		for (int i = 0; i < size; i++) {
@@ -311,7 +305,6 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testHigherEntry() {
 		testPut(true);
 		for (int i = 0; i < size; i++) {
@@ -320,11 +313,28 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testHigherKey() {
 		testPut(true);
 		for (int i = 0; i < size; i++) {
 			assertEquals(tmap.higherKey(i), map.higherKey(i));
+		}
+	}
+
+	@Test
+	public void testPollFirstEntry() {
+		assertNull(map.pollFirstEntry());
+		testPut(true);
+		while (!tmap.isEmpty()) {
+			assertEquals(tmap.pollFirstEntry(), map.pollFirstEntry());
+		}
+	}
+
+	@Test
+	public void testPollLastEntry() {
+		assertNull(map.pollLastEntry());
+		testPut(true);
+		while (!tmap.isEmpty()) {
+			assertEquals(tmap.pollLastEntry(), map.pollLastEntry());
 		}
 	}
 

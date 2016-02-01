@@ -242,7 +242,7 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 				break;
 			}
 		}
-		return found != null ? found : null;
+		return found;
 	}
 
 	@Override
@@ -368,10 +368,31 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
-		} else {
-			// TODO: 2/1/16
-			return null;
 		}
+		Entry<K, V> curr = this.sentinel;
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
+			Entry<K, V> tmp = curr.conns[level];
+			if (tmp != null) {
+				int cmp = keyCmp.compare(tmp.key, key);
+				if (cmp == 0) {
+					return tmp;
+				} else if (cmp < 0) {
+					curr = tmp;
+					while (curr.conns[level] != null) {
+						tmp = curr.conns[level];
+						cmp = keyCmp.compare(tmp.key, key);
+						if (cmp == 0) {
+							return tmp;
+						} else if (cmp > 0) {
+							break;
+						} else {
+							curr = tmp;
+						}
+					}
+				}
+			}
+		}
+		return curr != sentinel ? curr : null;
 	}
 
 	@Override
@@ -392,8 +413,30 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 		} else if (key == null) {
 			throw new NullPointerException();
 		}
-		// TODO: 2/1/16
-		return null;
+		Entry<K, V> curr = this.sentinel;
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
+			Entry<K, V> tmp = curr.conns[level];
+			if (tmp != null) {
+				int cmp = keyCmp.compare(tmp.key, key);
+				if (cmp == 0) {
+					return tmp;
+				} else if (cmp < 0) {
+					curr = tmp;
+					while (curr.conns[level] != null) {
+						tmp = curr.conns[level];
+						cmp = keyCmp.compare(tmp.key, key);
+						if (cmp == 0) {
+							return tmp;
+						} else if (cmp > 0) {
+							break;
+						} else {
+							curr = tmp;
+						}
+					}
+				}
+			}
+		}
+		return curr.conns[0];
 	}
 
 	@Override
@@ -414,8 +457,30 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 		} else if (key == null) {
 			throw new NullPointerException();
 		}
-		// TODO: 2/1/16
-		return null;
+		Entry<K, V> curr = this.sentinel;
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
+			Entry<K, V> tmp = curr.conns[level];
+			if (tmp != null) {
+				int cmp = keyCmp.compare(tmp.key, key);
+				if (cmp == 0) {
+					return tmp.conns[0];
+				} else if (cmp < 0) {
+					curr = tmp;
+					while (curr.conns[level] != null) {
+						tmp = curr.conns[level];
+						cmp = keyCmp.compare(tmp.key, key);
+						if (cmp == 0) {
+							return tmp.conns[0];
+						} else if (cmp > 0) {
+							break;
+						} else {
+							curr = tmp;
+						}
+					}
+				}
+			}
+		}
+		return curr.conns[0];
 	}
 
 	@Override
@@ -434,8 +499,7 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 		if (isEmpty()) {
 			return null;
 		}
-		// TODO: 2/1/16
-		return null;
+		return sentinel.conns[0];
 	}
 
 	@Override
@@ -443,38 +507,83 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 		if (isEmpty()) {
 			return null;
 		}
-		// TODO: 2/1/16
-		return null;
+		Entry<K, V> curr = this.sentinel;
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
+			if (curr.conns[level] != null) {
+				Entry<K, V> tmp = curr.conns[level];
+				while (tmp.conns[level] != null) {
+					tmp = tmp.conns[level];
+				}
+				curr = tmp;
+			}
+		}
+		return curr;
 	}
 
 	@Override
 	public Map.Entry<K, V> pollFirstEntry() {
-		// TODO: 2/1/16
-		return null;
+		if (isEmpty()) {
+			return null;
+		}
+		Entry<K, V> e = sentinel.conns[0];
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
+			if (sentinel.conns[level] != null && keyCmp.compare(e.key, sentinel.conns[level].key) == 0) {
+				e = sentinel.conns[level];
+				sentinel.conns[level] = e.conns[level];
+			}
+		}
+		return e;
 	}
 
 	@Override
 	public Map.Entry<K, V> pollLastEntry() {
-		// TODO: 2/1/16
-		return null;
+		if (isEmpty()) {
+			return null;
+		}
+		Stack<Entry<K, V>> stack = new Stack<>();
+		Entry<K, V> curr = this.sentinel;
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
+			if (curr.conns[level] != null) {
+				Entry<K, V> tmp = curr.conns[level];
+				while (tmp.conns[level] != null) {
+					tmp = tmp.conns[level];
+				}
+				stack.push(curr);
+				curr = tmp;
+			}
+		}
+		// FIXME: 2/1/16 
+		for (int leval = 0; !stack.isEmpty(); leval++) {
+
+		}
+		return curr;
 	}
 
 	@Override
 	public NavigableMap<K, V> descendingMap() {
-		// TODO: 2/1/16
-		return null;
+		NavigableMap<K, V> map = new SkipMap<>(sentinel.conns.length, keyCmp.cmp.reversed());
+		for (Map.Entry<K, V> e : entrySet()) {
+			map.put(e.getKey(), e.getValue());
+		}
+		return map;
 	}
 
 	@Override
 	public NavigableSet<K> navigableKeySet() {
-		// TODO: 2/1/16
-		return null;
+		NavigableSet<K> set = new TreeSet<>(comparator());
+		for (K k : keySet()) {
+			set.add(k);
+		}
+		return set;
 	}
 
 	@Override
 	public NavigableSet<K> descendingKeySet() {
-		// TODO: 2/1/16
-		return null;
+		NavigableSet<K> set = new TreeSet<>(comparator().reversed());
+		for (K k : keySet()) {
+			set.add(k);
+		}
+		return set;
 	}
 
 	@Override
