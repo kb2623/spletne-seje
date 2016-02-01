@@ -295,7 +295,6 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testLowerEntry() {
 		testPut(true);
 		for (int i = 0; i < size; i++) {
@@ -304,7 +303,6 @@ public class SkipMapTest {
 	}
 
 	@Test
-	@Ignore
 	public void testLowerKey() {
 		testPut(true);
 		for (int i = 0; i < size; i++) {

@@ -159,11 +159,7 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 		}
 		K key = (K) o;
 		Entry<K, V> ret = getEnrty(key);
-		if (ret == null) {
-			return null;
-		} else {
-			return ret.value;
-		}
+		return ret != null ? ret.value : null;
 	}
 
 	protected Entry<K, V> getEnrty(K key) {
@@ -200,11 +196,7 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 		}
 		K key = (K) o;
 		Entry<K, V> e = removeEntry(key);
-		if (e == null) {
-			return null;
-		} else {
-			return e.value;
-		}
+		return e != null ? e.value : null;
 	}
 
 	@Override
@@ -250,11 +242,7 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 				break;
 			}
 		}
-		if (found == null) {
-			return null;
-		} else {
-			return found;
-		}
+		return found != null ? found : null;
 	}
 
 	@Override
@@ -332,10 +320,35 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
-		} else {
-			// TODO: 2/1/16
-			return null;
 		}
+		Entry<K, V> curr = this.sentinel;
+		for (int level = sentinel.conns.length - 1; level >= 0; level--) {
+			Entry<K, V> tmp = curr.conns[level];
+			if (tmp != null) {
+				int cmp = keyCmp.compare(tmp.key, key);
+				if (cmp == 0 && level == 0) {
+					return curr != sentinel ? curr : null;
+				} else if (cmp < 0) {
+					curr = tmp;
+					while (curr.conns[level] != null) {
+						tmp = curr.conns[level];
+						cmp = keyCmp.compare(tmp.key, key);
+						if (cmp == 0) {
+							if (level == 0) {
+								return curr != sentinel ? curr : null;
+							} else {
+								break;
+							}
+						} else if (cmp > 0) {
+							break;
+						} else {
+							curr = tmp;
+						}
+					}
+				}
+			}
+		}
+		return curr != sentinel ? curr : null;
 	}
 
 	@Override
@@ -344,10 +357,9 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
-		} else {
-			Map.Entry<K, V> e = lowerEntry(key);
-			return e != null ? e.getKey() : null;
 		}
+		Map.Entry<K, V> e = lowerEntry(key);
+		return e != null ? e.getKey() : null;
 	}
 
 	@Override
@@ -368,10 +380,9 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
-		} else {
-			Map.Entry<K, V> e = floorEntry(key);
-			return e != null ? e.getKey() : null;
 		}
+		Map.Entry<K, V> e = floorEntry(key);
+		return e != null ? e.getKey() : null;
 	}
 
 	@Override
@@ -380,10 +391,9 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
-		} else {
-			// TODO: 2/1/16
-			return null;
 		}
+		// TODO: 2/1/16
+		return null;
 	}
 
 	@Override
@@ -392,10 +402,9 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
-		} else {
-			Map.Entry<K, V> e = ceilingEntry(key);
-			return e != null ? e.getKey() : null;
 		}
+		Map.Entry<K, V> e = ceilingEntry(key);
+		return e != null ? e.getKey() : null;
 	}
 
 	@Override
@@ -404,10 +413,9 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
-		} else {
-			// TODO: 2/1/16
-			return null;
 		}
+		// TODO: 2/1/16
+		return null;
 	}
 
 	@Override
@@ -416,30 +424,27 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
-		} else {
-			Map.Entry<K, V> e = higherEntry(key);
-			return e != null ? e.getKey() : null;
 		}
+		Map.Entry<K, V> e = higherEntry(key);
+		return e != null ? e.getKey() : null;
 	}
 
 	@Override
 	public Map.Entry<K, V> firstEntry() {
 		if (isEmpty()) {
 			return null;
-		} else {
-			// TODO: 2/1/16
-			return null;
 		}
+		// TODO: 2/1/16
+		return null;
 	}
 
 	@Override
 	public Map.Entry<K, V> lastEntry() {
 		if (isEmpty()) {
 			return null;
-		} else {
-			// TODO: 2/1/16
-			return null;
 		}
+		// TODO: 2/1/16
+		return null;
 	}
 
 	@Override
@@ -601,6 +606,11 @@ public class SkipMap<K, V> implements NavigableMap<K, V> {
 		public int hashCode() {
 			int result = getKey() != null ? getKey().hashCode() : 0;
 			return result;
+		}
+
+		@Override
+		public String toString() {
+			return key + "=" + value;
 		}
 	}
 
