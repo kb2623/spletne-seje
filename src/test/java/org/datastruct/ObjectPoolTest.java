@@ -2,6 +2,7 @@ package org.datastruct;
 
 import org.datastruct.concurrent.ObjectPool;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class ObjectPoolTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetObject() throws Exception {
 		long sTime, eTime;
 		sTime = System.nanoTime();

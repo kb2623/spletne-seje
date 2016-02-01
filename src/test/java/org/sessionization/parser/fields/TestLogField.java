@@ -1,5 +1,6 @@
 package org.sessionization.parser.fields;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.sessionization.parser.LogType;
 import org.sessionization.parser.fields.ncsa.DateTime;
@@ -80,6 +81,7 @@ public class TestLogField {
 	}
 
 	@Test
+	@Ignore
 	public void testRequestLine() {
 		RequestLine line = null;
 		try {
