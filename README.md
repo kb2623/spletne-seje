@@ -9,6 +9,7 @@ Uporabljena licenca [GPL V3](LICENSE.md)
 | Command arg | Property arg | Type | Info |
 | :---: | :---: | :---: | --- |
 |  |  | `path` | Input log files |
+| -props |  | `path` | Path to configuration file |
 | -c | crawlers | `bool` | Ignore web rawlers |
 | -dbcp | database.connection.pool_size | `int` | Number of connetions alowed for connecting to database |
 | -dbddl | database.ddl | `Create or Update` | Create new tables or update exsisting ones |
@@ -32,7 +33,6 @@ Uporabljena licenca [GPL V3](LICENSE.md)
 | -sqss | session.queue.session.size | `int` | Queue size for Session class |
 | -st | session.time | `int` | Time until session is over. Time is represented in seconds. |
 | -li | log.ignore | `string` | Fields to ignore |
-| -props |  | `path` | Path to configuration file |
 
 ### Usage
 
