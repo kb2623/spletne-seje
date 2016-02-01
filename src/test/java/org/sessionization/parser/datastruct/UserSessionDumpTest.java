@@ -13,7 +13,6 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class UserSessionDumpTest {
 
@@ -56,7 +55,7 @@ public class UserSessionDumpTest {
 	@Test
 	public void testNoUserIdNoPageView() throws Exception {
 		allFieldTypes = LogFormats.CommonLogFormat.make();
-		assertNull(UserSessionDump.dump(loader));
+		assertNotNull(UserSessionDump.dump(loader));
 	}
 
 	@Test
