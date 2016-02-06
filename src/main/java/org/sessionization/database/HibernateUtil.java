@@ -11,7 +11,7 @@ import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.service.ServiceRegistry;
 import org.sessionization.ClassPoolLoader;
 import org.sessionization.parser.ArgumentParser;
-import org.sessionization.parser.LogFieldTypeImp;
+import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.WebLogParser;
 import org.sessionization.parser.datastruct.*;
 
@@ -31,7 +31,7 @@ public class HibernateUtil implements AutoCloseable {
 
 	public HibernateUtil(ArgumentParser argumentParser, WebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
 		/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
-		List<LogFieldTypeImp> list = logParser.getFieldType();
+		List<LogFieldType> list = logParser.getFieldType();
 		if (logParser.getIgnoreFieldTypes() != null) {
 			list.removeAll(logParser.getIgnoreFieldTypes());
 		}
@@ -88,9 +88,9 @@ public class HibernateUtil implements AutoCloseable {
 		return props;
 	}
 
-	private Set<Class> initClasses(List<LogFieldTypeImp> list, ClassPoolLoader loader) throws ExceptionInInitializerError, NotFoundException, CannotCompileException, IOException {
+	private Set<Class> initClasses(List<LogFieldType> list, ClassPoolLoader loader) throws ExceptionInInitializerError, NotFoundException, CannotCompileException, IOException {
 		Set<Class> classes = new HashSet<>();
-		for (LogFieldTypeImp f : list) {
+		for (LogFieldType f : list) {
 			for (Class c : f.getDependencies()) {
 				classes.add(c);
 			}

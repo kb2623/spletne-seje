@@ -22,7 +22,7 @@ public class Address implements LogField, HibernateUtil.HibernateTable {
 	@Column(name = "is_server")
 	private boolean serverAddress;
 
-	@Column(unique = true, nullable = false)
+	@Column(nullable = false)
 	private InetAddress address;
 
 	public Address() {

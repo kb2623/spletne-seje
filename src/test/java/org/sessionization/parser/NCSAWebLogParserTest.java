@@ -154,7 +154,7 @@ public class NCSAWebLogParserTest {
 		try {
 			parser.openFile(new StringReader(testNiz));
 			String[] cookie = "%h %l %u %t %r %s %b %{Referer}i %{User-agent}i %C".split(" ");
-			List<LogFieldTypeImp> listType = LogFormats.ParseCmdArgs.make(cookie);
+			List<LogFieldType> listType = LogFormats.ParseCmdArgs.make(cookie);
 			parser.setFieldType(listType);
 			ParsedLine list = parser.parseLine();
 			assertEquals("ParsedLine{array=[Address{id=null, serverAddress=false, address=/216.67.1.91}, RemoteLogname{id=null, logname='-'}, RemoteUser{id=null, user='leon'}, DateTime{date=2002-07-01, time=12:11:52}, RequestLine{id=null, method=Method{GET}, steamQuery=UriSteamQuery{id=null, uriSteam=UriSteam{id=null, file='/index.html'}, query=UriQuery{id=null, pairs=[UriQueryPair{id=null, value=' ', key=UriQueryKey{id=null, name=' '}}]}}, protocol=Protocol{id=null, protocol='HTTP', version=1.1}}, StatusCode{status=200}, SizeOfResponse{size=431}, Referer{id=null, steamQuery=UriSteamQuery{id=null, uriSteam=UriSteam{id=null, file='/'}, query=UriQuery{id=null, pairs=[UriQueryPair{id=null, value=' ', key=UriQueryKey{id=null, name=' '}}]}}, host=Host{id=null, host='www.loganalyzer.net'}}, UserAgent{id=null, userAgentString='Mozilla/4.05 [en] (WinNT; I)'}, Cookie{id=null, pairs=[CookiePair{id=null, value='CustomerA', key=CookieKey{id=null, name='USERID'}}, CookiePair{id=null, value='01234', key=CookieKey{id=null, name='IMPID'}}]}]}", list.toString());
@@ -171,7 +171,7 @@ public class NCSAWebLogParserTest {
 		try {
 			parser.openFile(new StringReader(testNiz));
 			String[] cookie = "%h %l %u %t %r %s %b %{Referer}i %{User-agent}i".split(" ");
-			List<LogFieldTypeImp> listType = LogFormats.ParseCmdArgs.make(cookie);
+			List<LogFieldType> listType = LogFormats.ParseCmdArgs.make(cookie);
 			parser.setFieldType(listType);
 			ParsedLine list = parser.parseLine();
 			parser.closeFile();

@@ -21,14 +21,14 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	 *
 	 * @see LogFieldTypeImp
 	 */
-	protected List<LogFieldTypeImp> fieldType;
+	protected List<LogFieldType> fieldType;
 
 	/**
 	 * Tabela, ki vsebuje polja, ki jih ignoramo
 	 *
 	 * @see LogFieldTypeImp
 	 */
-	protected Set<LogFieldTypeImp> ignore;
+	protected Set<LogFieldType> ignore;
 
 	/**
 	 *
@@ -157,7 +157,7 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 
 	ParsedLine parseLine(Scanner scanner) throws ParseException {
 		List<LogField> lineData = new ArrayList<>(fieldType.size());
-		for (LogFieldTypeImp ft : fieldType) {
+		for (LogFieldType ft : fieldType) {
 			if (ignore != null ? !ignore.contains(ft) : true) {
 				lineData.add(ft.parse(scanner, this));
 			}
@@ -188,16 +188,16 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	 *
 	 * @param ignore Tabela s polji, ki jih zelimo ignorirati
 	 */
-	public void setIgnoreFieldType(List<LogFieldTypeImp> ignore) {
+	public void setIgnoreFieldType(List<LogFieldType> ignore) {
 		if (ignore != null) {
-			this.ignore = EnumSet.copyOf(ignore);
+			this.ignore = new HashSet<>(ignore);
 		}
 	}
 
 	/**
 	 * @return
 	 */
-	public Set<LogFieldTypeImp> getIgnoreFieldTypes() {
+	public Set<LogFieldType> getIgnoreFieldTypes() {
 		return ignore;
 	}
 
@@ -223,7 +223,7 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	 *
 	 * @return Seznam tipov polji v datoteki
 	 */
-	public List<LogFieldTypeImp> getFieldType() {
+	public List<LogFieldType> getFieldType() {
 		return fieldType;
 	}
 
@@ -234,7 +234,7 @@ public abstract class WebLogParser implements Iterable<ParsedLine>, AutoCloseabl
 	 * @throws NullPointerException Ko je parameter <code>fields</code> enak null
 	 * @see LogFieldTypeImp
 	 */
-	public void setFieldType(List<LogFieldTypeImp> fields) throws NullPointerException {
+	public void setFieldType(List<LogFieldType> fields) throws NullPointerException {
 		if (fields == null) {
 			throw new NullPointerException();
 		} else if (fields instanceof ArrayList) {

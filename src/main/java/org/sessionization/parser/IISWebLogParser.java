@@ -28,7 +28,7 @@ public class IISWebLogParser extends WebLogParserW3C {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public IISWebLogParser(Locale locale, File[] file, List<LogFieldTypeImp> ignore) throws FileNotFoundException {
+	public IISWebLogParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
 		super(locale, file, ignore);
 		setDefaultFields();
 	}
@@ -38,7 +38,7 @@ public class IISWebLogParser extends WebLogParserW3C {
 	 * @param list
 	 * @throws FileNotFoundException
 	 */
-	public IISWebLogParser(Locale locale, File[] file, List<LogFieldTypeImp> list, List<LogFieldTypeImp> ignore) throws FileNotFoundException {
+	public IISWebLogParser(Locale locale, File[] file, List<LogFieldType> list, List<LogFieldType> ignore) throws FileNotFoundException {
 		super(locale, file);
 		super.setFieldType(list);
 		setDefaultFields();

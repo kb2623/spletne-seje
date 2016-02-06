@@ -2,10 +2,11 @@ package org.sessionization.parser.datastruct;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.LogFieldTypeImp;
+import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.LogFormats;
 
 import java.io.File;
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 public class RequestDumpTest {
 
 	ClassPoolLoader loader;
-	List<LogFieldTypeImp> allFieldTypes;
+	List<LogFieldType> allFieldTypes;
 
 	public void setLoader(ClassPoolLoader loader) {
 		this.loader = loader;
@@ -29,6 +30,7 @@ public class RequestDumpTest {
 		loader = new ClassPoolLoader();
 	}
 
+	@After
 	public void endUp() throws IOException, NotFoundException, CannotCompileException {
 		File file = new File("Request.class");
 		file.delete();
@@ -47,6 +49,12 @@ public class RequestDumpTest {
 	@Test
 	public void testCombined() throws Exception {
 		allFieldTypes = LogFormats.CombinedLogFormat.make();
+		assertNotNull(RequestDump.dump(allFieldTypes, loader));
+	}
+
+	@Test
+	public void testExtended() throws Exception {
+		allFieldTypes = LogFormats.ExtendedLogFormat.make("date", "time", "s-ip", "cs-method", "cs-uri-stem", "cs-uri-query", "s-port", "cs-username", "c-ip", "cs(User-Agent)");
 		assertNotNull(RequestDump.dump(allFieldTypes, loader));
 	}
 }

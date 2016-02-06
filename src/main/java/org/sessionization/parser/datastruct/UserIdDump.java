@@ -9,7 +9,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sessionization.ClassPoolLoader;
 import org.sessionization.parser.LogField;
-import org.sessionization.parser.LogFieldTypeImp;
+import org.sessionization.parser.LogFieldType;
+import org.sessionization.parser.fields.Address;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -32,14 +33,14 @@ public class UserIdDump {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException
 	 */
-	public static Class<?> dump(final Collection<LogFieldTypeImp> fieldsTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
+	public static Class<?> dump(final Collection<LogFieldType> fieldsTypes, ClassPoolLoader loader) throws IOException, CannotCompileException, NotFoundException {
 		if (fieldsTypes.size() < 1) {
 			return null;
 		}
 		try {
 			return loader.loadClass(CLASSNAME);
 		} catch (ClassNotFoundException e) {
-			List<LogFieldTypeImp> fields = getFields(fieldsTypes);
+			List<LogFieldType> fields = getFields(fieldsTypes);
 			final StringBuilder builder = new StringBuilder();
 			ClassPool pool = loader.getPool();
 			CtClass aClass = pool.makeClass(CLASSNAME);
@@ -68,7 +69,7 @@ public class UserIdDump {
 				aClass.getClassFile().addAttribute(attr);
 			}
 			/** Inicializacija polji */
-			for (LogFieldTypeImp f : fields) {
+			for (LogFieldType f : fields) {
 				builder.setLength(0);
 				builder.append("private " + f.getClassE().getName() + " " + f.getFieldName() + ";");
 				CtField field = CtField.make(builder.toString(), aClass);
@@ -97,7 +98,7 @@ public class UserIdDump {
 				aClass.addField(field);
 			}
 			/** setterji in getterji za ostala polja */
-			for (LogFieldTypeImp f : fields) {
+			for (LogFieldType f : fields) {
 				/** setter */{
 					builder.setLength(0);
 					builder.append("public void " + f.getSetterName() + "(" + f.getClassE().getName() + " " + f.getFieldName() + ") {" + "this." + f.getFieldName() + " = " + f.getFieldName() + ";" + "}");
@@ -115,7 +116,7 @@ public class UserIdDump {
 				builder.setLength(0);
 				builder.append("public UserId() {");
 				builder.append("super();");
-				for (LogFieldTypeImp f : fields) {
+				for (LogFieldType f : fields) {
 					builder.append("this." + f.getFieldName() + " = null;");
 				}
 				builder.append('}');
@@ -128,8 +129,13 @@ public class UserIdDump {
 				builder.append("super(line);");
 				builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
-				for (LogFieldTypeImp f : fields) {
-					builder.append("if (f instanceof " + f.getClassE().getName() + ")");
+				for (LogFieldType f : fields) {
+					builder.append("if (f instanceof " + f.getClassE().getName());
+					if (f.getClassE().equals(Address.class)) {
+						builder.append(" && !f.getKey().equals(\"\"))");
+					} else {
+						builder.append(')');
+					}
 					builder.append("{ this." + f.getSetterName() + "((" + f.getClassE().getName() + ") f); }");
 				}
 				builder.append('}').append('}');
@@ -140,7 +146,7 @@ public class UserIdDump {
 				builder.setLength(0);
 				builder.append("public " + String.class.getName() + " getKey() {");
 				builder.append("return ");
-				for (LogFieldTypeImp f : fields) {
+				for (LogFieldType f : fields) {
 					builder.append("(this." + f.getFieldName() + " != null ? " + f.getFieldName()).append(".getKey() : \"\") + ");
 				}
 				if (builder.length() > 3) {
@@ -158,7 +164,7 @@ public class UserIdDump {
 				builder.append("if (this == o) { return true; }");
 				builder.append("else {" + CLASSNAME + " v = (" + CLASSNAME + ") o;");
 				builder.append("return super.equals(o)");
-				for (LogFieldTypeImp f : fields) {
+				for (LogFieldType f : fields) {
 					builder.append(" && (this." + f.getFieldName() + " != null ? this." + f.getFieldName() + ".equals(v." + f.getGetterName() + "()) : v." + f.getGetterName() + "() == null)");
 				}
 				builder.append(';').append("}}");
@@ -169,7 +175,7 @@ public class UserIdDump {
 				builder.setLength(0);
 				builder.append("public " + int.class.getName() + " hashCode() {");
 				builder.append(int.class.getName() + " res = super.hashCode();");
-				for (LogFieldTypeImp f : fields) {
+				for (LogFieldType f : fields) {
 					builder.append("res = 31 * res + (" + f.getFieldName() + " != null ? this." + f.getFieldName() + ".hashCode() : 0);");
 				}
 				builder.append("return res;").append('}');
@@ -180,7 +186,7 @@ public class UserIdDump {
 				builder.setLength(0);
 				builder.append("public " + String.class.getName() + " toString() {");
 				builder.append("return ");
-				for (LogFieldTypeImp f : fields) {
+				for (LogFieldType f : fields) {
 					builder.append("(" + f.getGetterName() + "() != null ? " + f.getGetterName() + "().toString() : \"-\") + \" \" + ");
 				}
 				builder.delete(builder.length() - 9, builder.length());
@@ -192,14 +198,14 @@ public class UserIdDump {
 			/** Object setDbId(Session session) */{
 				builder.setLength(0);
 				builder.append("public " + Object.class.getName() + " setDbId(" + Session.class.getName() + " session) {");
-				for (LogFieldTypeImp f : fields) {
+				for (LogFieldType f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
 						builder.append(Integer.class.getName() + " " + f.getFieldName() + " = " + f.getGetterName() + "().setDbId(session);\n");
 					}
 				}
 				builder.append("if (getId() != null) { return getId(); }");
 				builder.append("if (");
-				for (LogFieldTypeImp f : fields) {
+				for (LogFieldType f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
 						builder.append(" " + f.getFieldName() + " != null &&");
 					}
@@ -207,7 +213,7 @@ public class UserIdDump {
 				builder.delete(builder.length() - 3, builder.length());
 				builder.append(") {\n");
 				builder.append(Query.class.getName() + " query = session.createQuery(\"select u.id from \" + getClass().getSimpleName() + \" as u where ");
-				for (LogFieldTypeImp f : fields) {
+				for (LogFieldType f : fields) {
 					if (f.getClassE().isAnnotationPresent(Entity.class)) {
 						builder.append("u." + f.getFieldName() + " = \" + " + f.getFieldName() + " + \"");
 					} else {
@@ -241,9 +247,9 @@ public class UserIdDump {
 	 * @param fieldTypes
 	 * @return Tabela ki vsebuje identifikacijska polja
 	 */
-	protected static List<LogFieldTypeImp> getFields(Collection<LogFieldTypeImp> fieldTypes) {
-		List<LogFieldTypeImp> retList = new ArrayList<>((int) (fieldTypes.size() / 2));
-		for (LogFieldTypeImp type : fieldTypes) {
+	protected static List<LogFieldType> getFields(Collection<LogFieldType> fieldTypes) {
+		List<LogFieldType> retList = new ArrayList<>((int) (fieldTypes.size() / 2));
+		for (LogFieldType type : fieldTypes) {
 			if (type.isKey()) {
 				retList.add(type);
 			}

@@ -13,7 +13,6 @@ select * from URISTEAM
 
 select * from USERSESSION_PAGEVIEW;
 
-select * from PageView;
 select * from PAGEVIEW;
 
 select * from PROTOCOL;
@@ -39,3 +38,9 @@ select USERSESSION.ID as SESSIONID, ADDRESS.ADDRESS as IP, URISTEAM.FILE, URIQUE
 
 select * from USERAGENT;
 select count(*) as NUMBER_OF_AGENTS from USERAGENT;
+
+select URIQUERYPAIR.VALUE, URIQUERYKEY.NAME 
+  from URIQUERYPAIR
+  join URIQUERYKEY on URIQUERYPAIR.KEY_ID = URIQUERYKEY.ID;
+  
+select * from REQUEST;

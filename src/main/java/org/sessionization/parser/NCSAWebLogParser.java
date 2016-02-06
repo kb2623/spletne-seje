@@ -42,7 +42,7 @@ public class NCSAWebLogParser extends WebLogParser {
 	 * @param list
 	 * @throws FileNotFoundException
 	 */
-	public NCSAWebLogParser(Locale locale, File[] file, List<LogFieldTypeImp> list) throws FileNotFoundException {
+	public NCSAWebLogParser(Locale locale, File[] file, List<LogFieldType> list) throws FileNotFoundException {
 		super(file);
 		setDefaultFields(locale);
 		setFieldType(list);

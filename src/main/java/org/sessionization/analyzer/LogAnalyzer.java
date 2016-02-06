@@ -1,6 +1,6 @@
 package org.sessionization.analyzer;
 
-import org.sessionization.parser.LogFieldTypeImp;
+import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.fields.Cookie;
 
 import java.io.*;
@@ -13,7 +13,7 @@ public class LogAnalyzer {
 	private FileInputStream stream;
 	private BufferedReader reader;
 	private LogFileType logFileType = LogFileType.UNKNOWN;
-	private List<LogFieldTypeImp> fields;
+	private List<LogFieldType> fields;
 
 	/**
 	 * @param path
@@ -72,7 +72,7 @@ public class LogAnalyzer {
 	/**
 	 * @return
 	 */
-	public List<LogFieldTypeImp> getFields() {
+	public List<LogFieldType> getFields() {
 		return fields;
 	}
 

@@ -26,7 +26,7 @@ public class W3CWebLogParser extends WebLogParserW3C {
 		super(locale, file);
 	}
 
-	public W3CWebLogParser(Locale locale, File[] file, List<LogFieldTypeImp> ignore) throws FileNotFoundException {
+	public W3CWebLogParser(Locale locale, File[] file, List<LogFieldType> ignore) throws FileNotFoundException {
 		super(locale, file, ignore);
 	}
 

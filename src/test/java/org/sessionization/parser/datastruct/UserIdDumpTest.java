@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.parser.LogFieldTypeImp;
+import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.LogFormats;
 
 import java.io.File;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 public class UserIdDumpTest {
 
 	private ClassPoolLoader loader;
-	private List<LogFieldTypeImp> allFieldTypes;
+	private List<LogFieldType> allFieldTypes;
 
 	public void setLoader(ClassPoolLoader loader) {
 		this.loader = loader;
@@ -49,6 +49,12 @@ public class UserIdDumpTest {
 	@Test
 	public void testCombined() throws NotFoundException, CannotCompileException, IOException {
 		allFieldTypes = LogFormats.CombinedLogFormat.make();
+		assertNotNull(UserIdDump.dump(allFieldTypes, loader));
+	}
+
+	@Test
+	public void testExtended() throws Exception {
+		allFieldTypes = LogFormats.ExtendedLogFormat.make("date", "time", "s-ip", "cs-method", "cs-uri-stem", "cs-uri-query", "s-port", "cs-username", "c-ip", "cs(User-Agent)");
 		assertNotNull(UserIdDump.dump(allFieldTypes, loader));
 	}
 }

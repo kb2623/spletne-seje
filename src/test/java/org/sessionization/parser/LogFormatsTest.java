@@ -12,7 +12,7 @@ public class LogFormatsTest {
 
 	@Test
 	public void testCommonLogFormat() {
-		List<LogFieldTypeImp> list = LogFormats.CommonLogFormat.make();
+		List<LogFieldType> list = LogFormats.CommonLogFormat.make();
 		assertEquals(7, list.size());
 		assertTrue(list.contains(LogFieldTypeImp.RemoteHost));
 		assertTrue(list.contains(LogFieldTypeImp.DateTime));
@@ -25,7 +25,7 @@ public class LogFormatsTest {
 
 	@Test
 	public void testCombinedLogFormat() {
-		List<LogFieldTypeImp> list = LogFormats.CombinedLogFormat.make();
+		List<LogFieldType> list = LogFormats.CombinedLogFormat.make();
 		assertEquals(9, list.size());
 		assertTrue(list.contains(LogFieldTypeImp.RemoteHost));
 		assertTrue(list.contains(LogFieldTypeImp.DateTime));
@@ -40,14 +40,14 @@ public class LogFormatsTest {
 
 	@Test
 	public void testExtendedLogF1() {
-		List<LogFieldTypeImp> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "cs(User-Agent)");
+		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "cs(User-Agent)");
 		assertEquals(10, list.size());
 		assertTrue(list.contains(LogFieldTypeImp.UserAgentW3C));
 	}
 
 	@Test
 	public void testExtendedLogF2() {
-		List<LogFieldTypeImp> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip", "s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "sc-bytes", "cs-bytes", "time-taken", "cs(User-Agent)", "cs(Referer)");
+		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields:", "date", "time", "c-ip", "cs-username", "s-ip", "s-port", "cs-method", "cs-uri-stem", "cs-uri-query", "sc-status", "sc-bytes", "cs-bytes", "time-taken", "cs(User-Agent)", "cs(Referer)");
 		assertEquals(15, list.size());
 		assertTrue(list.contains(LogFieldTypeImp.UserAgentW3C));
 		assertTrue(list.contains(LogFieldTypeImp.RefererW3C));
@@ -55,14 +55,14 @@ public class LogFormatsTest {
 
 	@Test
 	public void tesetCLF1() {
-		List<LogFieldTypeImp> list = LogFormats.ParseCmdArgs.make("%h %l %u %t %r %s %b %{Referrer}i %{User-agent}i %C".split(" "));
+		List<LogFieldType> list = LogFormats.ParseCmdArgs.make("%h %l %u %t %r %s %b %{Referrer}i %{User-agent}i %C".split(" "));
 		assertEquals(10, list.size());
 		list.forEach(Assert::assertNotNull);
 	}
 
 	@Test
 	public void testExtendedLogF3() {
-		List<LogFieldTypeImp> list = LogFormats.ParseCmdArgs.create("#Fields:", "time", "c-ip", "cs-method", "cs-uri-stem", "sc-status");
+		List<LogFieldType> list = LogFormats.ParseCmdArgs.create("#Fields:", "time", "c-ip", "cs-method", "cs-uri-stem", "sc-status");
 		assertEquals(5, list.size());
 		assertTrue(list.contains(LogFieldTypeImp.Time));
 		assertTrue(list.contains(LogFieldTypeImp.ClientIP));
