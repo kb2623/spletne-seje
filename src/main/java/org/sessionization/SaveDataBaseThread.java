@@ -2,6 +2,7 @@ package org.sessionization;
 
 import org.hibernate.Transaction;
 import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.Operation;
 import org.sessionization.parser.datastruct.UserSessionAbs;
 
 import java.util.concurrent.BlockingQueue;
@@ -14,7 +15,7 @@ public class SaveDataBaseThread extends Thread {
 
 	private BlockingQueue<UserSessionAbs> queue;
 	private HibernateUtil db;
-	private HibernateUtil.Operation operation;
+	private Operation operation;
 
 	/**
 	 * @param group
@@ -22,7 +23,7 @@ public class SaveDataBaseThread extends Thread {
 	 * @param db
 	 * @param operation
 	 */
-	public SaveDataBaseThread(ThreadGroup group, BlockingQueue queue, HibernateUtil db, HibernateUtil.Operation operation) {
+	public SaveDataBaseThread(ThreadGroup group, BlockingQueue queue, HibernateUtil db, Operation operation) {
 		super(group, "SaveToDataBaseThread-" + ThreadNumber++);
 		this.queue = queue;
 		this.db = db;
@@ -35,7 +36,7 @@ public class SaveDataBaseThread extends Thread {
 	 * @param db
 	 * @param operation
 	 */
-	public SaveDataBaseThread(BlockingQueue queue, HibernateUtil db, HibernateUtil.Operation operation) {
+	public SaveDataBaseThread(BlockingQueue queue, HibernateUtil db, Operation operation) {
 		this(null, queue, db, operation);
 	}
 

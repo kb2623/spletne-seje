@@ -2,7 +2,7 @@ package org.sessionization.parser.fields;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 
 @Entity
 @Cacheable
-public class Address implements LogField, HibernateUtil.HibernateTable {
+public class Address implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

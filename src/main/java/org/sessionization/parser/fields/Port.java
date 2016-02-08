@@ -2,14 +2,14 @@ package org.sessionization.parser.fields;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class Port implements LogField, HibernateUtil.HibernateTable {
+public class Port implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

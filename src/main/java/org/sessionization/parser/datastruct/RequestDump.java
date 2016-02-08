@@ -7,6 +7,7 @@ import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.*;
 import org.hibernate.Session;
 import org.sessionization.ClassPoolLoader;
+import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.LogFieldTypeImp;
@@ -208,7 +209,7 @@ public class RequestDump {
 				builder.setLength(0);
 				builder.append("public " + Object.class.getName() + " setDbId(" + Session.class.getName() + " session) {");
 				for (LogFieldType f : fields) {
-					if (f.getClassE().isAnnotationPresent(Entity.class)) {
+					if (HibernateTable.class.isAssignableFrom(f.getClassE())) {
 						builder.append(f.getGetterName() + "().setDbId(session);");
 					}
 				}

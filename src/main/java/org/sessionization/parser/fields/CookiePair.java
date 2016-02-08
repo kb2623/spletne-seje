@@ -2,13 +2,13 @@ package org.sessionization.parser.fields;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class CookiePair implements HibernateUtil.HibernateTable {
+public class CookiePair implements HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

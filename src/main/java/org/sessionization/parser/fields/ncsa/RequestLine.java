@@ -1,26 +1,24 @@
 package org.sessionization.parser.fields.ncsa;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.fields.Method;
 import org.sessionization.parser.fields.Protocol;
 import org.sessionization.parser.fields.Resource;
 import org.sessionization.parser.fields.UriSteamQuery;
 
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToOne;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@Entity
+@Embeddable
 @Cacheable
-public class RequestLine implements LogField, HibernateUtil.HibernateTable, Resource {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+public class RequestLine implements LogField, HibernateTable, Resource {
 
 	private Method method;
 
@@ -31,7 +29,6 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 	private Protocol protocol;
 
 	public RequestLine() {
-		id = null;
 		method = null;
 		steamQuery = null;
 		protocol = null;
@@ -62,18 +59,9 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 	 * @throws MalformedURLException Podan nepravilen URL naslov
 	 */
 	public RequestLine(String method, String uri, String protocol) throws URISyntaxException {
-		id = null;
 		this.steamQuery = new UriSteamQuery(new URI(uri));
 		this.protocol = new Protocol(protocol);
 		this.method = Method.setMethod(method);
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public UriSteamQuery getSteamQuery() {
@@ -124,19 +112,6 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 	public Object setDbId(Session session) {
 		Integer steamQueryId = (Integer) getSteamQuery().setDbId(session);
 		Integer protocolId = (Integer) getProtocol().setDbId(session);
-		if (getId() != null) {
-			return getId();
-		}
-		if (steamQueryId != null && protocolId != null) {
-			Query query = session.createQuery("select l.id from " + getClass().getSimpleName() + " as l where l.method = :method and l.steamQuery = " + steamQueryId + " and l.protocol = " + protocolId);
-			query.setParameter("method", getMethod());
-			for (Object o : query.list()) {
-				if (equals(session.load(getClass(), (Integer) o))) {
-					setId((Integer) o);
-					return o;
-				}
-			}
-		}
 		return null;
 	}
 
@@ -152,8 +127,7 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 
 	@Override
 	public int hashCode() {
-		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (getMethod() != null ? getMethod().hashCode() : 0);
+		int result = getMethod() != null ? getMethod().hashCode() : 0;
 		result = 31 * result + (getSteamQuery() != null ? getSteamQuery().hashCode() : 0);
 		result = 31 * result + (getProtocol() != null ? getProtocol().hashCode() : 0);
 		return result;
@@ -162,8 +136,7 @@ public class RequestLine implements LogField, HibernateUtil.HibernateTable, Reso
 	@Override
 	public String toString() {
 		return "RequestLine{" +
-				"id=" + id +
-				", method=" + method +
+				"method=" + method +
 				", steamQuery=" + steamQuery +
 				", protocol=" + protocol +
 				'}';

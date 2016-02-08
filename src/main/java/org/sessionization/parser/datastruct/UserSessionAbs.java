@@ -1,7 +1,7 @@
 package org.sessionization.parser.datastruct;
 
 import org.sessionization.TimePoint;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
 @Cacheable
 @Table(name = "UserSession")
-public abstract class UserSessionAbs implements TimePoint, HibernateUtil.HibernateTable {
+public abstract class UserSessionAbs implements TimePoint, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

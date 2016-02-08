@@ -1,13 +1,13 @@
 package org.sessionization.parser.fields;
 
 import org.hibernate.Session;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class UriQueryKey implements HibernateUtil.HibernateTable {
+public class UriQueryKey implements HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,6 @@
 package org.sessionization.parser.datastruct;
 
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.fields.Address;
 import org.sessionization.parser.fields.Cookie;
 import org.sessionization.parser.fields.RemoteUser;
@@ -14,7 +14,7 @@ import javax.persistence.*;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
 @Cacheable
 @Table(name = "UserId")
-public abstract class UserIdAbs implements HibernateUtil.HibernateTable {
+public abstract class UserIdAbs implements HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

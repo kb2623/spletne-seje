@@ -1,7 +1,7 @@
 package org.sessionization.parser.fields;
 
 import org.hibernate.Session;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Cacheable
-public class UriQuery implements LogField, HibernateUtil.HibernateTable {
+public class UriQuery implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

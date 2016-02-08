@@ -2,7 +2,7 @@ package org.sessionization.parser.fields;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
@@ -10,7 +10,7 @@ import java.net.URI;
 
 @Entity
 @Cacheable
-public class UriSteamQuery implements LogField, HibernateUtil.HibernateTable, Resource {
+public class UriSteamQuery implements LogField, HibernateTable, Resource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

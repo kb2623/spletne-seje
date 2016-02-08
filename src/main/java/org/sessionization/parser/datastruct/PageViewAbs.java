@@ -2,7 +2,7 @@ package org.sessionization.parser.datastruct;
 
 import org.hibernate.Session;
 import org.sessionization.TimePoint;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,7 +15,7 @@ import java.util.List;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
 @Cacheable
 @Table(name = "PageView")
-public abstract class PageViewAbs implements TimePoint, HibernateUtil.HibernateTable {
+public abstract class PageViewAbs implements TimePoint, HibernateTable {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(joinColumns = @JoinColumn(name = "pageView_id"))

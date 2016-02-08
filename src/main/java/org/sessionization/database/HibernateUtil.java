@@ -146,22 +146,4 @@ public class HibernateUtil implements AutoCloseable {
 			StandardServiceRegistryBuilder.destroy(serviceRegistry);
 		}
 	}
-
-	@FunctionalInterface
-	public interface Operation {
-		/**
-		 * @param session
-		 * @param o
-		 * @return
-		 */
-		Object run(Session session, HibernateTable table);
-	}
-
-	public interface HibernateTable {
-		/**
-		 * @param session
-		 * @return
-		 */
-		Object setDbId(Session session);
-	}
 }

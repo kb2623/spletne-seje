@@ -7,7 +7,7 @@ import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.*;
 import org.hibernate.Session;
 import org.sessionization.ClassPoolLoader;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -293,7 +293,7 @@ public class UserSessionDump {
 					}
 					if (pageView != null) {
 						builder.append("for (" + Iterator.class.getName() + " it = pages.iterator(); it.hasNext(); ) {")
-								.append(HibernateUtil.HibernateTable.class.getName() + " p = (" + HibernateUtil.HibernateTable.class.getName() + ") it.next();")
+								.append(HibernateTable.class.getName() + " p = (" + HibernateTable.class.getName() + ") it.next();")
 								.append("p.setDbId(session);")
 								.append('}');
 					}

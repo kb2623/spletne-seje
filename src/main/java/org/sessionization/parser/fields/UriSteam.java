@@ -2,14 +2,14 @@ package org.sessionization.parser.fields;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.sessionization.database.HibernateUtil;
+import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.LogField;
 
 import javax.persistence.*;
 
 @Entity
 @Cacheable
-public class UriSteam implements LogField, HibernateUtil.HibernateTable, Resource {
+public class UriSteam implements LogField, HibernateTable, Resource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
