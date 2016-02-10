@@ -230,7 +230,7 @@ public class ArgumentParser {
 
 	@Option(name = "-dbcp", aliases = "database.connection.pool_size", usage = "Number of connetions alowed for connecting to database", metaVar = "<int>")
 	public void setConnectoinPoolSize(int size) {
-		properties.setProperty("database.connection.pool_size", String.valueOf(size));
+		properties.setProperty("database.connection.pool_size", String.valueOf(size >= 1 ? size : 1));
 	}
 
 	public boolean isShowSql() {

@@ -18,6 +18,10 @@ import org.sessionization.parser.datastruct.*;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -58,7 +62,24 @@ public class HibernateUtil implements AutoCloseable {
 	}
 
 	private Properties initProperties(ArgumentParser parser) {
+		if (!parser.getDriverClass().equals("org.sqlite.JDBC")) {
+			try {
+				Class c = loader.loadClass(parser.getDriverClass());
+				Driver d = new DriverShim((Driver) c.newInstance());
+				DriverManager.registerDriver(d);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
 		Properties props = new Properties();
+
 		props.setProperty("hibernate.connection.driver_class", parser.getDriverClass());
 		props.setProperty("hibernate.dialect", parser.getDialectClass());
 		props.setProperty("hibernate.connection.url", parser.getDatabaseUrl().toString());
@@ -71,12 +92,11 @@ public class HibernateUtil implements AutoCloseable {
 		if (parser.getDefaultSchema() != null) {
 			props.setProperty("hibernate.default_schema", parser.getDefaultSchema());
 		}
-		props.setProperty("hibernate.connection.pool_size", String.valueOf(parser.getConnectoinPoolSize()));
 
-//		props.setProperty("hibernate.connection.isolation", String.valueOf(Connection.TRANSACTION_READ_COMMITTED));
-//		props.setProperty("hibernate.connection.provider_class", "org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider");
-//		props.setProperty("hibernate.c3p0.min_size", "5");
-//		props.setProperty("hibernate.c3p0.max_size", "20");
+		props.setProperty("hibernate.connection.isolation", String.valueOf(Connection.TRANSACTION_READ_UNCOMMITTED));
+		props.setProperty("hibernate.connection.provider_class", "org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider");
+		props.setProperty("hibernate.c3p0.min_size", "1");
+		props.setProperty("hibernate.c3p0.max_size", String.valueOf(parser.getConnectoinPoolSize()));
 
 		props.setProperty("hibernate.show_sql", String.valueOf(parser.isShowSql()));
 		props.setProperty("hibernate.format_sql", String.valueOf(parser.isShowSqlFormat()));
@@ -85,6 +105,7 @@ public class HibernateUtil implements AutoCloseable {
 		props.setProperty("hibernate.event.merge.entity_copy_observer", "allow");
 		props.setProperty("hibernate.current_session_context_class", "thread");
 		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCacheProvider");
+
 		return props;
 	}
 
