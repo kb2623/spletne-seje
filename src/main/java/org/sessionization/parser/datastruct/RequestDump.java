@@ -11,7 +11,6 @@ import org.sessionization.database.HibernateTable;
 import org.sessionization.parser.LogField;
 import org.sessionization.parser.LogFieldType;
 import org.sessionization.parser.LogFieldTypeImp;
-import org.sessionization.parser.fields.Address;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -121,12 +120,7 @@ public class RequestDump {
 				builder.append("for (" + Iterator.class.getName() + " it = line.iterator(); it.hasNext(); ) {");
 				builder.append(LogField.class.getName() + " f = (" + LogField.class.getName() + ") it.next();");
 				for (LogFieldType f : fields) {
-					builder.append("if (f instanceof " + f.getClassE().getName());
-					if (f.getClassE().equals(Address.class)) {
-						builder.append(" && f.getKey().equals(\"\"))");
-					} else {
-						builder.append(')');
-					}
+					builder.append("if (f instanceof " + f.getClassE().getName() + ")");
 					builder.append("{ this." + f.getSetterName() + "((" + f.getClassE().getName() + ") f); }");
 				}
 				builder.append('}').append('}');

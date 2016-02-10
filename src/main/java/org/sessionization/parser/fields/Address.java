@@ -12,41 +12,41 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "is_server", discriminatorType = DiscriminatorType.INTEGER)
 @Cacheable
-public class Address implements LogField, HibernateTable {
+public abstract class Address implements LogField, HibernateTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
-	@Column(name = "is_server")
-	private boolean serverAddress;
 
 	@Column(nullable = false)
 	private InetAddress address;
 
 	public Address() {
 		id = null;
-		serverAddress = false;
 		address = null;
 	}
 
-	public Address(String address, Boolean isServerAdderess) throws UnknownHostException {
+	public Address(String address) throws UnknownHostException {
 		id = null;
-		this.serverAddress = isServerAdderess;
 		this.address = InetAddress.getByName(address);
 	}
 
-	public Address(Inet4Address address, Boolean isServerAddress) {
+	public Address(InetAddress address) {
 		id = null;
-		this.serverAddress = isServerAddress;
 		this.address = address;
 	}
 
-	public Address(Inet6Address address, Boolean isServerAddress) {
+	public Address(Inet4Address address) {
 		id = null;
 		this.address = address;
-		this.serverAddress = isServerAddress;
+	}
+
+	public Address(Inet6Address address) {
+		id = null;
+		this.address = address;
 	}
 
 	public Integer getId() {
@@ -55,14 +55,6 @@ public class Address implements LogField, HibernateTable {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public boolean isServerAddress() {
-		return serverAddress;
-	}
-
-	public void setServerAddress(boolean serverAddress) {
-		this.serverAddress = serverAddress;
 	}
 
 	public InetAddress getAddress() {
@@ -75,7 +67,7 @@ public class Address implements LogField, HibernateTable {
 
 	@Override
 	public String izpis() {
-		return (serverAddress ? "Server" : "Client") + " " + address.getHostAddress();
+		return address.getHostAddress();
 	}
 
 	@Override
@@ -83,7 +75,7 @@ public class Address implements LogField, HibernateTable {
 		if (getId() != null) {
 			return getId();
 		}
-		Query query = session.createQuery("select a.id from " + getClass().getSimpleName() + " as a where a.serverAddress = " + isServerAddress() + " and a.address = :address");
+		Query query = session.createQuery("select a.id from " + getClass().getSimpleName() + " as a where a.address = :address");
 		query.setParameter("address", getAddress());
 		for (Object o : query.list()) {
 			if (equals(session.load(getClass(), (Integer) o))) {
@@ -95,33 +87,23 @@ public class Address implements LogField, HibernateTable {
 	}
 
 	@Override
-	public String getKey() {
-		return !serverAddress ? address.getHostAddress() : "";
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof Address)) return false;
 		if (this == o) return true;
 		Address that = (Address) o;
-		return isServerAddress() == that.isServerAddress()
-				&& getAddress() != null ? getAddress().equals(that.getAddress()) : that.getAddress() == null;
+		return getAddress() != null ? getAddress().equals(that.getAddress()) : that.getAddress() == null;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = getId() != null ? getId().hashCode() : 0;
-		result = 31 * result + (isServerAddress() ? 1 : 0);
 		result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "Address{" +
-				"id=" + id +
-				", serverAddress=" + serverAddress +
-				", address=" + address +
-				'}';
+		return "id=" + id +
+				", address=" + address;
 	}
 }

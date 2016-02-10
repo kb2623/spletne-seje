@@ -25,10 +25,13 @@ public enum LogFieldTypeImp implements LogFieldType {
 	 * <p>
 	 * Format string: <code>%h</code>
 	 */
-	RemoteHost(new String[]{"%h"}, Address.class, null) {
+	RemoteHost(new String[]{"%h"}, ClientAddress.class, null) {
 		@Override
 		public Class[] getDependencies() {
-			return new Class[]{InetAddressConverter.class};
+			return new Class[]{
+					Address.class,
+					InetAddressConverter.class
+			};
 		}
 
 		@Override
@@ -40,7 +43,7 @@ public enum LogFieldTypeImp implements LogFieldType {
 		public LogField parse(Scanner scanner, WebLogParser parser) throws ParseException {
 			try {
 				InetAddress address = InetAddress.getByName(scanner.next());
-				return parser.getTokenInstance(classType, address, false);
+				return parser.getTokenInstance(classType, address);
 			} catch (UnknownHostException e) {
 				throw new ParseException("Bad remote hostname!!!", parser.getPos());
 			}
@@ -463,10 +466,11 @@ public enum LogFieldTypeImp implements LogFieldType {
 	 * <p>
 	 * Format string: <code>s-ip</code>
 	 */
-	ServerIP(new String[]{"%A", "s-ip"}, Address.class, null) {
+	ServerIP(new String[]{"%A", "s-ip"}, ServerAddress.class, null) {
 		@Override
 		public Class[] getDependencies() {
 			return new Class[]{
+					Address.class,
 					InetAddressConverter.class
 			};
 		}
@@ -475,7 +479,7 @@ public enum LogFieldTypeImp implements LogFieldType {
 		public LogField parse(Scanner scanner, WebLogParser parser) throws ParseException {
 			try {
 				InetAddress address = InetAddress.getByName(scanner.next());
-				return parser.getTokenInstance(classType, address, true);
+				return parser.getTokenInstance(classType, address);
 			} catch (UnknownHostException e) {
 				throw new ParseException("Bad server IP!!!", parser.getPos());
 			}
@@ -491,7 +495,7 @@ public enum LogFieldTypeImp implements LogFieldType {
 	 * <p>
 	 * Format string: <code>c-ip</code>
 	 */
-	ClientIP(new String[]{"%a", "c-ip"}, Address.class, null) {
+	ClientIP(new String[]{"%a", "c-ip"}, ClientAddress.class, null) {
 		@Override
 		public boolean isKey() {
 			return true;
@@ -500,6 +504,7 @@ public enum LogFieldTypeImp implements LogFieldType {
 		@Override
 		public Class[] getDependencies() {
 			return new Class[]{
+					Address.class,
 					InetAddressConverter.class
 			};
 		}
@@ -508,7 +513,7 @@ public enum LogFieldTypeImp implements LogFieldType {
 		public LogField parse(Scanner scanner, WebLogParser parser) throws ParseException {
 			try {
 				InetAddress address = InetAddress.getByName(scanner.next());
-				return parser.getTokenInstance(classType, address, false);
+				return parser.getTokenInstance(classType, address);
 			} catch (UnknownHostException e) {
 				throw new ParseException("Bad client IP!!!", parser.getPos());
 			}
@@ -908,12 +913,7 @@ enum ObjectCreators {
 			ObjectPool.ObjectCreator creator;
 
 			creator = (pool, args) -> {
-				URI uri = null;
-				try {
-					uri = new URI(args[0].toString());
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-				}
+				URI uri = URI.create(args[0].toString());
 				org.sessionization.parser.fields.UriSteamQuery steamQuery = new UriSteamQuery();
 				String query = uri.getQuery();
 				UriQuery uriQuery = pool.getObject(UriQuery.class, query != null ? query : "-");

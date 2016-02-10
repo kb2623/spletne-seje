@@ -229,24 +229,24 @@ public class SpletneSejeTest {
 	@Test
 	@Ignore
 	public void testRunExtendedSQLite() {
-		SpletneSeje.main("-fl", "EXTENDED", ClassLoader.getSystemResource("ex080814.log").getPath());
+		SpletneSeje.main("-fl", "EXTENDED", ClassLoader.getSystemResource("u_ex130723.log").getPath());
 	}
 
 	@Test
 	@Ignore
 	public void testRunExtendedH2() {
-		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), ClassLoader.getSystemResource("ex080814.log").getPath());
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("H2.properties").getPath(), ClassLoader.getSystemResource("u_ex130723.log").getPath());
 	}
 
 	@Test
 	@Ignore
 	public void testRunExtendedHSQLBD() {
-		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), ClassLoader.getSystemResource("ex080814.log").getPath());
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("HSQLDB.properties").getPath(), ClassLoader.getSystemResource("u_ex130723.log").getPath());
 	}
 
 	@Test
 	@Ignore
 	public void testRunExtendedDerby() {
-		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), ClassLoader.getSystemResource("ex080814.log").getPath());
+		SpletneSeje.main("-fl", "EXTENDED", "-props", ClassLoader.getSystemResource("Derby.properties").getPath(), ClassLoader.getSystemResource("u_ex130723.log").getPath());
 	}
 }
