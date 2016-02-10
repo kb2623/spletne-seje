@@ -79,7 +79,7 @@ public abstract class RequestAbs implements TimePoint, HibernateTable {
 		return null;
 	}
 
-	public Address getAddress() {
+	public ServerAddress getAddress() {
 		return null;
 	}
 

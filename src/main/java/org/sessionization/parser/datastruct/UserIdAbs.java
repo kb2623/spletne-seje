@@ -1,7 +1,7 @@
 package org.sessionization.parser.datastruct;
 
 import org.sessionization.database.HibernateTable;
-import org.sessionization.parser.fields.Address;
+import org.sessionization.parser.fields.ClientAddress;
 import org.sessionization.parser.fields.Cookie;
 import org.sessionization.parser.fields.RemoteUser;
 import org.sessionization.parser.fields.UserAgent;
@@ -36,7 +36,7 @@ public abstract class UserIdAbs implements HibernateTable {
 		this.id = id;
 	}
 
-	public Address getAddress() {
+	public ClientAddress getAddress() {
 		return null;
 	}
 
