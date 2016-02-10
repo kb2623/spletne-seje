@@ -46,7 +46,9 @@ public class HibernateUtil implements AutoCloseable {
 			Properties props = initProperties(argumentParser);
 			/** Nastavi nastavitve za Hibernate */
 			serviceRegistry = new StandardServiceRegistryBuilder()
+					/** Dodaj nov ClassLoader Hibernatu */
 					.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
+					/** Podaj nastavitve za Hibernate */
 					.applySettings(props)
 					.build();
 			/** Posreduj potrebene razrede za izdelavo in delovanje podatkovne baze Hibernatu */
