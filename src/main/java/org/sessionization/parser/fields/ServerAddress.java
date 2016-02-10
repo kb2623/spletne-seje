@@ -49,6 +49,6 @@ public class ServerAddress extends Address {
 	public String toString() {
 		return "Address{" +
 				super.toString() +
-				"serverAddress=true}";
+				", serverAddress=true}";
 	}
 }

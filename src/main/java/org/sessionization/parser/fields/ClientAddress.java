@@ -49,6 +49,6 @@ public class ClientAddress extends Address {
 	public String toString() {
 		return "Address{" +
 				super.toString() +
-				"serverAddress=false}";
+				", serverAddress=false}";
 	}
 }
