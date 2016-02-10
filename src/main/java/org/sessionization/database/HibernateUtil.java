@@ -34,26 +34,27 @@ public class HibernateUtil implements AutoCloseable {
 	private ClassPoolLoader loader = null;
 
 	public HibernateUtil(ArgumentParser argumentParser, WebLogParser logParser) throws ExceptionInInitializerError, IOException, CannotCompileException, NotFoundException {
-		/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
-		List<LogFieldType> list = logParser.getFieldType();
-		if (logParser.getIgnoreFieldTypes() != null) {
-			list.removeAll(logParser.getIgnoreFieldTypes());
-		}
-		/** Inicializacija ClassLoaderja */
-		this.loader = initClassLoader(argumentParser);
-		/** Nastavi dodatne lastnosti za Hibernate */
-		Properties props = initProperties(argumentParser);
-		/** */
-		serviceRegistry = new StandardServiceRegistryBuilder()
-				.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
-				.applySettings(props)
-				.build();
-		/** Dodaj potrebne razrede */
 		try {
+			/** Izbrisemo razrede, ki jih je uprabnik podal za ignoriranje */
+			List<LogFieldType> list = logParser.getFieldType();
+			if (logParser.getIgnoreFieldTypes() != null) {
+				list.removeAll(logParser.getIgnoreFieldTypes());
+			}
+			/** Inicializacija ClassLoaderja */
+			this.loader = initClassLoader(argumentParser);
+			/** Nastavi dodatne lastnosti za Hibernate */
+			Properties props = initProperties(argumentParser);
+			/** Nastavi nastavitve za Hibernate */
+			serviceRegistry = new StandardServiceRegistryBuilder()
+					.addService(ClassLoaderService.class, new ClassLoaderServiceImpl(loader))
+					.applySettings(props)
+					.build();
+			/** Posreduj potrebene razrede za izdelavo in delovanje podatkovne baze Hibernatu */
 			MetadataSources sources = new MetadataSources(serviceRegistry);
 			for (Class c : initClasses(list, loader)) {
 				sources.addAnnotatedClass(c);
 			}
+			/** Izdelaj podatkovno bazo */
 			factory = sources.buildMetadata().buildSessionFactory();
 		} catch (Exception e) {
 			StandardServiceRegistryBuilder.destroy(serviceRegistry);
@@ -61,51 +62,52 @@ public class HibernateUtil implements AutoCloseable {
 		}
 	}
 
-	private Properties initProperties(ArgumentParser parser) {
+	private Properties initProperties(ArgumentParser parser) throws ExceptionInInitializerError {
+		/** Nalozi gonilnik za podatkovno bazo, ce je to potrebno */
 		if (!parser.getDriverClass().equals("org.sqlite.JDBC")) {
 			try {
 				Class c = loader.loadClass(parser.getDriverClass());
 				Driver d = new DriverShim((Driver) c.newInstance());
 				DriverManager.registerDriver(d);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException e) {
+				throw new ExceptionInInitializerError(e);
 			}
 		}
-
 		Properties props = new Properties();
-
+		/** Nastavi razred gonilnika za podatkovno bazo */
 		props.setProperty("hibernate.connection.driver_class", parser.getDriverClass());
+		/** Nastavi razred dialekta za podatkovno bazo */
 		props.setProperty("hibernate.dialect", parser.getDialectClass());
+		/** Nastavi pot do podatkovne baze */
 		props.setProperty("hibernate.connection.url", parser.getDatabaseUrl().toString());
+		/** Nastavi uporabnisko ime za poveavo do podatkovne baze */
 		if (parser.getUserName() != null) {
 			props.setProperty("hibernate.connection.username", parser.getUserName());
 		}
+		/** Nastavi geslo uporabniskega ime */
 		if (parser.getPassWord() != null) {
 			props.setProperty("hibernate.connection.password", parser.getPassWord());
 		}
+		/** Nastavi ime sheme za podatkovno bazo */
 		if (parser.getDefaultSchema() != null) {
 			props.setProperty("hibernate.default_schema", parser.getDefaultSchema());
 		}
-
+		/** Nastavitve ConnectionPoola */
 		props.setProperty("hibernate.connection.isolation", String.valueOf(Connection.TRANSACTION_READ_UNCOMMITTED));
 		props.setProperty("hibernate.connection.provider_class", "org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider");
 		props.setProperty("hibernate.c3p0.min_size", "1");
 		props.setProperty("hibernate.c3p0.max_size", String.valueOf(parser.getConnectoinPoolSize()));
-
+		/** Nastavitve za prikaz ipisa opravljenih poizved, izvrsenih nad podatkovno bazo */
 		props.setProperty("hibernate.show_sql", String.valueOf(parser.isShowSql()));
 		props.setProperty("hibernate.format_sql", String.valueOf(parser.isShowSqlFormat()));
+		/** Nastavitev ki pove ali zelimo ustvariti ali posodobiti podatkovno bazo */
 		props.setProperty("hibernate.hbm2ddl.auto", parser.getOperation().getValue());
-
+		/** Nastavitev ki omogoca shranjevanje ze sharnjenih objektov */
 		props.setProperty("hibernate.event.merge.entity_copy_observer", "allow");
+		/** Nastavitev za poganjanje Hibernata */
 		props.setProperty("hibernate.current_session_context_class", "thread");
+		/** Nastavitev vmesniega pomnilnika */
 		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCacheProvider");
-
 		return props;
 	}
 
@@ -137,9 +139,9 @@ public class HibernateUtil implements AutoCloseable {
 		if (argumentParser.getDialect() != null) {
 			set.add(argumentParser.getDialect());
 		}
+		/** Po potrebi nalozi dodatne jar datoteke v nov ClassLoader */
 		if (set.size() > 0) {
 			URLClassLoader urlLoader = new URLClassLoader(set.toArray(new URL[set.size()]), ClassLoader.getSystemClassLoader());
-			/** Ustvari dinamicne razrede */
 			return new ClassPoolLoader(urlLoader);
 		} else {
 			return new ClassPoolLoader();
