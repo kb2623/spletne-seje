@@ -3,14 +3,14 @@ package org.datastruct;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
+public class RadixTreeMap<K extends CharSequence, V> implements NavigableMap<K, V>, Iterable<V> {
 
 	private RadixEntry rootNode;
-	private Comparator<String> cmp;
+	private Comparator<CharSequence> cmp;
 
 	public RadixTreeMap() {
 		rootNode = new RadixEntry();
-		cmp = (String k1, String k2) -> {
+		cmp = (CharSequence k1, CharSequence k2) -> {
 			int numChar = 0;
 			while (numChar < k2.length() && numChar < k1.length()) {
 				if (k2.charAt(numChar) != k1.charAt(numChar)) {
@@ -23,7 +23,13 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 		};
 	}
 
-	public V add(V data, String key) throws NullPointerException {
+	private K linkKey(K k1, K k2) {
+		StringBuilder buff = new StringBuilder();
+		buff.append(k1).append(k2);
+		return (K) buff.subSequence(0, buff.length());
+	}
+
+	public V add(V data, K key) throws NullPointerException {
 		if (key == null || data == null) {
 			throw new NullPointerException();
 		}
@@ -39,12 +45,12 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	 * @param node Vozlisce v obdelavi
 	 * @return Vrednost starega elementa
 	 */
-	private V insert(V data, String key, RadixEntry node) {
+	private V insert(V data, K key, RadixEntry node) {
 		int numMatchChar = cmp.compare(node.key, key);
 		if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			return node.setValue(data);
 		} else if (numMatchChar == 0 || (numMatchChar == node.key.length() && numMatchChar < key.length())) {
-			String ostanekKljuca = key.substring(numMatchChar);
+			K ostanekKljuca = (K) key.subSequence(numMatchChar, key.length());
 			RadixEntry chield = node.children.get(ostanekKljuca.charAt(0));
 			if (chield != null) {
 				return insert(data, ostanekKljuca, chield);
@@ -53,12 +59,12 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 				return null;
 			}
 		} else {
-			RadixEntry tmp = new RadixEntry(node.data, node.key.substring(numMatchChar), node.children);
-			node.key = key.substring(0, numMatchChar);
+			RadixEntry tmp = new RadixEntry(node.data, (K) node.key.subSequence(numMatchChar, node.key.length()), node.children);
+			node.key = (K) key.subSequence(0, numMatchChar);
 			node.children = new SkipMap<>(5);
 			node.children.put(tmp.key.charAt(0), tmp);
 			if (numMatchChar < key.length()) {
-				RadixEntry tmp1 = new RadixEntry(data, key.substring(numMatchChar));
+				RadixEntry tmp1 = new RadixEntry(data, (K) key.subSequence(numMatchChar, key.length()));
 				node.data = null;
 				node.children.put(tmp1.key.charAt(0), tmp1);
 			} else {
@@ -75,29 +81,29 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	 * @param data Vrednost novega elementa
 	 * @return Vrednost starega elementa
 	 */
-	private V insert(V data, String key) {
+	private V insert(V data, K key) {
 		RadixEntry curr = rootNode;
-		String currKey = key;
+		K currKey = key;
 		while (true) {
 			int numMatchChar = cmp.compare(curr.key, currKey);
 			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
 				return curr.setValue(data);
 			} else if (numMatchChar == 0 || (numMatchChar == curr.key.length() && numMatchChar < currKey.length())) {
-				currKey = currKey.substring(numMatchChar);
+				currKey = (K) currKey.subSequence(numMatchChar, currKey.length());
 				RadixEntry chield = curr.children.get(currKey.charAt(0));
 				if (chield != null) {
 					curr = chield;
 				} else {
-					curr.children.put(currKey.charAt(0), new RadixEntry(data, currKey));
+					curr.children.put(currKey.charAt(0), new RadixEntry(data, (K) currKey));
 					return null;
 				}
 			} else {
-				RadixEntry tmp = new RadixEntry(curr.data, curr.key.substring(numMatchChar), curr.children);
-				curr.key = currKey.substring(0, numMatchChar);
+				RadixEntry tmp = new RadixEntry(curr.data, (K) curr.key.subSequence(numMatchChar, curr.key.length()), curr.children);
+				curr.key = (K) currKey.subSequence(0, numMatchChar);
 				curr.children = new SkipMap<>(5);
 				curr.children.put(tmp.key.charAt(0), tmp);
 				if (numMatchChar < currKey.length()) {
-					RadixEntry tmp1 = new RadixEntry(data, currKey.substring(numMatchChar));
+					RadixEntry tmp1 = new RadixEntry(data, (K) currKey.subSequence(numMatchChar, currKey.length()));
 					curr.data = null;
 					curr.children.put(tmp1.key.charAt(0), tmp1);
 				} else {
@@ -114,15 +120,15 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	 * @param key Kjuc iskanega elemnta
 	 * @return Vrednost elementa
 	 */
-	private V search(String key) {
-		String currKey = key;
+	private V search(CharSequence key) {
+		CharSequence currKey = key;
 		RadixEntry curr = rootNode;
 		while (curr != null) {
 			int numMatchChar = cmp.compare(curr.key, currKey);
 			if (numMatchChar == currKey.length() && numMatchChar == curr.key.length()) {
 				return curr.data;
 			} else if (numMatchChar < currKey.length() && numMatchChar == curr.key.length()) {
-				currKey = currKey.substring(numMatchChar);
+				currKey = currKey.subSequence(numMatchChar, currKey.length());
 				curr = curr.children.get(currKey.charAt(0));
 			} else {
 				curr = null;
@@ -138,12 +144,12 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	 * @param key  Kljuc iskanega elementa
 	 * @return Vrednost elementa
 	 */
-	private V search(RadixEntry node, String key) {
+	private V search(RadixEntry node, CharSequence key) {
 		int numMatchChar = cmp.compare(node.key, key);
 		if (numMatchChar == key.length() && numMatchChar == node.key.length()) {
 			return node.data;
 		} else if (numMatchChar < key.length() && numMatchChar == node.key.length()) {
-			String nKey = key.substring(numMatchChar);
+			CharSequence nKey = key.subSequence(numMatchChar, key.length());
 			RadixEntry chield = node.children.get(nKey.charAt(0));
 			if (chield != null) {
 				return search(chield, nKey);
@@ -246,7 +252,9 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	private void mergeNodes(RadixEntry parent, RadixEntry child) {
-		parent.key += child.key;
+		StringBuilder buff = new StringBuilder();
+		buff.append(parent.key).append(child.key);
+		parent.key = (K) buff.subSequence(0, buff.length());
 		parent.data = child.data;
 		parent.children = child.children;
 	}
@@ -428,7 +436,7 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public V put(String key, V value) throws NullPointerException {
+	public V put(K key, V value) throws NullPointerException {
 		return add(value, key);
 	}
 
@@ -443,8 +451,8 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public void putAll(Map<? extends String, ? extends V> m) {
-		for (Map.Entry<? extends String, ? extends V> e : m.entrySet()) {
+	public void putAll(Map<? extends K, ? extends V> m) {
+		for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
 			put(e.getKey(), e.getValue());
 		}
 	}
@@ -455,8 +463,8 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public Set<String> keySet() {
-		Set<String> set = new HashSet<>(count());
+	public Set<K> keySet() {
+		Set<K> set = new HashSet<>(count());
 		keySet(set);
 //		keySet(rootNode, rootNode.key, set);
 		return set;
@@ -467,11 +475,11 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	 *
 	 * @param set Set, ki ga zelimo napolniti
 	 */
-	private void keySet(Set<String> set) {
+	private void keySet(Set<K> set) {
 		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
-		org.datastruct.Stack<String> kStack = new org.datastruct.Stack<>();
+		org.datastruct.Stack<K> kStack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
-		String key = rootNode.key;
+		K key = rootNode.key;
 		while (curr != null) {
 			if (curr.data != null) {
 				set.add(key);
@@ -482,7 +490,7 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 			}
 			if (!stack.isEmpty()) {
 				curr = stack.pop();
-				key = kStack.pop() + curr.key;
+				key = linkKey(kStack.pop(), curr.key);
 			} else {
 				curr = null;
 			}
@@ -496,11 +504,11 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	 * @param key  Kjuc, vozlisca (v trenutnem vozliscu se nahaj samo delcek kljuca)
 	 * @param set  Set, ki ga zelimo napolniti
 	 */
-	private void keySet(RadixEntry node, String key, Set<String> set) {
+	private void keySet(RadixEntry node, K key, Set<K> set) {
 		if (node.data != null) {
-			set.add(key + node.key);
+			set.add(linkKey(key, node.key));
 		}
-		node.children.values().forEach(children -> keySet(children, key + node.key, set));
+		node.children.values().forEach(children -> keySet(children, linkKey(key, node.key), set));
 	}
 
 	@Override
@@ -509,8 +517,8 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public Set<Map.Entry<String, V>> entrySet() {
-		Set<Map.Entry<String, V>> set = new HashSet<>(count());
+	public Set<Map.Entry<K, V>> entrySet() {
+		Set<Map.Entry<K, V>> set = new HashSet<>(count());
 		entrySet(set);
 //		entrySet(rootNode, rootNode.key, set);
 		return set;
@@ -521,11 +529,11 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	 *
 	 * @param set Set, ki ga zelmo napolniti
 	 */
-	private void entrySet(Set<Map.Entry<String, V>> set) {
+	private void entrySet(Set<Map.Entry<K, V>> set) {
 		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
-		org.datastruct.Stack<String> kStack = new org.datastruct.Stack<>();
+		org.datastruct.Stack<K> kStack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
-		String key = rootNode.key;
+		K key = rootNode.key;
 		while (curr != null) {
 			if (curr.data != null) {
 				set.add(new RadixEntry(curr.data, key, null));
@@ -536,7 +544,7 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 			}
 			if (!stack.isEmpty()) {
 				curr = stack.pop();
-				key = kStack.pop() + curr.key;
+				key = linkKey(kStack.pop(), curr.key);
 			} else {
 				curr = null;
 			}
@@ -550,11 +558,12 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	 * @param key  Kjuc trenutnega vozlisca (v trenutnem vozliscu je samo del kjuca)
 	 * @param set  Set, ki ga zelmo napolniti
 	 */
-	private void entrySet(RadixEntry node, String key, Set<Map.Entry<String, V>> set) {
+	private void entrySet(RadixEntry node, K key, Set<Map.Entry<K, V>> set) {
 		if (node.data != null) {
-			set.add(new RadixEntry(node.data, key + node.key, null));
+			StringBuilder buff = new StringBuilder();
+			set.add(new RadixEntry(node.data, linkKey(key, node.key), null));
 		}
-		node.children.values().forEach(children -> entrySet(children, key + node.key, set));
+		node.children.values().forEach(children -> entrySet(children, linkKey(key, node.key), set));
 	}
 
 	@Override
@@ -571,9 +580,9 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 
 	private void makeString(StringBuilder builder) {
 		org.datastruct.Stack<RadixEntry> stack = new org.datastruct.Stack<>();
-		org.datastruct.Stack<String> kStack = new org.datastruct.Stack<>();
+		org.datastruct.Stack<K> kStack = new org.datastruct.Stack<>();
 		RadixEntry curr = rootNode;
-		String key = rootNode.key;
+		K key = rootNode.key;
 		while (curr != null) {
 			if (curr.data != null) {
 				builder.append(key).append('=').append(curr.data).append(", ");
@@ -584,7 +593,7 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 			}
 			if (!stack.isEmpty()) {
 				curr = stack.pop();
-				key = kStack.pop() + curr.key;
+				key = linkKey(kStack.pop(), curr.key);
 			} else {
 				curr = null;
 			}
@@ -592,7 +601,7 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public Entry<String, V> lowerEntry(String key) {
+	public Entry<K, V> lowerEntry(K key) {
 		if (isEmpty()) {
 			return null;
 		} else if (key == null) {
@@ -604,19 +613,19 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public String lowerKey(String key) {
+	public K lowerKey(K key) {
 		if (isEmpty()) {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
 		} else {
-			Map.Entry<String, V> e = lowerEntry(key);
+			Map.Entry<K, V> e = lowerEntry(key);
 			return e != null ? e.getKey() : null;
 		}
 	}
 
 	@Override
-	public Entry<String, V> floorEntry(String key) {
+	public Entry<K, V> floorEntry(K key) {
 		if (isEmpty()) {
 			return null;
 		} else if (key == null) {
@@ -628,19 +637,19 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public String floorKey(String key) {
+	public K floorKey(K key) {
 		if (isEmpty()) {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
 		} else {
-			Map.Entry<String, V> e = floorEntry(key);
+			Map.Entry<K, V> e = floorEntry(key);
 			return e != null ? e.getKey() : null;
 		}
 	}
 
 	@Override
-	public Entry<String, V> ceilingEntry(String key) {
+	public Entry<K, V> ceilingEntry(K key) {
 		if (isEmpty()) {
 			return null;
 		} else if (key == null) {
@@ -652,19 +661,19 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public String ceilingKey(String key) {
+	public K ceilingKey(K key) {
 		if (isEmpty()) {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
 		} else {
-			Map.Entry<String, V> e = ceilingEntry(key);
+			Map.Entry<K, V> e = ceilingEntry(key);
 			return e != null ? e.getKey() : null;
 		}
 	}
 
 	@Override
-	public Entry<String, V> higherEntry(String key) {
+	public Entry<K, V> higherEntry(K key) {
 		if (isEmpty()) {
 			return null;
 		} else if (key == null) {
@@ -676,19 +685,19 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public String higherKey(String key) {
+	public K higherKey(K key) {
 		if (isEmpty()) {
 			return null;
 		} else if (key == null) {
 			throw new NullPointerException();
 		} else {
-			Map.Entry<String, V> e = higherEntry(key);
+			Map.Entry<K, V> e = higherEntry(key);
 			return e != null ? e.getKey() : null;
 		}
 	}
 
 	@Override
-	public Entry<String, V> firstEntry() {
+	public Entry<K, V> firstEntry() {
 		if (isEmpty()) {
 			return null;
 		} else {
@@ -698,7 +707,7 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public Entry<String, V> lastEntry() {
+	public Entry<K, V> lastEntry() {
 		if (isEmpty()) {
 			return null;
 		} else {
@@ -708,83 +717,83 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 	}
 
 	@Override
-	public Entry<String, V> pollFirstEntry() {
+	public Entry<K, V> pollFirstEntry() {
 		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
-	public Entry<String, V> pollLastEntry() {
+	public Entry<K, V> pollLastEntry() {
 		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
-	public NavigableMap<String, V> descendingMap() {
+	public NavigableMap<K, V> descendingMap() {
 		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
-	public NavigableSet<String> navigableKeySet() {
+	public NavigableSet<K> navigableKeySet() {
 		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
-	public NavigableSet<String> descendingKeySet() {
+	public NavigableSet<K> descendingKeySet() {
 		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
-	public NavigableMap<String, V> subMap(String fromKey, boolean fromInclusive, String toKey, boolean toInclusive) {
+	public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
 		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
-	public NavigableMap<String, V> headMap(String toKey, boolean inclusive) {
+	public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
 		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
-	public NavigableMap<String, V> tailMap(String fromKey, boolean inclusive) {
+	public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
 		// TODO: 2/1/16
 		return null;
 	}
 
 	@Override
-	public Comparator<? super String> comparator() {
+	public Comparator<? super K> comparator() {
 		return cmp;
 	}
 
 	@Override
-	public SortedMap<String, V> subMap(String fromKey, String toKey) {
+	public SortedMap<K, V> subMap(K fromKey, K toKey) {
 		// TODO: 2/1/16
 		return subMap(fromKey, true, toKey, false);
 	}
 
 	@Override
-	public SortedMap<String, V> headMap(String toKey) {
+	public SortedMap<K, V> headMap(K toKey) {
 		// TODO: 2/1/16
 		return headMap(toKey, false);
 	}
 
 	@Override
-	public SortedMap<String, V> tailMap(String fromKey) {
+	public SortedMap<K, V> tailMap(K fromKey) {
 		// TODO: 2/1/16
 		return tailMap(fromKey, true);
 	}
 
 	@Override
-	public String firstKey() {
+	public K firstKey() {
 		return isEmpty() ? null : firstEntry().getKey();
 	}
 
 	@Override
-	public String lastKey() {
+	public K lastKey() {
 		return isEmpty() ? null : lastEntry().getKey();
 	}
 
@@ -795,28 +804,31 @@ public class RadixTreeMap<V> implements NavigableMap<String, V>, Iterable<V> {
 		return tree;
 	}
 
-	class RadixEntry implements Map.Entry<String, V> {
+	class RadixEntry implements Map.Entry<K, V> {
 
 		Map<Character, RadixEntry> children;
 		V data;
-		String key;
+		K key;
 
-		private RadixEntry(V data, String key, Map<Character, RadixEntry> children) {
+		private RadixEntry(V data, K key, Map<Character, RadixEntry> children) {
 			this.data = data;
 			this.key = key;
 			this.children = children;
 		}
 
-		private RadixEntry(V data, String key) {
+		private RadixEntry(V data, K key) {
 			this(data, key, new SkipMap<>(5));
 		}
 
 		private RadixEntry() {
-			this(null, "");
+			this(null, null);
+			StringBuilder buff = new StringBuilder();
+			buff.append("");
+			key = (K) buff.subSequence(0, buff.length());
 		}
 
 		@Override
-		public String getKey() {
+		public K getKey() {
 			return this.key;
 		}
 

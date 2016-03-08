@@ -10,8 +10,8 @@ import static org.junit.Assert.*;
 
 public class RadixTreeMapTest {
 
-	private RadixTreeMap<Integer> intRTree;
-	private RadixTreeMap<String> tree;
+	private RadixTreeMap<String, Integer> intRTree;
+	private RadixTreeMap<String, String> tree;
 
 	@Before
 	public void setUp() {
