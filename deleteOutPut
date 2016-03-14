@@ -1,0 +1,8 @@
+rm -r /home/klemen/IdeaProjects/spletne-seje/derby*
+rm -r /home/klemen/IdeaProjects/spletne-seje/hsqldb.*
+rm /home/klemen/IdeaProjects/spletne-seje/h2db.*
+rm /home/klemen/IdeaProjects/spletne-seje/sqliteDB
+rm /home/klemen/IdeaProjects/spletne-seje/Request.class
+rm /home/klemen/IdeaProjects/spletne-seje/UserId.class
+rm /home/klemen/IdeaProjects/spletne-seje/UserSession.class
+rm /home/klemen/IdeaProjects/spletne-seje/PageView.class
