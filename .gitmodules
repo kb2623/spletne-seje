@@ -1,3 +1,6 @@
 [submodule "data-struct"]
 	path = data-struct
 	url = https://github.com/kb2623/data-struct.git
+[submodule "hibernate-orm"]
+	path = hibernate-orm
+	url = https://github.com/hibernate/hibernate-orm.git
