@@ -1,7 +1,1 @@
-include 'data-struct'
-include 'hibernate-orm'
-include 'hibernate-orm:hibernate-core'
-include 'hibernate-orm:hibernate-java8'
-include 'hibernate-orm:hibernate-c3p0'
-
 rootProject.name = projectName

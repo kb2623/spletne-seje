@@ -1,12 +1,3 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'pmd'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-group = projectGroup
-version = buildVersion
-sourceCompatibility = sourceComp
-
 buildscript {
 	repositories {
 		jcenter()
@@ -15,6 +6,15 @@ buildscript {
 		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.2'
 	}
 }
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'pmd'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group = projectGroup
+version = buildVersion
+sourceCompatibility = sourceComp
 
 jar {
 	manifest {
@@ -49,11 +49,11 @@ repositories {
 
 dependencies {
 	compile project(':data-struct')
-	compile project(':hibernate-orm:hibernate-core')
-	compile project(':hibernate-orm:hibernate-java8')
-	compile project(':hibernate-orm:hibernate-c3p0')
+	compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.7.Final'
+	compile group: 'org.hibernate', name: 'hibernate-java8', version: '5.0.7.Final'
+	compile group: 'org.hibernate', name: 'hibernate-c3p0', version: '5.0.7.Final'
 	compile group: 'org.javassist', name: 'javassist', version: '3.20.0-GA'
-	compile group: 'args4j', name: 'args4j', version: '2.32'
 	compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
+	compile group: 'args4j', name: 'args4j', version: '2.32'
 	testCompile group: 'junit', name: 'junit', version: '4.12'
 }
