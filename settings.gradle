@@ -1,1 +1,3 @@
+include 'data-struct'
+
 rootProject.name = projectName
